@@ -125,7 +125,7 @@ async def main() -> None:
         )  # fmt: skip
         mark = "" if decision.category.value == expected else f"   <-- expected {expected}"
         print(f"{msg.created_at[11:19]} {msg.id:>5} {decision.category.value:<21}{mark}", flush=True)
-    clock["now"] += timedelta(seconds=settings.trucker_fallback_seconds + 1)
+    clock["now"] += timedelta(seconds=settings.trucker_wait_seconds + 1)
     await workflow.tick()
 
     shipments = []
