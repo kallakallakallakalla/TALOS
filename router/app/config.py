@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -48,7 +49,8 @@ class Settings(BaseSettings):
     # use EVALUATION_KEY directly, shipments go to their own database, and portal reads are
     # throttled so the live process keeps most of the shared limit.
     test_mode: bool = False
-    test_sqlite_db_path: str = "data/test.db"
+    # Outside the repo, so no git checkout or merge can overwrite or delete it.
+    test_sqlite_db_path: str = str(Path.home() / ".talos" / "test.db")
     test_portal_rate_limit_per_minute: int = 3
 
     # Input API (empty = use built-in placeholder)
@@ -66,7 +68,7 @@ class Settings(BaseSettings):
     mailbox_timeout_seconds: float = 10.0
 
     # SQLite persistence for since_id cursor, deduplication, and results
-    sqlite_db_path: str = "data/router.db"
+    sqlite_db_path: str = str(Path.home() / ".talos" / "router.db")
 
     # Quote workflow (docs/workflow.md section 9)
     send_enabled: bool = False  # dry run: compose and log, never send or book

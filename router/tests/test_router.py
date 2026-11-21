@@ -495,7 +495,7 @@ def test_test_mode_never_uses_the_gateway_never_sends_and_has_its_own_database()
     assert test.decision_api_key == "sk-eval"
     assert test.decision_api_base_url == "https://api.openai.com/v1"
     assert test.send_enabled is False
-    assert test.sqlite_db_path == "data/test.db"
+    assert test.sqlite_db_path.endswith("/.talos/test.db")
     assert test.portal_rate_limit_per_minute == 3
 
     with pytest.raises(RuntimeError, match="EVALUATION_KEY"):
