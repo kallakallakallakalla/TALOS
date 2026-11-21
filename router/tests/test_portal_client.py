@@ -1,10 +1,16 @@
+import tempfile
+from pathlib import Path
+
 import httpx
 import pytest
 
 from app.config import Settings
 from app.portal_client import PortalClient, PortalError, RateExpired
 
-SETTINGS = Settings(langfuse_enabled=False, hackloop_api_key="team-key")
+SETTINGS = Settings(
+    langfuse_enabled=False, hackloop_api_key="team-key",
+    portal_lanes_cache_path=str(Path(tempfile.mkdtemp()) / "lanes.json"),
+)
 
 
 def _rate_json(params: httpx.QueryParams, total: str) -> dict:
@@ -119,3 +125,33 @@ async def test_portal_options_takes_the_next_break_when_it_is_cheaper() -> None:
     rate_reads.clear()
     assert await portal.portal_options("FRA", "ORD", 250, 1.0) == []  # lane not on the portal
     assert rate_reads == []
+
+
+@pytest.mark.anyio
+async def test_a_503_is_retried_once_after_a_minute() -> None:
+    calls = {"n": 0}
+
+    def down_once(request: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return httpx.Response(503, json={"detail": "The rate API is unavailable."})
+        return httpx.Response(200, json=_rate_json(request.url.params, "900.00"))
+
+    fake_time = _FakeTime()
+    assert (await _client(down_once, fake_time).rate("CGN", "ORD", "XC", 679, 4.19)).total_eur == 900.0
+    assert fake_time.sleeps == [60.0]
+
+    always_down = _client(lambda r: httpx.Response(503, json={}))
+    with pytest.raises(PortalError):
+        await always_down.rate("CGN", "ORD", "XC", 679, 4.19)
+
+
+@pytest.mark.anyio
+async def test_portal_lanes_survive_a_503_from_the_last_saved_copy() -> None:
+    lanes = {"lanes": [{"origin": "FRA", "destination": "MIA", "airlines": [{"code": "XC", "name": "Xenon"}]}]}
+    up = _client(lambda r: httpx.Response(200, json=lanes))
+    assert ("FRA", "MIA") in await up.lanes()
+    fake_time = _FakeTime()
+    down = _client(lambda r: httpx.Response(503, json={}), fake_time)
+    assert ("FRA", "MIA") in await down.lanes()  # from the saved copy, after one retry
+    assert fake_time.sleeps == [60.0]

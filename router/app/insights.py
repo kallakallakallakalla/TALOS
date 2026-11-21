@@ -250,6 +250,14 @@ def deal(shipment: Shipment, data: Dataset, *, live: bool, received: dict[int, s
         "chargeable_kg": chargeable,
         "volumetric": bool(chargeable and request.gross_kg and chargeable > request.gross_kg),
         "commodity": request.commodity,
+        # what main's extractor reads besides the basics (ADR 43 to 46)
+        "dangerous_goods": request.dangerous_goods,
+        "dg_documents_received": request.dg_documents_received if request.dangerous_goods else None,
+        "special_cargo": request.special_cargo,
+        "deliver_by": request.deliver_by.isoformat() if request.deliver_by else None,
+        "preferred_airline": request.preferred_airline,
+        "preferred_trucker": request.preferred_trucker,
+        "excluded_carriers": request.excluded_carriers,
         "extra_questions": request.extra_questions,
         "assumptions": assumptions,
         "missing": missing_fields(request) if shipment.state == S.AWAITING_INFO else [],
@@ -746,16 +754,17 @@ def snapshot(
     rows = [deal(s, data, live=live, received=received) for s in data.shipments]
     deals, legacy = [d for d in rows if not d["legacy"]], [d for d in rows if d["legacy"]]
     used = {code for d in deals for code in (d["origin"], d["destination"]) if code}
-    origins = {row["airport"] for row in reference.zones}
+    zone_map = reference.zones  # zone -> (area, airport)
+    origins = {airport for _, airport in zone_map.values()}
     zones = [
         {
-            "zone": row["zone"],
-            "area": row["area"],
-            "airport": row["airport"],
-            "truckers": sorted(c.name for c in reference.truckers_for_zone(row["zone"])),
-            "requests": sum(d["zone"] == row["zone"] for d in deals),
+            "zone": zone,
+            "area": area,
+            "airport": airport,
+            "truckers": sorted(c.name for c in reference.truckers_for_zone(zone)),
+            "requests": sum(d["zone"] == zone for d in deals),
         }
-        for row in reference.zones
+        for zone, (area, airport) in sorted(zone_map.items())
     ]
     return {
         "source": source,

@@ -11,6 +11,7 @@ const tile = (label, value, foot, unit, onclick) => h(onclick ? 'button' : 'div'
 const codes = list => h('span', { class: 'codes' }, list.map(c => h('span', { class: 'tag' }, c)));
 const laneText = d => `${d.origin || '?'} → ${d.destination || '?'}`;
 const state = d => STATES[d.state]?.[0] || d.state;
+const SOURCES = { portal: 'portal', tariff: 'tariff', email: 'email offer' };
 const head = (title, note, right) => h('header', null, h('h3', null, title), note && h('span', { class: 'note' }, note), right && h('span', { class: 'right' }, right));
 const fact = (label, value) => h('div', null, h('span', null, label), h('b', null, value ?? '–'));
 const sortState = (ctx, name, key, dir = 'desc') => {
@@ -193,6 +194,11 @@ export async function shipment(ctx, id) {
     fact('Ready date', fmt.day(d.ready_date)), fact('Pieces', fmt.int(d.pieces)), fact('Gross weight', fmt.kg(d.gross_kg)),
     fact('Volume', fmt.cbm(d.volume_cbm)), fact('Chargeable weight', `${fmt.kg(d.chargeable_kg)}${d.volumetric ? ' (volumetric)' : ''}`),
     fact('Commodity', d.commodity), fact('Priority', d.goal || 'not stated (priced as cheapest)'), fact('Contact', d.contact),
+    d.deliver_by ? fact('Deliver by', fmt.day(d.deliver_by)) : null,
+    d.dangerous_goods ? fact('Dangerous goods', `${d.dangerous_goods} · documents ${d.dg_documents_received ? 'received' : 'outstanding'}`) : null,
+    d.special_cargo ? fact('Special cargo', words(d.special_cargo)) : null,
+    d.preferred_airline || d.preferred_trucker ? fact('Preferred carriers', [d.preferred_airline, d.preferred_trucker].filter(Boolean).join(', ')) : null,
+    d.excluded_carriers?.length ? fact('Excluded carriers', d.excluded_carriers.join(', ')) : null,
     d.extra_questions.length ? fact('Further questions', d.extra_questions.join('; ')) : null,
     d.assumptions.length ? fact('Assumptions', d.assumptions.join('; ')) : null,
     d.missing.length ? fact('Missing', d.missing.join('; ')) : null));
@@ -204,7 +210,7 @@ export async function shipment(ctx, id) {
         h('div', { class: 'legend' }, h('span', null, h('i', { class: 's1' }), `Air freight ${fmt.eurExact(d.air_eur)}`),
           d.truck_eur ? h('span', null, h('i', { class: 's2' }), `Trucking ${fmt.eurExact(d.truck_eur)}${d.truck_mode === 'estimate' ? ' (estimate, no offer received)' : ''}`) : h('span', { class: 'muted' }, 'No trucking: airport delivery by the customer'))),
       h('div', { class: 'facts' },
-        fact('Airline', d.airline), fact('Transit', fmt.days(d.transit_days)), fact('Rate source', d.air_source === 'tariff' ? 'tariff file' : 'portal'),
+        fact('Airline', d.airline), fact('Transit', fmt.days(d.transit_days)), fact('Rate source', SOURCES[d.air_source] || d.air_source),
         fact('Billed weight', `${fmt.kg(d.billed_kg)}${d.weight_break ? ' (next weight break)' : ''}`), fact('Air rate', d.air_eur_per_kg ? `${fmt.two(d.air_eur_per_kg)} €/kg` : '–'),
         fact('Pickup', fmt.day(d.estimated_pickup)), fact('Departure', fmt.day(d.estimated_departure)), fact('Arrival', fmt.day(d.estimated_arrival)),
         d.booking_ref ? fact('Booking reference', d.dry_run_booking ? 'none (dry run)' : d.booking_ref) : null)));
@@ -215,7 +221,7 @@ export async function shipment(ctx, id) {
       name: o.airline, value: o.total_eur, em: o.chosen, text: fmt.eurExact(o.total_eur),
       note: `${fmt.days(o.transit_days)}${o.cheapest ? ' · lowest' : ''}${o.fastest ? ' · fastest' : ''}`,
       tip: () => tipRows(o.airline, [['Total', fmt.eurExact(o.total_eur)], ['Transit', fmt.days(o.transit_days)], ['Billed weight', fmt.kg(o.billed_kg)],
-        ['Rate', `${fmt.two(o.eur_per_kg)} €/kg`], ['Source', o.source === 'tariff' ? 'tariff file' : 'portal'], o.chosen && ['Selected', 'yes']]),
+        ['Rate', `${fmt.two(o.eur_per_kg)} €/kg`], ['Source', SOURCES[o.source] || o.source], o.chosen && ['Selected', 'yes']]),
     })), { label: 190, max: top })) : null;
 
   const answered = detail.truckers.filter(t => t.price_eur != null).length;
@@ -417,7 +423,7 @@ export async function carriers(ctx, tab = 'airlines') {
     const rows = snap.airlines.filter(a => matches(q, a.name, a.code, a.serves.join(' ')));
     const cols = [
       { key: 'name', label: 'Airline', render: a => [a.name, h('span', { class: 'sub' }, [a.code, a.email].filter(Boolean).join(' · '))] }, { key: 'email', label: 'Email', hidden: true },
-      { key: 'source', label: 'Rate source', render: a => (a.source === 'tariff' ? 'tariff file' : a.source === 'portal' ? 'portal' : h('span', { class: 'muted' }, 'not yet priced')) },
+      { key: 'source', label: 'Rate source', render: a => SOURCES[a.source] || h('span', { class: 'muted' }, 'not yet priced') },
       { key: 'compared', label: 'Priced', right: true }, { key: 'cheapest_in', label: 'Lowest price', right: true }, { key: 'fastest_in', label: 'Fastest', right: true },
       { key: 'chosen', label: 'Quoted', right: true }, { key: 'accepted', label: 'Accepted', right: true },
       { key: 'avg_eur_per_kg', label: 'Avg. €/kg', right: true, render: a => fmt.two(a.avg_eur_per_kg) },

@@ -80,6 +80,16 @@ class MailboxAttachment(BaseModel):
     filename: str = ""
     content_type: str | None = None
     size: int | None = None
+    # Filled by app.attachments (ADR 42); stored with the mail, so a file is read only once.
+    text: str = ""
+    readable: bool = False
+    vision_tried: bool = False
+
+
+class AttachmentText(BaseModel):
+    """What a vision call read from an attachment."""
+
+    text: str
 
 
 class MailboxMessage(BaseModel):
@@ -174,6 +184,7 @@ class ShipmentState(StrEnum):
 
 SenderRole = Literal["customer", "trucker", "airline", "ratedesk", "tracking"]
 Goal = Literal["fastest", "cheapest"]
+SpecialCargo = Literal["live_animals", "perishables", "temperature_controlled", "valuables", "human_remains"]
 
 
 class ShipmentRequest(BaseModel):
@@ -186,12 +197,23 @@ class ShipmentRequest(BaseModel):
     destination_iata: str | None = None
     destination_inferred: bool = False
     ready_date: date | None = None
+    deliver_by: date | None = None  # latest arrival the customer accepts (ADR 44)
     pieces: int | None = None
     gross_kg: float | None = None
     weight_computed: bool = False
     volume_cbm: float | None = None
     volume_computed: bool = False
     commodity: str | None = None
+    # ADR 43: dangerous goods are never quoted before the customer sent the DG documents.
+    dangerous_goods: str | None = None  # e.g. "UN3481, Class 9, lithium ion batteries"
+    dg_documents_received: bool = False
+    # ADR 45: special cargo is quoted only once its handling details are known.
+    special_cargo: SpecialCargo | None = None
+    special_cargo_details_received: bool = False
+    # ADR 46: carriers the customer names; matched to our airlines and truckers in code.
+    preferred_airline: str | None = None
+    preferred_trucker: str | None = None
+    excluded_carriers: list[str] = Field(default_factory=list)
     goal: Goal | None = None
     extra_questions: list[str] = Field(default_factory=list)
     contact_name: str | None = None
@@ -207,6 +229,22 @@ class TruckerQuote(BaseModel):
     pickup_hours: float | None = None
     valid_until: str | None = None
     quote_ref: str | None = None
+
+
+class AirlineRate(BaseModel):
+    """One email-only airline's rate offer, by the number of the reply it was read from."""
+
+    reply: int
+    total_eur: float | None = None  # all-in airport to airport: freight + fuel + security
+    transit_days: int | None = None
+    valid_until: str | None = None
+    quote_ref: str | None = None
+
+
+class AirlineRates(BaseModel):
+    """Output of the `talos-extract-airline-rates` prompt."""
+
+    rates: list[AirlineRate] = Field(default_factory=list)
 
 
 class TruckerQuotes(BaseModel):
@@ -250,7 +288,7 @@ class ComposedMail(BaseModel):
 class AirOption(BaseModel):
     """One priced airport-to-airport option, from the portal or from a local tariff."""
 
-    source: Literal["portal", "tariff"]
+    source: Literal["portal", "tariff", "email"]
     airline: str
     airline_code: str | None = None
     origin: str
@@ -283,6 +321,101 @@ class TariffLane(BaseModel):
     source_file: str = ""
 
 
+class DataChange(BaseModel):
+    """One change to our reference data read from an update mail (ADR 50).
+
+    Only the fields the mail gives are set; everything else stays null and keeps its value.
+    """
+
+    action: Literal["put", "remove", "adjust"] = Field(
+        description="put: add or overwrite; remove: the mail asks to delete or stop something; "
+        "adjust: a relative change such as '+5 %' or 'fuel +0.10'"
+    )
+    target: Literal["tariff_lane", "carrier", "zone"]
+    carrier: str | None = Field(None, description="carrier name as written (airline or trucker)")
+    # tariff_lane (put, remove) and adjust
+    origin: str | None = None
+    destination: str | None = None
+    valid_from: date | None = None
+    valid_to: date | None = None
+    transit_days: int | None = None
+    minimum: float | None = None
+    breaks_kg: list[float] | None = None
+    rates_per_kg: list[float] | None = None
+    fuel_per_kg: float | None = None
+    security_per_kg: float | None = None
+    currency: str | None = Field(None, description="currency of the prices, e.g. EUR, USD")
+    eur_per_unit: float | None = Field(None, description="exchange rate stated in the mail: 1 unit = x EUR")
+    copy_from_destination: str | None = Field(
+        None, description="a new lane 'with the same rates as' another destination of this airline"
+    )
+    # adjust
+    percent: float | None = None
+    amount: float | None = None
+    adjust_fields: list[Literal["rates", "minimum", "fuel", "security"]] | None = None
+    # carrier
+    kind: Literal["airline", "trucker"] | None = None
+    email: str | None = None
+    serves_add: list[str] | None = None
+    serves_remove: list[str] | None = None
+    # zone
+    zone: str | None = None
+    area: str | None = None
+    airport: str | None = None
+    quote: str = Field("", description="the sentence or table row in the mail this change comes from")
+
+
+class DataUpdate(BaseModel):
+    """Output of `talos-extract-data-update`."""
+
+    changes: list[DataChange] = Field(default_factory=list)
+
+
+class ChangeFlag(BaseModel):
+    change: int = Field(description="number of the change, 1-based")
+    flag: Literal["ok", "unclear", "suspicious"]
+    reason: str = ""
+
+
+class DataUpdateFlags(BaseModel):
+    """Output of `talos-flag-data-update`."""
+
+    flags: list[ChangeFlag] = Field(default_factory=list)
+
+
+class DataChangeRow(BaseModel):
+    """One row of the change list (table `data_changes`, the Tariff updates tab)."""
+
+    id: int
+    message_id: int
+    change_no: int
+    target: str
+    record_key: str
+    field: str
+    before: str | None = None
+    after: str | None = None
+    status: Literal["applied", "held"]
+    flag: str
+    reason: str = ""
+    created_at: str
+
+
+class DataUpdateRecord(BaseModel):
+    """One update mail with its changes (GET /data-updates)."""
+
+    message_id: int
+    sender: str | None = None
+    subject: str = ""
+    received_at: str | None = None
+    status: str  # applied | partly_applied | needs_review | nothing_found | not_handled
+    confirmation_message_id: int | None = None
+    body: str = ""
+    attachments: list[str] = Field(default_factory=list)
+    confirmation: str | None = None  # the mail we sent back (also when only drafted)
+    confirmation_sent: bool = False
+    changes: list[DataChangeRow] = Field(default_factory=list)
+
+
 class TruckerRequest(BaseModel):
     """One pickup request we sent to one trucker, and their answer once it arrives."""
 
@@ -296,6 +429,7 @@ class TruckerRequest(BaseModel):
     valid_until: str | None = None
     ref: str | None = None
     reply_message_id: int | None = None
+    transit_days: int | None = None  # airline rate requests only (ADR 47)
 
 
 class Shipment(BaseModel):
@@ -345,6 +479,7 @@ class MailContext(BaseModel):
     sender_role: SenderRole
     shipment: Shipment | None = None
     trucker_request: TruckerRequest | None = None
+    airline_request: TruckerRequest | None = None  # a rate request to an email-only airline
     our_mail: str = ""
 
 

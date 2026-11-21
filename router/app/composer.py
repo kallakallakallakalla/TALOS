@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 _DIVIDER = "-" * 40
 # The same prompt gives the same phrases every time. Each mail to a customer therefore gets
-# its own random pick per slot, named in the request to the model (ADR 42).
+# its own random pick per slot, named in the request to the model (ADR 48).
 _WORDING = {
     "greeting": ("Dear", "Hi", "Hello", "Hey"),
     "opener": (

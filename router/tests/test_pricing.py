@@ -59,13 +59,29 @@ def test_pick_best_cheapest_fastest_and_tie_breaks() -> None:
     trucks = [_truck("Cheap", 100, 29), _truck("Quick", 200, 11), _truck("Quick Dear", 250, 11),
               _truck("Declined", None, None)]  # fmt: skip
 
+    # The trucker is the cheapest one that picks up within the cut-off, for both goals (ADR 49).
     best_air, best_truck = pricing.pick_best(air, trucks, "cheapest")
-    assert (best_air.airline, best_truck.trucker) == ("Slow Cheap", "Cheap")
+    assert (best_air.airline, best_truck.trucker) == ("Slow Cheap", "Quick")
     best_air, best_truck = pricing.pick_best(air, trucks, "fastest")
     assert (best_air.airline, best_truck.trucker) == ("Fast Cheaper", "Quick")
     # no goal stated -> cheapest (ADR 08); no trucker -> None
     assert pricing.pick_best(air, [], None)[0].airline == "Slow Cheap"
     assert pricing.pick_best(air, [], None)[1] is None
+
+
+def test_trucker_is_the_cheapest_in_time_else_the_cheapest_of_all() -> None:
+    """Offers of scored rounds; the expected trucker is what the board's accuracy points imply."""
+    pick = lambda offers, goal: pricing.pick_best(  # noqa: E731
+        [_air("A", 1000, 3)], [_truck(str(p), p, h) for p, h in offers], goal
+    )[1].price_eur
+    # round 4, cheapest: 115.98 is the lowest price but takes 29 h
+    assert pick([(115.98, 29), (187.97, 11), (192.97, 13), (226.96, 12)], "cheapest") == 187.97
+    # round 44, cheapest: nobody is in time -> the cheapest of all
+    assert pick([(114.90, 31), (146.46, 26), (246.58, 23)], "cheapest") == 114.90
+    # round 26, fastest: only the 4 h trucker is in time
+    assert pick([(242.72, 21), (245.80, 27), (349.20, 15), (447.44, 4)], "fastest") == 447.44
+    # round 38, fastest: two in time, the cheaper one wins
+    assert pick([(89.0, 30), (104.0, 33), (193.6, 5), (236.2, 6)], "fastest") == 193.6
 
 
 def test_all_in_adds_trucker_and_margin() -> None:
@@ -96,3 +112,34 @@ def test_tariff_db_has_ten_airlines_and_filters_expired_lanes() -> None:
     (lane,) = [l for l in tariffs.lanes("STR", "SGN", date(2026, 11, 21)) if l.airline.startswith("Danube")]
     assert (lane.rates_per_kg, lane.fuel_per_kg, lane.security_per_kg) == ([4.63, 4.21, 3.45, 2.93, 2.4, 2.18], 1.09, 0.11)
     assert tariffs.lanes("FRA", "ORD", date(2026, 12, 1)) == []  # tariff expired on 30 Nov
+
+
+def test_deliver_by_keeps_only_options_in_time_else_the_fastest() -> None:
+    from datetime import date
+
+    ready = date(2026, 12, 1)
+    slow_cheap = AirOption(source="tariff", airline="Slow", origin="FRA", destination="MIA", billed_kg=100, total_eur=900, transit_days=8)
+    mid = AirOption(source="tariff", airline="Mid", origin="FRA", destination="MIA", billed_kg=100, total_eur=1000, transit_days=4)
+    fast = AirOption(source="tariff", airline="Fast", origin="FRA", destination="MIA", billed_kg=100, total_eur=1500, transit_days=2)
+    air = [slow_cheap, mid, fast]
+    assert pricing.pick_best(air, [], "cheapest")[0].airline == "Slow"
+    assert pricing.pick_best(air, [], "cheapest", ready, date(2026, 12, 6))[0].airline == "Mid"
+    assert pricing.pick_best(air, [], "cheapest", ready, date(2026, 12, 2))[0].airline == "Fast"  # none in time
+
+
+def test_impossible_dates_become_questions() -> None:
+    from datetime import date
+
+    today = date(2026, 11, 21)
+    assert pricing.date_problems(date(2026, 11, 27), date(2026, 12, 10), today) == []
+    swapped = pricing.date_problems(date(2026, 12, 10), date(2026, 11, 27), today)
+    assert len(swapped) == 1 and "swapped" in swapped[0]
+    assert "past" in pricing.date_problems(date(2026, 11, 1), None, today)[0]
+    assert "90 days" in pricing.date_problems(date(2027, 6, 1), None, today)[0]
+
+
+def test_carrier_names_match_loosely_but_not_by_accident() -> None:
+    assert pricing.carrier_in("Solace Air Cargo", ["Solace"])
+    assert pricing.carrier_in("Flinkwagen Logistik", ["flinkwagen logistik GmbH"])
+    assert not pricing.carrier_in("Solace Air Cargo", ["Nova Atlas Cargo"])
+    assert not pricing.carrier_in("Solace Air Cargo", [None, "Air Cargo"])  # noise words only

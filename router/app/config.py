@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     decision_api_base_url: str = "https://api.openai.com/v1"
     decision_model: str = "gpt-6-luna"
     extract_model: str = "gpt-6-luna"
+    transcribe_model: str = "gpt-4o-mini-transcribe"
     compose_model: str = "gpt-6-luna"
     decision_temperature: float | None = None
     # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).
@@ -58,7 +59,7 @@ class Settings(BaseSettings):
     hackloop_api_key: str = ""
     hackloop_mailbox: str = ""
     mailbox_poll_enabled: bool = True
-    mailbox_poll_interval_seconds: float = 2.0
+    mailbox_poll_interval_seconds: float = 5.0  # platform limit: one poll per 5 seconds
     mailbox_poll_limit: int = 100
     mailbox_timeout_seconds: float = 10.0
 
@@ -76,6 +77,9 @@ class Settings(BaseSettings):
     # Quote when every asked trucker has answered, or after this many seconds with whatever
     # came back (nothing came back: fallback trucker price).
     trucker_wait_seconds: float = 60.0
+    # A trucker that picks up within this many hours counts as in time for the flight; the
+    # cheapest of those is used (ADR 49). Fitted to the board's accuracy points, not documented.
+    trucker_pickup_cutoff_hours: float = 14.0
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3
@@ -86,6 +90,10 @@ class Settings(BaseSettings):
     tariffs_path: str = "../data/tariffs.json"
     portal_rate_limit_per_minute: int = 10
     portal_timeout_seconds: float = 10.0
+    portal_unavailable_retry_seconds: float = 60.0
+    portal_lanes_cache_path: str = "data/portal_lanes.json"  # a 503 is retried once after this (ADR 47)
+    # Email-only airlines (ADR 47): quote after this wait with whatever prices came back.
+    airline_wait_seconds: float = 60.0
 
 
 def as_test_settings(settings: Settings) -> Settings:

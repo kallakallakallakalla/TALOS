@@ -42,8 +42,6 @@ storage.py       SQLite: mails, shipments, trucker requests, air options, outbou
 | `app/pricing.py`, `app/tariffs.py`, `app/reference.py` | deterministic rules and data, no I/O beyond reading files |
 | `app/portal_client.py`, `app/mailbox_client.py` | platform API clients |
 | `app/schemas.py`, `app/storage.py`, `app/config.py` | models, SQLite store, settings |
-| `app/crm_api.py`, `app/insights.py`, `app/crm_ui/` | the CRM at `/crm`: read-only endpoints, the figures behind them, the interface |
-| `app/airports.py`, `app/replay_data.py` | airport coordinates for the globe; the dry-run database rebuilt from `result.json` |
 | `prompts/*.md` | local copy of each prompt (fallback and source for `push_prompts.py`) |
 
 ## Setup and run
@@ -108,10 +106,12 @@ MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000
 
 ## Endpoints
 
-- `GET /crm`: the CRM; its data comes from `GET /crm/api/{sources,version,snapshot,shipments/{id},mails,tariffs,system}`
 - `GET /shipments[?state=QUOTED]`, `GET /shipments/{id}`: shipments with their trucker
   requests, air options and composed mails (in a dry run: what would have been sent)
 - `GET /messages[?category=trucker_quote]`, `GET /messages/{id}`: stored, classified mails
+- `GET /data-updates`: every update mail with each change it made or tried (ADR 50); the
+  UI shows it in the Tariff updates tab (`/ui#updates`)
+- `GET /reference/{carriers|zones|tariffs}`: the reference data as the router uses it now
 - `GET /poller/status`, `POST /poll`: poller state, one manual poll cycle
 - `POST /classify`, `POST /run`: classify a text directly (no context, no workflow)
 - `GET /health`, `GET /docs`
@@ -120,6 +120,7 @@ MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000
 
 | Script | What it does |
 |---|---|
+| `scripts/apply_pending_updates.py [--dry-run]` | Applies `tariff_update` mails that came in before the update handler existed (ADR 50). Idempotent |
 | `scripts/replay.py` | Replays the recorded mailbox through the whole pipeline as a dry run (real LLM, cached portal reads, virtual clock). Result: `data/replay/result.json` |
 | `scripts/export_mails.py` | Refreshes `tests/fixtures/mails.json` from the live mailbox (read-only) |
 | `scripts/build_datasets.py` | Builds the Langfuse datasets from the recorded mails + `tests/fixtures/labels.json` |

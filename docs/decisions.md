@@ -320,7 +320,48 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Effect:** for a request with 5 truckers, 10 LLM calls become 1.
 - **Note on ADR 12:** mail text is still read by an LLM. Code only checks that the extracted price occurs in the mail.
 
-### 42 · Customer mails: short, corporate-light, varied, with a footer
+### ADR 42: Customer attachments are read locally; vision only when they block a quote
+
+- **Decision:** customer attachments are downloaded once and turned into text without an LLM (`app/attachments.py`: pdftotext, xlsx/docx zip XML, csv/txt). The text (max 3,000 characters per file) is stored with the mail and added to `mail_text()` as `ATTACHMENT <name>:` blocks. Vision: see ADR 43.
+- **Conflicts:** if the body and the attachment disagree on a cargo figure, the attachment wins (it is the formal document). Mails 8500, 8667 and 8869 had lower weight or volume in the attachment, and all three customers turned the quote down as too expensive.
+- **Not built:** tariff-update attachments and xls files (no local parser).
+
+### ADR 43: Dangerous goods wait for their documents; vision reads what text extraction cannot see
+
+- **Dangerous goods:** the quote-request extractor fills `dangerous_goods` from a UN number, a hazard class, a dangerous-goods entry in an attachment, or goods that are regulated by nature (lithium batteries, aerosols, flammable liquids, adhesives, ...). "Non-dangerous" in the mail does not override this. Until `dg_documents_received` is true, `missing_fields` asks for the Shipper's Declaration and the MSDS. We send no quote and do no pricing; after 3 questions the shipment fails. Mails 2267, 2540 and 10142 were turned down for exactly this reason.
+- **Vision when the mail comes in:** one call per file, and only for files with something text extraction cannot see: an image (png/jpg/gif/webp), a PDF with images or with no usable text (the whole PDF is sent), or a docx/xlsx/pptx with pictures (at most 4 pictures of at least 5 KB each; the vision text is added to the file's own text). Text-only files never trigger a vision call. The result is stored with the mail.
+- This replaces ADR 42's "vision only when fields are missing": a dangerous-goods label in a picture never shows up as a missing field.
+
+### ADR 44: Arrive-by dates and date checks
+
+- **Arrive-by date:** `deliver_by` is the latest arrival date the customer accepts. `pick_best` keeps only the options whose estimated arrival is on or before it, then applies the goal. If none arrives in time, we quote the fastest option and the mail says so.
+- **Date checks:** `pricing.date_problems` checks, in code, for a ready date in the past, a delivery date before the ready date (probably swapped) and a ready date more than 90 days ahead. Each problem becomes a follow-up question through `missing_fields` (at most 3 questions). The extractor copies dates as written and does not "fix" them.
+- **Tariff validity:** tariff lanes must be valid on the shipping day, which is the later of today and the ready date, not only today.
+
+### ADR 45: Special cargo is quoted only once its handling details are known
+
+- `special_cargo` is one of: live_animals, perishables, temperature_controlled, valuables, human_remains. Until `special_cargo_details_received` is true, `missing_fields` asks for the details listed per type in `SPECIAL_CARGO_DETAILS`. After that we quote normally, with no special-cargo surcharge, because we have no data for one.
+
+### ADR 46: Preferred and excluded carriers
+
+- The extractor copies the names as written. `pricing.carrier_in` matches them in code, by word, ignoring words like "Air", "Cargo" and "GmbH".
+- Excluded carriers are never asked or used. If excluding them would leave no airline at all, we ignore the exclusion rather than fail.
+- A preferred carrier with a price is used. If the best option without the preference is cheaper, the quote names it with its price (`cheaper_alternative`). A preferred carrier without a price gets a short note in the mail.
+- The template fallback mail does not mention preferences or the arrive-by date. It is only used when the LLM mail fails its checks.
+
+### ADR 47: Airlines are asked by email when the portal cannot price; a 503 is retried once
+
+- **Email-only destinations** (ASU, KTM, PPT, TNR, ULN, i.e. not on the portal's lane list): the airlines in `carrier-list.csv` that serve the destination get a rate request (template `airline_rate_request`). Mail 10830 (FRA-ULN) failed silently for lack of this.
+- **Portal down** (503 "The rate portal is down. Contact the airline directly."): every non-tariff airline that serves the destination gets the same request. Tariff prices are still used.
+- **Temporary 503** ("Rates are still published on the portal page"; the page has the same data as the API): wait 60 s, retry once (`portal_unavailable_retry_seconds`). If it still fails, the portal counts as down.
+- **Lane list:** the 114 lanes are saved to `data/portal_lanes.json` and used when `/ports` is down.
+- **Replies:** like trucker replies (ADR 41), with no classifier call, matched by `in_reply_to` or sender and read in ONE LLM call (`talos-extract-airline-rates`). A price counts only if it appears in the mail. It becomes an `AirOption(source="email")`, and booking goes by email, as for tariff airlines.
+- **Wait:** quote after 60 s (`airline_wait_seconds`) or once all airlines have answered. With no price at all, keep waiting for a late reply up to 10 minutes, then send the customer a `no_price` mail and mark the shipment FAILED. No more silence.
+- **Storage:** table `airline_requests`, the same shape as `trucker_requests` plus `transit_days`.
+- **Booking an email quote:** the airline's offer reference (for example "R-NGz6tmITGPLXxEZU") goes into the booking request.
+- **Mailbox limit:** the platform now allows one poll per 5 seconds (429 "one poll per 5 seconds"). The poll interval is 5 s, and a 429 waits for its Retry-After + 1 s. The timers (quotes, reminders) also run when a poll fails.
+
+### ADR 48: Customer mails: short, corporate-light, varied, with a footer
 
 - **Context:** the composer wrote correct but uniform mails: the same structure and closing every time, raw timestamps ("2026-11-21 15:34 UTC"), the price on its own line after a longer lead-in. The "most human email" jury reads exactly these mails.
 - **Decision (user):** the user set the style rules and picked the tone from five written examples (the "corporate light" one):
@@ -341,7 +382,52 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Phone number:** `+49 89 99998 417` is from the range the Bundesnetzagentur reserves for media productions (089 99998 000 to 999). It reaches nobody. A real number goes into `MAIL_FOOTER`.
 - **Not measured:** the five examples were written by hand, not by `gpt-6-luna`; no `EVALUATION_KEY` was available in the session. `scripts/compose_samples.py` is the check before the prompt gets the production label.
 
-### 43 · A local CRM over the router's data
+
+### ADR 49: The trucker is the cheapest one that picks up in time, for both goals
+
+**Decided 2026-11-21.** Replaces the trucker part of ADR 08 (cheapest price for "cheapest", shortest pickup for "fastest").
+
+- **Rule:** of the truckers that answered, take the cheapest one whose pickup time is at most `TRUCKER_PICKUP_CUTOFF_HOURS` (default 14). If none is that fast, take the cheapest of all. The goal no longer changes the trucker; it still chooses the airline.
+- **Why:** `GET /v1/board/me` gives accuracy points per round, and 45 × (1 − 10 × deviation) reproduces them. Working backwards, the expected price in the scored pickup rounds is our air price plus one specific trucker offer, to the cent, and that trucker was neither always the cheapest nor always the fastest. Our reading: every trucker that gets the goods to the flight counts the same, and the cheapest of those is expected.
+- **Evidence (16 scored rounds with pickup):** the rule picks the expected trucker in 13, is within 3 EUR in round 51, and is wrong in rounds 13 and 36 (both Kiel → HAM, where a 19 h trucker was expected, so the real cut-off was higher there). The old rules were right in 8.
+- **Not known:** what sets the scorer's cut-off. 14 hours is fitted to past rounds, not documented anywhere. Rejected rounds give no points, so the four `too_low` rejections (14, 46, 49, 50) cannot be checked.
+- **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.
+
+
+### ADR 50: One updatable store for reference data, changed by update mails
+
+**Decided and built 2026-11-21.** Plan and what was built: [data-updates.md](data-updates.md). Changes ADR 06 (`replace_airline()` hook) and ADR 19 (`tariff_update` had no handler and sent no mail).
+
+- **Context:** the carrier list, the pickup zones and the tariffs are read from files once, at startup. Carriers can mail us changes (new tariffs, single rates, new destinations or zones, new emails). These were tagged `tariff_update` and ignored, so the bot kept quoting from old data. Nobody knows yet what a real update mail looks like.
+- **Decision (user):**
+  - **One store, three separate tables:** `carriers`, `pickup_zones`, `tariff_lanes` in `router.db`, plus a `data_updates` log. They are not merged: they hold different kinds of data.
+  - **Read on every lookup, not at startup.** `Reference` and `Tariffs` keep their methods and query the DB. A change is used by the very next quote. A read-only `GET /reference/...` shows the current data.
+  - **The start-kit files are the seed.** They stay in git and fill the tables only when the tables are empty (a fresh checkout, a test DB, a replay).
+  - **Use the existing classifier type `tariff_update`**, with a wider description (tariffs, single rates, carrier changes, zone changes). No new category.
+  - **Both shapes of mail:** a full dataset like the start kit (attachments in any start-kit format, read as for RFQs, ADR 42/43) and a short mail changing one thing.
+  - **Two LLM calls on the mail:** one extracts typed changes, one **flags every change** (`ok` / `unclear` / `suspicious`, with a reason). Suspicious is kept lean: a price more than 4× (over +300 %) or less than ¼ of the old one (checked in code), an unclear removal, contradicting values, a one-shipment offer, or text aimed at the bot.
+  - **Put semantics:** insert if missing, overwrite only the fields given if it exists, lists (`serves`) only grow, lanes the mail does not mention stay. Delete only when the mail says so; a removed carrier is deactivated, not deleted. If two lanes are valid for the same route on the same day, the latest `valid_from` wins, then the later mail. Relative changes ("+5 %") are calculated in code. A changed email keeps the old one as an alias, and a deactivated carrier can still be booked for quotes already sent.
+  - **Checks in code, always:** an airline or trucker may only change its own data, the rate desk may change any carrier's data (matched by address). Values pass the same checks as `build_tariffs.py`; no zone may be left without a trucker.
+  - **Apply what passes**, `unclear` included. Only `suspicious` changes and failed checks are held (`needs_review`); the rest of the mail is still applied in one transaction, at most once per mail.
+  - **Prices are stored in EUR:** the rate in the mail, else the portal's `fx_eur_per_usd` for USD, else the change is held.
+  - **Confirm to the sender:** one `update_confirmation` mail per update mail, naming what changed and saying if something is held. It is a template with the stored values, not an LLM mail (as every carrier mail, ADR 38).
+  - **We never ask carriers for updates**; only incoming mails are handled.
+  - **UI:** a "Tariff updates" tab lists every change, one row each, with before → after, status and flag (table `data_changes`, `GET /data-updates`). Update mails that come in before the handler exists are listed as "not handled yet" and applied once by a one-off script when it ships.
+- **Why:** one place to look up and change reference data, no restart needed, no old data lost by accident, and a mail from outside never changes prices without a check and a record.
+- **Cost:** two extra LLM calls per update mail (extract, flag), plus vision for scanned files. Update mails are rare, so this is small next to the RFQ flow.
+
+
+### ADR 51: Price source per airline: portal, then email, then local tariff
+
+**Decided and built 2026-11-21.** Plan: [data-updates.md, section 8a](data-updates.md#8a-which-price-counts-per-airline). Changes ADR 06 ("portal and local tariff DB are equal price sources").
+
+- **Context:** today every airline has exactly one price source (15 portal, 10 tariff, 4 email-only), so the sources never compete. Once update mails can store tariffs (ADR 50), a portal or email-only airline can also have local lanes, and the same airline would appear twice with two prices.
+- **Decision (user):** the portal is the most reliable source. Per airline, use the portal price if there is one, else the price from the airline's email, else the local tariff. Who is asked how does not change: portal airlines on the portal, email-only airlines by email, tariff airlines from our table.
+- **How:** `pricing.by_source(options)` keeps one source per airline before `pick_best`. When the portal is down, every airline that is not tariff-only is asked by email (ADR 47); its local lanes are the fallback if it does not answer. Booking follows the source of the chosen price, as today.
+- **Why:** live prices beat stored ones, and a stored tariff can still save a quote when the portal and the airline are silent.
+
+### ADR 52: A local CRM over the router's data
+
 
 - **Context:** the only view into the system was `/ui`, a list of conversations. Accounts, carriers, lanes, the mail stream and the configuration could only be read from the database.
 - **Decision (user):** a browser interface for the whole system, run locally, as a CRM fitted to this use case: matte glass look, no gimmicks, real figures. It has to include all data, follow the live database, and show the routes on an interactive 3D globe.
@@ -357,5 +443,8 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
   - LLM cost: it is in Langfuse, not in the database.
 - **Read-only:** the CRM never sends, books or calls an LLM, and the system page shows no keys. Notes, tasks and manual actions (requote, book by hand) are not part of this version.
 - **Safety when only looking:** start the app with `MAILBOX_POLL_ENABLED=false`, otherwise the poller reads the mailbox and spends LLM calls.
-- **Tests:** `tests/test_crm.py` checks the figures against the committed replay (counts, money adding up to the cent, pricing flags, conversation order), the endpoints, the change token and that no secret reaches the system page.
+- **Tests:** `tests/test_crm.py` checks the figures against the recorded replay (`data/replay/recorded-run.json`) (counts, money adding up to the cent, pricing flags, conversation order), the endpoints, the change token and that no secret reaches the system page.
+- **Later additions:** an Analysis page (all metrics, a quote comparison per shipment), CSV export of every table, pipeline filters, formal wording. `crm.sh` / `crm.bat` start it; given the database file of a running router as second argument, it follows that router's live data.
+- **File handles:** `MessageStore` now closes every connection after its block. Before, connections stayed open until garbage collection; with the page polling every 3 s the process ran out of file handles on macOS (limit 256).
+- **Branch:** the CRM lives on `entwicklung`. It was merged into `main` and reverted there; merging `main` back into `entwicklung` keeps it, with reference data and tariffs now read from the database (ADR 50).
 

@@ -12,17 +12,16 @@ import base64
 import json
 import subprocess
 import sys
-import zipfile
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
-from xml.etree import ElementTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from langfuse.openai import AsyncOpenAI  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
+from app.attachments import docx_text, xlsx_text  # noqa: E402
 from app.config import configure_langfuse_env, evaluation_settings  # noqa: E402
 from app.reference import Reference  # noqa: E402
 from app.schemas import TariffLane  # noqa: E402
@@ -53,44 +52,6 @@ class TariffFile(BaseModel):
     lanes: list[TariffLane]
 
 
-def _xml_text(node: ElementTree.Element) -> str:
-    return "".join(node.itertext())
-
-
-def xlsx_text(path: Path) -> str:
-    """Every sheet as tab-separated rows, with shared strings resolved."""
-    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-    with zipfile.ZipFile(path) as archive:
-        strings: list[str] = []  # files written with inline strings have no shared table
-        if "xl/sharedStrings.xml" in archive.namelist():
-            root = ElementTree.fromstring(archive.read("xl/sharedStrings.xml"))
-            strings = [_xml_text(si) for si in root.findall("m:si", ns)]
-        rows: list[str] = []
-        for name in sorted(n for n in archive.namelist() if n.startswith("xl/worksheets/sheet")):
-            for row in ElementTree.fromstring(archive.read(name)).iter(f"{{{ns['m']}}}row"):
-                cells = []
-                for cell in row.findall("m:c", ns):
-                    value = cell.find("m:v", ns)
-                    text = _xml_text(cell) if value is None else value.text or ""
-                    cells.append(strings[int(text)] if cell.get("t") == "s" else text)
-                rows.append("\t".join(cells))
-    return "\n".join(rows)
-
-
-def docx_text(path: Path) -> str:
-    """Paragraphs and table rows of a Word file, one per line."""
-    w = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-    with zipfile.ZipFile(path) as archive:
-        body = ElementTree.fromstring(archive.read("word/document.xml")).find(f"{w}body")
-    lines: list[str] = []
-    for block in body:
-        if block.tag == f"{w}tbl":
-            lines += ["\t".join(_xml_text(c) for c in r.iter(f"{w}tc")) for r in block.iter(f"{w}tr")]
-        else:
-            lines.append(_xml_text(block))
-    return "\n".join(lines)
-
-
 def file_content(paths: list[Path]) -> list[dict]:
     """The user-message content for one airline: text, or images for scanned pages."""
     content: list[dict] = []
@@ -105,9 +66,9 @@ def file_content(paths: list[Path]) -> list[dict]:
                 ["pdftotext", "-layout", str(path), "-"], capture_output=True, text=True, check=True
             ).stdout
         elif suffix == ".xlsx":
-            text = xlsx_text(path)
+            text = xlsx_text(path.read_bytes())
         elif suffix == ".docx":
-            text = docx_text(path)
+            text = docx_text(path.read_bytes())
         else:
             text = path.read_text(encoding="utf-8")
         content.append({"type": "text", "text": text})

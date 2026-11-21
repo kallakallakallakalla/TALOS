@@ -6,9 +6,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from app import refdb
 from app.schemas import (
     AirOption,
     ClassificationDecision,
+    DataChangeRow,
+    DataUpdateRecord,
     EmailCategory,
     MailboxAttachment,
     MailboxMessage,
@@ -31,6 +34,16 @@ def _category_where(category: EmailCategory | None) -> tuple[str, tuple[Any, ...
     if category is None:
         return "", ()
     return "WHERE category = ?", (category.value,)
+
+
+_AIRLINE = "airline_requests"
+
+
+def _table(name: str) -> str:
+    """Only these two table names are ever put into SQL."""
+    if name not in ("trucker_requests", _AIRLINE):
+        raise ValueError(f"unknown table {name}")
+    return name
 
 
 class MessageStore:
@@ -63,6 +76,7 @@ class MessageStore:
 
     def _init_schema(self) -> None:
         with self._connect() as conn:
+            conn.executescript(refdb.SCHEMA)  # reference data + update log (ADR 50)
             conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS poller_state (
@@ -119,6 +133,14 @@ class MessageStore:
                     answered INTEGER NOT NULL DEFAULT 0,
                     price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
                     reply_message_id INTEGER
+                );
+                -- Rate requests to email-only airlines (ADR 47), same shape as trucker_requests.
+                CREATE TABLE IF NOT EXISTS airline_requests (
+                    out_message_id INTEGER PRIMARY KEY, shipment_id INTEGER NOT NULL,
+                    trucker TEXT NOT NULL, sent_at TEXT NOT NULL,  -- trucker = airline email
+                    answered INTEGER NOT NULL DEFAULT 0,
+                    price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
+                    reply_message_id INTEGER, transit_days INTEGER
                 );
                 CREATE TABLE IF NOT EXISTS air_options (
                     shipment_id INTEGER NOT NULL, source TEXT NOT NULL,  -- portal | tariff
@@ -385,15 +407,17 @@ class MessageStore:
             ).fetchall()
         return [self._row_to_shipment(row) for row in rows]
 
-    def save_trucker_request(self, request: TruckerRequest) -> None:
-        """Insert a pickup request we sent, or update it with the trucker's answer."""
+    def save_trucker_request(self, request: TruckerRequest, table: str = "trucker_requests") -> None:
+        """Insert a pickup request we sent, or update it with the trucker's answer.
+        `table="airline_requests"` does the same for a rate request to an airline."""
+        transit = ", transit_days" if table == _AIRLINE else ""
         with self._connect() as conn:
             conn.execute(
-                """
-                INSERT OR REPLACE INTO trucker_requests (
+                f"""
+                INSERT OR REPLACE INTO {_table(table)} (
                     out_message_id, shipment_id, trucker, sent_at, answered, price_eur,
-                    pickup_hours, valid_until, ref, reply_message_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    pickup_hours, valid_until, ref, reply_message_id{transit}
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?{", ?" if transit else ""})
                 """,
                 (
                     request.out_message_id,
@@ -406,19 +430,49 @@ class MessageStore:
                     request.valid_until,
                     request.ref,
                     request.reply_message_id,
+                    *([request.transit_days] if transit else []),
                 ),
             )
 
-    def trucker_requests(self, shipment_id: int) -> list[TruckerRequest]:
+    def trucker_requests(self, shipment_id: int, table: str = "trucker_requests") -> list[TruckerRequest]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM trucker_requests WHERE shipment_id = ? ORDER BY out_message_id",
+                f"SELECT * FROM {_table(table)} WHERE shipment_id = ? ORDER BY out_message_id",
                 (shipment_id,),
             ).fetchall()
         return [TruckerRequest(**dict(row)) for row in rows]
 
+    def data_updates(self) -> list[DataUpdateRecord]:
+        """Every update mail, newest first, with its changes; also `tariff_update` mails that
+        were classified but not handled (yet), so none is invisible (Tariff updates tab)."""
+        with self._connect() as conn:
+            heads = conn.execute(
+                """
+                SELECT p.message_id, p.sender, p.subject, p.received_at, p.body, p.attachments_json,
+                       COALESCE(u.status, 'not_handled') AS status, u.confirmation_message_id,
+                       o.body AS confirmation, o.sent_message_id IS NOT NULL AS confirmation_sent
+                FROM processed_messages p LEFT JOIN data_updates u ON u.message_id = p.message_id
+                LEFT JOIN outbound_mails o ON o.in_reply_to = p.message_id AND o.kind = 'update_confirmation'
+                WHERE p.category = 'tariff_update' OR u.message_id IS NOT NULL
+                ORDER BY p.message_id DESC
+                """
+            ).fetchall()
+            rows = conn.execute("SELECT * FROM data_changes ORDER BY id").fetchall()
+        changes: dict[int, list[DataChangeRow]] = {}
+        for row in rows:
+            changes.setdefault(row["message_id"], []).append(DataChangeRow(**dict(row)))
+        return [
+            DataUpdateRecord(
+                **{k: h[k] for k in h.keys() if k != "attachments_json"},
+                attachments=[a.get("filename", "") for a in json.loads(h["attachments_json"] or "[]")],
+                changes=changes.get(h["message_id"], []),
+            )
+            for h in heads
+        ]
+
     def find_trucker_request(
-        self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False
+        self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False,
+        table: str = "trucker_requests",
     ) -> TruckerRequest | None:
         """The pickup request a trucker's mail answers: the one we sent as `reply_to_id`.
 
@@ -427,12 +481,12 @@ class MessageStore:
         """
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT * FROM trucker_requests WHERE out_message_id = ?", (reply_to_id,)
+                f"SELECT * FROM {_table(table)} WHERE out_message_id = ?", (reply_to_id,)
             ).fetchone()
             if row is None and match_by_sender:
                 row = conn.execute(
-                    """
-                    SELECT * FROM trucker_requests WHERE trucker = ? AND answered = 0
+                    f"""
+                    SELECT * FROM {_table(table)} WHERE trucker = ? AND answered = 0
                     ORDER BY sent_at DESC LIMIT 1
                     """,
                     (trucker,),
@@ -535,7 +589,8 @@ class MessageStore:
                        SELECT COALESCE(sent_message_id, -id) FROM outbound_mails
                        WHERE shipment_id = :id)
                    OR message_id IN (
-                       SELECT reply_message_id FROM trucker_requests WHERE shipment_id = :id)
+                       SELECT reply_message_id FROM trucker_requests WHERE shipment_id = :id
+                       UNION SELECT reply_message_id FROM airline_requests WHERE shipment_id = :id)
                 ORDER BY message_id
                 """,
                 {"id": shipment_id},

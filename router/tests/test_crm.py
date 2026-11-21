@@ -8,29 +8,32 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app import insights
+from app import insights, prompts
 from app.airports import AIRPORTS, distance_km
 from app.config import Settings, get_settings
 from app.main import app
 from app.reference import Reference
-from app.replay_data import REPLAY_DIR, ensure_replay_db, replay_labels
+from app.replay_data import RECORDED, REPLAY_DIR, ensure_replay_db, replay_labels
 from app.storage import MessageStore
+
+import json  # noqa: E402
 
 SETTINGS = Settings(langfuse_enabled=False)
 REFERENCE = Reference(SETTINGS.start_kit_dir)
+LABELS = json.loads((REPLAY_DIR / RECORDED).read_text())["classified"]
 
 
 @pytest.fixture(scope="module")
 def replay(tmp_path_factory) -> MessageStore:
-    """The replay database, rebuilt from result.json as on a fresh checkout."""
+    """The replay database, rebuilt from the recorded run as on a fresh checkout."""
     folder = tmp_path_factory.mktemp("replay")
-    shutil.copy(REPLAY_DIR / "result.json", folder)
+    shutil.copy(REPLAY_DIR / RECORDED, folder)
     return MessageStore(str(ensure_replay_db(folder)))
 
 
 def _snapshot(store: MessageStore, source: str) -> dict:
     return insights.snapshot(
-        store, REFERENCE, SETTINGS, source=source, labels=replay_labels(),
+        store, REFERENCE, SETTINGS, source=source, labels=LABELS,
         now=datetime(2026, 11, 21, 18, 0, tzinfo=UTC),
     )  # fmt: skip
 
@@ -129,7 +132,7 @@ def test_the_conversation_is_in_the_order_it_happened(replay: MessageStore) -> N
 
 
 def test_every_airport_of_the_start_kit_has_a_place() -> None:
-    wanted = {row["airport"] for row in REFERENCE.zones} | {
+    wanted = {airport for _, airport in REFERENCE.zones.values()} | {
         code for carrier in REFERENCE.carriers if carrier.kind == "airline" for code in carrier.serves
     }
     assert wanted <= set(AIRPORTS)
@@ -191,7 +194,7 @@ def test_the_page_follows_the_database(client: TestClient) -> None:
 def test_system_page_shows_no_secret(client: TestClient) -> None:
     system = client.get("/crm/api/system")
     assert system.status_code == 200 and system.json()["mode"] == "dry_run"
-    assert len(system.json()["prompts"]) == 6
+    assert len(system.json()["prompts"]) == len(prompts.ALL_PROMPTS)
     real = Settings()  # whatever keys the local .env holds must never reach the page
     secrets = [str(v) for k, v in real.model_dump().items() if any(w in k for w in ("key", "token", "secret")) and v]
     assert not [s for s in secrets if s in system.text]
@@ -222,8 +225,13 @@ def test_requests_leave_no_database_file_open(client: TestClient) -> None:
     def open_databases() -> int:
         return sum(".db" in str(link.resolve()) for link in Path("/proc/self/fd").iterdir() if link.is_symlink())
 
+    # The reference store keeps one shared connection per database by design (ADR 50), so
+    # the measure is growth: after the first requests the number of open files must not move.
+    client.get("/crm/api/snapshot")
+    client.get("/crm/api/snapshot", params={"source": "replay"})
+    before = open_databases()
     for _ in range(40):
         assert client.get("/crm/api/version", params={"source": "replay"}).status_code == 200
         assert client.get("/crm/api/snapshot").status_code == 200
     client.get("/crm/api/snapshot", params={"source": "replay"})
-    assert open_databases() == 0
+    assert open_databases() == before

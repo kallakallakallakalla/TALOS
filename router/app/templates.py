@@ -39,6 +39,29 @@ def _trucker_request(f: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _airline_rate_request(f: dict[str, Any]) -> tuple[str, str]:
+    return (
+        f"Rate request {f['lane']} on {f['ready_date']}, our reference {f['our_reference']}",
+        f"please quote air freight on lane {f['lane']}:\n"
+        f"Ready date: {f['ready_date']}\n"
+        f"Pieces: {f['pieces']}\n"
+        f"Gross weight: {f['gross_weight']}\n"
+        f"Volume: {f['volume']}\n"
+        f"Commodity: {f.get('commodity') or 'general cargo'}\n"
+        f"Our reference: {f['our_reference']}\n\n"
+        "Please reply with your all-in price in EUR airport to airport (freight, fuel and "
+        "security), the transit time in days and the validity.",
+    )
+
+
+def _no_price(f: dict[str, Any]) -> tuple[str, str]:
+    return (
+        "Your air freight request",
+        f"thank you for your request to {f['destination']}. Unfortunately we could not get an "
+        "airline price for this route in time, so we cannot send you a quote for it right now.",
+    )
+
+
 def _clarification(f: dict[str, Any]) -> tuple[str, str]:
     questions = "\n".join(f"- {item}" for item in f["missing_fields"])
     return (
@@ -68,8 +91,9 @@ def _booking_request(f: dict[str, Any]) -> tuple[str, str]:
         f"Volume: {f['volume']}\n"
         f"Chargeable weight: {f['chargeable_weight']}\n"
         f"Rate per your tariff: {f['tariff_total']}\n"
-        f"Our reference: {f['our_reference']}\n\n"
-        "Please confirm the booking with your booking reference.",
+        f"Our reference: {f['our_reference']}\n"
+        + (f"Your offer reference: {f['your_offer_reference']}\n" if f.get("your_offer_reference") else "")
+        + "\nPlease confirm the booking with your booking reference.",
     )
 
 
@@ -78,6 +102,12 @@ def _answer(f: dict[str, Any]) -> tuple[str, str]:
 
 
 def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
+    if f.get("never_booked"):
+        return (
+            "Your shipment status",
+            "thank you for your message. We have no tracking information for you, as no "
+            "shipment has been booked with us.",
+        )
     if not f.get("found"):
         return (
             "Your shipment status",
@@ -94,14 +124,32 @@ def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _update_confirmation(f: dict[str, Any]) -> tuple[str, str]:
+    """To the carrier or rate desk that mailed us an update (ADR 50). Exact, never the LLM:
+    the reader needs the facts, and the text is built from what we stored, not from their mail."""
+    subject = f["subject"] if f["subject"].lower().startswith("re:") else f"Re: {f['subject']}"
+    if not f["applied"]:
+        return subject, "thank you for your update. We are checking it and will come back to you."
+    lines = "\n".join(f"- {line}" for line in f["applied"])
+    more = f"\n- and {f['more']} more" if f.get("more") else ""
+    held = (
+        f"\n\n{f['held']} further change(s) need a check on our side; we will come back to you on them."
+        if f.get("held") else ""
+    )  # fmt: skip
+    return subject, f"thank you for your update. We have updated our records:\n{lines}{more}{held}"
+
+
 _TEMPLATES = {
     "quote": _quote,
     "trucker_request": _trucker_request,
+    "airline_rate_request": _airline_rate_request,
+    "no_price": _no_price,
     "clarification": _clarification,
     "booking_note": _booking_note,
     "booking_request": _booking_request,
     "answer": _answer,
     "tracking_answer": _tracking_answer,
+    "update_confirmation": _update_confirmation,
 }
 MAIL_KINDS = tuple(_TEMPLATES)
 

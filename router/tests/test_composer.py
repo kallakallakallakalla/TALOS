@@ -27,6 +27,11 @@ FACTS = {
         **SHIPMENT, "pickup_postal_code": "51896", "pickup_city": "Bergisch Gladbach",
         "airport": "CGN", "must_appear": ["51896", "CGN", "2026-11-28", "679 kg", "4.19 cbm"],
     },
+    "airline_rate_request": {
+        **SHIPMENT, "lane": "FRA-ULN", "commodity": "machine parts", "our_reference": "10830",
+        "must_appear": ["FRA-ULN", "10830", "679 kg"],
+    },
+    "no_price": {"destination": "ULN", "route": "FRA-ULN", "must_appear": ["ULN"]},
     "clarification": {"missing_fields": ["total gross weight in kg"], "must_appear": []},
     "booking_note": {
         "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines", "booking_ref": "BK-ERC5OOW3",
@@ -44,6 +49,10 @@ FACTS = {
         "status": "booked and confirmed by the airline, ready to ship",
         "booking_reference": "BK-ERC5OOW3", "transit_days": 3,
         "estimated_arrival": "2026-12-03", "must_appear": ["BK-ERC5OOW3"],
+    },
+    "update_confirmation": {
+        "subject": "December tariff", "applied": ["Cobalt Skylift CGN-EZE from 2026-12-01: rates_per_kg 5.41 -> 5.60"],
+        "more": 3, "held": 1, "must_appear": ["CGN-EZE"],
     },
 }  # fmt: skip
 

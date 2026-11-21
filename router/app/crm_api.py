@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from app import insights, prompts
 from app.config import Settings, get_settings
 from app.reference import Reference
-from app.replay_data import REPLAY_DIR, replay_labels, replay_store
+from app.replay_data import RECORDED, REPLAY_DIR, replay_labels, replay_store
 from app.storage import MessageStore
 from app.tariffs import Tariffs
 
@@ -40,8 +40,14 @@ def _store(request: Request, settings: Settings, source: Source) -> MessageStore
     return store
 
 
-def _reference(settings: Settings) -> Reference:
-    return Reference(settings.start_kit_dir)
+def _reference(settings: Settings, source: Source = "live") -> Reference:
+    """Carriers and zones: the live ones from the router's database, which update mails
+    change (ADR 50); for the dry run, the start kit as it was."""
+    return Reference(settings.start_kit_dir, settings.sqlite_db_path if source == "live" else None)
+
+
+def _tariffs(settings: Settings, source: Source = "live") -> Tariffs:
+    return Tariffs(settings.tariffs_path, settings.sqlite_db_path if source == "live" else None)
 
 
 @router.get("")
@@ -84,10 +90,10 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
         "version": store.change_token(),
         **insights.snapshot(
             store,
-            _reference(settings),
+            _reference(settings, source),
             settings,
             source=source,
-            tariff_airlines=Tariffs(settings.tariffs_path).airlines,
+            tariff_airlines=_tariffs(settings, source).airlines,
             labels=replay_labels() if source == "replay" else None,
         ),
     }
@@ -98,7 +104,7 @@ async def shipment(
     request: Request, shipment_id: int, source: Source = "live", settings: Settings = Depends(get_settings)
 ) -> dict[str, Any]:
     detail = insights.shipment_detail(
-        _store(request, settings, source), _reference(settings), shipment_id, source=source
+        _store(request, settings, source), _reference(settings, source), shipment_id, source=source
     )
     if detail is None:
         raise HTTPException(status_code=404, detail=f"Shipment {shipment_id} not found")
@@ -118,16 +124,15 @@ async def mails(
     settings: Settings = Depends(get_settings),
 ) -> dict[str, Any]:
     return insights.mails(
-        _store(request, settings, source), _reference(settings),
+        _store(request, settings, source), _reference(settings, source),
         query=q, category=category, role=role, sender=sender, offset=offset, limit=limit,
     )  # fmt: skip
 
 
 @router.get("/api/tariffs")
 async def tariffs(settings: Settings = Depends(get_settings)) -> list[dict[str, Any]]:
-    """Every lane of the ten airlines priced from tariff files (data/tariffs.json)."""
-    path = Path(settings.tariffs_path)
-    return json.loads(path.read_text()) if path.exists() else []
+    """Every tariff lane in force: the start-kit files plus what tariff mails changed (ADR 50)."""
+    return [lane.model_dump(mode="json") for lane in _tariffs(settings).all_lanes()]
 
 
 @router.get("/api/system")
@@ -136,9 +141,9 @@ async def system(request: Request, settings: Settings = Depends(get_settings)) -
     store = _live_store(request, settings)
     poller = getattr(request.app.state, "poller", None)
     data = insights.Dataset.load(store)
-    tariff_lanes = len(json.loads(Path(settings.tariffs_path).read_text())) if Path(settings.tariffs_path).exists() else 0
+    tariff_lanes = len(_tariffs(settings).all_lanes())
     reference = _reference(settings)
-    replay_path = REPLAY_DIR / "result.json"
+    replay_path = REPLAY_DIR / RECORDED
     return {
         "mode": "test" if settings.test_mode else "sending" if settings.send_enabled else "dry_run",
         "poller": {
@@ -174,11 +179,11 @@ async def system(request: Request, settings: Settings = Depends(get_settings)) -
             {"name": "Trucker requests", "rows": sum(len(v) for v in data.truckers.values()), "where": "live database"},
             {"name": "Mails composed", "rows": sum(len(v) for v in data.outbound.values()), "where": "live database"},
             {"name": "Mails that failed processing", "rows": len(data.failures), "where": "live database"},
-            {"name": "Airlines", "rows": sum(c.kind == "airline" for c in reference.carriers), "where": "start kit, carrier-list.csv"},
-            {"name": "Truckers", "rows": sum(c.kind == "trucker" for c in reference.carriers), "where": "start kit, carrier-list.csv"},
-            {"name": "Pickup zones", "rows": len(reference.zones), "where": "start kit, pickup_zones.csv"},
-            {"name": "Tariff lanes", "rows": tariff_lanes, "where": "data/tariffs.json"},
-            {"name": "Dry-run shipments", "rows": len(json.loads(replay_path.read_text())["shipments"]) if replay_path.exists() else 0, "where": "data/replay/result.json"},
+            {"name": "Airlines", "rows": sum(c.kind == "airline" for c in reference.carriers), "where": "live database, seeded from the start kit"},
+            {"name": "Truckers", "rows": sum(c.kind == "trucker" for c in reference.carriers), "where": "live database, seeded from the start kit"},
+            {"name": "Pickup zones", "rows": len(reference.zones), "where": "live database, seeded from the start kit"},
+            {"name": "Tariff lanes", "rows": tariff_lanes, "where": "live database, seeded from data/tariffs.json"},
+            {"name": "Dry-run shipments", "rows": len(json.loads(replay_path.read_text())["shipments"]) if replay_path.exists() else 0, "where": f"data/replay/{RECORDED}"},
         ],
         "prompts": [{"name": name, "text": prompts.local_prompt(settings, name)} for name in prompts.ALL_PROMPTS],
     }

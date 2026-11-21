@@ -19,6 +19,10 @@ EXTRACT_TRUCKER_QUOTES = "talos-extract-trucker-quotes"
 EXTRACT_BOOKING = "talos-extract-booking"
 EXTRACT_TRACKING = "talos-extract-tracking"
 COMPOSE_MAIL = "talos-compose-mail"
+READ_ATTACHMENT = "talos-read-attachment"
+EXTRACT_AIRLINE_RATES = "talos-extract-airline-rates"
+EXTRACT_DATA_UPDATE = "talos-extract-data-update"
+FLAG_DATA_UPDATE = "talos-flag-data-update"
 ALL_PROMPTS = (
     CLASSIFY,
     EXTRACT_RFQ,
@@ -26,6 +30,10 @@ ALL_PROMPTS = (
     EXTRACT_BOOKING,
     EXTRACT_TRACKING,
     COMPOSE_MAIL,
+    READ_ATTACHMENT,
+    EXTRACT_AIRLINE_RATES,
+    EXTRACT_DATA_UPDATE,
+    FLAG_DATA_UPDATE,
 )
 
 

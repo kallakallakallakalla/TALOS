@@ -1,9 +1,10 @@
-"""The last dry-run replay as a database the read-only views can open.
+"""The dry-run replay as a database the read-only views can open.
 
-`scripts/replay.py` writes `data/replay/replay.db` (not committed) and `result.json`
-(committed). On a fresh checkout only the JSON exists, so the database is rebuilt from it
-and from the recorded mails in `tests/fixtures/mails.json`. Nothing here calls an LLM or the
-platform.
+`scripts/replay.py` writes `data/replay/replay.db` (not committed) and `result.json`. When
+that database exists, it is shown. On a fresh checkout it does not, so the database is
+rebuilt from `recorded-run.json`, the full replay of 21 Nov kept for the CRM (a partial
+replay overwrites `result.json`, which would leave the CRM without data), and from the
+recorded mails in `tests/fixtures/mails.json`. Nothing here calls an LLM or the platform.
 """
 
 import json
@@ -25,10 +26,23 @@ REPLAY_DIR = _ROOT / "data/replay"
 FIXTURES_DIR = _ROOT / "tests/fixtures"
 
 
+RECORDED = "recorded-run.json"
+
+
+def _result_path(replay_dir: Path) -> Path | None:
+    """The result that belongs to the database shown: the last replay's own `result.json`
+    when that replay left its database behind, else the recorded run."""
+    if (replay_dir / "replay.db").exists() and not (replay_dir / ".from-recorded").exists():
+        own = replay_dir / "result.json"
+        return own if own.exists() else None
+    recorded = replay_dir / RECORDED
+    return recorded if recorded.exists() else None
+
+
 def replay_labels(replay_dir: Path = REPLAY_DIR) -> list[dict]:
-    """Per mail: the classifier's category and the hand label, from the last replay."""
-    path = replay_dir / "result.json"
-    return json.loads(path.read_text())["classified"] if path.exists() else []
+    """Per mail: the classifier's category and the hand label, from the replay shown."""
+    path = _result_path(replay_dir)
+    return json.loads(path.read_text())["classified"] if path else []
 
 
 _stores: dict[str, MessageStore] = {}
@@ -46,11 +60,11 @@ def replay_store(replay_dir: Path = REPLAY_DIR) -> MessageStore | None:
 
 
 def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURES_DIR) -> Path | None:
-    """Path of the replay database, rebuilt from `result.json` if it is missing.
+    """Path of the replay database, rebuilt from the recorded run if it is missing.
 
     Returns None when there is no replay to show.
     """
-    db_path, result_path = replay_dir / "replay.db", replay_dir / "result.json"
+    db_path, result_path = replay_dir / "replay.db", replay_dir / RECORDED
     if db_path.exists():
         return db_path
     if not result_path.exists():
@@ -85,6 +99,7 @@ def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURE
     with store._connect() as conn:  # noqa: SLF001 - same package, one-off maintenance call
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
     building.rename(db_path)
+    (replay_dir / ".from-recorded").touch()  # scripts/replay.py removes it with the database
     for leftover in replay_dir.glob("replay.db.building*"):
         leftover.unlink(missing_ok=True)
     return db_path

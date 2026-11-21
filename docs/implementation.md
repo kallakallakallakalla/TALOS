@@ -155,7 +155,7 @@ Known gap: a request the old process quoted, but whose acceptance arrives only a
 
 ## Limits and things to know
 
-- **Not built** (out of scope in the plan, or backlog in HANDOFF.md): applying tariff-update mails, rate offers from email-only airlines, the webhook, attachment reading and the dangerous-goods check. These mails are classified, stored and tagged `needs_review`; no mail goes out.
+- **Not built** (out of scope in the plan, or backlog in HANDOFF.md): applying tariff-update mails, rate offers from email-only airlines, the webhook and the dangerous-goods check (customer attachments: ADR 42). These mails are classified, stored and tagged `needs_review`; no mail goes out.
 - **Dangerous goods:** rounds 10 and 11 were rejected with `dg_docs_missing`. This router would also quote them without asking for documents.
 - **Requests without a pickup address** (rounds 15 and 16: "pickup from our warehouse", no postal code): the router asks the customer for the postal code or an airport. Whether the simulated customer answers such a question has never been observed.
 - **Trace tags** can't be read back through the public API of the local Langfuse (v4 "events only" mode has no trace endpoint). Session id, user id, prompt version and cost were read back; tags were verified on the OpenTelemetry span attributes. Check the tags once in the Langfuse UI.

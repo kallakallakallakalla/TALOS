@@ -18,12 +18,12 @@ from typing import Any
 
 from langfuse import get_client, observe, propagate_attributes
 
-from app import pricing, templates
+from app import attachments, pricing, templates, updates
 from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
 from app.mailbox_client import MailboxClient
-from app.portal_client import PortalClient, PortalError, RateExpired
+from app.portal_client import BookByEmail, PortalClient, PortalDown, PortalError, RateExpired
 from app.reference import Reference, zone_of
 from app.schemas import (
     AirOption,
@@ -32,6 +32,7 @@ from app.schemas import (
     MailboxMessage,
     MailContext,
     Shipment,
+    ShipmentRequest,
     ShipmentState,
     TrackingQuery,
     TruckerQuote,
@@ -43,6 +44,7 @@ from app.tariffs import Tariffs
 logger = logging.getLogger(__name__)
 
 DRY_RUN_BOOKING_REF = "DRY-RUN"
+_AIRLINE_REQUESTS = "airline_requests"
 _THREAD_MAX_CHARS = 2000
 
 
@@ -106,6 +108,8 @@ def _price_in_text(price: float | None, text: str) -> bool:
     if price is None:
         return True
     forms = {f"{price:.2f}", f"{price:g}"}
+    if "TRANSCRIPT OF THE VOICE MESSAGE" in text:  # spoken: "340 euros and 60 cents"
+        forms.add(f"{int(price)}")  # ponytail: euro part only for voice; a wrong-cents read slips through
     return any(form in text or form.replace(".", ",") in text for form in forms)
 
 
@@ -151,7 +155,8 @@ class Workflow:
             EmailCategory.CUSTOMER_REJECT: self._on_customer_reject,
             EmailCategory.CUSTOMER_QUESTION: self._on_customer_question,
             EmailCategory.TRACKING_REQUEST: self._on_tracking_request,
-            # rate_offer, tariff_update and other have no handler:
+            EmailCategory.TARIFF_UPDATE: self._on_tariff_update,  # ADR 50
+            # rate_offer and other have no handler:
             # they are stored and tagged, and never trigger a mail (ADR 19).
         }
 
@@ -160,7 +165,13 @@ class Workflow:
     async def context(self, msg: MailboxMessage) -> MailContext:
         """Who sent this and which shipment it belongs to. API metadata only, no LLM (ADR 16)."""
         role = self._reference.role_for_email(msg.sender)
-        shipment = trucker_request = None
+        shipment = trucker_request = airline_request = None
+        if role == "airline":
+            airline_request = self._store.find_trucker_request(
+                msg.in_reply_to, (msg.sender or "").lower(), match_by_sender=True, table=_AIRLINE_REQUESTS
+            )
+            if airline_request:
+                shipment = self._store.get_shipment(airline_request.shipment_id)
         if role == "trucker":
             trucker_request = self._store.find_trucker_request(
                 msg.in_reply_to,
@@ -178,6 +189,7 @@ class Workflow:
             sender_role=role,
             shipment=shipment,
             trucker_request=trucker_request,
+            airline_request=airline_request,
             our_mail=await self._our_mail(msg.in_reply_to),
         )
 
@@ -248,10 +260,19 @@ class Workflow:
         self._store.save_shipment(shipment)
         await self._advance(shipment, reply_to=msg.id)
 
+    async def read_attachments(self, msg: MailboxMessage) -> None:
+        """Text (and, where needed, one vision call) for each attachment (ADR 42/43). Carrier
+        and rate desk files may be whole tariffs, so they are not cut at the customer limit."""
+        carrier = self._reference.role_for_email(msg.sender) != "customer"
+        await attachments.enrich(
+            msg, self._mailbox, self._extractors.read_attachment, self._extractors.transcribe,
+            max_chars=attachments.TARIFF_MAX_CHARS if carrier else attachments.MAX_CHARS,
+        )
+
     async def _advance(self, shipment: Shipment, reply_to: int) -> None:
         """NEW -> PRICING if the request is complete, else ask (max 3 times) or fail."""
         request = shipment.request
-        missing = missing_fields(request)
+        missing = missing_fields(request, self._now().date())
         get_client().score_current_trace(name="extraction_complete", value=0 if missing else 1)
 
         zone = airport = None
@@ -293,22 +314,115 @@ class Workflow:
     async def _start_pricing(self, shipment: Shipment) -> None:
         """Ask the zone's truckers and price the air leg at the same time (response time)."""
         truckers = self._reference.truckers_for_zone(shipment.zone) if shipment.zone else []
-        _, options = await asyncio.gather(
+        truckers = [t for t in truckers if not pricing.carrier_in(t.name, shipment.request.excluded_carriers)]
+        _, (options, portal_down) = await asyncio.gather(
             self._request_truckers(shipment, [t.email for t in truckers]),
             self._air_options(shipment),
         )
         self._store.replace_air_options(shipment.id, options)
-        if not options:
-            shipment.state = ShipmentState.FAILED
-            shipment.error = (
-                f"no airline prices {shipment.origin_airport}-{shipment.request.destination_iata}"
-            )
-            self._store.save_shipment(shipment)
+        asked = await self._request_airline_rates(shipment, portal_down)
+        if not options and not asked:
+            await self._no_price(shipment)
             return
         shipment.state = ShipmentState.PRICING
         shipment.pricing_started_at = self._now().isoformat()
         self._store.save_shipment(shipment)
         await self._maybe_quote(shipment)
+
+    async def _request_airline_rates(self, shipment: Shipment, portal_down: bool) -> bool:
+        """Ask airlines for a rate by email (ADR 47) when the portal cannot price the route:
+
+        - the portal is down ("contact the airline directly"): every non-tariff airline
+          that serves the destination (portal airlines included)
+        - a destination the portal does not list: the email-only airlines that serve it
+        False if nobody was asked.
+        """
+        request = shipment.request
+        # Portal down: the lane list read before it went down (no second 60 s retry wait).
+        lanes = self._portal.known_lanes if portal_down else await self._portal.lanes()
+        if not portal_down and request.destination_iata in {destination for _, destination in lanes}:
+            return False
+        on_portal = {a["name"] for airlines in lanes.values() for a in airlines}
+        tariff_only = self._tariffs.airlines - on_portal  # ADR 51: an email price beats local lanes
+        airlines = [
+            c for c in self._reference.carriers
+            if c.kind == "airline" and request.destination_iata in c.serves
+            and c.name not in tariff_only
+            and not pricing.carrier_in(c.name, request.excluded_carriers)
+        ]  # fmt: skip
+        if not airlines:
+            return False
+        facts = {
+            **self._cargo_facts(shipment),
+            "lane": f"{shipment.origin_airport}-{request.destination_iata}",
+            "commodity": request.commodity,
+            "our_reference": str(shipment.id),
+        }
+        mail = templates.render("airline_rate_request", facts, self._settings.mail_signature)
+        for airline in airlines:
+            out_id = await self._send("airline_rate_request", airline.email, mail, shipment.id, None, True)
+            self._store.save_trucker_request(
+                TruckerRequest(
+                    out_message_id=out_id, shipment_id=shipment.id, trucker=airline.email,
+                    sent_at=self._now().isoformat(),
+                ),
+                table=_AIRLINE_REQUESTS,
+            )  # fmt: skip
+        return True
+
+    async def _no_price(self, shipment: Shipment) -> None:
+        """No airline price at all: tell the customer instead of staying silent (ADR 47)."""
+        route = f"{shipment.origin_airport}-{shipment.request.destination_iata}"
+        shipment.state = ShipmentState.FAILED
+        shipment.error = f"no airline prices {route}"
+        self._store.save_shipment(shipment)
+        facts = {"destination": shipment.request.destination_iata, "route": route, "must_appear": []}
+        await self._compose_and_send(
+            "no_price", facts, shipment, to=shipment.customer, in_reply_to=shipment.id
+        )
+
+    async def _read_airline_replies(self, shipment: Shipment) -> None:
+        """Read every airline reply in ONE LLM call; grounded prices become air options."""
+        requests = self._store.trucker_requests(shipment.id, table=_AIRLINE_REQUESTS)
+        unread = [r for r in requests if r.reply_message_id and r.price_eur is None]
+        if not unread:
+            return
+        bodies = [self._reply_text(r.reply_message_id) for r in unread]
+        try:
+            result = await self._extractors.extract_airline_rates(bodies)
+        except Exception as exc:  # noqa: BLE001 - quote with what we have, or report no price
+            logger.warning("Reading airline replies failed: %s", exc)
+            return
+        request = shipment.request
+        new = []
+        for rate in result.rates:
+            if not (1 <= rate.reply <= len(unread)) or rate.total_eur is None or rate.transit_days is None:
+                continue
+            if not _price_in_text(rate.total_eur, bodies[rate.reply - 1]):
+                logger.warning("Airline price %s not found in its mail", rate.total_eur)
+                continue
+            req = unread[rate.reply - 1]
+            req.price_eur, req.transit_days = rate.total_eur, rate.transit_days
+            req.valid_until, req.ref = rate.valid_until, rate.quote_ref
+            self._store.save_trucker_request(req, table=_AIRLINE_REQUESTS)
+            carrier = self._reference.carrier_for_email(req.trucker)
+            new.append(AirOption(
+                source="email", airline=carrier.name if carrier else req.trucker,
+                origin=shipment.origin_airport, destination=request.destination_iata,
+                billed_kg=pricing.chargeable_kg(request.gross_kg, request.volume_cbm),
+                total_eur=rate.total_eur, transit_days=rate.transit_days, rate_id=rate.quote_ref,
+                valid_until=rate.valid_until, weight_kg=request.gross_kg, volume_cbm=request.volume_cbm,
+            ))  # fmt: skip
+        if new:
+            self._store.replace_air_options(shipment.id, self._store.air_options(shipment.id) + new)
+
+    def _reply_text(self, message_id: int | None) -> str:
+        """A carrier's reply with its attachments' text: offers often come as PDF, Word or voice."""
+        m = self._store.get_message(message_id) if message_id else None
+        if not m:
+            return ""
+        files = attachments.as_text(m)
+        return f"{m.body.strip()}\n\n{files}" if files else m.body
 
     async def _request_truckers(self, shipment: Shipment, trucker_emails: list[str]) -> None:
         """The same fixed request to each trucker of the zone; each is asked once (ADR 05).
@@ -338,30 +452,47 @@ class Workflow:
             )
 
     @observe(name="air.options")
-    async def _air_options(self, shipment: Shipment) -> list[AirOption]:
-        """Portal rates and valid local tariff lanes are equal price sources (ADR 06)."""
+    async def _air_options(self, shipment: Shipment) -> tuple[list[AirOption], bool]:
+        """Portal rates and valid local tariff lanes are equal price sources (ADR 06).
+        Also returns whether the portal is down (then airlines are asked by email, ADR 47)."""
         request = shipment.request
         origin, destination = shipment.origin_airport, request.destination_iata
+        portal_down = False
         try:
             options = await self._portal.portal_options(
                 origin, destination, request.gross_kg, request.volume_cbm
             )
+        except PortalDown as exc:
+            logger.warning("Portal down for %s-%s, asking airlines by email: %s", origin, destination, exc)
+            options, portal_down = [], True
         except Exception as exc:  # noqa: BLE001 - tariffs can still price the lane
             logger.warning("Portal unavailable for %s-%s: %s", origin, destination, exc)
             options = []
+        # Tariffs must be valid when the goods fly, not only today (ADR 44).
+        ship_day = max(self._now().date(), request.ready_date or self._now().date())
         options += [
             pricing.tariff_option(lane, request.gross_kg, request.volume_cbm)
-            for lane in self._tariffs.lanes(origin, destination, self._now().date())
+            for lane in self._tariffs.lanes(origin, destination, ship_day)
         ]
-        return options
+        return options, portal_down
 
     async def _maybe_quote(self, shipment: Shipment) -> None:
-        """PRICING -> QUOTED once every asked trucker answered, or after the wait (60 s)."""
+        """PRICING -> QUOTED once every asked trucker (and email airline) answered, or after
+        the wait (60 s). Without any airline price after the longer wait: no_price (ADR 47)."""
         requests = self._store.trucker_requests(shipment.id)
+        airline_requests = self._store.trucker_requests(shipment.id, table=_AIRLINE_REQUESTS)
+        elapsed = (self._now() - datetime.fromisoformat(shipment.pricing_started_at)).total_seconds()
+        if airline_requests:
+            all_answered = all(r.answered for r in airline_requests)
+            if not all_answered and elapsed < self._settings.airline_wait_seconds:
+                return
+            await self._read_airline_replies(shipment)
+            if not self._store.air_options(shipment.id):
+                if not all_answered and elapsed < self._settings.booking_reminder_seconds:
+                    return  # a late airline reply can still come in
+                await self._no_price(shipment)
+                return
         if shipment.zone:
-            elapsed = (
-                self._now() - datetime.fromisoformat(shipment.pricing_started_at)
-            ).total_seconds()
             if not all(r.answered for r in requests) and elapsed < self._settings.trucker_wait_seconds:
                 return
             requests = await self._read_trucker_replies(requests)
@@ -375,7 +506,7 @@ class Workflow:
         falls back to the estimated trucker price, so the customer still gets an answer.
         """
         unread = [r for r in requests if r.reply_message_id and r.price_eur is None]
-        bodies = [(m.body if (m := self._store.get_message(r.reply_message_id)) else "") for r in unread]
+        bodies = [self._reply_text(r.reply_message_id) for r in unread]
         if not unread:
             return requests
         offers: dict[int, TruckerQuote] = {}
@@ -402,9 +533,50 @@ class Workflow:
 
     @observe(name="pricing.pick_best")
     def _price(self, shipment: Shipment, requests: list[TruckerRequest]) -> dict[str, Any]:
-        """Choose airline and trucker for the goal and compute the all-in price."""
+        """Choose airline and trucker for the goal and compute the all-in price.
+
+        ADR 46: excluded carriers are never used; a preferred carrier is used when it can
+        carry the shipment, and the cheapest option is named when it is cheaper.
+        """
         request = shipment.request
-        air, truck = pricing.pick_best(self._store.air_options(shipment.id), requests, shipment.goal)
+        excluded = request.excluded_carriers
+        options = pricing.by_source(self._store.air_options(shipment.id))  # ADR 51
+        air = [o for o in options if not pricing.carrier_in(o.airline, excluded)]
+        air = air or options  # ponytail: never fail on an exclusion
+        trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
+        pick = lambda a, t: pricing.pick_best(  # noqa: E731
+            a, t, shipment.goal, request.ready_date, request.deliver_by,
+            self._settings.trucker_pickup_cutoff_hours,
+        )  # fmt: skip
+        best = self._price_of(shipment, *pick(air, trucks))
+
+        notes: list[str] = []
+        pref_air = [o for o in air if pricing.carrier_in(o.airline, [request.preferred_airline])]
+        pref_trucks = [
+            r for r in trucks
+            if r.price_eur is not None and pricing.carrier_in(self._trucker_name(r), [request.preferred_trucker])
+        ]  # fmt: skip
+        if request.preferred_airline and not pref_air:
+            notes.append(f"{request.preferred_airline} has no price for this route, so we chose the best other airline")
+        if request.preferred_trucker and shipment.zone and not pref_trucks:
+            notes.append(f"{request.preferred_trucker} did not quote this pickup, so we chose another trucker")
+        if not (pref_air or pref_trucks):
+            return {**best, "preference_notes": notes}
+
+        chosen = self._price_of(shipment, *pick(pref_air or air, pref_trucks or trucks))
+        if best["all_in_eur"] < chosen["all_in_eur"]:
+            chosen["cheaper_alternative"] = {
+                "airline": best["airline"], "all_in_price": _eur(best["all_in_eur"]),
+                "transit_days": best["transit_days"],
+            }  # fmt: skip
+        return {**chosen, "preference_notes": notes}
+
+    def _trucker_name(self, request: TruckerRequest) -> str:
+        carrier = self._reference.carrier_for_email(request.trucker)
+        return carrier.name if carrier else request.trucker
+
+    def _price_of(self, shipment: Shipment, air: AirOption, truck: TruckerRequest | None) -> dict[str, Any]:
+        request = shipment.request
         truck_eur, truck_fallback = 0.0, False
         if shipment.zone:
             if truck:
@@ -468,6 +640,12 @@ class Workflow:
             "estimated_departure": quote["estimated_departure"],
             "estimated_arrival": quote["estimated_arrival"],
             "extra_questions": request.extra_questions,
+            "preference_notes": quote.pop("preference_notes", []),
+            "cheaper_alternative": quote.pop("cheaper_alternative", None),
+            "requested_delivery_by": request.deliver_by.isoformat() if request.deliver_by else None,
+            "arrives_by_requested_date": (
+                quote["estimated_arrival"] <= request.deliver_by.isoformat() if request.deliver_by else None
+            ),
             "valid_until": valid_until,
             "must_appear": [price],
         }
@@ -495,13 +673,20 @@ class Workflow:
 
     # --- Trucker replies ------------------------------------------------------------------
 
-    def awaited_trucker_reply(self, ctx: MailContext) -> bool:
+    def awaited_trucker_reply(self, ctx: MailContext, msg: MailboxMessage | None = None) -> bool:
         """True for a mail from a trucker we asked and who has not answered yet.
 
         Such a mail needs no classifier call: it is their answer, whatever it says. What it
         says is read later, together with the other replies.
+
+        Only a reply to our request counts, once the request was really sent: a new mail
+        from that carrier may be something else, such as a tariff update (ADR 50). In a dry
+        run (negative ids) our request never left, so every mail of theirs still counts.
         """
-        return ctx.trucker_request is not None and not ctx.trucker_request.answered
+        request = ctx.trucker_request or ctx.airline_request
+        if request is None or request.answered:
+            return False
+        return msg is None or request.out_message_id < 0 or msg.in_reply_to == request.out_message_id
 
     async def _on_trucker_reply(self, msg: MailboxMessage, ctx: MailContext) -> None:
         """Note that this trucker answered; quote at once if they were the last one.
@@ -509,12 +694,13 @@ class Workflow:
         No LLM call here, and no mail ever goes back to a carrier because of a carrier's
         reply (ADR 19).
         """
-        request = ctx.trucker_request
+        request = ctx.trucker_request or ctx.airline_request
         if request is None or request.answered:
-            return  # not an answer to one of our requests, or this trucker already answered
+            return  # not an answer to one of our requests, or this carrier already answered
         request.answered = True
         request.reply_message_id = msg.id
-        self._store.save_trucker_request(request)
+        table = "trucker_requests" if ctx.trucker_request else _AIRLINE_REQUESTS
+        self._store.save_trucker_request(request, table=table)
         shipment = self._store.get_shipment(request.shipment_id)
         if shipment and shipment.state == ShipmentState.PRICING:
             await self._maybe_quote(shipment)
@@ -575,10 +761,18 @@ class Workflow:
         if len(msg.references) // 2 >= self._settings.max_answers:
             return
         query = await self._extractors.extract_tracking(msg)
-        shipment = match_shipment(query, self._store.list_shipments())
+        shipments = self._store.list_shipments()
+        shipment = match_shipment(query, shipments)
+        sender = (msg.sender or "").lower()
+        booked_states = (ShipmentState.BOOKING, ShipmentState.BOOKED, ShipmentState.CONFIRMED)
+        never_booked = not any(
+            s.state in booked_states and (s.customer or "").lower() == sender for s in shipments
+        )
         if shipment is None:
             facts: dict[str, Any] = {
                 "found": False,
+                # Nothing booked with us: no tracking to give, so no reference to ask for.
+                "never_booked": never_booked or None,
                 "asked_about": query.model_dump(mode="json", exclude_none=True),
                 "must_appear": [],
             }
@@ -587,6 +781,7 @@ class Workflow:
             booked = shipment.state in (ShipmentState.BOOKED, ShipmentState.CONFIRMED)
             facts = {
                 "found": True,
+                "never_booked": shipment.state not in booked_states or None,
                 "status": TRACKING_STATUS[shipment.state],
                 "route": f"{shipment.origin_airport} -> {shipment.request.destination_iata}",
                 "airline": option.airline if option else None,
@@ -659,7 +854,15 @@ class Workflow:
                     option.origin, option.destination, option.airline_code,
                     option.weight_kg, option.volume_cbm,
                 )  # fmt: skip
+            except BookByEmail as exc:
+                # The booking API is closed for this airline: book by mail with the rate_id.
+                logger.warning("Shipment %s: portal booking closed, booking by email: %s", shipment.id, exc)
+                shipment.chosen_option = option.model_copy(update={"source": "email"})
+                shipment.booking_attempts = 0
+                await self._request_booking_by_email(shipment)
+                return
             except PortalError as exc:
+                logger.warning("Shipment %s: portal booking failed: %s", shipment.id, exc)
                 shipment.error = str(exc)[:500]
                 self._store.save_shipment(shipment)
                 return  # stays BOOKING; tick() tries again
@@ -687,8 +890,10 @@ class Workflow:
             "chargeable_weight": _kg(option.billed_kg),
             "tariff_total": _eur(option.total_eur),
             "our_reference": str(shipment.id),
+            "your_offer_reference": option.rate_id if option.source == "email" else None,
             "is_reminder": shipment.booking_attempts > 0,
-            "must_appear": [lane, str(shipment.id), _eur(option.total_eur)],
+            "must_appear": [lane, str(shipment.id), _eur(option.total_eur)]
+            + ([option.rate_id] if option.source == "email" and option.rate_id else []),
         }
         to = self._reference.airline_email(option.airline)
         if to is None:
@@ -749,6 +954,67 @@ class Workflow:
             "booking_note", facts, shipment, to=shipment.customer,
             in_reply_to=quote.get("accept_message_id") or shipment.id,
         )  # fmt: skip
+
+    # --- Reference data updates (ADR 50) -------------------------------------------------
+
+    async def _on_tariff_update(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        """Read the changes (LLM), flag each one (LLM), check and put them (code), confirm."""
+        if ctx.sender_role not in ("airline", "trucker", "ratedesk"):
+            logger.info("Update mail %s from %s ignored: not a carrier or the rate desk", msg.id, msg.sender)
+            return
+        if updates.already_applied(self._reference, msg.id):
+            return  # replay or restart: a mail is applied and confirmed once
+        today = self._now().date()
+        found = await self._extractors.extract_data_update(msg, today.isoformat())
+        flags: dict[int, tuple[str, str]] = {}
+        if found.changes:
+            try:
+                checked = await self._extractors.flag_data_update(
+                    msg, found.changes, self._stored_for(found.changes), today.isoformat()
+                )
+                flags = {f.change: (f.flag, f.reason) for f in checked.flags}
+            except Exception as exc:  # noqa: BLE001 - apply with the code checks, marked unclear
+                logger.warning("Flagging update mail %s failed: %s", msg.id, exc)
+                flags = {n: ("unclear", "second check failed") for n in range(1, len(found.changes) + 1)}
+        outcomes = updates.apply_update(
+            self._reference, self._tariffs, message_id=msg.id, sender=msg.sender, subject=msg.subject,
+            changes=found.changes, flags=flags, today=today, fx_eur_per_usd=self._portal.last_fx_eur_per_usd,
+        )  # fmt: skip
+        logger.info("Update mail %s: %d applied, %d held", msg.id,
+                    sum(o.status == "applied" for o in outcomes), sum(o.status == "held" for o in outcomes))  # fmt: skip
+        if not found.changes:
+            return  # a newsletter or a plan without values: nothing to confirm
+        await self._confirm_update(msg, outcomes)
+
+    def _stored_for(self, changes: list) -> str:
+        """What we store today for the carriers and zones of these changes, for the flag call."""
+        lines: list[str] = []
+        for name in {c.carrier for c in changes if c.carrier}:
+            carrier = self._reference.carrier_named(name)
+            if carrier:
+                lines.append(f"carrier {carrier.name}: {carrier.kind}, {carrier.email}, serves {' '.join(sorted(carrier.serves))}")
+                lines += [
+                    f"lane {l.origin}-{l.destination} {l.valid_from}..{l.valid_to}: transit {l.transit_days}, "
+                    f"min {l.minimum_eur}, breaks {l.breaks_kg}, rates {l.rates_per_kg}, fuel {l.fuel_per_kg}, security {l.security_per_kg}"
+                    for l in self._tariffs.all_lanes(carrier.name)
+                ]
+        zones = self._reference.zones
+        lines += [f"zone {c.zone}: {zones[c.zone][0]} -> {zones[c.zone][1]}" for c in changes if c.zone in zones]
+        return "\n".join(lines)[:8000] or "(nothing stored for these)"
+
+    async def _confirm_update(self, msg: MailboxMessage, outcomes: list) -> None:
+        applied: dict[str, list[str]] = {}
+        for o in outcomes:
+            if o.status == "applied" and o.field != "-":
+                change = o.after if o.field in ("lane", "carrier", "zone") else f"{o.field} {o.before or '-'} -> {o.after or '-'}"
+                applied.setdefault(o.record_key, []).append(change)
+        lines = [f"{key}: {'; '.join(changes)}" for key, changes in applied.items()]
+        held = len({o.change_no for o in outcomes if o.status == "held"})
+        facts = {"subject": msg.subject or "your update", "applied": lines[:10], "more": max(0, len(lines) - 10),
+                 "held": held, "must_appear": []}  # fmt: skip
+        mail = templates.render("update_confirmation", facts, self._settings.mail_signature)
+        out_id = await self._send("update_confirmation", msg.sender or "", mail, None, msg.id, True)
+        updates.set_confirmation(self._reference, msg.id, out_id)
 
     # --- Mail helpers ---------------------------------------------------------------------
 
