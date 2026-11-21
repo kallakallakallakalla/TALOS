@@ -1,0 +1,901 @@
+{
+ "275": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "51447",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "ORD",
+   "ready_date": "2026-11-25",
+   "pieces": 12,
+   "gross_kg": 676,
+   "volume_cbm": 5.79,
+   "goal": "fastest"
+  }
+ },
+ "379": {
+  "category": "customer_reject"
+ },
+ "412": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 222.36,
+   "pickup_hours": 13.0,
+   "valid_until": "2026-11-21T15:20:00Z",
+   "quote_ref": "TRK-181"
+  }
+ },
+ "413": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 134.69,
+   "pickup_hours": 29.0,
+   "valid_until": "2026-11-21T15:20:00Z",
+   "quote_ref": "TRK-182"
+  }
+ },
+ "414": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 220.03,
+   "pickup_hours": 11.0,
+   "valid_until": "2026-11-21T15:20:00Z",
+   "quote_ref": "TRK-183"
+  }
+ },
+ "415": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 269.71,
+   "pickup_hours": 12.0,
+   "valid_until": "2026-11-21T15:20:00Z",
+   "quote_ref": "TRK-184"
+  }
+ },
+ "431": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "61018",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "JFK",
+   "ready_date": "2026-11-25",
+   "pieces": 6,
+   "gross_kg": 1233,
+   "volume_cbm": 10.78,
+   "goal": "fastest"
+  }
+ },
+ "644": {
+  "category": "customer_reject"
+ },
+ "741": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "DUS",
+   "delivers_to_airport": true,
+   "destination_iata": "JFK",
+   "ready_date": "2026-11-27",
+   "pieces": 1,
+   "gross_kg": 1540,
+   "volume_cbm": 5.9,
+   "goal": "fastest"
+  }
+ },
+ "871": {
+  "category": "customer_accept"
+ },
+ "947": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "51896",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "ORD",
+   "ready_date": "2026-11-28",
+   "pieces": 6,
+   "gross_kg": 679,
+   "volume_cbm": 4.19,
+   "goal": "cheapest"
+  }
+ },
+ "1056": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 192.97,
+   "pickup_hours": 13.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-364"
+  }
+ },
+ "1063": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 115.98,
+   "pickup_hours": 29.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-375"
+  }
+ },
+ "1071": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 187.97,
+   "pickup_hours": 11.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-376"
+  }
+ },
+ "1079": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 226.96,
+   "pickup_hours": 12.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-378"
+  }
+ },
+ "1134": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 192.97,
+   "pickup_hours": 13.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-414"
+  }
+ },
+ "1136": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 187.97,
+   "pickup_hours": 11.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-431"
+  }
+ },
+ "1139": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 115.98,
+   "pickup_hours": 29.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-432"
+  }
+ },
+ "1140": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 226.96,
+   "pickup_hours": 12.0,
+   "valid_until": "2026-11-21T15:34:00Z",
+   "quote_ref": "TRK-438"
+  }
+ },
+ "1156": {
+  "category": "customer_accept"
+ },
+ "1233": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "STR",
+   "delivers_to_airport": true,
+   "destination_iata": "EZE",
+   "ready_date": "2026-11-26",
+   "pieces": 12,
+   "gross_kg": 1228,
+   "volume_cbm": 5.37,
+   "goal": "fastest"
+  }
+ },
+ "1304": {
+  "category": "customer_accept"
+ },
+ "1470": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "DUS",
+   "delivers_to_airport": true,
+   "destination_iata": "KUL",
+   "ready_date": "2026-11-26",
+   "pieces": 12,
+   "gross_kg": 1549,
+   "volume_cbm": 8.26,
+   "goal": "cheapest"
+  }
+ },
+ "1503": {
+  "category": "customer_accept"
+ },
+ "1623": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-8RCF17DZ",
+   "our_reference": "1470",
+   "airline_code": "FQ",
+   "lane": "DUS-KUL",
+   "price_eur": 3949.95
+  }
+ },
+ "1638": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "MUC",
+   "delivers_to_airport": true,
+   "destination_iata": "LAX",
+   "ready_date": "2026-11-29",
+   "pieces": 2,
+   "gross_kg": 998,
+   "volume_cbm": 2.39,
+   "goal": "fastest"
+  }
+ },
+ "1701": {
+  "category": "customer_accept"
+ },
+ "1814": {
+  "category": "tracking_request"
+ },
+ "1844": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "MUC",
+   "delivers_to_airport": true,
+   "destination_iata": "CAI",
+   "ready_date": "2026-11-24",
+   "pieces": 11,
+   "gross_kg": 486,
+   "volume_cbm": 2.62,
+   "goal": "cheapest"
+  }
+ },
+ "1883": {
+  "category": "customer_accept"
+ },
+ "1977": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "36627",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "LOS",
+   "ready_date": "2026-11-29",
+   "pieces": 13,
+   "gross_kg": 1952,
+   "volume_cbm": 4.6768,
+   "goal": "cheapest"
+  }
+ },
+ "2062": {
+  "category": "trucker_decline"
+ },
+ "2063": {
+  "category": "trucker_decline"
+ },
+ "2068": {
+  "category": "trucker_decline"
+ },
+ "2199": {
+  "category": "other"
+ },
+ "2200": {
+  "category": "other"
+ },
+ "2204": {
+  "category": "other"
+ },
+ "2207": {
+  "category": "other"
+ },
+ "2210": {
+  "category": "other"
+ },
+ "2211": {
+  "category": "other"
+ },
+ "2212": {
+  "category": "other"
+ },
+ "2215": {
+  "category": "other"
+ },
+ "2216": {
+  "category": "other"
+ },
+ "2218": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-L0WO4HRK",
+   "our_reference": "TALOS-275-1",
+   "airline_code": "XC",
+   "lane": "CGN-ORD",
+   "price_eur": 1920.0
+  }
+ },
+ "2219": {
+  "category": "other"
+ },
+ "2222": {
+  "category": "other"
+ },
+ "2223": {
+  "category": "other"
+ },
+ "2224": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-SULEZO4W",
+   "our_reference": "TALOS-1233-1",
+   "airline_code": "FQ",
+   "lane": "STR-EZE",
+   "price_eur": 4408.52
+  }
+ },
+ "2225": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-ERC5OOW3",
+   "our_reference": "TALOS-947-1",
+   "airline_code": "XC",
+   "lane": "CGN-ORD",
+   "price_eur": 1483.43
+  }
+ },
+ "2226": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-UKFNU9UN",
+   "our_reference": "TALOS-741-1",
+   "airline_code": "FQ",
+   "lane": "DUS-JFK",
+   "price_eur": 3696.0
+  }
+ },
+ "2228": {
+  "category": "other"
+ },
+ "2232": {
+  "category": "other"
+ },
+ "2234": {
+  "category": "other"
+ },
+ "2235": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-4Z53E4AB",
+   "our_reference": "TALOS-1638-1",
+   "airline_code": "FQ",
+   "lane": "MUC-LAX",
+   "price_eur": 2780.0
+  }
+ },
+ "2236": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-WWP8NOYB",
+   "our_reference": "TALOS-1844-1",
+   "airline_code": "BX",
+   "lane": "MUC-CAI",
+   "price_eur": 1475.0
+  }
+ },
+ "2237": {
+  "category": "other"
+ },
+ "2241": {
+  "category": "other"
+ },
+ "2243": {
+  "category": "other"
+ },
+ "2245": {
+  "category": "other"
+ },
+ "2248": {
+  "category": "other"
+ },
+ "2250": {
+  "category": "other"
+ },
+ "2251": {
+  "category": "other"
+ },
+ "2267": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "61391",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "GRU",
+   "ready_date": "2026-11-25",
+   "pieces": 3,
+   "gross_kg": 715,
+   "volume_cbm": 2.65,
+   "goal": "cheapest"
+  }
+ },
+ "2322": {
+  "category": "other"
+ },
+ "2335": {
+  "category": "other"
+ },
+ "2339": {
+  "category": "other"
+ },
+ "2340": {
+  "category": "other"
+ },
+ "2377": {
+  "category": "other"
+ },
+ "2403": {
+  "category": "other"
+ },
+ "2410": {
+  "category": "other"
+ },
+ "2413": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 147.35,
+   "pickup_hours": 23.0,
+   "valid_until": "2026-11-21T16:10:00Z",
+   "quote_ref": "TRK-781"
+  }
+ },
+ "2414": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 157.5,
+   "pickup_hours": 23.0,
+   "valid_until": "2026-11-21T16:10:00Z",
+   "quote_ref": "TRK-782"
+  }
+ },
+ "2415": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 168.8,
+   "pickup_hours": 25.0,
+   "valid_until": "2026-11-21T16:10:00Z",
+   "quote_ref": "TRK-780"
+  }
+ },
+ "2416": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 75.6,
+   "pickup_hours": 30.0,
+   "valid_until": "2026-11-21T16:10:00Z",
+   "quote_ref": "TRK-783"
+  }
+ },
+ "2417": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 97.75,
+   "pickup_hours": 30.0,
+   "valid_until": "2026-11-21T16:10:00Z",
+   "quote_ref": "TRK-784"
+  }
+ },
+ "2427": {
+  "category": "other"
+ },
+ "2428": {
+  "category": "customer_reject"
+ },
+ "2430": {
+  "category": "other"
+ },
+ "2434": {
+  "category": "other"
+ },
+ "2436": {
+  "category": "other"
+ },
+ "2438": {
+  "category": "other"
+ },
+ "2439": {
+  "category": "other"
+ },
+ "2440": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-ZM78K6DQ",
+   "our_reference": "TALOS-2267-1",
+   "airline_code": "JP",
+   "lane": "FRA-GRU",
+   "price_eur": 2609.75
+  }
+ },
+ "2540": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "21663",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "YYZ",
+   "ready_date": "2026-11-26",
+   "pieces": 4,
+   "gross_kg": 855,
+   "volume_cbm": 3.74,
+   "goal": "cheapest"
+  }
+ },
+ "2689": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 220.6,
+   "pickup_hours": 14.0,
+   "valid_until": "2026-11-21T16:16:00Z",
+   "quote_ref": "TRK-843"
+  }
+ },
+ "2691": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 166.5,
+   "pickup_hours": 26.0,
+   "valid_until": "2026-11-21T16:16:00Z",
+   "quote_ref": "TRK-841"
+  }
+ },
+ "2692": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 119.3,
+   "pickup_hours": 26.0,
+   "valid_until": "2026-11-21T16:16:00Z",
+   "quote_ref": "TRK-850"
+  }
+ },
+ "2695": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 120.3,
+   "pickup_hours": 28.0,
+   "valid_until": "2026-11-21T16:16:00Z",
+   "quote_ref": "TRK-856"
+  }
+ },
+ "2699": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 193.6,
+   "pickup_hours": 18.0,
+   "valid_until": "2026-11-21T16:16:00Z",
+   "quote_ref": "TRK-852"
+  }
+ },
+ "2760": {
+  "category": "customer_reject"
+ },
+ "2774": {
+  "category": "other"
+ },
+ "2793": {
+  "category": "other"
+ },
+ "2794": {
+  "category": "other"
+ },
+ "2795": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-TH3RFFQ8",
+   "our_reference": "TALOS-2540-1",
+   "airline_code": "JP",
+   "lane": "HAM-YYZ",
+   "price_eur": 1966.5
+  }
+ },
+ "2829": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": "FRA",
+   "delivers_to_airport": true,
+   "destination_iata": "DOH",
+   "ready_date": "2026-11-28",
+   "pieces": 6,
+   "gross_kg": 102,
+   "volume_cbm": 0.49,
+   "goal": "cheapest"
+  }
+ },
+ "2858": {
+  "category": "customer_accept"
+ },
+ "2884": {
+  "category": "other"
+ },
+ "2890": {
+  "category": "other"
+ },
+ "2899": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-O5LKVQ5R",
+   "our_reference": "TALOS-2829-1",
+   "airline_code": "UV",
+   "lane": "FRA-DOH",
+   "price_eur": 324.36
+  }
+ },
+ "2912": {
+  "category": "other"
+ },
+ "2918": {
+  "category": "other"
+ },
+ "2929": {
+  "category": "other"
+ },
+ "2931": {
+  "category": "other"
+ },
+ "2933": {
+  "category": "other"
+ },
+ "2935": {
+  "category": "other"
+ },
+ "2937": {
+  "category": "other"
+ },
+ "2939": {
+  "category": "other"
+ },
+ "2941": {
+  "category": "other"
+ },
+ "2943": {
+  "category": "other"
+ },
+ "2945": {
+  "category": "other"
+ },
+ "2947": {
+  "category": "other"
+ },
+ "2949": {
+  "category": "other"
+ },
+ "2951": {
+  "category": "other"
+ },
+ "2953": {
+  "category": "other"
+ },
+ "2955": {
+  "category": "other"
+ },
+ "2957": {
+  "category": "other"
+ },
+ "2959": {
+  "category": "other"
+ },
+ "2961": {
+  "category": "other"
+ },
+ "2964": {
+  "category": "other"
+ },
+ "2977": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "24983",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "DEL",
+   "ready_date": "2026-11-28",
+   "pieces": 11,
+   "gross_kg": 1619,
+   "volume_cbm": 7.66,
+   "goal": "cheapest"
+  }
+ },
+ "3087": {
+  "category": "other"
+ },
+ "3090": {
+  "category": "other"
+ },
+ "3165": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 190.33,
+   "pickup_hours": 26.0,
+   "valid_until": "2026-11-21T16:29:00Z",
+   "quote_ref": "TRK-1010"
+  }
+ },
+ "3168": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 122.76,
+   "pickup_hours": 30.0,
+   "valid_until": "2026-11-21T16:29:00Z",
+   "quote_ref": "TRK-1017"
+  }
+ },
+ "3172": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 201.52,
+   "pickup_hours": 19.0,
+   "valid_until": "2026-11-21T16:29:00Z",
+   "quote_ref": "TRK-1013"
+  }
+ },
+ "3174": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 273.28,
+   "pickup_hours": 19.0,
+   "valid_until": "2026-11-21T16:29:00Z",
+   "quote_ref": "TRK-1018"
+  }
+ },
+ "3175": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 348.85,
+   "pickup_hours": 11.0,
+   "valid_until": "2026-11-21T16:29:00Z",
+   "quote_ref": "TRK-1015"
+  }
+ },
+ "3208": {
+  "category": "other"
+ },
+ "3216": {
+  "category": "other"
+ },
+ "3223": {
+  "category": "customer_accept"
+ },
+ "3240": {
+  "category": "other"
+ },
+ "3244": {
+  "category": "other"
+ },
+ "3261": {
+  "category": "other"
+ },
+ "3263": {
+  "category": "other"
+ },
+ "3266": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-7YASKL1Q",
+   "our_reference": "TALOS-2977-1",
+   "airline_code": "BX",
+   "lane": "HAM-DEL",
+   "price_eur": 2752.3
+  }
+ },
+ "3273": {
+  "category": "other"
+ },
+ "3279": {
+  "category": "tracking_request"
+ },
+ "3327": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": "42401",
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "PEK",
+   "ready_date": "2026-11-27",
+   "pieces": 8,
+   "gross_kg": 1081,
+   "volume_cbm": 8.03,
+   "goal": "cheapest"
+  }
+ },
+ "3461": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 379.38,
+   "pickup_hours": 7.0,
+   "valid_until": "2026-11-21T16:35:00Z",
+   "quote_ref": "TRK-1104"
+  }
+ },
+ "3471": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 379.79,
+   "pickup_hours": 6.0,
+   "valid_until": "2026-11-21T16:35:00Z",
+   "quote_ref": "TRK-1108"
+  }
+ },
+ "3477": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 321.74,
+   "pickup_hours": 4.0,
+   "valid_until": "2026-11-21T16:35:00Z",
+   "quote_ref": "TRK-1103"
+  }
+ },
+ "3480": {
+  "category": "trucker_quote",
+  "trucker_quote": {
+   "price_eur": 113.05,
+   "pickup_hours": 32.0,
+   "valid_until": "2026-11-21T16:35:00Z",
+   "quote_ref": "TRK-1114"
+  }
+ },
+ "3518": {
+  "category": "customer_reject"
+ },
+ "3527": {
+  "category": "other"
+ },
+ "3553": {
+  "category": "other"
+ },
+ "3556": {
+  "category": "booking_confirmation",
+  "booking": {
+   "booking_ref": "BK-YK5UNPB6",
+   "our_reference": "TALOS-3327-1",
+   "airline_code": "GN",
+   "lane": "DUS-PEK",
+   "price_eur": 3003.86
+  }
+ },
+ "3559": {
+  "category": "other"
+ },
+ "3561": {
+  "category": "other"
+ },
+ "3612": {
+  "category": "tracking_request"
+ },
+ "3637": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "SGN",
+   "ready_date": "2026-11-30",
+   "pieces": 11,
+   "gross_kg": 572,
+   "volume_cbm": 2.29,
+   "goal": "cheapest"
+  }
+ },
+ "3940": {
+  "category": "rfq",
+  "rfq": {
+   "pickup_postal_code": null,
+   "origin_airport": null,
+   "delivers_to_airport": false,
+   "destination_iata": "PVG",
+   "ready_date": "2026-12-02",
+   "pieces": 11,
+   "gross_kg": 349,
+   "volume_cbm": 2.4,
+   "goal": "fastest"
+  }
+ }
+}
