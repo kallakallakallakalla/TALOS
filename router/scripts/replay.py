@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.classifier import DecisionClassifier  # noqa: E402
 from app.composer import Composer  # noqa: E402
-from app.config import get_settings  # noqa: E402
+from app.config import evaluation_settings  # noqa: E402
 from app.extractors import Extractors  # noqa: E402
 from app.llm import StructuredLLM  # noqa: E402
 from app.mailbox_client import parse_mailbox_message  # noqa: E402
@@ -87,7 +87,7 @@ async def main() -> None:
     for leftover in OUT_DIR.glob("replay.db*"):
         leftover.unlink()
 
-    settings = get_settings().model_copy(
+    settings = evaluation_settings().model_copy(
         update={
             "send_enabled": False,
             "sqlite_db_path": str(db_path),

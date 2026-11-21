@@ -58,7 +58,7 @@ def test_health() -> None:
     client = TestClient(app)
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "ok", "sending": "off"}
 
 
 @pytest.mark.anyio
@@ -481,3 +481,25 @@ async def test_poller_skips_a_mail_after_three_failed_attempts(tmp_path: Path) -
     assert failed is not None and failed.decision.category == EmailCategory.OTHER
     assert failed.decision.reasoning.startswith("processing failed")
     assert store.get_message(2).decision.category == EmailCategory.RFQ
+
+
+def test_evaluation_runs_never_use_the_gateway(monkeypatch: pytest.MonkeyPatch) -> None:
+    """ADR 39: eval scripts call OpenAI directly, and refuse to run without their own key."""
+    from app import config
+
+    gateway = Settings(decision_api_key="team-key", decision_api_base_url="https://api.start-hack.5u.ai/v1/gateway")
+    monkeypatch.setattr(config, "get_settings", lambda: gateway.model_copy(update={"evaluation_key": "sk-eval"}))
+    settings = config.evaluation_settings()
+    assert settings.decision_api_key == "sk-eval"
+    assert settings.decision_api_base_url == "https://api.openai.com/v1"
+
+    monkeypatch.setattr(config, "get_settings", lambda: gateway.model_copy(update={"evaluation_key": ""}))
+    with pytest.raises(RuntimeError, match="EVALUATION_KEY"):
+        config.evaluation_settings()
+
+    at_gateway = gateway.model_copy(
+        update={"evaluation_key": "sk-eval", "evaluation_api_base_url": "https://api.start-hack.5u.ai/v1/gateway"}
+    )
+    monkeypatch.setattr(config, "get_settings", lambda: at_gateway)
+    with pytest.raises(RuntimeError, match="gateway"):
+        config.evaluation_settings()

@@ -18,7 +18,7 @@ from langfuse import Evaluation  # noqa: E402
 
 from app import prompts  # noqa: E402
 from app.classifier import DecisionClassifier  # noqa: E402
-from app.config import get_settings  # noqa: E402
+from app.config import evaluation_settings  # noqa: E402
 from app.extractors import Extractors  # noqa: E402
 from app.llm import StructuredLLM  # noqa: E402
 from app.mailbox_client import mailbox_message_to_payload, parse_mailbox_message  # noqa: E402
@@ -57,7 +57,7 @@ def correct(*, output, expected_output, **_) -> Evaluation:
 
 def make_task(prompt_name: str, label: str):
     """The function Langfuse runs per dataset item: the app's own classifier / extractor."""
-    settings = get_settings()
+    settings = evaluation_settings()
     llm = StructuredLLM(settings)
     classifier = DecisionClassifier(settings, llm=llm)
     extractors = Extractors(settings, llm)
@@ -91,7 +91,7 @@ def main() -> None:
     parser.add_argument("--label", default="staging")
     args = parser.parse_args()
 
-    settings = get_settings()
+    settings = evaluation_settings()
     langfuse = StructuredLLM(settings).langfuse
     for prompt_name in DATASETS if args.prompt == "all" else [args.prompt]:
         dataset = langfuse.get_dataset(DATASETS[prompt_name])

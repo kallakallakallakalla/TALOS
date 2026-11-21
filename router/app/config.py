@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     extract_reasoning_effort: str = "low"
     compose_reasoning_effort: str = "none"
 
+    # Tests, evals and replays call OpenAI directly with this key (ADR 39). It must never be
+    # registered at the challenge gateway: everything through the gateway counts as
+    # scored production usage.
+    evaluation_key: str = ""
+    evaluation_api_base_url: str = "https://api.openai.com/v1"
+
     # Input API (empty = use built-in placeholder)
     input_api_url: str = ""
     input_api_token: str = ""
@@ -73,6 +79,25 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """Return a fresh Settings instance."""
     return Settings()
+
+
+def evaluation_settings() -> Settings:
+    """Settings for test, eval and replay runs: LLM calls go straight to OpenAI.
+
+    Raises instead of falling back to the gateway, so a missing key can never turn a test
+    run into scored production usage.
+    """
+    settings = get_settings()
+    if not settings.evaluation_key:
+        raise RuntimeError("EVALUATION_KEY is not set; refusing to run evaluations on the gateway.")
+    if settings.evaluation_api_base_url.startswith(settings.hackloop_base_url):
+        raise RuntimeError("EVALUATION_API_BASE_URL points at the challenge gateway.")
+    return settings.model_copy(
+        update={
+            "decision_api_key": settings.evaluation_key,
+            "decision_api_base_url": settings.evaluation_api_base_url,
+        }
+    )
 
 
 def configure_langfuse_env(settings: Settings) -> bool:

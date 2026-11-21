@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–38 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–39 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -42,6 +42,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 | 36 | In a dry run, trucker replies are matched to our request by sender | Proposed |
 | 37 | Tracking questions are answered from our own records, without asking carriers | User |
 | 38 | Trucker requests are a fixed template, not LLM-written (amends 13) | User |
+| 39 | Tests, evals and replays call OpenAI directly with `EVALUATION_KEY`, never the gateway (amends 27) | User |
 
 ---
 
@@ -285,3 +286,10 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Context:** ADR 13 had the LLM write every outgoing mail, including the pickup request to truckers. That request is the same list of values every time, its readers are carriers, and the "most human email" jury only reads mails to customers.
 - **Decision (user):** the trucker request is a template with the values filled in (`templates.py`, kind `trucker_request`): postal code and city, airport, ready date, pieces, gross weight, volume. The same text goes to every trucker of the zone.
 - **Consequence:** one LLM call less per shipment with pickup, and the request leaves a second or two earlier. All mails to customers and the booking request to airlines are still LLM-written with the fact check.
+
+### 39 · Tests, evals and replays call OpenAI directly, never the gateway
+
+- **Context:** every LLM call through the challenge gateway is counted as production usage and scored (40 of 100 points per mail). Until now the eval and replay runs went through the gateway (ADR 27).
+- **Decision (user):** `EVALUATION_KEY` in `router/.env` is a separate OpenAI key for every test, evaluation and replay run from now on. It is used directly against `https://api.openai.com/v1`. **It must never be registered at the gateway** (`POST /v1/gateway/openai-key`).
+- **How:** `config.evaluation_settings()` swaps the key and base URL and is used by `eval_prompts.py`, `replay.py`, `compose_samples.py` and `build_tariffs.py`. It raises if the key is missing or if the evaluation URL points at the gateway, so a test run can't fall back to scored usage. The running router is unchanged: it uses `DECISION_API_KEY` through the gateway.
+- **Checked:** `gpt-6-luna` is available with this key directly at OpenAI; the booking-extractor eval scored 12/12 on that route.

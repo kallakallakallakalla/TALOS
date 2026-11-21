@@ -23,7 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from langfuse.openai import AsyncOpenAI  # noqa: E402
 from pydantic import BaseModel  # noqa: E402
 
-from app.config import configure_langfuse_env, get_settings  # noqa: E402
+from app.config import configure_langfuse_env, evaluation_settings  # noqa: E402
 from app.reference import Reference  # noqa: E402
 from app.schemas import TariffLane  # noqa: E402
 
@@ -153,7 +153,7 @@ async def read_airline(client: AsyncOpenAI, model: str, airline: str, paths: lis
 
 
 async def main() -> None:
-    settings = get_settings()
+    settings = evaluation_settings()
     configure_langfuse_env(settings)
     reference = Reference(settings.start_kit_dir)
     slugs = {c.email.split("@")[0]: c.name for c in reference.carriers if c.kind == "airline"}

@@ -14,7 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.composer import Composer  # noqa: E402
-from app.config import get_settings  # noqa: E402
+from app.config import evaluation_settings  # noqa: E402
 from app.llm import StructuredLLM  # noqa: E402
 
 _SHIPMENT = {"ready_date": "2026-11-28", "pieces": 6, "gross_weight": "679 kg", "volume": "4.19 cbm"}
@@ -54,7 +54,7 @@ async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--label", default=None)
     args = parser.parse_args()
-    settings = get_settings()
+    settings = evaluation_settings()
     llm = StructuredLLM(settings)
     composer = Composer(settings, llm)
     for kind, role, name, subject, facts in SAMPLES:

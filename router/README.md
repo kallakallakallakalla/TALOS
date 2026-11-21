@@ -75,6 +75,10 @@ Every setting is listed with its default in `.env.example` and `app/config.py`.
 | `scripts/compose_samples.py` | Writes one sample of each mail kind for a human read |
 | `scripts/build_tariffs.py` | Rebuilds `../data/tariffs.json` from the start-kit tariff files |
 
+`eval_prompts.py`, `replay.py`, `compose_samples.py` and `build_tariffs.py` call OpenAI directly with
+`EVALUATION_KEY` and refuse to run without it. They never use the challenge gateway, because gateway
+traffic is scored as production cost. Never register that key at the gateway.
+
 Changing a prompt: edit `prompts/<name>.md` → `push_prompts.py` (staging) →
 `eval_prompts.py --label staging` → `push_prompts.py --promote <name>`.
 

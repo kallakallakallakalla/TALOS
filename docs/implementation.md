@@ -161,7 +161,7 @@ Known gap: a request the old process quoted, but whose acceptance arrives only a
 - **The poller handles one mail at a time.** If the portal limiter has to wait (more than 10 rate reads in a minute), later mails wait too. One request needs at most 8 reads, and requests arrive 6 minutes apart, so this only bites while the old process shares the limit.
 - **Email-booked (tariff) airlines:** the booking mail and the confirmation path are tested with mocks only. No tariff airline has ever been booked for real, so the airline's real reply format is unknown.
 - **`router/.env` is tracked by git** (commit `6c3c19a`, before this work) and contains the team key. Consider `git rm --cached router/.env` and rotating the key if the repo is ever shared.
-- **Test LLM calls went through the team gateway** and may count toward the scored LLM cost (ADR 27).
+- **Test LLM calls up to 2026-11-21 ~18:40 CET went through the team gateway** and may count toward the scored LLM cost (ADR 27). Since then every eval, replay and sample script uses `EVALUATION_KEY` directly at OpenAI (ADR 39).
 
 ## What is open
 
