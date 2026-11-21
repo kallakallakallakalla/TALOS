@@ -19,9 +19,7 @@ class Settings(BaseSettings):
     langfuse_host: str = "http://localhost:3000"
     langfuse_base_url: str = ""
     langfuse_prompt_name: str = "router-classification"
-    # Prompts come from prompts/*.md in the repo. True reads them from Langfuse by label instead.
-    prompts_from_langfuse: bool = False
-    # Langfuse prompt label read when prompts_from_langfuse is on ("staging" for evals).
+    # Unused since prompts come from prompts/*.md only; kept for the push/eval scripts.
     prompt_label: str = "production"
     prompts_dir: str = "prompts"
 
