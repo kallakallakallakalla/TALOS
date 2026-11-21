@@ -155,6 +155,9 @@ def test_crm_endpoints(client: TestClient) -> None:
     for asset in ("app.js", "views.js", "lib.js", "globe.js", "land.js", "crm.css"):
         assert client.get(f"/crm/assets/{asset}").status_code == 200
 
+    slop = client.get("/crm/slop")  # the joke version: same page, one more stylesheet and script
+    assert slop.status_code == 200 and "slop.css" in slop.text and "slop.css" not in page.text
+
     sources = client.get("/crm/api/sources").json()
     assert sources["live"] == {"shipments": 0, "legacy": 0} and sources["default"] == "replay"
 

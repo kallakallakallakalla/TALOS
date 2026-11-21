@@ -1,0 +1,103 @@
+/* A joke, on request: the same real data in the worst possible taste.
+   Loaded only by /crm/slop. Delete this file, slop.js and the /crm/slop route to remove it. */
+
+:root:root:root {
+  color-scheme: dark;
+  --plane: #12002b;
+  --glass: #1d0540; --glass-strong: #4c0fa3; --glass-edge: #00ff87; --glass-hi: transparent;
+  --wash: rgba(0, 255, 135, 0.14); --wash-strong: rgba(168, 85, 247, 0.5);
+  --shadow: #a855f7; --hairline: rgba(0, 255, 135, 0.5); --track: rgba(255, 255, 255, 0.18);
+  --ink: #ffffff; --ink-2: #e2c6ff; --ink-3: #8dffc8; --grain: 0;
+  --series-1: #00ff87; --series-2: #ff3df2; --series-3: #ffe600; --de-emphasis: #8b5cf6;
+  --good: #00ff87; --warning: #ffe600; --serious: #ff8a00; --critical: #ff2e63;
+  --globe-sea-a: #c084fc; --globe-sea-b: #2a0066; --globe-land: rgba(0, 255, 135, 0.8);
+  --globe-land-back: rgba(0, 255, 135, 0.22); --globe-line: rgba(255, 255, 255, 0.4);
+  --globe-rim: #00ff87; --globe-off: #ff3df2;
+}
+
+* { font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", "Comic Neue", cursive !important; }
+
+body {
+  background: linear-gradient(120deg, #7b2ff7, #00ff87, #ff3df2, #3b0a7a, #00ff87);
+  background-size: 400% 400%;
+  animation: slop-bg 8s ease infinite;
+}
+body::after { display: none; }
+@keyframes slop-bg { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes slop-float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+@keyframes slop-pulse { 0%, 100% { box-shadow: 0 0 14px #a855f7, 0 0 4px #00ff87 inset; } 50% { box-shadow: 0 0 34px #00ff87, 0 0 10px #ff3df2 inset; } }
+@keyframes slop-hue { to { filter: hue-rotate(360deg); } }
+@keyframes slop-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes slop-wiggle { 0%, 100% { transform: rotate(-3deg) scale(1); } 50% { transform: rotate(3deg) scale(1.08); } }
+
+.glass {
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  background: linear-gradient(155deg, #3b0a7a 0%, #17003a 55%, #004d33 100%);
+  border: 3px solid #00ff87; border-radius: 32px;
+  animation: slop-pulse 2.6s ease-in-out infinite;
+}
+.card:nth-child(odd) { border-color: #ff3df2; }
+.card:hover, .tile:hover { transform: scale(1.012) rotate(-0.4deg); transition: transform 0.2s; }
+
+h1, h2, .hero, .tile .value, .finding .fig, .brand b {
+  background: linear-gradient(90deg, #00ff87, #ffe600, #ff3df2, #c084fc);
+  -webkit-background-clip: text; background-clip: text; color: transparent !important;
+  filter: drop-shadow(0 0 7px rgba(168, 85, 247, 0.9));
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.hero small, .tile .value small { color: #8dffc8 !important; background: none; -webkit-text-fill-color: #8dffc8; }
+h3 { text-transform: uppercase; letter-spacing: 0.06em; color: #ffe600; text-shadow: 0 0 8px #ff3df2; }
+h3::after { content: " 🔥"; }
+.tile .label { text-transform: uppercase; font-weight: 700; color: #8dffc8; }
+.tile .label::before { content: "✨ "; }
+.tile:nth-child(2n) .label::before { content: "🚀 "; }
+.tile:nth-child(3n) .label::before { content: "💎 "; }
+.finding .title::before { content: "🤖 AI-POWERED INSIGHT: "; color: #ff3df2; }
+.finding .basis::after { content: " 💯"; }
+.nav a::after { content: "✨"; margin-left: 4px; }
+.nav a .count { margin-left: auto; background: #ff3df2; color: #fff; border-radius: 99px; padding: 0 7px; }
+.nav a.on { background: linear-gradient(90deg, #7b2ff7, #00ff87); color: #12002b; font-weight: 700; box-shadow: 0 0 16px #00ff87; }
+.brand svg { animation: slop-hue 3s linear infinite; color: #00ff87; }
+
+.seg button, .pill, .chip, .iconbtn, .globe .ctl button, .linkbtn {
+  background: linear-gradient(90deg, #7b2ff7, #ff3df2) !important; color: #fff !important;
+  border: 2px solid #00ff87 !important; border-radius: 99px !important; text-transform: uppercase; font-weight: 700;
+  box-shadow: 0 0 12px #a855f7;
+}
+.seg button.on, .pill.on { background: linear-gradient(90deg, #00ff87, #ffe600) !important; color: #12002b !important; }
+.seg button:hover, .pill:hover, .chip:hover { animation: slop-wiggle 0.5s ease-in-out infinite; }
+.seg { background: none; border: 0; gap: 6px; }
+#theme { display: none; }
+.search input, .filters select { background: #12002b; border: 2px dashed #ff3df2; border-radius: 99px; color: #00ff87; }
+.search input::placeholder { color: #c084fc; }
+
+th { background: linear-gradient(90deg, rgba(123, 47, 247, 0.7), rgba(0, 255, 135, 0.35)); color: #fff; text-transform: uppercase; }
+tbody tr:nth-child(odd) { background: rgba(168, 85, 247, 0.16); }
+tbody tr.link:hover { background: rgba(0, 255, 135, 0.28); }
+.bars .fill, .bars.solid .fill, .bars .row.em .fill, .meter .track i {
+  background: linear-gradient(90deg, #7b2ff7, #00ff87) !important; box-shadow: 0 0 10px #00ff87; border-radius: 99px;
+}
+.bars .row.em .fill { background: linear-gradient(90deg, #ff3df2, #ffe600) !important; }
+.bars .track { height: 14px; }
+.split i { height: 12px; box-shadow: 0 0 8px currentColor; }
+.colchart path.col { fill: #ff3df2 !important; filter: drop-shadow(0 0 6px #00ff87); }
+.steps .step.done::before, .steps .step.done::after { background: linear-gradient(90deg, #00ff87, #ff3df2); box-shadow: 0 0 10px #00ff87; }
+.msg { border: 2px solid #ff3df2; border-radius: 26px; background: #2a0a5e; }
+.msg.out { border-color: #00ff87; background: #063b2a; }
+.tag { background: #ffe600; color: #12002b; font-weight: 700; }
+.globe canvas { animation: slop-float 3.2s ease-in-out infinite; filter: drop-shadow(0 0 22px #00ff87) saturate(1.3); }
+#tip { background: linear-gradient(135deg, #7b2ff7, #12002b); border: 2px solid #00ff87; box-shadow: 0 0 18px #ff3df2; }
+.view { scrollbar-color: #00ff87 #3b0a7a; }
+.notice { border-style: dashed; }
+
+/* the banner and the chat bubble that every such page has */
+.slop-banner { overflow: hidden; white-space: nowrap; border-radius: 99px; border: 3px solid #ffe600; background: #12002b; padding: 6px 0; box-shadow: 0 0 18px #ff3df2; }
+.slop-banner span { display: inline-block; padding-right: 40px; font-weight: 700; color: #ffe600; text-shadow: 0 0 8px #ff3df2; animation: slop-scroll 28s linear infinite; }
+.slop-chat {
+  position: fixed; right: 26px; bottom: 26px; z-index: 55; padding: 14px 20px; border-radius: 99px; cursor: pointer;
+  border: 3px solid #fff; color: #12002b; font-weight: 700; font-size: 15px;
+  background: linear-gradient(90deg, #00ff87, #ffe600, #ff3df2); background-size: 200% 100%;
+  box-shadow: 0 0 26px #00ff87; animation: slop-wiggle 1.4s ease-in-out infinite;
+}
+.slop-made { margin-top: 6px; color: #ff3df2; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { *, body { animation: none !important; } }

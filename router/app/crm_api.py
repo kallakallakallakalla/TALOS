@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 
 from app import insights, prompts
 from app.config import Settings, get_settings
@@ -47,6 +47,15 @@ def _reference(settings: Settings) -> Reference:
 @router.get("")
 async def page() -> FileResponse:
     return FileResponse(UI_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+
+
+@router.get("/slop")
+async def slop_page() -> HTMLResponse:
+    """A joke, on request: the same real data in the worst possible taste (slop.css, slop.js)."""
+    html = (UI_DIR / "index.html").read_text(encoding="utf-8")
+    html = html.replace("</head>", '  <link rel="stylesheet" href="/crm/assets/slop.css">\n</head>')
+    html = html.replace("</body>", '  <script type="module" src="/crm/assets/slop.js"></script>\n</body>')
+    return HTMLResponse(html, headers={"Cache-Control": "no-cache"})
 
 
 @router.get("/api/sources")
