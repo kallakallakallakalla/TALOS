@@ -448,3 +448,16 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **File handles:** `MessageStore` now closes every connection after its block. Before, connections stayed open until garbage collection; with the page polling every 3 s the process ran out of file handles on macOS (limit 256).
 - **Branch:** the CRM lives on `entwicklung`. It was merged into `main` and reverted there; merging `main` back into `entwicklung` keeps it, with reference data and tariffs now read from the database (ADR 50).
 
+### ADR 53: Customer mails mirror the customer; no footer, no canned wording, no planted slips
+
+- **Context:** the "most human email" award (+10, the jury picks up to three accepted mails per round with team names hidden) kept going to other teams. The style of ADR 48 worked against it in three ways: office phrases ("kindly note", "as per your request") read as boilerplate, the divider footer reads as an automatic signature and adds nothing when names are hidden, and a planted typing slip is a trick, not a voice. The customers' own mails, on the other hand, have distinct voices: "Cheers, Klaus", "have a lovely day", "Viele Gruesse / Many greetings", a formal "Dear Sir or Madam" signed with a job title.
+- **Decision (user):** rewrite the prompt, remove the footer and the typos. This replaces the style rules of ADR 48; its fact rules, the 3 to 5 sentence limit and the natural dates stay.
+- **How:**
+  - The prompt tells the model to mirror the customer's register from the mail we reply to: greeting, formality, and their sign-off returned in kind. It starts with the answer instead of thanks, uses one concrete thing from their mail, writes no label lines, and ends a quote with one short question.
+  - A formal greeting uses the full name as signed. Mr or Ms is never guessed.
+  - One true remark shows the work: the quote facts now carry `airlines_compared`, so "I compared three airlines" is only written when it is so.
+  - Removed from code: `MAIL_FOOTER` and `composer.with_footer`, the random wording slots (`composer.wording`) and the slip instruction. The mail goes out as the model wrote it, signed with name and company on two lines. The check for em dashes and bold stays.
+  - Two examples in the prompt, one relaxed and one formal, with placeholders instead of values.
+- **Not measured:** no evaluation key was available in the session, so no mail was generated with the new prompt. Read `scripts/compose_samples.py --label staging` before promoting it. Whether the jury rewards this is a judgment; there is no data on which mails it picked.
+- **To go live:** the running router needs this code, and the prompt has to be pushed to Langfuse and promoted (`scripts/push_prompts.py`, then `--promote talos-compose-mail`).
+

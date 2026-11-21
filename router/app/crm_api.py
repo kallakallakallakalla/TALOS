@@ -170,7 +170,6 @@ async def system(request: Request, settings: Settings = Depends(get_settings)) -
             {"name": "Booking reminder", "value": f"{settings.booking_reminder_seconds:.0f} s"},
             {"name": "Limits", "value": f"{settings.max_clarifications} clarifications, {settings.max_booking_attempts} booking attempts, {settings.max_message_attempts} tries per mail, {settings.max_answers} answers"},
             {"name": "Mail signature", "value": settings.mail_signature},
-            {"name": "Mail footer", "value": settings.mail_footer.replace("\n", " · ")},
         ],
         "inventory": [
             {"name": "Mails received", "rows": len(data.mails), "where": "live database"},
