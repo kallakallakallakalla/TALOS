@@ -461,3 +461,27 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Not measured:** no evaluation key was available in the session, so no mail was generated with the new prompt. Read `scripts/compose_samples.py --label staging` before promoting it. Whether the jury rewards this is a judgment; there is no data on which mails it picked.
 - **To go live:** the running router needs this code, and the prompt has to be pushed to Langfuse and promoted (`scripts/push_prompts.py`, then `--promote talos-compose-mail`).
 
+### ADR 54: The CRM is a supervisor console: it shows what needs a person, and it may act
+
+- **Context:** the CRM of ADR 52 showed everything the router stores, on eight pages, and nothing followed from reading it. The user's judgment: "a ton of info, but nothing actionable or insightful. If everything runs smoothly, why would you need it?" A system that works on its own needs a person in three situations only: a case it could not finish, a result that has to be checked, and a setting that is wrong.
+- **Decision (user):** rebuild it around those three. It serves both the hackathon and a product demo, and it may act on the live system. The globe stays as it is. Simplify further.
+- **Pages:**
+  - **Now:** one sentence (how many cases need a decision) and the queue. An item is only listed if a person can do something about it; the informational entries of the old attention list are gone. Each item carries its actions.
+  - **Rounds:** one row per request with outcome, time to answer, booked, the board's verdict where `GET /v1/board/me` can be read, and one cause per lost round. A second tab shows each quote mail as the jury reads it.
+  - **Tuning:** one card per setting with a verdict from the data: `change`, `keep` or `open` (too little data). The descriptive metrics of the old Analysis page fold away below.
+  - **Lookup:** pipeline, accounts, carriers, zones, tariffs and inbox became tabs of one page behind the search box.
+  - **System:** mode, poller, mail volume, classifier accuracy. Configuration, inventory and prompts fold out.
+  - A shipment's page opens with **What happened**: the steps that led to its state, each with its reason, and what a later fact showed (an offer that arrived after an estimate went out).
+  - Removed: Desk, Network and Analysis as pages, the key-figure tiles, the stepper.
+- **Actions (`app/actions.py`):** retry a booking, send the customer a reminder, close a shipment, process a failed mail again, dismiss an item. Each goes through the workflow's own operation (`_book`, `_clarify`, `process_message`), so an action does nothing the router could not do itself.
+  - They only run in the process whose poller is running. A second process that reads the same database (`crm.sh` with a database path) can dismiss and nothing else: it must not book or send behind the state machine's back.
+  - They take `poller.work_lock`, which the poll cycle now holds for a whole cycle, so an action never runs between two steps of a shipment.
+  - `SEND_ENABLED` still decides whether mail leaves and whether a booking is real. The page asks before every action and says which of the two will happen.
+  - Dismissed items are stored by key in `crm_dismissed` and can be restored on the System page.
+- **Verdicts need a rule, so the rules are constants in `app/insights.py`:** a wait is judged from 5 offer timings on, a trucker from 4 requests on, an estimate counts as good within 15 % of the offer that arrived later, and LLM use is flagged when 15 % of the tokens go to mails that need no answer. Below those sample sizes the card says "too little data" instead of recommending something.
+- **LLM use is now stored:** ADR 52 left LLM cost to Langfuse. It is 40 of 100 points per accepted mail, so `StructuredLLM` reports every call's token use to `MessageStore.record_llm_call` (table `llm_calls`: step, model, tokens, seconds, the mail it served). A failure to record is logged and never breaks the call. Money is not shown: the price per token of the gateway is not known here.
+- **Quote mails are checked against the prompt's own rules** (`insights.mail_checks`): opens with thanks, stock phrase, label lines, raw dates, more than 5 sentences, markup, phone number or footer. These are pattern checks for mechanical breaches; whether a mail sounds like a person stays a reader's call. On the recorded run all 14 quotes break at least one rule; that run predates ADR 53.
+- **The board (`app/board.py`):** the answer of `GET /v1/board/me` is documented only as free-form JSON and could not be read from the development sandbox, so it is taken apart tolerantly and the ledger works without it. Untested against the real endpoint.
+- **Notifications:** with the browser's permission a new case in the queue is announced, and the tab title carries the count. Nobody has to watch a page that is empty when things work.
+- **Honest limits:** in a dry run the action buttons are off, timings and win rates stay hidden (ADR 52), and verdicts that need live timings say so. Medians over two or three cases are shown with their n and are not presented as settled.
+
