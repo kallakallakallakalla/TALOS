@@ -68,6 +68,10 @@ class Settings(BaseSettings):
     # Quote workflow (docs/workflow.md section 9)
     send_enabled: bool = False  # dry run: compose and log, never send or book
     mail_signature: str = "Alex, TALOS Air Freight"
+    # Printed between two divider lines below every mail to a customer; empty = no footer.
+    # The phone number is from the range the Bundesnetzagentur reserves for fiction
+    # (089 99998 000-999): it looks real and reaches nobody. Put a real one in .env.
+    mail_footer: str = "TALOS Air Freight\nTheresienstraße 90, 80333 München\nPhone: +49 89 99998 417"
     margin_eur: float = 0.0
     # Quote when every asked trucker has answered, or after this many seconds with whatever
     # came back (nothing came back: fallback trucker price).

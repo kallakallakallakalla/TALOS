@@ -603,6 +603,7 @@ class Workflow:
             "airline": air.airline,
             "transit_days": air.transit_days,
             "all_in_price": price,
+            "customer_priority": shipment.goal,  # "fastest" | "cheapest" | None (not stated)
             "price_includes": (
                 "pickup at your site and trucking to the airport, air freight, fuel and "
                 "security surcharges"

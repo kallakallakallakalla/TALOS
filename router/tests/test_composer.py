@@ -1,13 +1,18 @@
 import pytest
 
 from app import templates
-from app.composer import Composer, missing_facts
+from app.composer import Composer, missing_facts, wording
 from app.config import Settings
 from app.llm import StructuredLLM
 from app.schemas import ComposedMail
 from tests.fakes import ScriptedLLM
 
-SETTINGS = Settings(langfuse_enabled=False, decision_api_key="test-key", mail_signature="Alex, TALOS Air Freight")
+FOOTER = "TALOS Air Freight\nTheresienstraße 90, 80333 München\nPhone: +49 89 99998 417"
+FOOTER_BLOCK = f"\n\n{'-' * 40}\n{FOOTER}\n{'-' * 40}"
+SETTINGS = Settings(
+    langfuse_enabled=False, decision_api_key="test-key",
+    mail_signature="Alex, TALOS Air Freight", mail_footer=FOOTER,
+)  # fmt: skip
 
 SHIPMENT = {"ready_date": "2026-11-28", "pieces": 6, "gross_weight": "679 kg", "volume": "4.19 cbm"}
 FACTS = {
@@ -93,3 +98,28 @@ async def test_wrong_price_is_retried_once_then_replaced_by_the_template() -> No
     composer, fake = _composer(lambda *_: RuntimeError("gateway down"))
     mail, used_template = await composer.compose("booking_note", FACTS["booking_note"], recipient_role="customer")
     assert used_template and "BK-ERC5OOW3" in mail.body
+
+
+@pytest.mark.anyio
+async def test_customer_mail_is_plain_text_varied_and_ends_with_the_footer() -> None:
+    draft = ComposedMail(subject="s", body="Hi Deniz,\n\n**1599.41 EUR** all-in — 3 days transit.\n\nBest,\nAlex\n")
+    composer, fake = _composer(lambda *_: draft)
+    mail, _ = await composer.compose("quote", FACTS["quote"], recipient_role="customer")
+    assert mail.body == "Hi Deniz,\n\n1599.41 EUR all-in, 3 days transit.\n\nBest,\nAlex" + FOOTER_BLOCK
+    request = fake.calls[0][2]
+    assert "Today is 20" in request  # the model gets today's date for "today until ..."
+    assert all(f'{slot} "' in request for slot in ("greeting", "opener", "call to action", "sign-off", "slip"))
+
+    # the fallback template gets the footer too
+    composer, _ = _composer(lambda *_: RuntimeError("gateway down"))
+    mail, used_template = await composer.compose("quote", FACTS["quote"], recipient_role="customer")
+    assert used_template and mail.body.endswith("Alex, TALOS Air Freight" + FOOTER_BLOCK)
+
+    # a mail to an airline has no footer and no wording picks
+    composer, fake = _composer(lambda *_: ComposedMail(subject="s", body="FRA-ORD, 947, 1700.00 EUR\nAlex"))
+    mail, _ = await composer.compose("booking_request", FACTS["booking_request"], recipient_role="airline")
+    assert mail.body.endswith("Alex") and "Wording" not in fake.calls[0][2]
+
+
+def test_wording_changes_from_mail_to_mail() -> None:
+    assert len({wording() for _ in range(50)}) > 10

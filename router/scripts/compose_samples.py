@@ -21,7 +21,7 @@ _SHIPMENT = {"ready_date": "2026-11-28", "pieces": 6, "gross_weight": "679 kg", 
 SAMPLES = [
     ("quote", "customer", "Deniz", "Air freight quote to ORD", {
         "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines", "transit_days": 3,
-        "all_in_price": "1599.41 EUR",
+        "all_in_price": "1599.41 EUR", "customer_priority": "fastest",
         "price_includes": "pickup at your site, air freight, fuel and security surcharges",
         "pickup_included": True, "pickup_from": "51896 Bergisch Gladbach", **_SHIPMENT,
         "estimated_pickup": "2026-11-28", "estimated_departure": "2026-11-30",
