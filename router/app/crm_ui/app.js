@@ -7,8 +7,8 @@ import { fmt, h, icon } from './lib.js';
 import * as views from './views.js';
 
 const POLL_MS = 3000;
-const NAV = [['desk', 'Desk'], ['pipeline', 'Pipeline'], ['accounts', 'Accounts'], ['network', 'Network'], ['carriers', 'Carriers'], ['inbox', 'Inbox'], ['analysis', 'Analysis'], ['system', 'System']];
-const PARENT = { shipment: 'pipeline', account: 'accounts' };
+const NAV = [['now', 'Now'], ['rounds', 'Rounds'], ['tuning', 'Tuning'], ['lookup', 'Lookup'], ['system', 'System']];
+const PARENT = { shipment: 'rounds', account: 'lookup' };
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 
@@ -34,13 +34,13 @@ async function api(path, withSource = true) {
 
 function route() {
   const [name, ...rest] = location.hash.replace(/^#\/?/, '').split('/');
-  return { name: views[name] ? name : 'desk', arg: rest.length ? decodeURIComponent(rest.join('/')) : undefined };
+  return { name: views[name] ? name : 'now', arg: rest.length ? decodeURIComponent(rest.join('/')) : undefined };
 }
 
 async function render() {
   const turn = ++state.renders, view = $('view'), now = route();
   view.classList.add('stale');  // hold the old frame while the new one is prepared
-  const ctx = { snap: state.snap, sources: state.sources, ui: state.ui, q: state.q.trim().toLowerCase(), api, pick, rerender: render, cache: state.cache, globes: [], focusView: null };
+  const ctx = { snap: state.snap, sources: state.sources, ui: state.ui, q: state.q.trim().toLowerCase(), api, act, pick, rerender: render, cache: state.cache, globes: [], focusView: null };
   let page;
   try { page = await views[now.name](ctx, now.arg); } catch (error) {
     page = { title: 'Something went wrong', sub: '', node: h('div', { class: 'grid' }, h('div', { class: 'empty glass c12' }, error.message)) };
@@ -58,11 +58,12 @@ async function render() {
 }
 
 function frame(active) {
-  const snap = state.snap, urgent = snap.attention.filter(a => a.level !== 'info').length;
-  const counts = { desk: urgent || '', pipeline: snap.deals.length, accounts: snap.accounts.length, inbox: snap.mail.total };
+  const snap = state.snap, urgent = snap.attention.length;
+  const counts = { now: urgent || '' };
+  document.title = `${urgent ? `(${urgent}) ` : ''}${document.title.replace(/^\(\d+\) /, '')}`;
   $('nav').replaceChildren(...NAV.map(([key, label]) => h('a', {
     href: `#/${key}`, class: (PARENT[active] || active) === key ? 'on' : '', 'aria-current': (PARENT[active] || active) === key ? 'page' : null,
-  }, icon(key), label, counts[key] !== undefined && h('span', { class: 'count', title: key === 'desk' ? 'items that need attention' : null }, counts[key]))));
+  }, icon(key), label, counts[key] !== undefined && h('span', { class: 'count', title: 'cases that need a decision' }, counts[key]))));
   $('source').replaceChildren(
     h('button', { class: state.source === 'live' ? 'on' : '', onclick: () => pick('live') }, 'Live'),
     h('button', { class: state.source === 'replay' ? 'on' : '', disabled: !state.sources.replay.available || null, onclick: () => pick('replay'),
@@ -87,8 +88,37 @@ function status() {
 
 async function load() {
   const [snap, health] = await Promise.all([api('/crm/api/snapshot'), fetch('/health').then(r => r.json()).catch(() => null)]);
+  announce(snap);
   Object.assign(state, { snap, version: snap.version, health, updatedAt: new Date(), online: true });
   await render();
+}
+
+// A new case in the queue is announced, so nobody has to watch the page.
+function announce(snap) {
+  const known = state.seen, keys = new Set(snap.attention.map(a => a.key));
+  state.seen = keys;
+  if (!known || snap.source !== 'live' || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const fresh = snap.attention.filter(a => !known.has(a.key));
+  if (fresh.length) new Notification(fresh.length === 1 ? fresh[0].title : `${fresh.length} new cases need a decision`,
+    { body: fresh.length === 1 ? `${fresh[0].company || ''} ${fresh[0].detail}`.trim() : fresh.map(a => a.title).join('\n'), tag: 'talos-queue' });
+}
+
+function toast(text, bad = false) {
+  const el = $('toast');
+  el.textContent = text; el.className = `on${bad ? ' bad' : ''}`;
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => { el.className = ''; }, 6000);
+}
+
+// Carry out an operator action: ask first when it changes something, then show what happened.
+async function act(name, params, question) {
+  if (question && !confirm(question)) return;
+  try {
+    const response = await fetch(`/crm/api/actions/${name}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
+    const answer = await response.json();
+    if (!response.ok) throw new Error(answer.detail || response.statusText);
+    toast(answer.message);
+  } catch (error) { toast(error.message, true); }
+  await load();
 }
 
 async function pick(source) {
@@ -117,6 +147,13 @@ async function start() {
     paintTheme(); document.dispatchEvent(new Event('themechange'));
   });
   paintTheme();
+  const paintBell = () => {
+    const state = 'Notification' in window ? Notification.permission : 'unsupported';
+    $('bell').replaceChildren(icon(state === 'granted' ? 'bell' : 'bell-off'));
+    $('bell').title = state === 'granted' ? 'New cases are announced by a notification' : state === 'denied' ? 'Notifications are blocked in the browser settings' : 'Announce new cases by a notification';
+  };
+  $('bell').addEventListener('click', async () => { if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission(); paintBell(); });
+  paintBell();
   let typing;
   $('search').addEventListener('input', e => { state.q = e.target.value; clearTimeout(typing); typing = setTimeout(render, 180); });
   // "/" jumps to the search box, Escape clears it

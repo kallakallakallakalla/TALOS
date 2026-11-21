@@ -8,6 +8,7 @@ from langfuse import get_client, observe, propagate_attributes
 
 from app.classifier import DecisionClassifier
 from app.config import Settings
+from app.llm import current_mail
 from app.mailbox_client import MailboxClient, mailbox_message_to_payload
 from app.schemas import ClassificationDecision, EmailCategory, MailboxMessage, PollSummary
 from app.storage import MessageStore
@@ -50,7 +51,11 @@ class MailboxPoller:
         self._classifier = classifier
         self._store = store
         self._workflow = workflow
+        self.workflow = workflow  # the CRM's actions run through the same workflow
         self._poll_lock = asyncio.Lock()
+        # Held for a whole cycle (poll and timers). An operator action from the CRM takes it
+        # too, so a manual booking never runs in between two steps of the same shipment.
+        self.work_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
         self.running: bool = False
         self.last_poll_at: str | None = None
@@ -60,6 +65,13 @@ class MailboxPoller:
     @observe(name="mail")
     async def process_message(self, msg: MailboxMessage) -> ClassificationDecision:
         """One trace per mail: context lookup -> classify -> store -> workflow."""
+        token = current_mail.set(msg.id)  # LLM calls made while it is handled count for this mail
+        try:
+            return await self._process(msg)
+        finally:
+            current_mail.reset(token)
+
+    async def _process(self, msg: MailboxMessage) -> ClassificationDecision:
         context = await self._workflow.context(msg) if self._workflow else None
         shipment = context.shipment if context else None
         # A new request starts its own shipment, so its trace opens that shipment's session.
@@ -192,19 +204,20 @@ class MailboxPoller:
         next poll wait for its Retry-After instead of hammering the limit.
         """
         self._backoff = 0.0
-        try:
-            await self.poll_once()
-        except httpx.HTTPStatusError as exc:
-            self._note_error(exc)
-            if exc.response.status_code == 429:
-                self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
-        except Exception as exc:  # noqa: BLE001 - keep background poller alive
-            self._note_error(exc)
-        try:
-            if self._workflow:
-                await self._workflow.tick()
-        except Exception as exc:  # noqa: BLE001 - keep background poller alive
-            self._note_error(exc)
+        async with self.work_lock:
+            try:
+                await self.poll_once()
+            except httpx.HTTPStatusError as exc:
+                self._note_error(exc)
+                if exc.response.status_code == 429:
+                    self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
+            except Exception as exc:  # noqa: BLE001 - keep background poller alive
+                self._note_error(exc)
+            try:
+                if self._workflow:
+                    await self._workflow.tick()
+            except Exception as exc:  # noqa: BLE001 - keep background poller alive
+                self._note_error(exc)
 
     def _note_error(self, exc: Exception) -> None:
         self.last_poll_at = datetime.now(UTC).isoformat()

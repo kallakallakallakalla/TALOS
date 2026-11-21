@@ -69,30 +69,38 @@ mail already in the mailbox as handled, so the router starts with the next new m
 
 ## CRM
 
-`http://localhost:8000/crm` (the root URL redirects there) is the interface for everything the
-router stores. It is read-only: it never sends, books or calls an LLM.
+`http://localhost:8000/crm` (the root URL redirects there) is the supervisor console. The
+router works on its own; the console is for the three things a person still does:
 
-| Page | Shows |
-|---|---|
-| Desk | key figures, open actions, pipeline status, the route globe, the main pricing metrics |
-| Pipeline | every shipment with status, price split and airline, filterable by status, priority and trucking; opens the shipment with its air options, trucking offers and correspondence |
-| Accounts | one row per customer: requests, values, priorities, destinations, correspondence |
-| Network | the globe with great-circle routes, demand per destination, a table of lanes |
-| Carriers | airlines, truckers, pickup zones, tariff lanes |
-| Inbox | every stored mail with its classification, searchable in full text |
-| Analysis | pricing and demand metrics with their case counts, a quote comparison per shipment, inbound mail volume |
-| System | operating mode, poller, configuration without credentials, data inventory, classifier accuracy, prompts |
+| Page | Question it answers | What you do there |
+|---|---|---|
+| Now | Does anything need a person? | The queue of cases the router could not finish: retry a booking, send a reminder, close a shipment, process a failed mail again, or dismiss. Empty when all is well. The route globe sits beside it. |
+| Rounds | How did each request end, and what did a loss cost? | One row per request: quote, time to answer, outcome, booked, the platform board's verdict where it can be read, and the cause of a loss. The "Quote mails" tab shows every quote as the jury reads it and marks the rules of the compose prompt it breaks. |
+| Tuning | Is a setting wrong? | One card per setting with a verdict from the data: change, keep, or too little data. Covers the trucker wait, truckers who rarely answer, the trucking estimate, LLM use and clarifications. |
+| Lookup | Where is that shipment, account, carrier, mail? | Tabs for shipments, accounts, airlines, truckers, pickup zones, tariffs and the mail stream; the search box filters the open tab. |
+| System | How is the router running? | Operating mode, poller, mail volume, classifier accuracy; configuration without credentials, data inventory and prompts fold out. |
 
-Every table can be downloaded as CSV. `/` jumps to the search box.
+A shipment's page opens with "What happened": the steps that led to its state, each with the
+reason (which airline was chosen and why, what was estimated, what a later offer showed).
 
+- **Actions** go through the workflow's own operations and only work in the process that
+  runs the mailbox poller, under the lock the poll cycle holds, so they never run between two
+  steps of a shipment. A second process that only reads the database (see below) can dismiss
+  items and nothing else. `SEND_ENABLED` still decides whether mail really leaves.
+- **Notifications:** the bell asks the browser for permission; after that a new case in the
+  queue is announced, so nobody has to watch the page. The tab title carries the count.
+- **LLM use** is counted from the router's next start on: every call writes its token use to
+  the table `llm_calls` (step, model, tokens, the mail it served). The Tuning page shows
+  tokens per accepted quote, by step, and the share spent on mails that needed no answer.
 - **Live** reads the router's database and follows it: the page asks for a change token every
   3 s and reloads the figures when it moves. **Dry run** reads the last replay; on a fresh
-  checkout that database is rebuilt from `data/replay/result.json` and the recorded mails.
+  checkout that database is rebuilt from `data/replay/recorded-run.json` and the recorded mails.
 - A dry run shows no timings and no win rates: its clocks are mixed, and the recorded customer
   verdicts answered the old process's quotes. The page says so where it applies.
 - The globe places a shipment in transit by its planned departure and arrival dates. The
   system has no aircraft positions.
-- No build step and no external requests: plain HTML, CSS and JavaScript in `app/crm_ui/`.
+- No build step, and the page itself loads nothing from another host: plain HTML, CSS and
+  JavaScript in `app/crm_ui/`. Every table can be downloaded as CSV. `/` jumps to the search box.
 
 To look at it without touching the mailbox (no polling, so no LLM calls), `./crm.sh` (or
 `crm.bat` on Windows) installs on the first run, starts the app on port 8010 and opens the

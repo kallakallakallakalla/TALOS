@@ -12,7 +12,7 @@ from typing import Any, Literal
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse, HTMLResponse
 
-from app import insights, prompts
+from app import actions, board, insights, prompts
 from app.config import Settings, get_settings
 from app.reference import Reference
 from app.replay_data import RECORDED, REPLAY_DIR, replay_labels, replay_store
@@ -88,6 +88,9 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
     store = _store(request, settings, source)
     return {
         "version": store.change_token(),
+        # buttons that change something are only offered where they are allowed (app/actions.py)
+        "can_act": source == "live" and actions.may_act(getattr(request.app.state, "poller", None)),
+        "sending": settings.send_enabled,
         **insights.snapshot(
             store,
             _reference(settings, source),
@@ -97,6 +100,33 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
             labels=replay_labels() if source == "replay" else None,
         ),
     }
+
+
+@router.get("/api/rounds")
+async def rounds(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    """The round ledger; with the platform's verdicts where the board can be read (live only)."""
+    return insights.rounds(
+        _store(request, settings, source), _reference(settings, source), settings,
+        source=source, board=await board.my_board(settings) if source == "live" else None,
+    )  # fmt: skip
+
+
+@router.get("/api/levers")
+async def levers(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> list[dict[str, Any]]:
+    return insights.levers(_store(request, settings, source), _reference(settings, source), settings, source=source)
+
+
+@router.post("/api/actions/{name}")
+async def act(name: str, request: Request, settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    """Carry out an operator action on the live system (app/actions.py)."""
+    params = await request.json() if await request.body() else {}
+    try:
+        message = await actions.run(
+            name, store=_live_store(request, settings), poller=getattr(request.app.state, "poller", None), params=params
+        )
+    except actions.ActionError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"ok": True, "message": message}
 
 
 @router.get("/api/shipments/{shipment_id}")

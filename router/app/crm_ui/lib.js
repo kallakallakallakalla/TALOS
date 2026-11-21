@@ -58,13 +58,13 @@ export const words = text => (text ?? '').replaceAll('_', ' ').replace(/^./, c =
 // --- icons (fixed markup, 16 px, stroked) -------------------------------------------------
 
 const ICONS = {
-  desk: '<rect x="2" y="2" width="5" height="6" rx="1.2"/><rect x="9" y="2" width="5" height="3.5" rx="1.2"/><rect x="2" y="10" width="5" height="4" rx="1.2"/><rect x="9" y="7.5" width="5" height="6.5" rx="1.2"/>',
-  pipeline: '<path d="M2 3.5h12M4 8h8M6.5 12.5h3"/>',
-  accounts: '<path d="M2.5 14V3.2c0-.4.3-.7.7-.7h5.1c.4 0 .7.3.7.7V14M9 6.5h3.8c.4 0 .7.3.7.7V14M1.5 14h13M5 5.5h1.5M5 8h1.5M5 10.5h1.5"/>',
-  network: '<circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c2 2 2.6 4 2.6 6S10 12 8 14M8 2C6 4 5.4 6 5.4 8S6 12 8 14"/>',
-  carriers: '<path d="M14 2 9.2 14l-2-5.2L2 6.8z"/><path d="M14 2 7.2 8.8"/>',
-  inbox: '<path d="M2 9.5 3.6 3.6c.1-.4.5-.6.8-.6h7.2c.4 0 .7.2.8.6L14 9.5v3c0 .3-.3.5-.6.5H2.600c-.3 0-.6-.2-.6-.5z"/><path d="M2 9.5h3.2l.8 1.6h4l.8-1.6H14"/>',
-  system: '<path d="M2 4.5h7M12 4.500h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/>',
+  now: '<circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/>',
+  rounds: '<path d="M2.5 4h11M2.5 8h11M2.5 12h7"/>',
+  tuning: '<path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/>',
+  lookup: '<path d="M2.5 3h11v10h-11zM2.5 6.5h11M6.5 6.5V13"/>',
+  system: '<rect x="2.5" y="3" width="11" height="7.5" rx="1.2"/><path d="M6 13.5h4M8 10.5v3"/>',
+  bell: '<path d="M4 11V7.5a4 4 0 0 1 8 0V11l1.2 1.5H2.8zM6.5 14h3"/>',
+  'bell-off': '<path d="M4 11V7.5a4 4 0 0 1 6.5-3.1M12 8.5V11l1.2 1.5H5.5M6.5 14h3M2.5 2.5l11 11"/>',
   search: '<circle cx="7" cy="7" r="4.2"/><path d="m10.200 10.2 3.3 3.3"/>',
   check: '<path d="m3 8.500 3.200 3.2L13 4.800"/>',
   cross: '<path d="m4 4 8 8M12 4l-8 8"/>',
@@ -78,7 +78,6 @@ const ICONS = {
   back: '<path d="M9.500 3.500 5 8l4.500 4.500"/>',
   plane: '<path d="M14 2 9.200 14l-2-5.200L2 6.800z"/>',
   truck: '<path d="M1.500 4h7.500v6.500H1.500zM9 6.500h2.800l2.200 2.200v1.800H9"/><circle cx="4.500" cy="11.500" r="1.300"/><circle cx="11.500" cy="11.500" r="1.300"/>',
-  analysis: '<path d="M2.500 13.500h11M4.500 11V7.500M8 11V3.500M11.500 11V6"/>',
   download: '<path d="M8 2.500v7.500M5 7.200 8 10.200l3-3M3 13h10"/>',
 };
 

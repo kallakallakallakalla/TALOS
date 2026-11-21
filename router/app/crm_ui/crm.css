@@ -404,3 +404,42 @@ details.prompt pre { margin: 10px 0 0; white-space: pre-wrap; font: 12.5px/1.5 u
 td.desc { white-space: normal; min-width: 320px; color: var(--ink-2); }
 button.tile { text-align: left; font: inherit; color: inherit; cursor: pointer; }
 .tile.link:hover { background: var(--glass-strong); }
+
+/* --- supervisor console: status line, queue actions, trace, levers, quote mails, toast ---- */
+.status h2 { font-size: 26px; font-weight: 650; letter-spacing: -0.01em; }
+.status p { margin-top: 6px; color: var(--ink-2); font-size: 13.5px; }
+.status p.muted { color: var(--ink-3); font-size: 12.5px; }
+.status a { color: var(--ink-2); }
+.acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pill.quiet { background: none; border-color: transparent; color: var(--ink-3); }
+.pill:disabled { opacity: 0.45; cursor: not-allowed; }
+.trace { display: grid; }
+.tstep { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 12px; padding-bottom: 14px; position: relative; }
+.tstep:last-child { padding-bottom: 0; }
+.tstep::before { content: ""; position: absolute; left: 6px; top: 14px; bottom: -2px; width: 2px; background: var(--track); }
+.tstep:last-child::before { display: none; }
+.tdot { width: 10px; height: 10px; border-radius: 50%; margin: 5px 2px 0; background: var(--series-1); z-index: 1; }
+.tstep.warn .tdot { background: var(--warning); } .tstep.bad .tdot { background: var(--critical); }
+.tstep b { font-weight: 600; font-size: 13.5px; }
+.tstep p { font-size: 13px; color: var(--ink-2); margin-top: 2px; white-space: pre-line; }
+.lever .hero { font-size: 28px; margin: 2px 0 8px; }
+.lever p { font-size: 13px; color: var(--ink-2); }
+.lever code, .card > header code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--wash-strong); padding: 2px 7px; border-radius: 6px; color: var(--ink-2); }
+pre.letter { margin: 0; white-space: pre-wrap; font: inherit; font-size: 13.5px; line-height: 1.5; overflow-wrap: anywhere; }
+details.ask { margin-bottom: 12px; font-size: 12.5px; color: var(--ink-3); }
+details.ask summary { cursor: pointer; }
+details.ask pre { margin: 8px 0 0; white-space: pre-wrap; font: inherit; color: var(--ink-2); overflow-wrap: anywhere; }
+td.clip.wide { max-width: 260px; }
+#toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px); z-index: 70; max-width: min(640px, 90vw); padding: 11px 16px; border-radius: 12px;
+  background: var(--ink); color: var(--plane); font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.15s, transform 0.15s; box-shadow: 0 12px 32px -12px var(--shadow); }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+#toast.bad { background: var(--critical); color: #fff; }
+.lever p.verdict { color: var(--ink); font-weight: 600; margin-bottom: 6px; }
+.lever p.setting { margin-top: 10px; }
+.lever .list, .lever .bars { margin-top: 10px; }
+.flags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.flag { font-size: 11.5px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--warning) 22%, transparent); color: var(--ink); }
+.flag.ok { background: color-mix(in srgb, var(--good) 18%, transparent); }
+details.fold > summary { font-weight: 600; }
+.foldbar { display: flex; justify-content: flex-end; padding: 0 18px 8px; }
+.foldbody { padding: 4px 18px 18px; }

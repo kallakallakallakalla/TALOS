@@ -107,6 +107,20 @@ class MessageStore:
                 CREATE INDEX IF NOT EXISTS idx_processed_messages_category
                     ON processed_messages (category, message_id DESC);
 
+                -- Items of the CRM's action queue that an operator has dealt with by hand.
+                CREATE TABLE IF NOT EXISTS crm_dismissed (
+                    key TEXT PRIMARY KEY, dismissed_at TEXT NOT NULL
+                );
+
+                -- One row per LLM call (app/llm.py): what it used and which mail it served.
+                CREATE TABLE IF NOT EXISTS llm_calls (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL,
+                    prompt TEXT NOT NULL, model TEXT NOT NULL, message_id INTEGER,
+                    input_tokens INTEGER NOT NULL, cached_tokens INTEGER NOT NULL,
+                    output_tokens INTEGER NOT NULL, reasoning_tokens INTEGER NOT NULL,
+                    seconds REAL NOT NULL
+                );
+
                 CREATE TABLE IF NOT EXISTS message_failures (
                     message_id INTEGER PRIMARY KEY,
                     attempts INTEGER NOT NULL,
@@ -620,6 +634,7 @@ class MessageStore:
                   || '|' || (SELECT COUNT(*) FROM air_options)
                   || '|' || (SELECT COUNT(*) || ':' || COUNT(sent_message_id) FROM outbound_mails)
                   || '|' || (SELECT COALESCE(SUM(attempts), 0) FROM message_failures)
+                  || '|' || (SELECT COUNT(*) FROM crm_dismissed)
                 """
             ).fetchone()
         return row[0]
@@ -683,3 +698,58 @@ class MessageStore:
                     mail.in_reply_to, mail.sent_message_id, int(mail.used_template), mail.created_at,
                 ),
             )  # fmt: skip
+
+    # --- Operator actions from the CRM (app/actions.py) -------------------------------------
+
+    def dismissed(self) -> set[str]:
+        with self._connect() as conn:
+            return {row["key"] for row in conn.execute("SELECT key FROM crm_dismissed")}
+
+    def dismiss(self, key: str) -> None:
+        with self._connect() as conn:
+            conn.execute("INSERT OR REPLACE INTO crm_dismissed (key, dismissed_at) VALUES (?, ?)", (key, _utc_now_iso()))
+
+    def restore_dismissed(self) -> int:
+        """Bring every dismissed item back; returns how many there were."""
+        with self._connect() as conn:
+            return conn.execute("DELETE FROM crm_dismissed").rowcount
+
+    def record_llm_call(self, call: dict[str, Any]) -> None:
+        """Store the token use of one LLM call (the listener of StructuredLLM.on_usage)."""
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT INTO llm_calls (at, prompt, model, message_id, input_tokens, cached_tokens,
+                                       output_tokens, reasoning_tokens, seconds)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (_utc_now_iso(), call["prompt"], call["model"], call.get("message_id"), call["input_tokens"],
+                 call["cached_tokens"], call["output_tokens"], call["reasoning_tokens"], call["seconds"]),
+            )  # fmt: skip
+
+    def llm_usage(self) -> dict[str, Any]:
+        """Recorded LLM calls, summed by prompt and by the category of the mail they served."""
+        with self._connect() as conn:
+            by_prompt = conn.execute(
+                """
+                SELECT prompt, COUNT(*) AS calls, SUM(input_tokens) AS input_tokens,
+                       SUM(cached_tokens) AS cached_tokens, SUM(output_tokens) AS output_tokens,
+                       SUM(reasoning_tokens) AS reasoning_tokens, SUM(seconds) AS seconds
+                FROM llm_calls GROUP BY prompt ORDER BY SUM(input_tokens + output_tokens) DESC
+                """
+            ).fetchall()
+            by_category = conn.execute(
+                """
+                SELECT COALESCE(m.category, '') AS category, COUNT(*) AS calls,
+                       SUM(c.input_tokens + c.output_tokens) AS tokens
+                FROM llm_calls c LEFT JOIN processed_messages m ON m.message_id = c.message_id
+                GROUP BY 1 ORDER BY 3 DESC
+                """
+            ).fetchall()
+            since = conn.execute("SELECT MIN(at) FROM llm_calls").fetchone()[0]
+        return {"since": since, "by_prompt": [dict(row) for row in by_prompt], "by_category": [dict(row) for row in by_category]}
+
+    def clear_failure(self, message_id: int) -> None:
+        """Forget the failed attempts of a mail, so it is processed again from the start."""
+        with self._connect() as conn:
+            conn.execute("DELETE FROM message_failures WHERE message_id = ?", (message_id,))
