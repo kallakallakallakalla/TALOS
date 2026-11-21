@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from app import insights, prompts
 from app.config import Settings, get_settings
 from app.reference import Reference
-from app.replay_data import REPLAY_DIR, ensure_replay_db, replay_labels
+from app.replay_data import REPLAY_DIR, replay_labels, replay_store
 from app.storage import MessageStore
 from app.tariffs import Tariffs
 
@@ -34,10 +34,10 @@ def _live_store(request: Request, settings: Settings) -> MessageStore:
 def _store(request: Request, settings: Settings, source: Source) -> MessageStore:
     if source == "live":
         return _live_store(request, settings)
-    path = ensure_replay_db()
-    if path is None:
+    store = replay_store()
+    if store is None:
         raise HTTPException(status_code=404, detail="No dry run recorded: run scripts/replay.py")
-    return MessageStore(str(path))
+    return store
 
 
 def _reference(settings: Settings) -> Reference:
@@ -63,12 +63,11 @@ async def sources(request: Request, settings: Settings = Depends(get_settings)) 
     """Which data can be shown, and which to open first: live once it has priced shipments."""
     live = _live_store(request, settings).list_shipments()
     live_real = [s for s in live if not insights.is_legacy(s)]
-    replay_path = ensure_replay_db()
-    replay = len(MessageStore(str(replay_path)).list_shipments()) if replay_path else 0
+    replay = replay_store()
     return {
         "live": {"shipments": len(live_real), "legacy": len(live) - len(live_real)},
-        "replay": {"available": replay_path is not None, "shipments": replay},
-        "default": "live" if live_real or not replay_path else "replay",
+        "replay": {"available": replay is not None, "shipments": len(replay.list_shipments()) if replay else 0},
+        "default": "live" if live_real or not replay else "replay",
     }
 
 

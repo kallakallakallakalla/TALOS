@@ -1,5 +1,7 @@
 import json
 import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -40,12 +42,24 @@ class MessageStore:
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         self._init_schema()
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self) -> Iterator[sqlite3.Connection]:
+        """One connection for one block: commit on success, roll back on error, always close.
+
+        `with sqlite3.connect(...)` alone only ends the transaction; the connection, and
+        with it three file handles, stays open until the garbage collector finds it. A
+        process that opens a connection per call then runs out of file handles (macOS
+        allows 256), so the connection is closed here.
+        """
         conn = sqlite3.connect(self._db_path, timeout=5.0)
-        conn.row_factory = sqlite3.Row
-        if self._db_path != ":memory:":
-            conn.execute("PRAGMA journal_mode=WAL;")
-        return conn
+        try:
+            conn.row_factory = sqlite3.Row
+            if self._db_path != ":memory:":
+                conn.execute("PRAGMA journal_mode=WAL;")
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def _init_schema(self) -> None:
         with self._connect() as conn:

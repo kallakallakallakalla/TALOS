@@ -31,6 +31,20 @@ def replay_labels(replay_dir: Path = REPLAY_DIR) -> list[dict]:
     return json.loads(path.read_text())["classified"] if path.exists() else []
 
 
+_stores: dict[str, MessageStore] = {}
+
+
+def replay_store(replay_dir: Path = REPLAY_DIR) -> MessageStore | None:
+    """The replay database as a store, opened once per process; None if there is no replay."""
+    path = ensure_replay_db(replay_dir)
+    if path is None:
+        return None
+    key = str(path)
+    if key not in _stores:
+        _stores[key] = MessageStore(key)
+    return _stores[key]
+
+
 def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURES_DIR) -> Path | None:
     """Path of the replay database, rebuilt from `result.json` if it is missing.
 
@@ -67,12 +81,9 @@ def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURE
             )
             store.save_processed_message(mails[row["id"]], decision, model="replay")
 
-    # Fold the write-ahead log into the one file and close it before it gets its final name.
-    conn = store._connect()  # noqa: SLF001 - same package, one-off maintenance call
-    try:
+    # Fold the write-ahead log into the one file before it gets its final name.
+    with store._connect() as conn:  # noqa: SLF001 - same package, one-off maintenance call
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
-    finally:
-        conn.close()
     building.rename(db_path)
     for leftover in replay_dir.glob("replay.db.building*"):
         leftover.unlink(missing_ok=True)

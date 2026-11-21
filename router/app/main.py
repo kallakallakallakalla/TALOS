@@ -21,7 +21,7 @@ from app.mailbox_client import MailboxClient
 from app.poller import MailboxPoller
 from app.portal_client import PortalClient
 from app.reference import Reference
-from app.replay_data import REPLAY_DIR, ensure_replay_db
+from app.replay_data import REPLAY_DIR, replay_store
 from app.tariffs import Tariffs
 from app.workflow import Workflow
 from app.schemas import (
@@ -184,10 +184,10 @@ def get_view_store(
     """Read-only views can show the live DB or the last dry-run replay (scripts/replay.py)."""
     if source == "live":
         return store
-    replay_db = ensure_replay_db()  # rebuilt from result.json on a fresh checkout
-    if replay_db is None:
+    replay = replay_store()  # rebuilt from result.json on a fresh checkout
+    if replay is None:
         raise HTTPException(status_code=404, detail="No replay yet: run scripts/replay.py")
-    return MessageStore(str(replay_db))
+    return replay
 
 
 def get_mailbox_client(

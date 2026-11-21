@@ -1,6 +1,7 @@
 """The CRM figures and endpoints, checked against the committed dry-run replay."""
 
 import shutil
+import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -204,3 +205,25 @@ def test_an_unexpected_error_names_its_cause(client: TestClient, monkeypatch) ->
     monkeypatch.setattr(insights, "snapshot", broken)
     response = TestClient(app, raise_server_exceptions=False).get("/crm/api/snapshot")
     assert response.status_code == 500 and response.json() == {"detail": "RuntimeError: disk on fire"}
+
+
+def test_the_store_closes_every_connection(tmp_path: Path) -> None:
+    store = MessageStore(str(tmp_path / "store.db"))
+    with store._connect() as conn:  # noqa: SLF001
+        conn.execute("SELECT 1")
+    with pytest.raises(sqlite3.ProgrammingError):  # "Cannot operate on a closed database"
+        conn.execute("SELECT 1")
+
+
+@pytest.mark.skipif(not Path("/proc/self/fd").exists(), reason="needs /proc to count file handles")
+def test_requests_leave_no_database_file_open(client: TestClient) -> None:
+    """A page polls every 3 s for hours; macOS allows a process 256 open files."""
+
+    def open_databases() -> int:
+        return sum(".db" in str(link.resolve()) for link in Path("/proc/self/fd").iterdir() if link.is_symlink())
+
+    for _ in range(40):
+        assert client.get("/crm/api/version", params={"source": "replay"}).status_code == 200
+        assert client.get("/crm/api/snapshot").status_code == 200
+    client.get("/crm/api/snapshot", params={"source": "replay"})
+    assert open_databases() == 0
