@@ -388,3 +388,25 @@ async def test_a_carrier_mail_never_opens_a_shipment_even_if_classified_as_rfq(t
     h = Harness(tmp_path, llm=recorded_llm({1063: "rfq"}), send_enabled=True)
     await h.receive(1063)  # Elbkante's trucker quote
     assert h.store.list_shipments() == [] and h.platform.sent == []
+
+
+@pytest.mark.anyio
+async def test_after_the_legacy_backfill_old_threads_trigger_nothing(tmp_path: Path) -> None:
+    """Cutover: threads the old process handled are closed, so late replies do nothing."""
+    from scripts.backfill_legacy import LEGACY_NOTE, backfill
+
+    # Even if the classifier misreads a late reply as new details or a new request.
+    h = Harness(tmp_path, llm=recorded_llm({ROUND_4_ACCEPT: "customer_info", 2204: "rfq"}), send_enabled=True)
+    old_mails = [MAILS[i] for i in (ROUND_4_RFQ, *ROUND_4_TRUCKER_REPLIES)]
+    assert backfill(h.store, old_mails, Reference(h.settings.start_kit_dir)) == (5, 1)
+    assert backfill(h.store, old_mails, Reference(h.settings.start_kit_dir)) == (0, 0)  # idempotent
+    assert h.store.get_since_id() == 1079
+    assert (h.shipment().state, h.shipment().error) == (ShipmentState.FAILED, LEGACY_NOTE)
+
+    await h.receive(ROUND_4_ACCEPT)  # accept of the OLD process's quote
+    await h.receive(2204)  # "Thank you for confirming the booking..."
+    assert h.platform.sent == [] and h.platform.bookings == [] and h.platform.rate_reads == []
+    assert [s.id for s in h.store.list_shipments()] == [ROUND_4_RFQ]
+
+    await h.receive(1638)  # a NEW request after cutover is handled normally
+    assert h.shipment(1638) is not None and h.shipment(1638).error != LEGACY_NOTE
