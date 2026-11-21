@@ -167,7 +167,7 @@ class Harness:
 
     async def truckers_reply(self) -> None:
         """Each recorded trucker reply answers the request this router sent to that trucker."""
-        request_id = {m["to"]: m["id"] for m in self.platform.sent if m["subject"] == "trucker_request"}
+        request_id = {m["to"]: m["id"] for m in self.platform.sent if m["subject"].startswith("Pickup quote")}
         for reply_id in ROUND_4_TRUCKER_REPLIES:
             await self.receive(reply_id, in_reply_to=request_id[MAILS[reply_id].sender])
 
@@ -179,12 +179,15 @@ async def test_round_4_replay_quotes_1599_41_and_books_with_reference_947(tmp_pa
     await h.receive(ROUND_4_RFQ)
     assert h.shipment().state == ShipmentState.PRICING
     assert (h.shipment().zone, h.shipment().origin_airport) == ("51", "CGN")
-    requests = [m for m in h.platform.sent if m["subject"] == "trucker_request"]
+    requests = [m for m in h.platform.sent if m["subject"].startswith("Pickup quote")]
     assert sorted(m["to"] for m in requests) == [
         "bodenseefracht@hackloop.mail", "elbkante-logistik@hackloop.mail",
         "maintal-transport-logistik@hackloop.mail", "westfalenroute@hackloop.mail",
     ]  # fmt: skip
     assert all("679 kg" in m["body"] and "51896" in m["body"] for m in requests)
+    assert requests[0]["subject"] == "Pickup quote 51896 Bergisch Gladbach to CGN on 2026-11-28"
+    assert len({m["body"] for m in requests}) == 1  # one fixed text for all truckers
+    assert not any(schema == "ComposedMail" for schema, _, _ in h.llm.calls)  # no LLM call for it
     assert len(h.platform.rate_reads) == 8  # 4 airlines x (real weight + next break)
 
     await h.truckers_reply()  # the 4th answer triggers the quote, no timer needed

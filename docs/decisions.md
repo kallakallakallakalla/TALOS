@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–37 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–38 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -41,6 +41,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 | 35 | Prompt additions from the eval loop (lots, "import" wording, quoted mails, acknowledgements) | Proposed |
 | 36 | In a dry run, trucker replies are matched to our request by sender | Proposed |
 | 37 | Tracking questions are answered from our own records, without asking carriers | User |
+| 38 | Trucker requests are a fixed template, not LLM-written (amends 13) | User |
 
 ---
 
@@ -278,3 +279,9 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Decision (user):** when a tracking request comes in, answer with the latest state we know from our database, as humanly as possible. No mail is written to an airline or trucker to look anything up, for now.
 - **How:** `talos-extract-tracking` reads which shipment is meant; `workflow.match_shipment()` finds it by booking reference, or by destination and gross weight (then ready date and origin); the composer writes a `tracking_answer` from the shipment's state and booking facts. Details and test results are in [implementation.md](implementation.md#tracking-answers-added-after-step-8-adr-37).
 - **Consequence:** shipments booked by the old process can't be answered with details after cutover, because our database has no booking facts for them.
+
+### 38 · Trucker requests are a fixed template
+
+- **Context:** ADR 13 had the LLM write every outgoing mail, including the pickup request to truckers. That request is the same list of values every time, its readers are carriers, and the "most human email" jury only reads mails to customers.
+- **Decision (user):** the trucker request is a template with the values filled in (`templates.py`, kind `trucker_request`): postal code and city, airport, ready date, pieces, gross weight, volume. The same text goes to every trucker of the zone.
+- **Consequence:** one LLM call less per shipment with pickup, and the request leaves a second or two earlier. All mails to customers and the booking request to airlines are still LLM-written with the fact check.

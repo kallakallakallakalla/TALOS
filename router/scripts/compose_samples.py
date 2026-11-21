@@ -1,4 +1,4 @@
-"""Write one sample of each of the six mail kinds with the live composer prompt and print it.
+"""Write one sample of each LLM-written mail kind with the live composer prompt and print it.
 
     .venv/bin/python scripts/compose_samples.py [--label staging]
 
@@ -27,10 +27,6 @@ SAMPLES = [
         "estimated_pickup": "2026-11-28", "estimated_departure": "2026-11-30",
         "estimated_arrival": "2026-12-03", "extra_questions": ["earliest arrival at ORD"],
         "valid_until": "2026-11-21 15:34 UTC", "must_appear": ["1599.41 EUR"],
-    }),
-    ("trucker_request", "trucker", "", None, {
-        **_SHIPMENT, "pickup_postal_code": "51896", "pickup_city": "Bergisch Gladbach",
-        "airport": "CGN", "must_appear": ["51896", "CGN", "2026-11-28", "679 kg", "4.19 cbm"],
     }),
     ("clarification", "customer", "Mira", "Air freight quote to PVG", {
         "missing_fields": ["pickup address with postal code, or the German airport you deliver the goods to"],

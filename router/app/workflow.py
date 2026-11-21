@@ -18,7 +18,7 @@ from typing import Any
 
 from langfuse import get_client, observe, propagate_attributes
 
-from app import pricing
+from app import pricing, templates
 from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
@@ -302,7 +302,11 @@ class Workflow:
         await self._maybe_quote(shipment)
 
     async def _request_truckers(self, shipment: Shipment, trucker_emails: list[str]) -> None:
-        """One request text, sent to each trucker of the zone; each is asked once (ADR 05)."""
+        """The same fixed request to each trucker of the zone; each is asked once (ADR 05).
+
+        A template, not the LLM (ADR 38): the readers are carriers who need the numbers,
+        and skipping the call gets the request out a second or two earlier.
+        """
         if not trucker_emails:
             return
         request = shipment.request
@@ -311,18 +315,10 @@ class Workflow:
             "pickup_postal_code": request.pickup_postal_code,
             "pickup_city": request.pickup_city,
             "airport": shipment.origin_airport,
-            "must_appear": [
-                request.pickup_postal_code,
-                shipment.origin_airport,
-                _kg(request.gross_kg),
-                _cbm(request.volume_cbm),
-            ],
         }
-        mail, used_template = await self._composer.compose(
-            "trucker_request", facts, recipient_role="trucker", language="en"
-        )
+        mail = templates.render("trucker_request", facts, self._settings.mail_signature)
         for email in trucker_emails:
-            out_id = await self._send("trucker_request", email, mail, shipment.id, None, used_template)
+            out_id = await self._send("trucker_request", email, mail, shipment.id, None, True)
             self._store.save_trucker_request(
                 TruckerRequest(
                     out_message_id=out_id,
