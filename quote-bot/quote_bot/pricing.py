@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -32,6 +33,8 @@ class Airline:
 
     @property
     def label(self) -> str:
+        if not self.code:
+            return self.name
         return f"{self.name} ({self.code})" if self.name and self.name != self.code else self.code
 
 
@@ -168,11 +171,13 @@ def grand_total(lot: "LotQuote") -> tuple[Decimal | None, str, Decimal | None]:
 
 
 class Pricer:
-    def __init__(self, client: FiveUClient, lanes: LaneMap, brackets: BracketCache, workers: int = 8):
+    def __init__(self, client: FiveUClient, lanes: LaneMap, brackets: BracketCache, workers: int = 8,
+                 tariffs=None):
         self.client = client
         self.lanes = lanes
         self.brackets = brackets
         self.workers = workers
+        self.tariffs = tariffs  # TariffStore: airlines from rate sheets (booked by e-mail)
         self.airline_key = "code"  # switches to "name" if the portal rejects codes
 
     def _param(self, a: Airline) -> str:
@@ -221,6 +226,25 @@ class Pricer:
             res.break_applied = True
         return res
 
+    def _price_tariff(self, t, s: Shipment) -> AirlineResult:
+        from .tariffs import price_lane
+
+        p = price_lane(t, float(s.weight_kg), float(s.volume_cbm or 0))
+        slug = re.sub(r"[^A-Z]", "", t.carrier.upper())[:8] or "TARIFF"
+        rate = {
+            "rate_id": f"TAR-{slug}-{s.origin}{s.destination}-{int(time.time() * 1000) % 10**9}",
+            "airline": t.carrier, "airline_code": "", "origin": s.origin, "destination": s.destination,
+            "weight_kg": f"{p['billed']:g}", "chargeable_weight_kg": f"{p['chargeable']:.1f}",
+            "total": str(p["total"]), "currency": t.currency or "EUR", "transit_days": t.transit_days,
+            "valid_until": f"{t.valid_to}T23:59:59Z" if t.valid_to else None, "source": "tariff",
+            "carrier_email": t.carrier_email, "tariff_source": t.source,
+            "breakdown": {"break_kg": p["break"], "rate": p["rate"], "freight": str(p["freight"]),
+                          "surcharges": str(p["surcharges"]), "minimum": t.minimum},
+        }
+        res = AirlineResult(Airline("", t.carrier), rate=rate, base_rate=rate)
+        res.break_applied = p["billed"] > p["chargeable"]
+        return res
+
     def quote(self, s: Shipment, deadline: float) -> LotQuote:  # noqa: C901
         lot = LotQuote(s)
         if not s.origin or not s.destination:
@@ -230,12 +254,22 @@ class Pricer:
             lot.flags.append("weight missing")
             return lot
         airlines = self.lanes.airlines(s.origin, s.destination)
-        if not airlines:
+        tariff_lanes = []
+        if self.tariffs is not None:
+            portal = {a.name.lower() for a in airlines}
+            tariff_lanes = [t for t in self.tariffs.lanes(s.origin, s.destination) if t.carrier.lower() not in portal]
+        if not airlines and not tariff_lanes:
             lot.flags.append(f"lane {s.origin}-{s.destination} not served")
             return lot
 
-        with ThreadPoolExecutor(max_workers=max(1, min(self.workers, len(airlines)))) as ex:
-            lot.results = list(ex.map(lambda a: self._price_airline(a, s, deadline), airlines))
+        if airlines:
+            with ThreadPoolExecutor(max_workers=max(1, min(self.workers, len(airlines)))) as ex:
+                lot.results = list(ex.map(lambda a: self._price_airline(a, s, deadline), airlines))
+        for t in tariff_lanes:
+            try:
+                lot.results.append(self._price_tariff(t, s))
+            except Exception as exc:  # noqa: BLE001
+                log.warning("tariff price %s %s-%s failed: %s", t.carrier, s.origin, s.destination, exc)
 
         priced = [r for r in lot.results if r.total is not None]
         if not priced:

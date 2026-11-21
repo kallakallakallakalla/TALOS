@@ -1,9 +1,9 @@
-.env
+# NOTE: .env (team API key) and quote_bot.sqlite3 (CRM state) are committed on purpose (private repo).
 .venv/
 __pycache__/
 *.pyc
 .DS_Store
-.idea/
-*.sqlite3
-mail_logs/
-dump.txt*
+*.sqlite3.lock
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

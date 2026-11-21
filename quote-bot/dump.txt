@@ -1,0 +1,463 @@
+
+===== GET /v1/me =====
+{
+  "team": "talos",
+  "display_name": "TALOS",
+  "mailbox": "talos@hackloop.mail"
+}
+
+===== GET /v1/mailbox/messages?since_id=0&limit=5 =====
+{
+  "messages": [],
+  "next_since_id": 0
+}
+
+===== GET /v1/portal/ports =====
+{
+  "lanes": [
+    {
+      "origin": "CGN",
+      "destination": "DEL",
+      "airlines": [
+        {
+          "code": "JP",
+          "name": "Juniper Cargo Lines"
+        },
+        {
+          "code": "UV",
+          "name": "Ultraviolet Air Freight"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "DFW",
+      "airlines": [
+        {
+          "code": "LM",
+          "name": "Lumen Air Cargo"
+        },
+        {
+          "code": "UV",
+          "name": "Ultraviolet Air Freight"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "EZE",
+      "airlines": [
+        {
+          "code": "UV",
+          "name": "Ultraviolet Air Freight"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "LIM",
+      "airlines": [
+        {
+          "code": "NV",
+          "name": "Nova Atlas Cargo"
+        },
+        {
+          "code": "XC",
+          "name": "Xenon Cargo Airlines"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "MIA",
+      "airlines": [
+        {
+          "code": "LM",
+          "name": "Lumen Air Cargo"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "NBO",
+      "airlines": [
+        {
+          "code": "AU",
+          "name": "Aurelia Air Cargo"
+        },
+        {
+          "code": "FQ",
+          "name": "Fjordline Air Cargo"
+        },
+        {
+          "code": "TM",
+          "name": "Tamarind Airways"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "ORD",
+      "airlines": [
+        {
+          "code": "AU",
+          "name": "Aurelia Air Cargo"
+        },
+        {
+          "code": "IB",
+          "name": "Ibisair Cargo"
+        },
+        {
+          "code": "MD",
+          "name": "Meridian Freightways"
+        },
+        {
+          "code": "XC",
+          "name": "Xenon Cargo Airlines"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "SCL",
+      "airlines": [
+        {
+          "code": "BX",
+          "name": "Borealis Freight Airways"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "SGN",
+      "airlines": [
+        {
+          "code": "JP",
+          "name": "Juniper Cargo Lines"
+        },
+        {
+          "code": "LM",
+          "name": "Lumen Air Cargo"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "SIN",
+      "airlines": [
+        {
+          "code": "FQ",
+          "name": "Fjordline Air Cargo"
+        },
+        {
+          "code": "UV",
+          "name": "Ultraviolet Air Freight"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "SYD",
+      "airlines": [
+        {
+          "code": "NV",
+          "name": "Nova Atlas Cargo"
+        }
+      ]
+    },
+    {
+      "origin": "CGN",
+      "destination": "TLV",
+      "airlines": [
+        {
+          "code": "TM",
+          "name": "Tamarind Airways"
+        }
+      ]
+    },
+    {
+      "origin": "DUS",
+      "destination": "ATL",
+      "airlines": [
+        {
+          "code": "MD",
+          "name": "Meridian Freightways"
+        },
+        {
+          "code": "PL",
+          "name": "Polaris Air Logistics"
+        },
+        {
+          "code": "RV",
+          "name": "Riverbend Airlines Cargo"
+        },
+        {
+          "code": "SL",
+          "name": "Solace Air Cargo"
+        }
+      ]
+    },
+    {
+      "origin": "DUS",
+      "destination": "BOG",
+      "airlines": [
+        {
+          "code": "RV",
+          "name": "Riverbend Airlines Cargo"
+        }
+      ]
+    },
+    {
+      "origin": "DUS",
+      "destination": "BOM",
+      "airlines": [
+        {
+          "code": "FQ",
+          "name": "Fjordline Air Cargo"
+        },
+        {
+          "code": "LM",
+          "name": "Lumen Air Cargo"
+        },
+        {
+          "code": "XC",
+          "name": "Xenon Cargo Airlines"
+        }
+      ]
+    },
+    {
+      "origin": "DUS",
+      "destination": "DEL",
+      "airlines"
+... (27832 chars, truncated)
+
+===== GET /v1/portal/brackets?airline=JP =====
+{
+  "airline": "Juniper Cargo Lines",
+  "airline_code": "JP",
+  "breaks_kg": [
+    0,
+    45,
+    100,
+    300,
+    500,
+    1000
+  ]
+}
+
+===== GET /v1/portal/rates CGN-DEL JP 100 kg 0.5 cbm =====
+{
+  "rate_id": "R-ciypKWm1bwrO8NmQ",
+  "airline": "Juniper Cargo Lines",
+  "airline_code": "JP",
+  "origin": "CGN",
+  "destination": "DEL",
+  "weight_kg": "100",
+  "chargeable_weight_kg": "100",
+  "total": "371.00",
+  "currency": "EUR",
+  "transit_days": 5,
+  "valid_until": "2026-11-21T15:04:42.351364+00:00",
+  "dataset_version": "v1"
+}
+
+===== GET /v1/gateway/models =====
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "chat-latest",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-4.1",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-4.1-mini",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-4o",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-4o-mini",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.1",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.2",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.2-pro",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.3-codex",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.4",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.4-mini",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.4-nano",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.4-pro",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.5",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.5-pro",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5.6-terra",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5-mini",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5-nano",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-5-pro",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6.1-sol",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6.1-terra",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6.2-astra",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6.2-sol",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6-astra",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6-luna",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "gpt-6-sol",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "o3",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "text-embedding-3-large",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    },
+    {
+      "id": "text-embedding-3-small",
+      "object": "model",
+      "created": 0,
+      "owned_by": "openai"
+    }
+  ]
+}
+
+rate limit: 9/10

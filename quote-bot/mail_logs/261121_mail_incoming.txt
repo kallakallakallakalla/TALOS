@@ -1,0 +1,1552 @@
+==============================================================================
+logged:   2026-11-21 15:34:36
+id:       1
+received: 2026-11-21T15:34:35.950836+00:00
+from:     Anna <anna@shipper.de>
+subject:  RFQ FRA-JFK
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+please quote 90 kg, 0.3 cbm, 2 pcs.
+BR Anna
+
+==============================================================================
+logged:   2026-11-21 15:34:37
+id:       2
+received: 2026-11-21T15:34:35.950836+00:00
+from:     bob@corp.cn
+subject:  air freight
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Need air freight Munich to Shanghai, 200kg, 2 pcs 120x80x100 cm
+
+==============================================================================
+logged:   2026-11-21 15:34:37
+id:       3
+received: 2026-11-21T15:34:35.950836+00:00
+from:     c@x.com
+subject:  Where is my shipment?
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Status of AWB 020-12345678 please
+
+==============================================================================
+logged:   2026-11-21 15:34:37
+id:       4
+received: 2026-11-21T15:34:35.950836+00:00
+from:     team1@5u.ai
+subject:  Re: RFQ FRA-JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+our own quote
+
+==============================================================================
+logged:   2026-11-21 15:34:37
+id:       5
+received: 2026-11-21T15:34:35.950836+00:00
+from:     Lars <lars@medtech.se>
+subject:  Fastest air freight to ORD
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hi, please quote urgently: pickup at 51447 Bergisch Gladbach on 25.11.2026, deliver to Chicago ORD. 3 pallets, 300 kg, 1.5 cbm. Thanks
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       6
+received: 2026-11-21T15:34:35.950836+00:00
+from:     t1@trucks.test
+subject:  Re: Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Our all-in price: EUR 180.00
+
+> Hello Truck One,
+> 
+> please quote the following pickup:
+> From: 51447 Bergisch Gladbach
+> To: CGN airport (air export warehouse)
+> Date: 2026-11-25
+> Pieces: 3
+> Weight: 300 kg
+> Volume: 1.5 cbm
+> 
+> Please reply with your all-in price in EUR.
+> 
+> Best regards,
+> Air Freight Desk
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       7
+received: 2026-11-21T15:34:35.950836+00:00
+from:     t2@trucks.test
+subject:  Re: Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Base EUR 120 + fuel EUR 30, total EUR 150
+
+> Hello Truck Two,
+> 
+> please quote the following pickup:
+> From: 51447 Bergisch Gladbach
+> To: CGN airport (air export warehouse)
+> Date: 2026-11-25
+> Pieces: 3
+> Weight: 300 kg
+> Volume: 1.5 cbm
+> 
+> Please reply with your all-in price in EUR.
+> 
+> Best regards,
+> Air Freight Desk
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       8
+received: 2026-11-21T15:34:35.950836+00:00
+from:     t3@trucks.test
+subject:  Re: Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Sorry, no capacity that day.
+
+> Hello Truck Three,
+> 
+> please quote the following pickup:
+> From: 51447 Bergisch Gladbach
+> To: CGN airport (air export warehouse)
+> Date: 2026-11-25
+> Pieces: 3
+> Weight: 300 kg
+> Volume: 1.5 cbm
+> 
+> Please reply with your all-in price in EUR.
+> 
+> Best regards,
+> Air Freight Desk
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       9
+received: 2026-11-21T15:34:35.950836+00:00
+from:     Lars <lars@medtech.se>
+subject:  Re: Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Great, we accept your offer. Please book.
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       10
+received: 2026-11-21T15:34:35.950836+00:00
+from:     Lars <lars@medtech.se>
+subject:  Shipment status?
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hi, where is our shipment? Any update?
+
+==============================================================================
+logged:   2026-11-21 15:34:40
+id:       11
+received: 2026-11-21T15:34:35.950836+00:00
+from:     t2@trucks.test
+subject:  Re: Pickup order 51447 Bergisch Gladbach to CGN
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Base EUR 120 + fuel EUR 30, total EUR 150
+
+> Hi,
+> 
+> thanks a lot for reaching out!
+> 
+> we accept your offer of EUR 150.0 for the pickup 51447 Bergisch Gladbach -> CGN. Booking reference: BK-00001.
+> 
+> Best regards,
+> Air Freight Desk
+
+==============================================================================
+logged:   2026-11-21 16:54:25
+id:       1623
+received: 2026-11-21T15:36:41.119469+00:00
+from:     fjordline-air-cargo@hackloop.mail
+subject:  Booking BK-8RCF17DZ confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-8RCF17DZ is confirmed.
+
+Booking reference: BK-8RCF17DZ
+Your reference: 1470
+Airline: Fjordline Air Cargo (FQ)
+Lane: DUS-KUL
+Price: 3949.95 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Fjordline Air Cargo bookings
+
+==============================================================================
+logged:   2026-11-21 16:54:26
+id:       379
+received: 2026-11-21T15:02:48.925333+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That seems too low to be right, so we will not go ahead with it.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:54:28
+id:       644
+received: 2026-11-21T15:09:52.663220+00:00
+from:     sonnberg-roesterei@hackloop.mail
+subject:  Re: Air freight quote request to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That seems too low to be right, so we will not go ahead with it.
+
+Kind regards
+Anna Sonnberg
+Head of Purchasing and Logistics
+Sonnberg Kaffeeroesterei GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:28
+id:       871
+received: 2026-11-21T15:14:02.395467+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:30
+id:       1156
+received: 2026-11-21T15:20:14.952741+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:32
+id:       1304
+received: 2026-11-21T15:25:48.142138+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Fastest air freight quote: STR to EZE
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:54:34
+id:       1503
+received: 2026-11-21T15:31:51.062498+00:00
+from:     kessler-feinmechanik@hackloop.mail
+subject:  Re: Air freight quote request: DUS to KUL
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Mit freundlichen Gruessen / Kind regards
+Jonas Kessler
+Logistics Coordinator
+Kessler Feinmechanik GmbH, Ulm
+
+==============================================================================
+logged:   2026-11-21 16:54:35
+id:       1701
+received: 2026-11-21T15:37:54.779681+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote: MUC to LAX
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:37
+id:       1883
+received: 2026-11-21T15:44:01.025374+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:54:39
+id:       1814
+received: 2026-11-21T15:41:56.120435+00:00
+from:     tracking@hackloop.mail
+subject:  Status of our shipment DUS to KUL, 1549 kg
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+could you please tell me the current status of our shipment: Kessler Feinmechanik GmbH, DUS to KUL, 1549 kg, ready on 2026-11-26? Where is it now?
+
+Mit freundlichen Gruessen / Kind regards
+Jonas Kessler
+Logistics Coordinator
+Kessler Feinmechanik GmbH, Ulm
+
+==============================================================================
+logged:   2026-11-21 16:54:40
+id:       2199
+received: 2026-11-21T15:54:39.035944+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for booking the shipment and confirming the details.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:54:42
+id:       2200
+received: 2026-11-21T15:54:40.052463+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. Please keep us updated.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:48
+id:       2204
+received: 2026-11-21T15:54:42.072880+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. Please keep us informed about the pickup.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:50
+id:       2207
+received: 2026-11-21T15:54:45.098515+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Fastest air freight quote: STR to EZE
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for getting the shipment booked. Glad it’s all set!
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:54:52
+id:       2210
+received: 2026-11-21T15:54:46.114768+00:00
+from:     kessler-feinmechanik@hackloop.mail
+subject:  Re: Air freight quote request: DUS to KUL
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. I appreciate your assistance.
+
+Mit freundlichen Gruessen / Kind regards
+Jonas Kessler
+Logistics Coordinator
+Kessler Feinmechanik GmbH, Ulm
+
+==============================================================================
+logged:   2026-11-21 16:54:53
+id:       2211
+received: 2026-11-21T15:54:48.137434+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote: MUC to LAX
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for the booking confirmation. Please keep us updated.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:54:58
+id:       2212
+received: 2026-11-21T15:54:49.155699+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:55:00
+id:       2215
+received: 2026-11-21T15:54:53.189473+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for booking the shipment and confirming.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:55:03
+id:       2216
+received: 2026-11-21T15:54:55.213353+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. Please keep us updated.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:05
+id:       2218
+received: 2026-11-21T15:54:56.695301+00:00
+from:     xenon-cargo-airlines@hackloop.mail
+subject:  Booking BK-L0WO4HRK confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-L0WO4HRK is confirmed.
+
+Booking reference: BK-L0WO4HRK
+Your reference: TALOS-275-1
+Airline: Xenon Cargo Airlines (XC)
+Lane: CGN-ORD
+Price: 1920.00 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Xenon Cargo Airlines bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:08
+id:       2219
+received: 2026-11-21T15:55:00.245739+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for arranging the shipment and confirming the booking.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:10
+id:       2222
+received: 2026-11-21T15:55:03.023683+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Fastest air freight quote: STR to EZE
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! I appreciate the quick turnaround.
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:55:12
+id:       2223
+received: 2026-11-21T15:55:03.023945+00:00
+from:     elbkante-logistik@hackloop.mail
+subject:  Re: Pickup order 51896 Bergisch Gladbach to CGN
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+thank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.
+
+Best regards
+Elbkante Logistik
+elbkante-logistik@hackloop.mail
+
+==============================================================================
+logged:   2026-11-21 16:55:12
+id:       2224
+received: 2026-11-21T15:55:03.981296+00:00
+from:     fjordline-air-cargo@hackloop.mail
+subject:  Booking BK-SULEZO4W confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-SULEZO4W is confirmed.
+
+Booking reference: BK-SULEZO4W
+Your reference: TALOS-1233-1
+Airline: Fjordline Air Cargo (FQ)
+Lane: STR-EZE
+Price: 4408.52 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Fjordline Air Cargo bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:12
+id:       2225
+received: 2026-11-21T15:55:03.981296+00:00
+from:     xenon-cargo-airlines@hackloop.mail
+subject:  Booking BK-ERC5OOW3 confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-ERC5OOW3 is confirmed.
+
+Booking reference: BK-ERC5OOW3
+Your reference: TALOS-947-1
+Airline: Xenon Cargo Airlines (XC)
+Lane: CGN-ORD
+Price: 1483.43 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Xenon Cargo Airlines bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:12
+id:       2226
+received: 2026-11-21T15:55:03.981296+00:00
+from:     fjordline-air-cargo@hackloop.mail
+subject:  Booking BK-UKFNU9UN confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-UKFNU9UN is confirmed.
+
+Booking reference: BK-UKFNU9UN
+Your reference: TALOS-741-1
+Airline: Fjordline Air Cargo (FQ)
+Lane: DUS-JFK
+Price: 3696.00 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Fjordline Air Cargo bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:12
+id:       2228
+received: 2026-11-21T15:55:06.048738+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote: MUC to LAX
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for the booking confirmation. Please keep us informed of any updates.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:18
+id:       2232
+received: 2026-11-21T15:55:11.097977+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:55:20
+id:       2234
+received: 2026-11-21T15:55:13.106140+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for booking the shipment and confirming.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:55:23
+id:       2235
+received: 2026-11-21T15:55:13.993617+00:00
+from:     fjordline-air-cargo@hackloop.mail
+subject:  Booking BK-4Z53E4AB confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-4Z53E4AB is confirmed.
+
+Booking reference: BK-4Z53E4AB
+Your reference: TALOS-1638-1
+Airline: Fjordline Air Cargo (FQ)
+Lane: MUC-LAX
+Price: 2780.00 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Fjordline Air Cargo bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:23
+id:       2236
+received: 2026-11-21T15:55:13.993617+00:00
+from:     borealis-freight-airways@hackloop.mail
+subject:  Booking BK-WWP8NOYB confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-WWP8NOYB is confirmed.
+
+Booking reference: BK-WWP8NOYB
+Your reference: TALOS-1844-1
+Airline: Borealis Freight Airways (BX)
+Lane: MUC-CAI
+Price: 1475.00 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Borealis Freight Airways bookings
+
+==============================================================================
+logged:   2026-11-21 16:55:23
+id:       2237
+received: 2026-11-21T15:55:15.121035+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for booking our shipment and sending the confirmation. Please keep us informed of any changes.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:28
+id:       2241
+received: 2026-11-21T15:55:21.159980+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. Please keep us informed about the pickup.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:30
+id:       2243
+received: 2026-11-21T15:55:23.183186+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Fastest air freight quote: STR to EZE
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for getting the shipment booked and sending over the confirmation. Hope you’re having a good week!
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:55:31
+id:       2245
+received: 2026-11-21T15:55:25.199923+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote: MUC to LAX
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for booking our shipment and for the confirmation. Please keep us informed of any updates.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:37
+id:       2248
+received: 2026-11-21T15:55:31.231046+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking. Please keep me posted.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:55:39
+id:       2250
+received: 2026-11-21T15:55:34.253664+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking. Please keep me posted on pickup.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:55:41
+id:       2251
+received: 2026-11-21T15:55:36.272338+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for the booking confirmation. We will deliver the shipment to DUS ourselves.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:55:47
+id:       2267
+received: 2026-11-21T15:55:39.435542+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Air freight quote to GRU
+reply:    False | attachments: 1
+------------------------------------------------------------------------------
+Hi there,
+
+Hope your week’s going well. Could you send me an all-in price in EUR for the cheapest air freight option to GRU (Sao Paulo, BR)? Please include pickup from our site in 61391 (Bad Homburg), Germany, and arrange the truck to the departure airport.
+
+The shipment will be ready for pickup on 2026-11-25. It’s 3 pieces of industrial adhesives, with a gross weight of 715 kg and a total volume of 2.65 cbm. The goods are general cargo, non-dangerous, and I’ve attached our packing specification.
+
+Thanks for taking a look!
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:55:54
+id:       2322
+received: 2026-11-21T15:55:44.479444+00:00
+from:     rheintal-elektronik@hackloop.mail
+subject:  Re: Air freight quote: MUC to LAX
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for arranging the booking and sending us the confirmation.
+
+Viele Gruesse / Many greetings
+Deniz Yilmaz
+Rheintal Elektronik GmbH
+
+==============================================================================
+logged:   2026-11-21 16:56:00
+id:       2335
+received: 2026-11-21T15:55:49.513963+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:56:03
+id:       2339
+received: 2026-11-21T15:55:51.529652+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for booking the shipment and confirming it’s ready to go.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:56:05
+id:       2340
+received: 2026-11-21T15:55:53.546523+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for arranging the shipment and confirming the booking. Please keep us updated.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:56:16
+id:       2377
+received: 2026-11-21T15:56:13.738809+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:56:18
+id:       2403
+received: 2026-11-21T15:56:15.978001+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Fastest air freight to ORD
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking. Please keep me posted on pickup.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 16:56:23
+id:       2410
+received: 2026-11-21T15:56:17.007380+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for booking our shipment. We appreciate the confirmation.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:56:25
+id:       2413
+received: 2026-11-21T15:56:19.023581+00:00
+from:     hansekogge-trucking@hackloop.mail
+subject:  Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Dear Air Freight Desk,
+
+Thank you for your enquiry. Our all-in price for collection in Bad Homburg and delivery to the air export warehouse at Frankfurt Airport is 147.35 EUR.
+
+Pickup time: 23 hours
+Offer valid until: 21 Nov 2026 16:10 UTC
+Offer reference: TRK-781
+
+No booking is required.
+
+Kind regards,
+Hansekogge Trucking
+
+==============================================================================
+logged:   2026-11-21 16:56:25
+id:       2414
+received: 2026-11-21T15:56:20.037914+00:00
+from:     westfalenroute@hackloop.mail
+subject:  Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Dear Air Freight Desk,
+
+Our fixed all-in price for pickup in Bad Homburg and delivery to the air export warehouse at Frankfurt Airport is 157.50 EUR.
+
+Pickup time: 23 hours
+Offer valid until: 21 Nov 2026 16:10 UTC
+Offer reference: TRK-782
+
+No booking is required.
+
+Kind regards,
+Westfalenroute
+
+==============================================================================
+logged:   2026-11-21 16:56:25
+id:       2415
+received: 2026-11-21T15:56:20.037856+00:00
+from:     spessart-spedition@hackloop.mail
+subject:  Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+Thanks for your request. Our all-in price for the pickup from Bad Homburg to Frankfurt Airport is 168.80 EUR.
+
+Pickup time: 25 hours
+Price valid until: 21 Nov 2026 16:10 UTC
+Offer reference: TRK-780
+
+No booking is required.
+
+Best regards,
+Spessart Spedition
+
+==============================================================================
+logged:   2026-11-21 16:56:25
+id:       2416
+received: 2026-11-21T15:56:20.038400+00:00
+from:     bodenseefracht@hackloop.mail
+subject:  Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+All-in price for the Bad Homburg pickup and delivery to the FRA air export warehouse: 75.60 EUR.
+Pickup time: 30 hours.
+Price valid until 21 Nov 2026 16:10 UTC.
+Offer reference: TRK-783. No booking required.
+
+Bodenseefracht
+
+==============================================================================
+logged:   2026-11-21 16:56:25
+id:       2417
+received: 2026-11-21T15:56:20.038554+00:00
+from:     nordlicht-haulage@hackloop.mail
+subject:  Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hi Air Freight Desk,
+
+Thanks for reaching out! Our all-in price for the pickup in Bad Homburg and delivery to the air export warehouse at Frankfurt Airport is 97.75 EUR.
+
+Pickup time: 30 hours. The quote is valid until 21 Nov 2026 16:10 UTC.
+
+Your offer reference is TRK-784. No booking is needed.
+
+Best regards,
+Nordlicht Haulage
+
+==============================================================================
+logged:   2026-11-21 16:56:30
+id:       2427
+received: 2026-11-21T15:56:28.108055+00:00
+from:     nordlicht-audio@hackloop.mail
+subject:  Re: Air freight quote: MUC to CAI
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking.
+
+Mira Petersen
+Nordlicht Audio
+
+==============================================================================
+logged:   2026-11-21 16:56:34
+id:       2428
+received: 2026-11-21T15:56:34.146525+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Air freight quote to GRU
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer, but these goods are dangerous goods and you quoted without asking us for the dangerous goods documents, so we will not go ahead with it.
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:56:39
+id:       2430
+received: 2026-11-21T15:56:36.167218+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for arranging the shipment and confirming the booking.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:56:48
+id:       2434
+received: 2026-11-21T15:56:46.211533+00:00
+from:     weidner-spielwaren@hackloop.mail
+subject:  Re: Air freight quote to GRU
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for getting the shipment booked and for the update. Hope your week’s going well!
+
+Cheers,
+Klaus Weidner
+Weidner Spielwaren GmbH, Nuremberg
+
+==============================================================================
+logged:   2026-11-21 16:56:52
+id:       2436
+received: 2026-11-21T15:56:52.253668+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for confirming the booking. Please keep us updated.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:57:07
+id:       2438
+received: 2026-11-21T15:57:05.306528+00:00
+from:     auer-maschinenbau@hackloop.mail
+subject:  Re: Air freight quote: DUS to JFK
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for arranging the booking and sending the confirmation. We will deliver the shipment to DUS ourselves.
+
+Best greetings from Regensburg
+Tobias Auer
+Versand / Shipping
+Auer Maschinenbau GmbH
+
+==============================================================================
+logged:   2026-11-21 16:57:08
+id:       2439
+received: 2026-11-21T15:57:07.322992+00:00
+from:     bodenseefracht@hackloop.mail
+subject:  Re: Pickup order 61391 Bad Homburg to FRA
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+thank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.
+
+Best regards
+Bodenseefracht
+bodenseefracht@hackloop.mail
+
+==============================================================================
+logged:   2026-11-21 16:57:14
+id:       2440
+received: 2026-11-21T15:57:14.044697+00:00
+from:     juniper-cargo-lines@hackloop.mail
+subject:  Booking BK-ZM78K6DQ confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-ZM78K6DQ is confirmed.
+
+Booking reference: BK-ZM78K6DQ
+Your reference: TALOS-2267-1
+Airline: Juniper Cargo Lines (JP)
+Lane: FRA-GRU
+Price: 2609.75 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Juniper Cargo Lines bookings
+
+==============================================================================
+logged:   2026-11-21 17:01:48
+id:       2540
+received: 2026-11-21T16:01:46.977362+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Air freight quote request: Lueneburg to Toronto
+reply:    False | attachments: 1
+------------------------------------------------------------------------------
+Hello,
+
+please quote air freight for this shipment:
+
+- Pickup: from our site at 21663 Lueneburg, Germany (please arrange the truck)
+- Destination airport: Toronto (YYZ), CA
+- Commodity: maintenance spray cans, 4 pieces
+- Gross weight: 855 kg
+- Volume: 3.74 cbm
+- Ready date: 2026-11-26
+- Service: the cheapest option
+- Our shipper's letter of instruction is attached to this email
+- The goods are general cargo, non-dangerous
+
+Please reply with your all-in price in EUR.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 17:02:23
+id:       2689
+received: 2026-11-21T16:02:21.198224+00:00
+from:     maintal-transport-logistik@hackloop.mail
+subject:  Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello Air Freight Desk,
+
+Thank you for your request. Our all-in price for the pickup in Lueneburg and delivery to the air export warehouse at HAM is 220.60 EUR.
+
+Pickup time: 14 hours
+Price valid until: 21 Nov 2026 16:16 UTC
+Offer reference: TRK-843
+
+No booking is required for the pickup.
+
+Best regards,
+Maintal Transport Logistik
+
+==============================================================================
+logged:   2026-11-21 17:02:23
+id:       2691
+received: 2026-11-21T16:02:21.198473+00:00
+from:     domblick-kurierdienst@hackloop.mail
+subject:  Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello Air Freight Desk,
+
+Thanks for getting in touch! Our all-in price for the pickup to Hamburg Airport is 166.50 EUR.
+
+Pickup time: 26 hours. The quote is valid until 21 Nov 2026 16:16 UTC.
+
+No booking is needed for this pickup. Our offer reference is TRK-841.
+
+Best regards,
+Domblick Kurierdienst
+
+==============================================================================
+logged:   2026-11-21 17:02:23
+id:       2692
+received: 2026-11-21T16:02:21.199409+00:00
+from:     odenwald-cargo@hackloop.mail
+subject:  Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Dear Air Freight Desk,
+
+Our fixed all-in price for the requested pickup and delivery to the HAM air export warehouse is 119.30 EUR.
+
+Pickup time: 26 hours
+Price valid until: 21 Nov 2026 16:16 UTC
+Offer reference: TRK-850
+
+No booking is required.
+
+Kind regards,
+Odenwald Cargo
+
+==============================================================================
+logged:   2026-11-21 17:02:23
+id:       2695
+received: 2026-11-21T16:02:22.229020+00:00
+from:     spessart-spedition@hackloop.mail
+subject:  Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+Thank you for your request. Our fixed, all-in price for the pickup to HAM airport is 120.30 EUR.
+
+Pickup time: 28 hours
+Price valid until: 21 Nov 2026 16:16 UTC
+Offer reference: TRK-856
+
+No booking is required for the pickup.
+
+Best regards,
+Spessart Spedition
+
+==============================================================================
+logged:   2026-11-21 17:02:23
+id:       2699
+received: 2026-11-21T16:02:22.229577+00:00
+from:     waldrand-transporte@hackloop.mail
+subject:  Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+All-in price for pickup in Lueneburg and delivery to the air export warehouse at Hamburg Airport: 193.60 EUR.
+Pickup time: 18 hours.
+Price valid until: 21 Nov 2026 16:16 UTC.
+Offer reference: TRK-852. No booking required.
+
+Waldrand Transporte
+
+==============================================================================
+logged:   2026-11-21 17:02:38
+id:       2760
+received: 2026-11-21T16:02:35.543446+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Air freight quote request: Lueneburg to Toronto
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer, but these goods are dangerous goods and you quoted without asking us for the dangerous goods documents, so we will not go ahead with it.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 17:02:53
+id:       2774
+received: 2026-11-21T16:02:50.678371+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Air freight quote request: Lueneburg to Toronto
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking. Please keep me posted on the pickup.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 17:03:08
+id:       2793
+received: 2026-11-21T16:03:06.765349+00:00
+from:     lindqvist-medtech@hackloop.mail
+subject:  Re: Air freight quote request: Lueneburg to Toronto
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking. Please keep me posted on pickup.
+
+Sara
+Lindqvist Medtech
+
+==============================================================================
+logged:   2026-11-21 17:03:13
+id:       2794
+received: 2026-11-21T16:03:11.794979+00:00
+from:     odenwald-cargo@hackloop.mail
+subject:  Re: Pickup order 21663 Lueneburg to HAM
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+thank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.
+
+Best regards
+Odenwald Cargo
+odenwald-cargo@hackloop.mail
+
+==============================================================================
+logged:   2026-11-21 17:03:16
+id:       2795
+received: 2026-11-21T16:03:14.212675+00:00
+from:     juniper-cargo-lines@hackloop.mail
+subject:  Booking BK-TH3RFFQ8 confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-TH3RFFQ8 is confirmed.
+
+Booking reference: BK-TH3RFFQ8
+Your reference: TALOS-2540-1
+Airline: Juniper Cargo Lines (JP)
+Lane: HAM-YYZ
+Price: 1966.50 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Juniper Cargo Lines bookings
+
+==============================================================================
+logged:   2026-11-21 17:07:52
+id:       2829
+received: 2026-11-21T16:07:50.280353+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Air freight quote: FRA to DOH
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hi there,
+
+Hope your week’s going well! Our buyer in Doha, QA, is importing some precision instruments from us in Germany, and I’m arranging the flight for their import shipment.
+
+We’ll deliver the goods to Frankfurt airport (FRA) ourselves, so there’s no pickup needed. The shipment will be ready on 2026-11-28 and consists of 6 pieces, with a gross weight of 102 kg and a total volume of 0.49 cbm.
+
+Could you send me an all-in price in EUR for the cheapest air freight option from FRA to DOH for this import?
+
+Thanks for your help!
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:08:22
+id:       2858
+received: 2026-11-21T16:08:21.054854+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thank you for your offer. That works for us, please go ahead and book it.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:08:37
+id:       2884
+received: 2026-11-21T16:08:35.233277+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hi, thanks for getting the shipment booked and letting me know. Hope you have a lovely day!
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:08:52
+id:       2890
+received: 2026-11-21T16:08:50.325490+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! I appreciate you keeping me in the loop.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:08:59
+id:       2899
+received: 2026-11-21T16:08:54.346193+00:00
+from:     ultraviolet-air-freight@hackloop.mail
+subject:  Booking BK-O5LKVQ5R confirmed
+reply:    False | attachments: 0
+------------------------------------------------------------------------------
+Hello,
+
+your booking BK-O5LKVQ5R is confirmed.
+
+Booking reference: BK-O5LKVQ5R
+Your reference: TALOS-2829-1
+Airline: Ultraviolet Air Freight (UV)
+Lane: FRA-DOH
+Price: 324.36 EUR
+Status: booked and ready to ship
+
+Kind regards,
+Ultraviolet Air Freight bookings
+
+==============================================================================
+logged:   2026-11-21 17:09:08
+id:       2912
+received: 2026-11-21T16:09:06.476463+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope you have a lovely day.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:09:23
+id:       2918
+received: 2026-11-21T16:09:21.570733+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope the rest of your week goes smoothly.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:09:38
+id:       2929
+received: 2026-11-21T16:09:36.671869+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope you have a lovely day.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:09:53
+id:       2931
+received: 2026-11-21T16:09:50.736562+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope the rest of your week goes well.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:10:08
+id:       2933
+received: 2026-11-21T16:10:06.803610+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope you’re having a good week.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:10:23
+id:       2935
+received: 2026-11-21T16:10:21.865755+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Glad that’s all sorted.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:10:38
+id:       2937
+received: 2026-11-21T16:10:35.926287+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! I appreciate you keeping us posted.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:10:54
+id:       2939
+received: 2026-11-21T16:10:51.993387+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope you have a lovely day.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:11:10
+id:       2941
+received: 2026-11-21T16:11:08.062813+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Glad it’s all sorted.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:11:24
+id:       2943
+received: 2026-11-21T16:11:23.121654+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! I appreciate the update and hope you have a lovely day.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:11:40
+id:       2945
+received: 2026-11-21T16:11:38.181021+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Hi there,
+
+Thanks for confirming the booking! I appreciate the update and hope you’re having a good week.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+
+==============================================================================
+logged:   2026-11-21 17:11:55
+id:       2947
+received: 2026-11-21T16:11:53.240635+00:00
+from:     hofmann-textilwerk@hackloop.mail
+subject:  Re: Air freight quote: FRA to DOH
+reply:    True | attachments: 0
+------------------------------------------------------------------------------
+Thanks for confirming the booking! Hope the rest of your day goes smoothly.
+
+Thanks a lot and have a lovely day!
+Petra Hofmann
+Export Desk, Hofmann Textilwerk KG
+

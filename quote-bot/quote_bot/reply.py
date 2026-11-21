@@ -75,16 +75,34 @@ def send_quote(client: FiveUClient, mail: Mail, lots: list[LotQuote], deadline: 
     )
 
 
+STATUS_TEXT = {
+    "booked": "booked with the airline",
+    "confirmed": "confirmed by the airline, ready to ship",
+    "requested": "booking requested from the airline, confirmation pending",
+}
+
+
+def status_text(status: str | None) -> str:
+    return STATUS_TEXT.get((status or "").lower(), status or "booked")
+
+
+def booking_ref(b) -> str:
+    """Airline booking reference, else our own reference (email bookings until confirmed)."""
+    return (b["booking_reference"] if b["booking_reference"] else None) or b["team_reference"]
+
+
 def booking_draft(bookings: list[dict]) -> str:
     sig = os.getenv("REPLY_SIGNATURE", "Air Freight Desk").strip()
-    lines = ["Dear customer,", "", "thank you for your order. Your booking is confirmed:", ""]
+    lines = ["Dear customer,", "", "thank you for your order. We have booked your shipment:", ""]
     for b in bookings:
         lines += [
             f"{b['origin']} -> {b['destination']} with {b['airline']}",
-            f"  Booking reference: {b['booking_reference']}",
-            f"  Status: {b['status']}",
+            f"  Booking reference: {booking_ref(b)}",
+            f"  Status: {status_text(b['status'])}",
             f"  Price: {b['price']} {b['currency']}",
         ]
+        if b.get("transit_days") is not None:
+            lines.append(f"  Transit time: {b['transit_days']} days")
         if b.get("pickup"):
             p = b["pickup"]
             lines.append(f"  Pickup: {p['zip']} {p['city']} -> {p['airport']} by {p['trucker']}")
@@ -93,8 +111,20 @@ def booking_draft(bookings: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def tracking_draft(rows: list) -> str:
+def tracking_draft(rows: list, quotes: list | None = None) -> str:
+    """Status answer from our CRM: bookings, else open quotes, else ask for the reference."""
     sig = os.getenv("REPLY_SIGNATURE", "Air Freight Desk").strip()
+    if not rows and quotes:
+        lines = ["Dear customer,", "", "here is the current status of your shipment:", ""]
+        for q in quotes:
+            lines += [
+                f"{q['origin']} -> {q['destination']} with {q['airline']}",
+                f"  Status: quoted ({q['total']} {q['currency']}), not booked yet",
+                f"  Quote reference: {q['rate_id']}",
+                "",
+            ]
+        lines += ["Reply to our quote to confirm and we will book it right away.", "", "Best regards,", sig]
+        return "\n".join(lines)
     if not rows:
         return "\n".join(["Dear customer,", "",
                           "we could not find a booking under your address. Could you send us your "
@@ -103,8 +133,8 @@ def tracking_draft(rows: list) -> str:
     for r in rows:
         lines += [
             f"{r['origin']} -> {r['destination']} with {r['airline']}",
-            f"  Booking reference: {r['booking_reference']}",
-            f"  Status: {r['status']}",
+            f"  Booking reference: {booking_ref(r)}",
+            f"  Status: {status_text(r['status'])}",
             f"  Booked: {r['created_at']}",
         ]
         if r["transit_days"] is not None:

@@ -170,10 +170,44 @@ class DB:
         with self.lock, self.conn:
             self.conn.execute(f"INSERT INTO bookings({cols}) VALUES({','.join('?' * len(kw))})", tuple(kw.values()))
 
+    def update_booking(self, booking_id: int, **kw: Any) -> None:
+        if not kw:
+            return
+        sets = ",".join(f"{k}=?" for k in kw)
+        with self.lock, self.conn:
+            self.conn.execute(f"UPDATE bookings SET {sets} WHERE id=?", (*kw.values(), booking_id))
+
+    def booking_matching(self, text: str, booking_ref: str | None = None) -> sqlite3.Row | None:
+        """Booking whose booking_reference, team_reference or rate_id appears in text."""
+        rows = self.conn.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
+        if booking_ref:
+            for r in rows:
+                if r["booking_reference"] == booking_ref:
+                    return r
+        for key in ("team_reference", "rate_id", "booking_reference"):
+            for r in rows:
+                if r[key] and str(r[key]) in text:
+                    return r
+        return None
+
+    def quote_by_rate_id(self, rate_id: str) -> sqlite3.Row | None:
+        return self.conn.execute("SELECT * FROM quotes WHERE rate_id=? ORDER BY id DESC LIMIT 1", (rate_id,)).fetchone()
+
+    def redo_candidates(self) -> list[sqlite3.Row]:
+        """Booking/tracking mails an older build did not handle, plus airline confirmations."""
+        return self.conn.execute(
+            "SELECT id, category, status, subject FROM messages WHERE "
+            "(category IN ('booking','tracking') AND status IN ('done','unmatched','booking_failed','error')) "
+            "OR (category IN ('carrier_quote','booking_confirmed','other') AND subject LIKE '%Booking BK-%confirmed%') "
+            "OR (category='error') ORDER BY id"
+        ).fetchall()
+
     def bookings_for_rfq(self, rfq_id: int) -> list[sqlite3.Row]:
         return self.conn.execute("SELECT * FROM bookings WHERE rfq_id=? ORDER BY lot", (rfq_id,)).fetchall()
 
     def find_bookings(self, email: str, text: str) -> list[sqlite3.Row]:
+        """Bookings a tracking mail asks about: by reference in the text, else by sender
+        (prefer the booking whose lane is named in the text, else the latest one)."""
         rows = self.conn.execute("SELECT * FROM bookings ORDER BY id DESC").fetchall()
         hits = [r for r in rows if any(v and str(v) in text for v in
                                        (r["booking_reference"], r["team_reference"], r["rate_id"]))]
@@ -182,7 +216,10 @@ class DB:
         mine = [r for r in rows if email and email.lower() in (r["customer"] or "").lower()]
         if not mine:
             return []
-        last = mine[0]["rfq_id"]
+        up = text.upper()
+        lane = [r for r in mine if r["origin"] and r["destination"]
+                and r["origin"] in up and r["destination"] in up]
+        last = (lane or mine)[0]["rfq_id"]
         return [r for r in mine if r["rfq_id"] == last]
 
     # -- quotes -----------------------------------------------------------------

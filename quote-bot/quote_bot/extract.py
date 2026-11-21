@@ -12,7 +12,7 @@ from typing import Any
 
 log = logging.getLogger(__name__)
 
-CATEGORIES = ("rfq", "booking", "tracking", "rate_sheet", "carrier_quote", "other")
+CATEGORIES = ("rfq", "booking", "booking_confirmed", "declined", "tracking", "rate_sheet", "carrier_quote", "other")
 
 LB_TO_KG = 0.45359237
 CUFT_TO_CBM = 0.0283168466
@@ -252,6 +252,25 @@ RFQ_RE = re.compile(
     r"|best\s+rate|angebot|anfrage|preisanfrage|offerte)"
 )
 AWB_RE = re.compile(r"\b\d{3}[- ]?\d{8}\b")
+BOOKING_CONFIRMED_RE = re.compile(r"(?i)\bbooking\s+(BK-[A-Z0-9]{4,16})\s+(?:is\s+|has\s+been\s+)?confirmed\b")
+STRONG_TRACKING_RE = re.compile(
+    r"(?i)\b(status\s+of\s+(?:our|my|the)\s+(?:shipment|booking|cargo|freight)|where\s+is\s+(?:our|my|the)\s+"
+    r"(?:shipment|cargo|freight|consignment)|shipment\s+status|track(?:ing)?\s+(?:status|update|number)"
+    r"|track\s*(?:&|and)\s*trace|sendungsstatus|wo\s+ist\s+(?:unsere|meine)\s+sendung)"
+)
+# customer says no: never book ("we will not go ahead", "decline", "too expensive", ...)
+DECLINE_RE = re.compile(
+    r"(?i)\b(?:not|n't|never|no\s+longer|unable\s+to|cannot)\s+(?:\w+\s+){0,3}?(?:go\s+ahead|book|proceed|accept|confirm|move\s+forward)"
+    r"|\b(?:declin\w*|reject\w*|cancel\w*|too\s+expensive|went\s+with\s+another|another\s+(?:forwarder|provider|offer)"
+    r"|not\s+interested|pass\s+on\s+(?:this|your)|absagen|ablehnen|storn\w+|nicht\s+(?:buchen|beauftragen))"
+)
+STRONG_BOOK_RE = re.compile(r"(?i)\b(please\s+book|book\s+it|go\s+ahead\s+and\s+book|please\s+proceed|bitte\s+buchen)\b")
+# thank-you / acknowledgement after our confirmation: no reply, no LLM
+ACK_RE = re.compile(
+    r"(?i)\b(?:thank(?:s|\s+you)(?:\s+(?:so\s+much|a\s+lot|again))?\s+for\s+(?:confirming|arranging|getting|booking|sending"
+    r"|the\s+(?:booking|confirmation|update|quick|fast|information|info|status)|your\s+(?:help|update|confirmation)|taking\s+care"
+    r"|the\s+dangerous|the\s+documents?)|glad\s+it'?s\s+all\s+set|all\s+set\b|noted\b|vielen\s+dank\s+für\s+die\s+(?:bestätigung|buchung))"
+)
 CARRIER_SUBJECT_RE = re.compile(r"(?i)\b(pickup|pick-up|abhol)\s*(quote|request|anfrage|angebot)\b")
 EMAIL_ANY_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 
@@ -273,6 +292,35 @@ def load_carriers(path: str) -> set[str]:
                 out.add(email)
     log.info("carrier list: %d addresses", len(out))
     return out
+
+
+def load_airline_emails(path: str) -> dict[str, str]:
+    """Airline name (lower case) -> e-mail from the carrier list."""
+    import csv
+    from pathlib import Path
+
+    out: dict[str, str] = {}
+    f = Path(path)
+    if not f.is_file():
+        return out
+    with f.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if (row.get("kind") or "").strip().lower() == "airline" and row.get("email"):
+                out[(row.get("name") or "").strip().lower()] = row["email"].strip().lower()
+    return out
+
+
+TARIFF_FILE_RE = re.compile(r"(?i)(tariff|rate|rates|price|preis|tarif)")
+
+
+def looks_like_rate_sheet(mail: "Mail") -> bool:
+    """Airline mail with a tariff: attachment, tariff words, or several lane rows in the body."""
+    if mail.attachments:
+        return True
+    text = f"{mail.subject}\n{mail.body or ''}"
+    if RATESHEET_RE.search(text) or re.search(r"(?i)\b(rate\s+plan|new\s+tariff|weight\s+breaks?|valid\s+from)\b", text):
+        return True
+    return len(re.findall(r"\b[A-Z]{3}\s*[-–>]\s*[A-Z]{3}\b", text)) >= 3
 
 
 def is_carrier_mail(mail: "Mail", carriers: set[str]) -> bool:
@@ -443,10 +491,25 @@ def rules_extract(
     mail: Mail, codes: set[str], carriers: set[str] | None = None, origin_hint: str | None = None
 ) -> Extraction:
     """origin_hint: airport from a detected pickup postcode (completes lanes like 'to ORD')."""
+    if BOOKING_CONFIRMED_RE.search(mail.subject or "") or (
+        is_carrier_mail(mail, carriers or set()) and BOOKING_CONFIRMED_RE.search(mail.body or "")
+    ):
+        return Extraction("booking_confirmed", method="rules")  # airline: "Booking BK-... confirmed"
     if is_carrier_mail(mail, carriers or set()):
+        if looks_like_rate_sheet(mail):
+            return Extraction("rate_sheet", method="rules")  # airline sends a (new) tariff
         return Extraction("carrier_quote", method="rules")  # airline/trucker bid, not a customer RFQ
     body = strip_quoted(mail.body)
     scan = body if mail.is_reply else f"{mail.subject}\n{body}"
+    rfq_kw0 = bool(RFQ_RE.search(body if mail.is_reply else f"{mail.subject}\n{body}"))
+    if mail.is_reply and DECLINE_RE.search(body) and not STRONG_BOOK_RE.search(DECLINE_RE.sub(" ", body)):
+        return Extraction("declined", method="rules")  # "we will not go ahead" -> never book
+    if mail.is_reply and BOOKING_RE.search(body) and not STRONG_TRACKING_RE.search(scan):
+        return Extraction("booking", method="rules")  # customer accepts our quote in the thread
+    if mail.is_reply and ACK_RE.search(body) and "?" not in body and not rfq_kw0:
+        return Extraction("other", method="rules", flags=["acknowledgement, no reply"])
+    if STRONG_TRACKING_RE.search(scan) and not BOOKING_RE.search(body) and not rfq_kw0:
+        return Extraction("tracking", method="rules")
 
     lane = find_lane(scan, codes)
     if origin_hint and (lane.value is None or lane.ambiguous):
@@ -500,9 +563,11 @@ SYSTEM_PROMPT = (
     'Reply JSON only: {"category":"rfq|booking|tracking|rate_sheet|carrier_quote|other",'
     '"shipments":[{"origin":"IATA","destination":"IATA","weight_kg":number|null,'
     '"volume_cbm":number|null,"pieces":integer|null}]}. '
-    "rfq=customer asks for a price; booking=customer accepts a quote or asks to book; "
+    "rfq=customer asks for a price; booking=customer accepts our quote or asks us to book it "
+    "(NOT thank-you notes after a confirmation, NOT refusals); "
     "tracking=asks shipment status; rate_sheet=carrier sends rates/tariffs; "
-    "carrier_quote=airline or trucker answers our price/pickup request; other=anything else. "
+    "carrier_quote=airline or trucker answers our price/pickup request; "
+    "other=thank-you notes, acknowledgements, refusals, anything else. "
     "Map city/airport names to IATA codes from the allowed list. Total gross weight in kg "
     "(convert lb). Total volume in cbm for all pieces (convert dimensions). "
     "One entry per separate shipment. shipments=[] unless rfq. Ignore quoted earlier mails."
@@ -607,6 +672,28 @@ class LLMExtractor:
             resp = self.client.chat.completions.create(
                 model=self.model, messages=messages, **self._kwargs(minimal=True)
             )
+        tokens = getattr(resp.usage, "total_tokens", 0) if resp.usage else 0
+        return resp.choices[0].message.content or "{}", tokens
+
+    def transcribe_image(self, b64: str, mime: str = "image/jpeg") -> tuple[str, int]:
+        """Text of an image attachment (scanned tariff, packing list). (text, tokens)"""
+        messages = [{"role": "user", "content": [
+            {"type": "text", "text": "Transcribe all text in this document exactly. Keep each table row on one "
+                                     "line with cells separated by ' | '. Keep decimal commas. No comments."},
+            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}", "detail": "high"}},
+        ]}]
+        kw: dict[str, Any] = {} if self.model.startswith(("gpt-5", "o")) else {"temperature": 0, "max_tokens": 3000}
+        resp = self.client.chat.completions.create(model=self.model, messages=messages, **kw)
+        tokens = getattr(resp.usage, "total_tokens", 0) if resp.usage else 0
+        return resp.choices[0].message.content or "", tokens
+
+    def extract_tariff(self, text: str, system: str) -> tuple[str, int]:
+        """JSON tariff from free text when the rule parser finds no lane. (json text, tokens)"""
+        messages = [{"role": "system", "content": system}, {"role": "user", "content": text[:12000]}]
+        kw: dict[str, Any] = {"response_format": {"type": "json_object"}}
+        if not self.model.startswith(("gpt-5", "o")):
+            kw.update(temperature=0, max_tokens=4000)
+        resp = self.client.chat.completions.create(model=self.model, messages=messages, **kw)
         tokens = getattr(resp.usage, "total_tokens", 0) if resp.usage else 0
         return resp.choices[0].message.content or "{}", tokens
 

@@ -113,6 +113,7 @@ class FiveUClient:
         deadline: float | None = None,
         raw: bool = False,
         idempotent: bool = False,
+        retry_statuses: set[int] | None = None,
     ) -> Any:
         url = self.base + path
         attempt = 0
@@ -136,6 +137,8 @@ class FiveUClient:
                 self.rate_limit_remaining = r.headers.get("X-RateLimit-Remaining")
 
             retryable = RETRY_STATUSES if (method == "GET" or idempotent) else {429}  # POST: only 429
+            if retry_statuses is not None:
+                retryable = retry_statuses
             if r.status_code in retryable:
                 wait = _retry_after(r) or _backoff(attempt)
                 if not self._can_retry(deadline, attempt, wait):
@@ -170,6 +173,10 @@ class FiveUClient:
 
     def message(self, message_id: int) -> Any:
         return self.request("GET", f"/v1/mailbox/messages/{int(message_id)}")
+
+    def attachment(self, message_id: int, attachment_id: Any) -> bytes:
+        """GET /v1/mailbox/messages/{id}/attachments/{attachment_id} -> raw bytes."""
+        return self.request("GET", f"/v1/mailbox/messages/{int(message_id)}/attachments/{attachment_id}", raw=True)
 
     def ports(self) -> Any:
         return self.request("GET", "/v1/portal/ports")
@@ -227,11 +234,15 @@ class FiveUClient:
         return resp
 
     def book(self, rate_id: str, team_reference: str, deadline: float | None = None) -> Any:
-        """POST /v1/portal/bookings (idempotent per team_reference -> safe to retry)."""
+        """POST /v1/portal/bookings (idempotent per rate_id + team_reference -> safe to retry).
+
+        201 booked, 200 retry of the same booking, 404 unknown rate_id, 409 booked under another
+        team_reference, 410 expired, 503 booking system down -> book by email (NOT retried here).
+        """
         return self.request(
             "POST", "/v1/portal/bookings",
             json_body={"rate_id": rate_id, "team_reference": team_reference[:128]},
-            deadline=deadline, idempotent=True,
+            deadline=deadline, idempotent=True, retry_statuses={429, 502, 504},
         )
 
 

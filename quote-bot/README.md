@@ -1,59 +1,71 @@
-# quote_bot – 5U START Hack RFQ bot (v1, print only)
+# quote_bot – TALOS digital air forwarder (5U AI challenge, START Hack Munich 2026)
+
+Reads the team mailbox, quotes air freight (portal + rate-sheet airlines + trucker pickup), books accepted
+quotes, answers tracking questions, ingests new rate sheets. Full context for developers/agents: `CLAUDE.md`,
+session history: `docs/261121_session_log_01.md`.
+
+## Start (new computer, no changes needed)
+```bash
+git clone https://github.com/kallakallakallakalla/TALOS.git
+cd TALOS && git checkout quote-bot && cd quote-bot
+./run.sh                    # creates .venv, installs requirements, runs: python -m quote_bot --reply
+```
+Windows: `run.bat`. Requirements: Python ≥ 3.11, internet. `.env` (API key) and `quote_bot.sqlite3`
+(state: last mail id, quotes, bookings) are in the repo, so the bot continues where it stopped.
+
+**Run only one bot at a time.** Stop the old one first (`pkill -f quote_bot`), otherwise customers get
+double replies. If the old bot kept running after this commit, copy/push its newer `quote_bot.sqlite3`.
+The first log lines show `quote_bot build <hash>` (code version) and the tariff count.
 
 ## Flow
 ```
-0 startup   GET /v1/me, GET /v1/portal/ports → lane map (refresh 5 min + on lane miss)
-1 poll      GET /v1/mailbox/messages?since_id=X   every 3 s, oldest first
-2 read      GET /v1/mailbox/messages/{id}          only if poll item has no body
-3 route     rules: RFQ / booking / tracking / rate_sheet; unclear → LLM (one call)
-4 extract   regex: IATA lane, weight (kg/lb), volume (cbm/cft/dims); LLM fallback
-5 lane      lane map → airlines
-6 brackets  GET /v1/portal/brackets  → next weight break above chargeable weight
-7 rates     GET /v1/portal/rates per airline (parallel) at actual weight + next break
-8 price     cheapest total, no margin
-9 output    readable block + QUOTE_JSON line; SQLite (since_id, messages, quotes)
+poll mailbox every 3 s (oldest first)
+ ├─ customer RFQ      → attachments read → dangerous goods? ask for DG documents first
+ │                      → pickup postcode? ask truckers (≤150 s) → price all portal airlines
+ │                        (+ next weight break) and rate-sheet airlines → cheapest (or fastest) → quote reply
+ ├─ "please book"     → book rate_id on the portal (expired → fresh rate; portal down / rate-sheet airline
+ │                      → booking e-mail to the airline) → confirmation to customer
+ ├─ "Booking BK-… confirmed" (airline) → booking confirmed in CRM
+ ├─ status question   → status from CRM (bookings table)
+ ├─ rate sheet (airline mail, pdf/xlsx/docx/txt/csv/image) → parsed into tariffs table
+ ├─ refusal / thank-you → saved, no booking, no reply
+ └─ trucker bid       → pickup price for the waiting RFQ
 ```
+Rules first; the LLM (5U gateway, cost counted) only when rules cannot classify or extract.
 
-## Setup
+## Commands
 ```bash
-cd "/Users/Shared/3200 Hackathons/5U"
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env        # set FIVEU_API_KEY
+./run.sh --redo-bookings                     # also re-run booking/tracking mails an older build skipped
+python -m quote_bot --message-id 42 --reply  # (re)process one mail
+python -m quote_bot --dump                   # raw API responses
+python -m quote_bot --once --no-llm          # one pass, rules only, print only
+python tests/run_e2e.py                      # offline end-to-end test against a mock of the API
+python tests/test_extract.py                 # regex tests
 ```
+(inside the venv: `source .venv/bin/activate`)
 
-## Run
-```bash
-python -m quote_bot --dump              # 1st: print raw API responses (check field names)
-python -m quote_bot --once --no-llm     # process pending mails once, rules only
-python -m quote_bot                     # continuous loop, print only
-python -m quote_bot --reply             # continuous loop + send quote replies
-python -m quote_bot --skip-backlog      # start loop after the newest existing mail
-python -m quote_bot --message-id 42     # (re)process one mail
-python -m quote_bot --since-id 0        # reset poll position
-```
+## Settings (`.env`)
+| Variable | Default | Meaning |
+|---|---|---|
+| `FIVEU_API_KEY` | – | team key |
+| `TARIFF_PRICING` | 1 | 0 = quote portal airlines only |
+| `HUMANIZE` | 1 | LLM rewrites outgoing mails (≈300–500 tokens each); 0 = templates, cheaper |
+| `PICKUP_WAIT_S` | 150 | max wait for trucker bids |
+| `QUOTE_WINDOW_S` / `SAFETY_MARGIN_S` | 360 / 60 | quote window, retries stop before its end |
+| others | see `.env.example` | |
 
 ## Modules
 | File | Content |
 |---|---|
-| `config.py` | env vars / `.env` |
-| `api.py` | HTTP client, `X-API-Key`, 429/5xx retry with `Retry-After` + deadline |
-| `extract.py` | mail parsing, quote stripping, regex router/extractor, LLM fallback |
-| `pricing.py` | lane map, bracket cache, break-point check, best-price pick |
-| `db.py` | SQLite: `state`, `messages`, `quotes` |
-| `main.py` | CLI, loop, output, `--dump` |
-
-## Notes
-- Mail field names are guessed defensively (`body`/`text`/`content`, `from`/`sender`, `received_at`/`created_at`). Check `--dump`, adjust `extract.py` `Mail.from_api` if needed.
-- Airline param for portal: `code`; switches to `name` automatically if the portal rejects codes.
-- Mixed currencies across airlines: compared in EUR via `fx_eur_per_usd`; display stays as returned.
-- Deadline: from mail timestamp; retries stop 60 s before the 6-min window ends.
-- LLM tokens per mail shown in output and stored in `messages.llm_tokens`.
-- Attachments ignored in v1.
-- Carrier mails (sender in `start-kit/carrier-list.csv` or subject "pickup quote") → `carrier_quote`, no LLM.
-- Pickup RFQs: German postcode → zone → airport (`start-kit/pickup_zones.csv`) = origin. With `--reply`: asks up to 5 truckers serving the zone, collects bids (≤ `PICKUP_WAIT_S`, or earlier when all answered), replies air + cheapest pickup.
-- "fastest / urgent / express / asap" in the mail → shortest transit, then cheapest.
-- Booking mail → matched to our quote (thread ids, then subject/sender) → `POST /v1/portal/bookings` (team_reference `TEAM-<rfq>-<lot>`; expired rate → re-priced and booked) → confirmation to customer + pickup order to winning trucker. Table `bookings`.
-- Tracking mail → bookings from SQLite (reference in text, else latest for sender) → status reply.
-- `HUMANIZE=1`: LLM rewrites each outgoing mail; prices/references verified, else template. `HUMANIZE=0` saves tokens.
-- Late trucker bids after a quote was sent are logged, not used.
+| `config.py` | env / `.env` |
+| `api.py` | HTTP client (retries, rate limits, bookings, attachments, send mail) |
+| `extract.py` | mail parsing, rules router, RFQ extraction, LLM fallback |
+| `pricing.py` | lanes, weight breaks, portal + tariff pricing, best pick |
+| `tariffs.py` | rate-sheet parser, tariff pricing, tariff store |
+| `attachments.py` | attachment download + text (pdf, xlsx, docx, txt, csv, images) |
+| `dg.py` | dangerous-goods detection + document request |
+| `pickup.py` | postcode → airport, trucker requests and bids |
+| `reply.py` / `writer.py` | mail texts / optional LLM rewrite |
+| `db.py` | SQLite CRM: state, messages, quotes, sent, bookings, tariffs |
+| `maillog.py` | mail logs in `mail_logs/` |
+| `main.py` | CLI, loop, handlers |

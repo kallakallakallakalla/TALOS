@@ -1,0 +1,1697 @@
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          anna@shipper.de
+subject:     Re: RFQ FRA-JFK
+in_reply_to: 1
+result:      ok {"id": 1001, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+thank you for your request. Our offer:
+
+FRA -> JFK
+  Weight: 90 kg | Volume: 0.3 cbm | Chargeable: 100 kg
+  Carrier: Lufthansa Cargo (LH)
+  Total price: 350.00 EUR (all-in)
+  Transit time: 2 days
+  Valid until: 2026-11-22T00:00:00Z
+  Quote reference: R-641a982ed273
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          bob@corp.cn
+subject:     Re: air freight
+in_reply_to: 2
+result:      ok {"id": 1002, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+thank you for your request. Our offer:
+
+MUC -> PVG
+  Weight: 200 kg | Volume: 1.92 cbm | Chargeable: 320.6 kg
+  Carrier: Air China Cargo (CA)
+  Total price: 961.92 USD (all-in)
+  Transit time: 3 days
+  Valid until: 2026-11-22T00:00:00Z
+  Quote reference: R-f66ba7088aaf
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          c@x.com
+subject:     Re: Where is my shipment?
+in_reply_to: 3
+result:      ok {"id": 1003, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+we could not find a booking under your address. Could you send us your booking reference?
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          t1@trucks.test
+subject:     Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 1004, "status": "sent"}
+------------------------------------------------------------------------------
+Hello Truck One,
+
+please quote the following pickup:
+From: 51447 Bergisch Gladbach
+To: CGN airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 300 kg
+Volume: 1.5 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          t2@trucks.test
+subject:     Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 1005, "status": "sent"}
+------------------------------------------------------------------------------
+Hello Truck Two,
+
+please quote the following pickup:
+From: 51447 Bergisch Gladbach
+To: CGN airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 300 kg
+Volume: 1.5 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:37
+to:          t3@trucks.test
+subject:     Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 1006, "status": "sent"}
+------------------------------------------------------------------------------
+Hello Truck Three,
+
+please quote the following pickup:
+From: 51447 Bergisch Gladbach
+To: CGN airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 300 kg
+Volume: 1.5 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:40
+to:          lars@medtech.se
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 5
+result:      ok {"id": 1007, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+thank you for your request. Our offer:
+
+CGN -> ORD
+  Weight: 300 kg | Volume: 1.5 cbm | Chargeable: 300 kg
+  Carrier: Lufthansa Cargo (LH)
+  Air freight: 1050.00 EUR
+  Pickup 51447 Bergisch Gladbach -> CGN: 150.0 EUR
+  Total price: 1200.00 EUR (all-in)
+  Transit time: 2 days
+  Valid until: 2026-11-22T00:00:00Z
+  Quote reference: R-b481e105f879
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:40
+to:          lars@medtech.se
+subject:     Re: Re: Fastest air freight to ORD
+in_reply_to: 9
+result:      ok {"id": 1008, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+thank you for your order. Your booking is confirmed:
+
+CGN -> ORD with Lufthansa Cargo
+  Booking reference: BK-00001
+  Status: confirmed
+  Price: 1200.00 EUR
+  Pickup: 51447 Bergisch Gladbach -> CGN by Truck Two
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:40
+to:          t2@trucks.test
+subject:     Pickup order 51447 Bergisch Gladbach to CGN
+in_reply_to: None
+result:      ok {"id": 1009, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+we accept your offer of EUR 150.0 for the pickup 51447 Bergisch Gladbach -> CGN. Booking reference: BK-00001.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 15:34:40
+to:          lars@medtech.se
+subject:     Re: Shipment status?
+in_reply_to: 10
+result:      ok {"id": 1010, "status": "sent"}
+------------------------------------------------------------------------------
+Hi,
+
+thanks a lot for reaching out!
+
+here is the current status of your shipment:
+
+CGN -> ORD with Lufthansa Cargo
+  Booking reference: BK-00001
+  Status: confirmed
+  Booked: 2026-11-21T15:34:40+00:00
+  Planned transit time: 2 days
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:28
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 379
+result:      ok {"id": 2191, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: booked with the airline
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:29
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 871
+result:      ok {"id": 2192, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: booked with the airline
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:31
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote to ORD
+in_reply_to: 1156
+result:      ok {"id": 2193, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-ERC5OOW3
+Status: booked with the airline
+Price: 1599.41 EUR
+Transit time: 3 days
+Pickup: 51896 Bergisch Gladbach -> CGN by Elbkante Logistik
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:32
+to:          elbkante-logistik@hackloop.mail
+subject:     Pickup order 51896 Bergisch Gladbach to CGN
+in_reply_to: None
+result:      ok {"id": 2194, "from": "talos@hackloop.mail", "to": "elbkante-logistik@hackloop.mail", "subject": "Pickup order 51896 Bergisch Gladbach to CGN", "body": "Hello Elbkante Logistik,\n\nWe accept your offer
+------------------------------------------------------------------------------
+Hello Elbkante Logistik,
+
+We accept your offer of EUR 115.98 for the pickup 51896 Bergisch Gladbach -> CGN. Booking reference: BK-ERC5OOW3.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:34
+to:          weidner-spielwaren@hackloop.mail
+subject:     Re: Fastest air freight quote: STR to EZE
+in_reply_to: 1304
+result:      ok {"id": 2195, "from": "talos@hackloop.mail", "to": "weidner-spielwaren@hackloop.mail", "subject": "Re: Fastest air freight quote: STR to EZE", "body": "Dear customer,\n\nThank you for your order. We ha
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+STR -> EZE with Fjordline Air Cargo
+Booking reference: BK-SULEZO4W
+Status: booked with the airline
+Price: 4408.52 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:35
+to:          kessler-feinmechanik@hackloop.mail
+subject:     Re: Air freight quote request: DUS to KUL
+in_reply_to: 1503
+result:      ok {"id": 2196, "from": "talos@hackloop.mail", "to": "kessler-feinmechanik@hackloop.mail", "subject": "Re: Air freight quote request: DUS to KUL", "body": "Dear Customer,\n\nThank you for your order. We 
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> KUL with Fjordline Air Cargo
+Booking reference: TALOS-1470-1
+Status: booked with the airline
+Price: 3949.95 EUR
+Transit time: 5 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:37
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote: MUC to LAX
+in_reply_to: 1701
+result:      ok {"id": 2197, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote: MUC to LAX", "body": "Dear Customer,\n\nThank you for your order. We have book
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> LAX with Fjordline Air Cargo
+BK-4Z53E4AB
+Status: booked with the airline
+Price: 2780.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:39
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 1883
+result:      ok {"id": 2198, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear Customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: booked with the airline
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:40
+to:          tracking@hackloop.mail
+subject:     Re: Status of our shipment DUS to KUL, 1549 kg
+in_reply_to: 1814
+result:      ok {"id": 2201, "from": "talos@hackloop.mail", "to": "tracking@hackloop.mail", "subject": "Re: Status of our shipment DUS to KUL, 1549 kg", "body": "Dear customer,\n\nWe could not find a booking under yo
+------------------------------------------------------------------------------
+Dear customer,
+
+We could not find a booking under your address. Could you please send us your booking reference?
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:42
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2199
+result:      ok {"id": 2206, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: booked with the airline
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:45
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2200
+result:      ok {"id": 2208, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+  Booking reference: BK-UKFNU9UN
+  Status: booked with the airline
+  Price: 3696.00 EUR
+  Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:50
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote to ORD
+in_reply_to: 2204
+result:      ok {"id": 2213, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-ERC5OOW3
+Status: booked with the airline
+Price: 1599.41 EUR
+Transit time: 3 days
+Pickup: 51896 Bergisch Gladbach -> CGN by Elbkante Logistik
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:52
+to:          weidner-spielwaren@hackloop.mail
+subject:     Re: Fastest air freight quote: STR to EZE
+in_reply_to: 2207
+result:      ok {"id": 2214, "from": "talos@hackloop.mail", "to": "weidner-spielwaren@hackloop.mail", "subject": "Re: Fastest air freight quote: STR to EZE", "body": "Dear customer,\n\nThank you for your order. We ha
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+STR -> EZE with Fjordline Air Cargo
+Booking reference: BK-SULEZO4W
+Status: booked with the airline
+Price: 4408.52 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:54:55
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote: MUC to LAX
+in_reply_to: 2211
+result:      ok {"id": 2217, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote: MUC to LAX", "body": "Dear customer,\n\nThank you for your order. We have book
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> LAX with Fjordline Air Cargo
+Booking reference: BK-4Z53E4AB
+Status: booked with the airline
+Price: 2780.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:00
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 2212
+result:      ok {"id": 2220, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: booked with the airline
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:03
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2215
+result:      ok {"id": 2221, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: booked with the airline
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:05
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2216
+result:      ok {"id": 2227, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear Customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: booked with the airline
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:10
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote to ORD
+in_reply_to: 2219
+result:      ok {"id": 2231, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-ERC5OOW3
+Status: booked with the airline
+Price: 1599.41 EUR
+Transit time: 3 days
+Pickup: 51896 Bergisch Gladbach -> CGN by Elbkante Logistik
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:12
+to:          weidner-spielwaren@hackloop.mail
+subject:     Re: Fastest air freight quote: STR to EZE
+in_reply_to: 2222
+result:      ok {"id": 2233, "from": "talos@hackloop.mail", "to": "weidner-spielwaren@hackloop.mail", "subject": "Re: Fastest air freight quote: STR to EZE", "body": "Dear customer,\n\nThank you for your order. We ha
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+STR -> EZE with Fjordline Air Cargo
+Booking reference: BK-SULEZO4W
+Status: booked with the airline
+Price: 4408.52 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:15
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote: MUC to LAX
+in_reply_to: 2228
+result:      ok {"id": 2238, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote: MUC to LAX", "body": "Dear customer,\n\nThank you for your order. We have book
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> LAX with Fjordline Air Cargo
+Booking reference: BK-4Z53E4AB
+Status: booked with the airline
+Price: 2780.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:20
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 2232
+result:      ok {"id": 2240, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: booked with the airline
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:23
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2234
+result:      ok {"id": 2244, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: confirmed by the airline, ready to ship
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:25
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2237
+result:      ok {"id": 2246, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:30
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote to ORD
+in_reply_to: 2241
+result:      ok {"id": 2247, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote to ORD", "body": "Dear customer,\n\nHere is the current status of your shipment
+------------------------------------------------------------------------------
+Dear customer,
+
+Here is the current status of your shipment:
+
+MUC -> LAX with Fjordline Air Cargo
+Booking reference: BK-4Z53E4AB
+Status: confirmed by the airline, ready to ship
+Booked: 2026-11-21T15:54:36+00:00
+Planned transit time: 3 days
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:34
+to:          rheintal-elektronik@hackloop.mail
+subject:     Re: Air freight quote: MUC to LAX
+in_reply_to: 2245
+result:      ok {"id": 2249, "from": "talos@hackloop.mail", "to": "rheintal-elektronik@hackloop.mail", "subject": "Re: Air freight quote: MUC to LAX", "body": "Dear customer,\n\nThank you for your order. We have book
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> LAX with Fjordline Air Cargo
+Booking reference: BK-4Z53E4AB
+Status: confirmed by the airline, ready to ship
+Price: 2780.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:39
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 2248
+result:      ok {"id": 2253, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: confirmed by the airline, ready to ship
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:41
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2250
+result:      ok {"id": 2274, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: confirmed by the airline, ready to ship
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:43
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2251
+result:      ok {"id": 2302, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:48
+to:          hansekogge-trucking@hackloop.mail
+subject:     Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 2333, "from": "talos@hackloop.mail", "to": "hansekogge-trucking@hackloop.mail", "subject": "Pickup quote 61391 Bad Homburg to FRA on 2026-11-25", "body": "Hello Hansekogge Trucking,\n\nplease q
+------------------------------------------------------------------------------
+Hello Hansekogge Trucking,
+
+please quote the following pickup:
+From: 61391 Bad Homburg
+To: FRA airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 715 kg
+Volume: 2.65 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:49
+to:          westfalenroute@hackloop.mail
+subject:     Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 2334, "from": "talos@hackloop.mail", "to": "westfalenroute@hackloop.mail", "subject": "Pickup quote 61391 Bad Homburg to FRA on 2026-11-25", "body": "Hello Westfalenroute,\n\nplease quote the f
+------------------------------------------------------------------------------
+Hello Westfalenroute,
+
+please quote the following pickup:
+From: 61391 Bad Homburg
+To: FRA airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 715 kg
+Volume: 2.65 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:49
+to:          spessart-spedition@hackloop.mail
+subject:     Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 2336, "from": "talos@hackloop.mail", "to": "spessart-spedition@hackloop.mail", "subject": "Pickup quote 61391 Bad Homburg to FRA on 2026-11-25", "body": "Hello Spessart Spedition,\n\nplease quo
+------------------------------------------------------------------------------
+Hello Spessart Spedition,
+
+please quote the following pickup:
+From: 61391 Bad Homburg
+To: FRA airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 715 kg
+Volume: 2.65 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:49
+to:          bodenseefracht@hackloop.mail
+subject:     Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 2337, "from": "talos@hackloop.mail", "to": "bodenseefracht@hackloop.mail", "subject": "Pickup quote 61391 Bad Homburg to FRA on 2026-11-25", "body": "Hello Bodenseefracht,\n\nplease quote the f
+------------------------------------------------------------------------------
+Hello Bodenseefracht,
+
+please quote the following pickup:
+From: 61391 Bad Homburg
+To: FRA airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 715 kg
+Volume: 2.65 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:55:50
+to:          nordlicht-haulage@hackloop.mail
+subject:     Pickup quote 61391 Bad Homburg to FRA on 2026-11-25
+in_reply_to: None
+result:      ok {"id": 2338, "from": "talos@hackloop.mail", "to": "nordlicht-haulage@hackloop.mail", "subject": "Pickup quote 61391 Bad Homburg to FRA on 2026-11-25", "body": "Hello Nordlicht Haulage,\n\nplease quote
+------------------------------------------------------------------------------
+Hello Nordlicht Haulage,
+
+please quote the following pickup:
+From: 61391 Bad Homburg
+To: FRA airport (air export warehouse)
+Date: 2026-11-25
+Pieces: 3
+Weight: 715 kg
+Volume: 2.65 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:03
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 2335
+result:      ok {"id": 2341, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: confirmed by the airline, ready to ship
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:05
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2339
+result:      ok {"id": 2342, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nThank you for your order. We have booked yo
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+Booking reference: BK-L0WO4HRK
+Status: confirmed by the airline, ready to ship
+Price: 1920.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:06
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2340
+result:      ok {"id": 2343, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:18
+to:          nordlicht-audio@hackloop.mail
+subject:     Re: Air freight quote: MUC to CAI
+in_reply_to: 2377
+result:      ok {"id": 2411, "from": "talos@hackloop.mail", "to": "nordlicht-audio@hackloop.mail", "subject": "Re: Air freight quote: MUC to CAI", "body": "Dear customer,\n\nThank you for your order. We have booked y
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+MUC -> CAI with Borealis Freight Airways
+Booking reference: BK-WWP8NOYB
+Status: confirmed by the airline, ready to ship
+Price: 1475.00 EUR
+Transit time: 4 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:20
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Fastest air freight to ORD
+in_reply_to: 2403
+result:      ok {"id": 2418, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Fastest air freight to ORD", "body": "Dear customer,\n\nHere is the current status of your shipment
+------------------------------------------------------------------------------
+Dear customer,
+
+Here is the current status of your shipment:
+
+CGN -> ORD with Xenon Cargo Airlines
+  Booking reference: BK-L0WO4HRK
+  Status: confirmed by the airline, ready to ship
+  Booked: 2026-11-21T15:54:26+00:00
+  Planned transit time: 3 days
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:25
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2410
+result:      ok {"id": 2423, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:27
+to:          weidner-spielwaren@hackloop.mail
+subject:     Re: Air freight quote to GRU
+in_reply_to: 2267
+result:      ok {"id": 2424, "from": "talos@hackloop.mail", "to": "weidner-spielwaren@hackloop.mail", "subject": "Re: Air freight quote to GRU", "body": "Dear customer,\n\nThank you for your request. Our offer:\n\nFR
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your request. Our offer:
+
+FRA -> GRU
+  Weight: 715 kg | Volume: 2.65 cbm | Chargeable: 715 kg
+  Carrier: Juniper Cargo Lines (JP)
+  Air freight: 2609.75 EUR
+  Pickup 61391 Bad Homburg -> FRA: 75.6 EUR
+  Total price: 2685.35 EUR (all-in)
+  Transit time: 5 days
+  Valid until: 2026-11-21T16:10:53.078729+00:00
+  Quote reference: R-ObJY4xkD4f74WYku
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:35
+to:          weidner-spielwaren@hackloop.mail
+subject:     Re: Air freight quote to GRU
+in_reply_to: 2428
+result:      ok {"id": 2429, "from": "talos@hackloop.mail", "to": "weidner-spielwaren@hackloop.mail", "subject": "Re: Air freight quote to GRU", "body": "Dear customer,\n\nThank you for your order. We have booked you
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> GRU with Juniper Cargo Lines
+Booking reference: BK-ZM78K6DQ
+Status: booked with the airline
+Price: 2685.35 EUR
+Transit time: 5 days
+Pickup: 61391 Bad Homburg -> FRA by Bodenseefracht
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:36
+to:          bodenseefracht@hackloop.mail
+subject:     Pickup order 61391 Bad Homburg to FRA
+in_reply_to: None
+result:      ok {"id": 2431, "from": "talos@hackloop.mail", "to": "bodenseefracht@hackloop.mail", "subject": "Pickup order 61391 Bad Homburg to FRA", "body": "Hello Bodenseefracht,\n\nWe accept your offer of EUR 75.6
+------------------------------------------------------------------------------
+Hello Bodenseefracht,
+
+We accept your offer of EUR 75.6 for the pickup 61391 Bad Homburg -> FRA. Booking reference: BK-ZM78K6DQ.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:41
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2430
+result:      ok {"id": 2432, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 16:56:54
+to:          auer-maschinenbau@hackloop.mail
+subject:     Re: Air freight quote: DUS to JFK
+in_reply_to: 2436
+result:      ok {"id": 2437, "from": "talos@hackloop.mail", "to": "auer-maschinenbau@hackloop.mail", "subject": "Re: Air freight quote: DUS to JFK", "body": "Dear customer,\n\nThank you for your order. We have booked
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+DUS -> JFK with Fjordline Air Cargo
+Booking reference: BK-UKFNU9UN
+Status: confirmed by the airline, ready to ship
+Price: 3696.00 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:01:50
+to:          maintal-transport-logistik@hackloop.mail
+subject:     Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+in_reply_to: None
+result:      ok {"id": 2573, "from": "talos@hackloop.mail", "to": "maintal-transport-logistik@hackloop.mail", "subject": "Pickup quote 21663 Lueneburg to HAM on 2026-11-26", "body": "Hello Maintal Transport Logistik,
+------------------------------------------------------------------------------
+Hello Maintal Transport Logistik,
+
+Please quote the following pickup:
+From: 21663 Lueneburg
+To: HAM airport (air export warehouse)
+Date: 2026-11-26
+Pieces: 4
+Weight: 855 kg
+Volume: 3.74 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:01:50
+to:          domblick-kurierdienst@hackloop.mail
+subject:     Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+in_reply_to: None
+result:      ok {"id": 2575, "from": "talos@hackloop.mail", "to": "domblick-kurierdienst@hackloop.mail", "subject": "Pickup quote 21663 Lueneburg to HAM on 2026-11-26", "body": "Hello Domblick Kurierdienst,\n\nPlease
+------------------------------------------------------------------------------
+Hello Domblick Kurierdienst,
+
+Please quote the following pickup:
+From: 21663 Lueneburg
+To: HAM airport (air export warehouse)
+Date: 2026-11-26
+Pieces: 4
+Weight: 855 kg
+Volume: 3.74 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:01:51
+to:          odenwald-cargo@hackloop.mail
+subject:     Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+in_reply_to: None
+result:      ok {"id": 2579, "from": "talos@hackloop.mail", "to": "odenwald-cargo@hackloop.mail", "subject": "Pickup quote 21663 Lueneburg to HAM on 2026-11-26", "body": "Hello Odenwald Cargo,\n\nPlease quote the fol
+------------------------------------------------------------------------------
+Hello Odenwald Cargo,
+
+Please quote the following pickup:
+From: 21663 Lueneburg
+To: HAM airport (air export warehouse)
+Date: 2026-11-26
+Pieces: 4
+Weight: 855 kg
+Volume: 3.74 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:01:51
+to:          spessart-spedition@hackloop.mail
+subject:     Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+in_reply_to: None
+result:      ok {"id": 2582, "from": "talos@hackloop.mail", "to": "spessart-spedition@hackloop.mail", "subject": "Pickup quote 21663 Lueneburg to HAM on 2026-11-26", "body": "Hello Spessart Spedition,\n\nPlease quote
+------------------------------------------------------------------------------
+Hello Spessart Spedition,
+
+Please quote the following pickup:
+From: 21663 Lueneburg
+To: HAM airport (air export warehouse)
+Date: 2026-11-26
+Pieces: 4
+Weight: 855 kg
+Volume: 3.74 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:01:51
+to:          waldrand-transporte@hackloop.mail
+subject:     Pickup quote 21663 Lueneburg to HAM on 2026-11-26
+in_reply_to: None
+result:      ok {"id": 2584, "from": "talos@hackloop.mail", "to": "waldrand-transporte@hackloop.mail", "subject": "Pickup quote 21663 Lueneburg to HAM on 2026-11-26", "body": "Hello Waldrand Transporte,\n\nPlease quo
+------------------------------------------------------------------------------
+Hello Waldrand Transporte,
+
+Please quote the following pickup:
+From: 21663 Lueneburg
+To: HAM airport (air export warehouse)
+Date: 2026-11-26
+Pieces: 4
+Weight: 855 kg
+Volume: 3.74 cbm
+
+Please reply with your all-in price in EUR.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:02:25
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Air freight quote request: Lueneburg to Toronto
+in_reply_to: 2540
+result:      ok {"id": 2741, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Air freight quote request: Lueneburg to Toronto", "body": "Dear customer,\n\nThank you for your req
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your request. Here is our offer:
+
+HAM -> YYZ
+  Weight: 855 kg | Volume: 3.74 cbm | Chargeable: 855 kg
+  Carrier: Juniper Cargo Lines (JP)
+  Air freight: 1966.50 EUR
+  Pickup 21663 Lueneburg -> HAM: 119.3 EUR
+  Total price: 2085.80 EUR (all-in)
+  Transit time: 3 days
+  Valid until: 2026-11-21T16:16:51.880563+00:00
+  Quote reference: R-BDZY6cj5v0knbapY
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:02:39
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Air freight quote request: Lueneburg to Toronto
+in_reply_to: 2760
+result:      ok {"id": 2765, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Air freight quote request: Lueneburg to Toronto", "body": "Dear customer,\n\nThank you for your ord
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+HAM -> YYZ with Juniper Cargo Lines
+Booking reference: BK-TH3RFFQ8
+Status: booked with the airline
+Price: 2085.80 EUR
+Transit time: 3 days
+Pickup: 21663 Lueneburg -> HAM by Odenwald Cargo
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:02:41
+to:          odenwald-cargo@hackloop.mail
+subject:     Pickup order 21663 Lueneburg to HAM
+in_reply_to: None
+result:      ok {"id": 2766, "from": "talos@hackloop.mail", "to": "odenwald-cargo@hackloop.mail", "subject": "Pickup order 21663 Lueneburg to HAM", "body": "Hello Odenwald Cargo,\n\nWe accept your offer of EUR 119.3 
+------------------------------------------------------------------------------
+Hello Odenwald Cargo,
+
+We accept your offer of EUR 119.3 for the pickup 21663 Lueneburg -> HAM.
+Booking reference: BK-TH3RFFQ8.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:02:56
+to:          lindqvist-medtech@hackloop.mail
+subject:     Re: Air freight quote request: Lueneburg to Toronto
+in_reply_to: 2774
+result:      ok {"id": 2775, "from": "talos@hackloop.mail", "to": "lindqvist-medtech@hackloop.mail", "subject": "Re: Air freight quote request: Lueneburg to Toronto", "body": "Dear customer,\n\nThank you for your ord
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+HAM -> YYZ with Juniper Cargo Lines
+Booking reference: BK-TH3RFFQ8
+Status: booked with the airline
+Price: 2085.80 EUR
+Transit time: 3 days
+Pickup: 21663 Lueneburg -> HAM by Odenwald Cargo
+
+We will keep you updated.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:07:56
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2829
+result:      ok {"id": 2842, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Subject: Price Quotation \u2013 FRA to DOH\n\nDear custom
+------------------------------------------------------------------------------
+Subject: Price Quotation – FRA to DOH
+
+Dear customer,
+
+Thank you for your request. Our offer:
+
+FRA -> DOH
+  Weight: 102 kg | Volume: 0.49 cbm | Chargeable: 102 kg
+  Carrier: Ultraviolet Air Freight (UV)
+  Total price: 324.36 EUR (all-in)
+  Transit time: 3 days
+  Valid until: 2026-11-21T16:22:53.736408+00:00
+  Quote reference: R-uMRdXm7xI4d8aVqR
+
+Reply to this mail to confirm the booking.
+
+Best regards,
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:08:25
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2858
+result:      ok {"id": 2864, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Hello,\n\nThank you for your order. We have booked your s
+------------------------------------------------------------------------------
+Hello,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: booked with the airline
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:08:40
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2884
+result:      ok {"id": 2885, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: booked with the airline
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:08:56
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2890
+result:      ok {"id": 2904, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear Customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: booked with the airline
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:09:10
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2912
+result:      ok {"id": 2915, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:09:26
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2918
+result:      ok {"id": 2924, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:09:40
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2929
+result:      ok {"id": 2930, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:09:56
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2931
+result:      ok {"id": 2932, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:10:10
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2933
+result:      ok {"id": 2934, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:10:25
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2935
+result:      ok {"id": 2936, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:10:41
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2937
+result:      ok {"id": 2938, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear Customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear Customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:10:57
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2939
+result:      ok {"id": 2940, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:11:12
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2941
+result:      ok {"id": 2942, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:11:28
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2943
+result:      ok {"id": 2944, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:11:42
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2945
+result:      ok {"id": 2946, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+
+==============================================================================
+sent:        2026-11-21 17:11:57
+to:          hofmann-textilwerk@hackloop.mail
+subject:     Re: Air freight quote: FRA to DOH
+in_reply_to: 2947
+result:      ok {"id": 2948, "from": "talos@hackloop.mail", "to": "hofmann-textilwerk@hackloop.mail", "subject": "Re: Air freight quote: FRA to DOH", "body": "Dear customer,\n\nThank you for your order. We have booke
+------------------------------------------------------------------------------
+Dear customer,
+
+Thank you for your order. We have booked your shipment:
+
+FRA -> DOH with Ultraviolet Air Freight
+Booking reference: BK-O5LKVQ5R
+Status: confirmed by the airline, ready to ship
+Price: 324.36 EUR
+Transit time: 3 days
+
+We will keep you updated.
+
+Air Freight Desk
+

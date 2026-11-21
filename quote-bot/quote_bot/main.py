@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import os
@@ -18,7 +19,10 @@ from .api import ApiError, FiveUClient, messages_from_poll, next_since_id
 from .config import Config, load_config
 from .db import DB
 from .extract import (
+    BOOKING_CONFIRMED_RE,
     Extraction,
+    Shipment,
+    load_airline_emails,
     LLMExtractor,
     Mail,
     has_body,
@@ -32,7 +36,11 @@ from .extract import (
 from .pickup import PickupDesk, PickupRequest, is_fastest, parse_price, ref_ids
 from .pricing import BracketCache, LaneMap, LotQuote, Pricer, grand_total, total_in_eur
 from .maillog import log_incoming
-from .reply import address, booking_draft, re_subject, send_quote, tracking_draft
+from .reply import address, booking_draft, booking_ref, re_subject, send_quote, tracking_draft
+from .attachments import read_attachments
+from .dg import dg_evidence, dg_request_body, has_dg_documents
+from .tariffs import LLM_TARIFF_PROMPT, TariffStore, parse_llm_tariff, parse_tariff
+from .extract import find_volume, find_weight, volume_from_dims
 from .writer import Writer
 
 log = logging.getLogger("quote_bot")
@@ -188,7 +196,12 @@ class Bot:
         self.client = client
         self.db = db
         self.lanes = LaneMap(client, cfg.ports_refresh_s)
-        self.pricer = Pricer(client, self.lanes, BracketCache(client, cfg.brackets_ttl_s), cfg.rate_workers)
+        self.tariffs = TariffStore(db.conn, db.lock)
+        use_tariffs = os.getenv("TARIFF_PRICING", "1").strip().lower() not in ("0", "false", "no")
+        self.pricer = Pricer(client, self.lanes, BracketCache(client, cfg.brackets_ttl_s), cfg.rate_workers,
+                             tariffs=self.tariffs if use_tariffs else None)
+        self._reply_override: dict[int, Mail] = {}  # RFQ id -> mail to answer (DG documents reply)
+        self._skip_dg: set[int] = set()
         self.llm: LLMExtractor | None = None
         self.use_llm = use_llm
         self.own: set[str] = set()
@@ -197,6 +210,20 @@ class Bot:
         self.team = "team"
         carriers_path = os.getenv("CARRIER_LIST", "start-kit/carrier-list.csv")
         self.carriers = load_carriers(carriers_path)
+        self.airline_emails = load_airline_emails(carriers_path)
+        self.email_to_airline = {e: n for n, e in self.airline_emails.items()}
+        seed = os.getenv("TARIFF_SEED_CSV", "data/261121_tariffs_normalized_01.csv")
+        if use_tariffs and seed:
+            names = {}
+            try:
+                import csv as _csv
+                with open(carriers_path, encoding="utf-8") as fh:
+                    names = {r["name"].strip().lower(): r["email"].strip().lower() for r in _csv.DictReader(fh)}
+            except OSError:
+                pass
+            n = self.tariffs.seed_from_csv(seed, names, "2026-11-01", "2026-11-30")
+            log.info("tariffs: %d lanes stored (%d new from %s), pricing %s", self.tariffs.count(), n, seed,
+                     "on" if use_tariffs else "off")
         self.pickup = PickupDesk(os.getenv("PICKUP_ZONES", "start-kit/pickup_zones.csv"), carriers_path)
 
     def start(self) -> None:
@@ -244,6 +271,16 @@ class Bot:
             self._save(mail, Extraction("own", method="rules"), "skipped")
             return
 
+        dg_rfq = self._awaiting_dg(mail)
+        if dg_rfq is not None:  # customer answers our DG document request -> quote the original RFQ now
+            ex0 = Extraction("dg_docs", method="rules", flags=[f"DG documents for RFQ {dg_rfq}: quoting now"])
+            print_non_rfq(mail, ex0)
+            self._save(mail, ex0, "done")
+            self._reply_override[dg_rfq] = mail
+            self._skip_dg.add(dg_rfq)
+            self.process(self.client.message(dg_rfq))
+            return
+
         self.lanes.ensure_fresh()
         pre_info = self.pickup.detect(f"{mail.subject}\n{strip_quoted(mail.body)}")
         ex = rules_extract(mail, self.lanes.codes, self.carriers,
@@ -259,17 +296,40 @@ class Bot:
                     log.exception("LLM extraction failed for %s", mail.id)
                     ex = Extraction("unknown", method="llm", flags=[f"LLM error: {exc}"])
 
+        if ex.category == "rfq" and mail.is_reply and self._thread_quoted(mail):
+            ex.flags.append("reply in a thread we already quoted: no second quote (only the first one counts)")
+            ex.category = "other"
+
         if ex.category == "rfq" and ex.method == "llm" and any(
             s.origin and s.origin == s.destination for s in ex.shipments
         ):
             ex.flags.append("origin == destination: not a valid air RFQ")
             ex.category = "other"
 
+        if ex.category == "rate_sheet":
+            status = self.handle_rate_sheet(mail, ex)
+            print_non_rfq(mail, ex)
+            self._save(mail, ex, status)
+            return
+
+        if ex.category == "booking_confirmed":
+            status = self.handle_booking_confirmed(mail, ex)
+            print_non_rfq(mail, ex)
+            self._save(mail, ex, status)
+            return
+
         if ex.category == "carrier_quote":
             self.handle_bid(mail, ex)
             print_non_rfq(mail, ex)
             self._save(mail, ex, "done")
             self.check_pending()
+            return
+
+        if ex.category == "declined":
+            ex.flags.append("customer declined: not booked")
+            print(f"✗ DECLINED by {address(mail.sender)} (MSG {mail.id}): not booked", flush=True)
+            print_non_rfq(mail, ex)
+            self._save(mail, ex, "declined")
             return
 
         if ex.category == "booking":
@@ -292,6 +352,30 @@ class Bot:
         if not ex.shipments:
             ex.flags.append("RFQ without extractable shipment")
         text = f"{mail.subject}\n{strip_quoted(mail.body)}"
+
+        # attachments (packing list, specs): dangerous goods check + missing weight/volume
+        atts = read_attachments(self.client, mail, self.llm) if mail.attachments else []
+        for a in atts:
+            ex.llm_tokens += a.llm_tokens
+            if a.note:
+                ex.flags.append(f"attachment {a.filename}: {a.note}")
+        att_text = "\n".join(a.text for a in atts if a.text)
+        if att_text:
+            for s in ex.shipments:
+                if not s.weight_kg:
+                    w = find_weight(att_text).value
+                    if w:
+                        s.weight_kg = w
+                        s.flags.append(f"weight {w} kg from attachment")
+                if s.volume_cbm is None:
+                    v = find_volume(att_text).value or volume_from_dims(att_text).value
+                    if v:
+                        s.volume_cbm = v
+                        s.flags.append(f"volume {v} cbm from attachment")
+        if mail.id not in self._skip_dg:
+            evidence = dg_evidence(f"{text}\n{att_text}")
+            if evidence and not has_dg_documents([text, att_text], [a.filename for a in atts]):
+                return self._request_dg_docs(mail, ex, evidence, deadline)
         info = self.pickup.detect(text)
         fastest = is_fastest(text)
         for s in ex.shipments:
@@ -350,7 +434,8 @@ class Bot:
         status = "quoted" if lots and all(lot.best for lot in lots) else "incomplete"
         if self.reply and status == "quoted":
             try:
-                sent = send_quote(self.client, mail, lots, max(deadline, time.monotonic() + 10), self.writer)
+                target = self._reply_override.pop(mail.id, None) or mail
+                sent = send_quote(self.client, target, lots, max(deadline, time.monotonic() + 10), self.writer)
                 status = "replied"
                 print(f"→ REPLIED to {address(mail.sender)} (in_reply_to {mail.id}): "
                       f"{json.dumps(sent, default=str)[:200]}", flush=True)
@@ -396,34 +481,110 @@ class Bot:
         subj = re.sub(r"(?i)^\s*((re|aw|antw|fw|fwd|wg)\s*:\s*)+", "", mail.subject or "").strip()
         return self.db.latest_rfq_for(email, subj or None)
 
-    def _book_one(self, q, team_ref: str, deadline: float, ex: Extraction) -> dict | None:
+    def _airline_email(self, airline: str, detail: Any = "", explicit: str | None = None) -> str | None:
+        """Address to book by e-mail: tariff sender, one named in the 503 message, else the carrier list."""
+        if explicit:
+            return explicit.lower()
+        for m in EMAIL_ANY_RE.findall(str(detail or "")):
+            m = m.lower()
+            if m in self.carriers or m.endswith("@hackloop.mail"):
+                return m
+        name = (airline or "").strip().lower()
+        if name in self.airline_emails:
+            return self.airline_emails[name]
+        for n, e in self.airline_emails.items():  # "Xenon Cargo Airlines (XC)" etc.
+            if n and (n in name or name in n):
+                return e
+        return None
+
+    def _book_by_email(self, q, rate: dict, team_ref: str, detail: Any, deadline: float,
+                       ex: Extraction) -> dict | None:
+        airline = rate.get("airline") or q["airline"]
+        to = self._airline_email(airline, detail, rate.get("carrier_email"))
+        ex.flags.append(f"booking by e-mail ({str(detail)[:120]})")
+        if not to:
+            ex.flags.append(f"no e-mail for airline {airline}: cannot book by e-mail")
+            return None
+        body = (
+            f"Hello {airline},\n\nplease book the following shipment on your rate:\n\n"
+            f"Rate ID: {rate.get('rate_id')}\n"
+            f"Our reference: {team_ref}\n"
+            f"Route: {rate.get('origin') or q['origin']} -> {rate.get('destination') or q['destination']}\n"
+            f"Weight: {rate.get('weight_kg') or q['weight_kg']} kg | Volume: {q['volume_cbm'] or 0} cbm"
+            f" | Chargeable: {rate.get('chargeable_weight_kg') or q['chargeable_weight_kg']} kg"
+            + (f" | Pieces: {q['pieces']}" if q["pieces"] else "") + "\n"
+            f"Price: {rate.get('total') or q['total']} {rate.get('currency') or q['currency']}\n\n"
+            f"Please confirm with your booking reference.\n\nBest regards,\n{self.writer.signature}"
+        )
         try:
-            return self.client.book(q["rate_id"], team_ref, deadline=deadline)
+            self.client.send_message(to, f"Booking request {rate.get('rate_id')} / {team_ref}", body,
+                                     deadline=max(deadline, time.monotonic() + 10))
         except ApiError as exc:
+            ex.flags.append(f"booking e-mail to {to} failed: {exc}")
+            return None
+        ex.flags.append(f"booking requested by e-mail from {to}")
+        return {"booking_reference": None, "team_reference": team_ref, "rate_id": rate.get("rate_id"),
+                "airline": airline, "price": rate.get("total"), "currency": rate.get("currency"),
+                "status": "requested"}
+
+    def _book_one(self, q, team_ref: str, deadline: float, ex: Extraction) -> dict | None:
+        """Book the quoted rate; expired/unknown -> fresh rate (same airline, else cheapest)."""
+        raw = json.loads(q["raw"] or "{}")
+        rate = {**raw, "rate_id": q["rate_id"]}
+        if raw.get("source") == "tariff":  # rate-sheet airline: no portal rate_id, book with the airline
+            return self._book_by_email(q, rate, team_ref, "rate-sheet airline", deadline, ex)
+        try:
+            return self.client.book(q["rate_id"], team_ref, deadline=max(deadline, time.monotonic() + 15))
+        except ApiError as exc:
+            if exc.status == 503:
+                return self._book_by_email(q, rate, team_ref, exc.detail, deadline, ex)
+            if exc.status == 409:  # this rate_id is already booked under another reference
+                ex.flags.append(f"rate {q['rate_id']} already booked (409): {str(exc.detail)[:80]}")
+                return {"booking_reference": None, "team_reference": team_ref, "rate_id": q["rate_id"],
+                        "airline": q["airline"], "price": q["total"], "currency": q["currency"],
+                        "status": "booked"}
             if exc.status not in (404, 410):
                 ex.flags.append(f"booking {q['rate_id']} failed: {exc.status} {str(exc.detail)[:80]}")
                 return None
-        raw = json.loads(q["raw"] or "{}")  # rate expired: re-price same airline/weight, book new rate_id
-        try:
+            ex.flags.append(f"rate {q['rate_id']} {exc.status}: fetching a fresh rate")
+        weight = float(raw.get("weight_kg") or q["quoted_weight_kg"] or q["weight_kg"])
+        new = None
+        try:  # same airline, same billed weight
             new = self.client.rate(q["origin"], q["destination"], raw.get("airline_code") or q["airline_code"],
-                                   float(raw.get("weight_kg") or q["weight_kg"]), q["volume_cbm"] or 0,
-                                   deadline=deadline)
-            ex.flags.append(f"rate expired: re-priced {q['total']} -> {new.get('total')} {new.get('currency')}")
-            return self.client.book(new["rate_id"], team_ref, deadline=deadline)
-        except (ApiError, KeyError, TypeError, ValueError) as exc:
-            ex.flags.append(f"re-booking failed: {exc}")
+                                   weight, q["volume_cbm"] or 0, deadline=max(deadline, time.monotonic() + 15))
+        except ApiError as exc:
+            ex.flags.append(f"re-price same airline failed: {exc.status}")
+        if not new or not new.get("rate_id"):
+            try:  # airline gone (hourly change): cheapest airline on the lane
+                lot = self.pricer.quote(Shipment(q["origin"], q["destination"], float(q["weight_kg"]),
+                                                 q["volume_cbm"] or 0.0, q["pieces"]),
+                                        max(deadline, time.monotonic() + 20))
+                new = dict(lot.best.rate) if lot.best else None
+            except Exception as exc:  # noqa: BLE001
+                ex.flags.append(f"re-quote failed: {exc}")
+        if not new or not new.get("rate_id"):
+            ex.flags.append("no fresh rate: booking failed")
+            return None
+        ex.flags.append(f"re-priced {q['total']} -> {new.get('total')} {new.get('currency')} ({new.get('airline')})")
+        try:
+            return self.client.book(new["rate_id"], team_ref, deadline=max(deadline, time.monotonic() + 15))
+        except ApiError as exc:
+            if exc.status == 503:
+                return self._book_by_email(q, new, team_ref, exc.detail, deadline, ex)
+            ex.flags.append(f"re-booking failed: {exc.status} {str(exc.detail)[:80]}")
             return None
 
     def handle_booking(self, mail: Mail, ex: Extraction, deadline: float) -> str:
         rfq_id = self.find_rfq(mail)
         if rfq_id is None:
             ex.flags.append("booking: no matching quote found")
+            print(f"✗ BOOKING UNMATCHED MSG {mail.id}: no quote with a rate_id for {mail.sender!r}", flush=True)
             return "unmatched"
         existing = self.db.bookings_for_rfq(rfq_id)
         booked: list[dict] = []
-        if existing:
-            ex.flags.append(f"booking for RFQ {rfq_id} already exists: re-confirming")
-            booked = [dict(r) | {"pickup": json.loads(r["pickup"]) if r["pickup"] else None} for r in existing]
+        if existing:  # already booked + confirmed: no second confirmation (customer thank-you loop)
+            ex.flags.append(f"RFQ {rfq_id} already booked ({', '.join(booking_ref(r) for r in existing)}): no new mail")
+            return "duplicate"
         else:
             seen_lots = set()
             for q in self.db.quotes_for(rfq_id):
@@ -439,8 +600,8 @@ class Bot:
                 price = raw.get("grand_total") or res.get("price") or q["total"]
                 b = {
                     "rfq_id": rfq_id, "lot": q["lot"], "customer": address(mail.sender),
-                    "booking_reference": res.get("booking_reference"), "team_reference": team_ref,
-                    "rate_id": res.get("rate_id", q["rate_id"]),
+                    "booking_reference": res.get("booking_reference"), "team_reference": res.get("team_reference") or team_ref,
+                    "rate_id": res.get("rate_id") or q["rate_id"],
                     "airline": res.get("airline") or q["airline"], "origin": q["origin"],
                     "destination": q["destination"], "price": str(price),
                     "currency": res.get("currency") or q["currency"], "status": res.get("status", "booked"),
@@ -449,56 +610,186 @@ class Bot:
                 }
                 self.db.save_booking(**b)
                 booked.append(b | {"pickup": pickup})
-                ex.flags.append(f"BOOKED {b['booking_reference']} ({b['airline']}, {b['price']} {b['currency']})")
+                ex.flags.append(f"BOOKED {booking_ref(b)} [{b['status']}] ({b['airline']}, {b['price']} {b['currency']})")
+                print(f"✓ BOOKED RFQ {rfq_id} lot {q['lot']}: {booking_ref(b)} [{b['status']}]", flush=True)
         if not booked:
+            print(f"✗ BOOKING FAILED for MSG {mail.id} (RFQ {rfq_id}): {'; '.join(ex.flags)}", flush=True)
             return "booking_failed"
         if not self.reply:
             return "booked"
         draft = booking_draft(booked)
         body = self.writer.write("booking confirmation to a customer", draft,
-                                 [b["booking_reference"] for b in booked])
+                                 [booking_ref(b) for b in booked])
         try:
             self.client.send_message(address(mail.sender), re_subject(mail.subject), body,
                                      in_reply_to=mail.id, deadline=max(deadline, time.monotonic() + 10))
             ex.flags.append("confirmation sent")
         except ApiError as exc:
             ex.flags.append(f"confirmation failed: {exc}")
-        for b in booked:  # confirm pickup with the winning trucker
-            p = b.get("pickup")
-            if not p or existing:
-                continue
-            email = next((e for e, v in (p.get("bids") or {}).items() if str(v) == str(p["price_eur"])), None)
-            if not email:
-                continue
-            tdraft = (f"Hello {p['trucker']},\n\nwe accept your offer of EUR {p['price_eur']} for the pickup "
-                      f"{p['zip']} {p['city']} -> {p['airport']}. Booking reference: {b['booking_reference']}.\n\n"
-                      f"Best regards,\n{self.writer.signature}")
-            tbody = self.writer.write("pickup order confirmation to a trucker", tdraft,
-                                      [p["price_eur"], p["zip"], b["booking_reference"]])
-            try:
-                self.client.send_message(email, f"Pickup order {p['zip']} {p['city']} to {p['airport']}", tbody,
-                                         deadline=max(deadline, time.monotonic() + 10))
-                ex.flags.append(f"pickup ordered from {p['trucker']}")
-            except ApiError as exc:
-                ex.flags.append(f"pickup order failed: {exc}")
+        # no pickup order mail: truckers state "no booking needed, we collect once the air booking is confirmed"
         return "booked"
 
+    def _thread_quoted(self, mail: Mail) -> bool:
+        for r in ref_ids(mail):
+            for cand in (r, self.db.sent_parent(r)):
+                if cand is not None and self.db.quotes_for(cand):
+                    return True
+        return False
+
+    def _awaiting_dg(self, mail: Mail) -> int | None:
+        """RFQ id if this mail answers our dangerous-goods document request in that thread."""
+        if not mail.is_reply:
+            return None
+        sender = address(mail.sender).lower()
+        for r in ref_ids(mail):
+            for cand in (r, self.db.sent_parent(r)):
+                row = self.db.message(cand) if cand is not None else None
+                if row is not None and row["status"] == "awaiting_dg_docs" and \
+                        address(row["sender"] or "").lower() == sender:
+                    return int(row["id"])
+        return None
+
+    def _request_dg_docs(self, mail: Mail, ex: Extraction, evidence: list[str], deadline: float) -> None:
+        ex.flags.append("dangerous goods: " + "; ".join(evidence[:4]))
+        status = "awaiting_dg_docs"
+        if self.reply:
+            body = dg_request_body(evidence, self.writer.signature)  # template, no LLM
+            try:
+                self.client.send_message(address(mail.sender), re_subject(mail.subject), body, in_reply_to=mail.id,
+                                         deadline=max(deadline, time.monotonic() + 10))
+                ex.flags.append("DG documents requested (no quote yet)")
+            except ApiError as exc:
+                ex.flags.append(f"DG request failed: {exc}")
+        print(f"⚠ DANGEROUS GOODS MSG {mail.id}: {'; '.join(evidence[:4])} -> documents requested", flush=True)
+        print_non_rfq(mail, ex)
+        self._save(mail, ex, status)
+
+    def handle_rate_sheet(self, mail: Mail, ex: Extraction) -> str:
+        """Tariff ingestion: body + attachments -> tariffs table (used by the pricer)."""
+        m = EMAIL_ANY_RE.search(mail.sender or "")
+        sender = m.group(0).lower() if m else ""
+        list_name = self.email_to_airline.get(sender)
+        hint = None
+        if list_name:  # use the carrier-list spelling of the airline name
+            for n in self._carrier_names():
+                if n.lower() == list_name:
+                    hint = n
+        sources = [("mail body", strip_quoted(mail.body) or mail.body or "")]
+        for a in read_attachments(self.client, mail, self.llm):
+            ex.llm_tokens += a.llm_tokens
+            if a.note:
+                ex.flags.append(f"{a.filename}: {a.note}")
+            sources.append((a.filename, a.text))
+        stored = []
+        for name, text in sources:
+            if not text or not text.strip():
+                continue
+            res = parse_tariff(text, hint)
+            need_llm = not res.lanes and self.llm is not None and (
+                (name != "mail body" and len(text) > 150)
+                or (name == "mail body" and len(re.findall(r"\d+[.,]\d{2}", text)) >= 8))
+            if need_llm:
+                try:
+                    content, tok = self.llm.extract_tariff(text, LLM_TARIFF_PROMPT)
+                    ex.llm_tokens += tok
+                    res = parse_llm_tariff(content, hint)
+                    ex.flags.append(f"{name}: parsed by LLM ({tok} tokens)")
+                except Exception as exc:  # noqa: BLE001
+                    ex.flags.append(f"{name}: LLM tariff parse failed: {exc}")
+            for ln in res.lanes:
+                ln.carrier_email = sender if list_name or not ln.carrier_email else ln.carrier_email
+                ln.carrier_email = ln.carrier_email or self.airline_emails.get(ln.carrier.lower())
+                ln.source = f"mail {mail.id}: {name}"
+            if res.lanes:
+                ex.flags.append(f"{name}: {len(res.lanes)} lanes ({res.carrier}, valid {res.valid_from}..{res.valid_to})")
+            ex.flags += [f"{name}: {n}" for n in res.notes[:3]]
+            stored += res.lanes
+        if not stored:
+            ex.flags.append("rate sheet: no lanes found")
+            return "rate_sheet_empty"
+        self.tariffs.save(stored)
+        print(f"✓ TARIFF {len(stored)} lanes from {stored[0].carrier} stored (MSG {mail.id})", flush=True)
+        return "ingested"
+
+    def _carrier_names(self) -> list[str]:
+        try:
+            import csv as _csv
+            with open(os.getenv("CARRIER_LIST", "start-kit/carrier-list.csv"), encoding="utf-8") as fh:
+                return [r["name"].strip() for r in _csv.DictReader(fh)]
+        except OSError:
+            return []
+
+    def handle_booking_confirmed(self, mail: Mail, ex: Extraction) -> str:
+        """Airline mail "Booking BK-... confirmed": mark the booking confirmed in the CRM."""
+        text = f"{mail.subject}\n{mail.body}"
+        m = BOOKING_CONFIRMED_RE.search(text)
+        ref = m.group(1).upper() if m else None
+        row = self.db.booking_matching(text, ref)
+        if row is not None:
+            self.db.update_booking(row["id"], status="confirmed",
+                                   booking_reference=row["booking_reference"] or ref)
+            ex.flags.append(f"booking {ref} confirmed (RFQ {row['rfq_id']})")
+            return "confirmed"
+        for rid in re.findall(r"\bR-[A-Za-z0-9_-]{6,}", text):  # booked elsewhere: rebuild from the quote
+            q = self.db.quote_by_rate_id(rid)
+            if q is None:
+                continue
+            raw = json.loads(q["raw"] or "{}")
+            msg = self.db.message(q["message_id"])
+            tm = re.search(rf"\b{re.escape(self.team)}-\d+-\d+\b", text)
+            self.db.save_booking(
+                rfq_id=q["message_id"], lot=q["lot"], customer=address(msg["sender"] if msg else ""),
+                booking_reference=ref, team_reference=tm.group(0) if tm else f"{self.team}-{q['message_id']}-{q['lot']}",
+                rate_id=rid, airline=q["airline"], origin=q["origin"], destination=q["destination"],
+                price=str(raw.get("grand_total") or q["total"]), currency=q["currency"], status="confirmed",
+                pickup=json.dumps(raw["pickup"]) if raw.get("pickup") else None, transit_days=q["transit_days"],
+                raw=json.dumps({"confirmation_mail": mail.id}),
+            )
+            ex.flags.append(f"booking {ref} confirmed for rate {rid} (RFQ {q['message_id']}), added to CRM")
+            return "confirmed"
+        ex.flags.append(f"confirmation {ref} matches no booking in the CRM")
+        return "unmatched"
+
     def handle_tracking(self, mail: Mail, ex: Extraction, deadline: float) -> str:
-        rows = self.db.find_bookings(address(mail.sender), f"{mail.subject}\n{mail.body}")
-        ex.flags.append(f"tracking: {len(rows)} booking(s) found")
+        text = f"{mail.subject}\n{mail.body}"
+        rows = self.db.find_bookings(address(mail.sender), text)
+        quotes = []
+        if not rows:
+            rfq_id = self.find_rfq(mail)
+            quotes = [q for q in self.db.quotes_for(rfq_id)] if rfq_id else []
+            seen, uniq = set(), []
+            for q in quotes:
+                if q["lot"] not in seen:
+                    seen.add(q["lot"])
+                    uniq.append(q)
+            quotes = uniq
+        ex.flags.append(f"tracking: {len(rows)} booking(s), {len(quotes)} open quote(s) found")
         if not self.reply:
             return "done"
-        draft = tracking_draft(rows)
-        body = self.writer.write("shipment status reply to a customer", draft,
-                                 [r["booking_reference"] for r in rows] + [r["status"] for r in rows])
+        draft = tracking_draft(rows, quotes)
+        must = [booking_ref(r) for r in rows] or [q["rate_id"] for q in quotes]
+        body = self.writer.write("shipment status reply to a customer", draft, must)
         try:
             self.client.send_message(address(mail.sender), re_subject(mail.subject), body,
                                      in_reply_to=mail.id, deadline=max(deadline, time.monotonic() + 10))
             ex.flags.append("status reply sent")
+            print(f"→ TRACKING REPLY to {address(mail.sender)}: {len(rows)} booking(s)", flush=True)
             return "replied"
         except ApiError as exc:
             ex.flags.append(f"status reply failed: {exc}")
             return "error"
+
+    def redo_bookings(self) -> None:
+        """Re-run booking/tracking mails an older build skipped (confirmations first)."""
+        rows = self.db.redo_candidates()
+        rows = sorted(rows, key=lambda r: (0 if "confirmed" in (r["subject"] or "") else
+                                           1 if r["category"] == "booking" else 2, r["id"]))
+        log.info("redo: %d mail(s): %s", len(rows), [r["id"] for r in rows])
+        for r in rows:
+            try:
+                self.process(self.client.message(int(r["id"])))
+            except Exception:  # noqa: BLE001
+                log.exception("redo %s failed", r["id"])
 
     def check_pending(self) -> None:
         for req in self.pickup.due():
@@ -620,6 +911,37 @@ def dump(client: FiveUClient, since_id: int, max_chars: int) -> None:
 
 
 # ---------------------------------------------------------------------------
+def build_id() -> str:
+    """Short hash of the package source: shows which code a running bot uses."""
+    from pathlib import Path
+
+    h = hashlib.sha1()
+    for f in sorted(Path(__file__).parent.glob("*.py")):
+        h.update(f.read_bytes())
+    return h.hexdigest()[:8]
+
+
+def single_instance(db_path: str):
+    """Refuse to start a second polling bot on the same DB (double replies, stale code)."""
+    try:
+        import fcntl
+    except ImportError:  # Windows
+        return None
+    fh = open(db_path + ".lock", "a+")
+    try:
+        fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        fh.seek(0)
+        other = fh.read().strip()
+        raise SystemExit(f"another quote_bot loop already runs on {db_path} ({other}). "
+                         f"Stop it first:  pkill -f quote_bot")
+    fh.seek(0)
+    fh.truncate()
+    fh.write(f"pid {os.getpid()} build {build_id()}")
+    fh.flush()
+    return fh
+
+
 def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(prog="quote_bot", description="5U air-freight RFQ quote bot (print only)")
     p.add_argument("--dump", action="store_true", help="print raw API responses and exit")
@@ -630,6 +952,8 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--skip-backlog", action="store_true", help="on start, jump past existing mails")
     p.add_argument("--no-llm", action="store_true", help="rules only, no gateway calls")
     p.add_argument("--reply", action="store_true", help="send the quote back to the customer")
+    p.add_argument("--redo-bookings", action="store_true",
+                   help="on start, re-run booking/tracking mails an older build did not handle")
     p.add_argument("-v", "--verbose", action="store_true")
     args = p.parse_args(argv)
 
@@ -648,6 +972,10 @@ def main(argv: list[str] | None = None) -> None:
         dump(client, args.since_id or 0, args.dump_chars)
         return
 
+    log.info("quote_bot build %s | db %s", build_id(), os.path.abspath(cfg.db_path))
+    loop_mode = args.message_id is None
+    if loop_mode:
+        lock = single_instance(str(cfg.db_path))  # noqa: F841  (held until exit)
     db = DB(cfg.db_path)
     if args.since_id is not None:
         db.set_since_id(args.since_id)
@@ -660,6 +988,8 @@ def main(argv: list[str] | None = None) -> None:
         data = client.message(args.message_id)
         bot.process(data.get("message", data) if isinstance(data, dict) and "id" not in data else data)
         return
+    if args.redo_bookings:
+        bot.redo_bookings()
     if args.skip_backlog:
         bot.skip_backlog()
 
