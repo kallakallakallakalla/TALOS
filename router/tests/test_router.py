@@ -351,6 +351,36 @@ async def test_poller_deduplicates_and_recovers_on_partial_batch_failure(tmp_pat
     assert store.count_messages() == 3
 
 
+@pytest.mark.anyio
+async def test_poller_does_not_log_on_empty_poll(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    db_file = str(tmp_path / "empty_poll.db")
+    store = MessageStore(db_path=db_file)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"messages": [], "next_since_id": 0})
+
+    settings = Settings(
+        langfuse_enabled=False,
+        decision_api_key="test-key",
+        decision_model="gpt-6-luna",
+        hackloop_base_url="https://api.start-hack.5u.ai",
+        hackloop_api_key="team-key",
+        sqlite_db_path=db_file,
+    )
+    classifier = DecisionClassifier(settings=settings, openai_client=_FakeOpenAIClient(_sample_decision()))
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http_client:
+        mb_client = MailboxClient(settings, http_client=http_client)
+        poller = MailboxPoller(settings, mb_client, classifier, store)
+        caplog.clear()
+        with caplog.at_level("INFO", logger="app"):
+            summary = await poller.poll_once()
+
+    assert summary.fetched == 0
+    assert summary.processed == 0
+    assert [r for r in caplog.records if r.name.startswith("app")] == []
+
+
 def test_fastapi_lifespan_background_poller_and_message_endpoints(tmp_path: Path) -> None:
     db_file = str(tmp_path / "api_poller.db")
     fake_openai = _CountingOpenAIClient(category=EmailCategory.TRACKING)

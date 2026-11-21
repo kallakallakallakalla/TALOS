@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager, suppress
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
@@ -24,6 +25,17 @@ from app.schemas import (
 from app.storage import MessageStore
 
 
+def _configure_app_logging() -> None:
+    app_logger = logging.getLogger("app")
+    if not app_logger.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s - %(message)s"))
+        app_logger.addHandler(handler)
+        app_logger.setLevel(logging.INFO)
+        app_logger.propagate = False
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+
+
 def _resolve_override(app: FastAPI, dep, default_factory):
     provider = app.dependency_overrides.get(dep)
     return provider() if provider is not None else default_factory()
@@ -31,6 +43,7 @@ def _resolve_override(app: FastAPI, dep, default_factory):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    _configure_app_logging()
     settings: Settings = _resolve_override(app, get_settings, get_settings)
     configure_langfuse_env(settings)
 
@@ -95,26 +108,26 @@ def get_classifier(settings: Settings = Depends(get_settings)) -> DecisionClassi
     return DecisionClassifier(settings)
 
 
+def _get_or_create_state(request: Request, attr: str, factory):
+    value = getattr(request.app.state, attr, None)
+    if value is None:
+        value = factory()
+        setattr(request.app.state, attr, value)
+    return value
+
+
 def get_store(
     request: Request,
     settings: Settings = Depends(get_settings),
 ) -> MessageStore:
-    store = getattr(request.app.state, "store", None)
-    if store is None:
-        store = MessageStore(settings.sqlite_db_path)
-        request.app.state.store = store
-    return store
+    return _get_or_create_state(request, "store", lambda: MessageStore(settings.sqlite_db_path))
 
 
 def get_mailbox_client(
     request: Request,
     settings: Settings = Depends(get_settings),
 ) -> MailboxClient:
-    client = getattr(request.app.state, "mailbox_client", None)
-    if client is None:
-        client = MailboxClient(settings)
-        request.app.state.mailbox_client = client
-    return client
+    return _get_or_create_state(request, "mailbox_client", lambda: MailboxClient(settings))
 
 
 def get_poller(
@@ -124,21 +137,42 @@ def get_poller(
     classifier: DecisionClassifier = Depends(get_classifier),
     store: MessageStore = Depends(get_store),
 ) -> MailboxPoller:
-    poller = getattr(request.app.state, "poller", None)
-    if poller is None:
-        poller = MailboxPoller(
+    return _get_or_create_state(
+        request,
+        "poller",
+        lambda: MailboxPoller(
             settings=settings,
             mailbox_client=mailbox_client,
             classifier=classifier,
             store=store,
-        )
-        request.app.state.poller = poller
-    return poller
+        ),
+    )
 
 
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+async def _run_or_502(coro):
+    try:
+        return await coro
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+
+async def _classify_payload(
+    payload: InputPayload,
+    classifier: DecisionClassifier,
+    model_name: str,
+) -> RouteResponse:
+    decision, trace_id = await classifier.classify(payload)
+    return RouteResponse(
+        input=payload,
+        decision=decision,
+        model=model_name,
+        trace_id=trace_id,
+    )
 
 
 @observe(name="router-run")
@@ -149,13 +183,7 @@ async def _execute_pipeline(
     model_name: str,
 ) -> RouteResponse:
     payload = await input_client.fetch_input(input_id=input_id)
-    decision, trace_id = await classifier.classify(payload)
-    return RouteResponse(
-        input=payload,
-        decision=decision,
-        model=model_name,
-        trace_id=trace_id,
-    )
+    return await _classify_payload(payload, classifier, model_name)
 
 
 @app.post("/run", response_model=RouteResponse)
@@ -167,15 +195,14 @@ async def run_router(
 ) -> RouteResponse:
     """Fetch an input from the (placeholder) Input API and classify it into Enums."""
     input_id = request.input_id if request else None
-    try:
-        return await _execute_pipeline(
+    return await _run_or_502(
+        _execute_pipeline(
             input_id=input_id,
             input_client=input_client,
             classifier=classifier,
             model_name=settings.decision_model,
         )
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    )
 
 
 @app.post("/classify", response_model=RouteResponse)
@@ -191,16 +218,7 @@ async def classify_direct(
         text=request.text,
         metadata=request.metadata,
     )
-    try:
-        decision, trace_id = await classifier.classify(payload)
-        return RouteResponse(
-            input=payload,
-            decision=decision,
-            model=settings.decision_model,
-            trace_id=trace_id,
-        )
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return await _run_or_502(_classify_payload(payload, classifier, settings.decision_model))
 
 
 @app.post("/poll", response_model=PollSummary)

@@ -19,6 +19,12 @@ def _utc_now_iso() -> str:
     return datetime.now(UTC).isoformat()
 
 
+def _category_where(category: EmailCategory | None) -> tuple[str, tuple[Any, ...]]:
+    if category is None:
+        return "", ()
+    return "WHERE category = ?", (category.value,)
+
+
 class MessageStore:
     """SQLite-backed store for polling cursor, deduplication, and classified mails."""
 
@@ -69,27 +75,25 @@ class MessageStore:
                 """
             )
 
-    def get_since_id(self) -> int:
-        """Return the last persisted since_id cursor (0 if none stored yet)."""
-        with self._connect() as conn:
-            row = conn.execute(
-                "SELECT value FROM poller_state WHERE key = ?",
-                (_SINCE_ID_KEY,),
-            ).fetchone()
-        return int(row["value"]) if row else 0
-
-    def set_since_id(self, since_id: int) -> int:
-        """Persist since_id monotonically (never decreases an existing cursor)."""
-        with self._connect() as conn:
-            new_val = self._upsert_since_id(conn, since_id)
-        return new_val
-
-    def _upsert_since_id(self, conn: sqlite3.Connection, candidate: int) -> int:
+    def _read_since_id(self, conn: sqlite3.Connection) -> int:
         row = conn.execute(
             "SELECT value FROM poller_state WHERE key = ?",
             (_SINCE_ID_KEY,),
         ).fetchone()
-        current = int(row["value"]) if row else 0
+        return int(row["value"]) if row else 0
+
+    def get_since_id(self) -> int:
+        """Return the last persisted since_id cursor (0 if none stored yet)."""
+        with self._connect() as conn:
+            return self._read_since_id(conn)
+
+    def set_since_id(self, since_id: int) -> int:
+        """Persist since_id monotonically (never decreases an existing cursor)."""
+        with self._connect() as conn:
+            return self._upsert_since_id(conn, since_id)
+
+    def _upsert_since_id(self, conn: sqlite3.Connection, candidate: int) -> int:
+        current = self._read_since_id(conn)
         target = max(current, candidate)
         conn.execute(
             """
@@ -170,14 +174,11 @@ class MessageStore:
 
     def count_messages(self, category: EmailCategory | None = None) -> int:
         """Return total number of stored messages, optionally filtered by category."""
+        where_sql, params = _category_where(category)
         with self._connect() as conn:
-            if category is not None:
-                row = conn.execute(
-                    "SELECT COUNT(*) AS cnt FROM processed_messages WHERE category = ?",
-                    (category.value,),
-                ).fetchone()
-            else:
-                row = conn.execute("SELECT COUNT(*) AS cnt FROM processed_messages").fetchone()
+            row = conn.execute(
+                f"SELECT COUNT(*) AS cnt FROM processed_messages {where_sql}", params
+            ).fetchone()
         return int(row["cnt"]) if row else 0
 
     def list_messages(
@@ -188,26 +189,17 @@ class MessageStore:
     ) -> tuple[list[StoredMessageRecord], int]:
         """Return stored messages (newest first) along with total matching count."""
         total = self.count_messages(category=category)
+        where_sql, params = _category_where(category)
         with self._connect() as conn:
-            if category is not None:
-                rows = conn.execute(
-                    """
-                    SELECT * FROM processed_messages
-                    WHERE category = ?
-                    ORDER BY message_id DESC
-                    LIMIT ? OFFSET ?
-                    """,
-                    (category.value, limit, offset),
-                ).fetchall()
-            else:
-                rows = conn.execute(
-                    """
-                    SELECT * FROM processed_messages
-                    ORDER BY message_id DESC
-                    LIMIT ? OFFSET ?
-                    """,
-                    (limit, offset),
-                ).fetchall()
+            rows = conn.execute(
+                f"""
+                SELECT * FROM processed_messages
+                {where_sql}
+                ORDER BY message_id DESC
+                LIMIT ? OFFSET ?
+                """,
+                (*params, limit, offset),
+            ).fetchall()
         return [self._row_to_record(row) for row in rows], total
 
     def get_message(self, message_id: int) -> StoredMessageRecord | None:

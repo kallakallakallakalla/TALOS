@@ -1,7 +1,6 @@
 from typing import Any
 
 import httpx
-from langfuse import observe
 
 from app.config import Settings
 from app.schemas import (
@@ -35,16 +34,23 @@ _KNOWN_MESSAGE_KEYS = {
 }
 
 
+def _first_nonempty_str(source: dict[str, Any], keys: tuple[str, ...]) -> str | None:
+    for key in keys:
+        value = source.get(key)
+        if isinstance(value, str) and value.strip():
+            return value
+    return None
+
+
 def _extract_sender(raw: dict[str, Any]) -> str | None:
     for key in ("from", "sender", "from_address", "author"):
         value = raw.get(key)
         if isinstance(value, str) and value.strip():
             return value
         if isinstance(value, dict):
-            for nested_key in ("email", "address", "name"):
-                nested_val = value.get(nested_key)
-                if isinstance(nested_val, str) and nested_val.strip():
-                    return nested_val
+            nested = _first_nonempty_str(value, ("email", "address", "name"))
+            if nested is not None:
+                return nested
     return None
 
 
@@ -57,11 +63,7 @@ def _extract_body(raw: dict[str, Any]) -> str:
 
 
 def _extract_timestamp(raw: dict[str, Any]) -> str | None:
-    for key in ("created_at", "sent_at", "received_at", "timestamp"):
-        value = raw.get(key)
-        if isinstance(value, str) and value.strip():
-            return value
-    return None
+    return _first_nonempty_str(raw, ("created_at", "sent_at", "received_at", "timestamp"))
 
 
 def _parse_attachments(raw_attachments: Any) -> list[MailboxAttachment]:
@@ -155,7 +157,6 @@ class MailboxClient:
         self._settings = settings
         self._http_client = http_client
 
-    @observe(name="poll-mailbox-api")
     async def poll_messages(self, since_id: int = 0, limit: int = 100) -> MailboxPollResponse:
         """Fetch messages with id > since_id (oldest first, max 200 per call)."""
         if not self._settings.hackloop_api_key:
