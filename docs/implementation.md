@@ -42,11 +42,62 @@ The module map, setup and every script are described in [`router/README.md`](../
 
 The RFQ set includes the three multi-lot requests (one with per-piece weights and dimensions: 1952 kg, 4.68 cbm), the two "our buyer is importing" requests and the two with a forwarded older mail underneath.
 
-### Full replay (all recorded mails, live LLM, live portal rates, nothing sent)
+### Full replay (all 151 recorded mails, rounds 1–16; live LLM, live portal rates, nothing sent)
 
-**Round 4, verified end to end:** request 947 → 4 trucker requests composed → 8 portal rate reads → Xenon 1483.43 + Elbkante 115.98 = **1599.41 EUR**, the same price the customer accepted from the old process → dry-run booking. All 7 mails of the round were classified as labelled.
+Run with `scripts/replay.py` on 2026-11-21. Output: `router/data/replay/result.json` and `replay.log`.
 
-**All 16 rounds: the run was still in progress when this file was committed** (it is throttled to 3 portal reads per minute). Its output is `router/data/replay/result.json` and `replay.log` (git-ignored). The comparison of our prices with the old process's quotes per round is not written up yet.
+- **Classification inside the real pipeline: 151 / 151** as labelled (here the context comes from the workflow's own state, not from the dataset).
+- **Fact check: 38 composed mails, 0 template fallbacks.**
+- **Portal: 46 live rate reads** for 14 priced requests (3.3 per request).
+- **No mail was sent, nothing was booked.**
+
+Our quote next to the old process's quote for the same request ("verdict" is the customer's answer to the **old** quote, from `GET /v1/board/me`):
+
+| Round | Mail | Request | Old process | Verdict on old quote | This router | Same price? |
+|---|---|---|---|---|---|---|
+| 1 | 275 | fastest, pickup 51447 → ORD | 2494.80, no trucking | rejected, too_low | Meridian (1 day) 3010.00 + trucker | no: trucking included, faster airline (see note A) |
+| 2 | 431 | fastest, pickup 61018 → JFK | 4491.28, no trucking | rejected, too_low | Solace (2 days) 5100.00 + trucker | no: trucking included, faster airline (note A) |
+| 3 | 741 | fastest DUS → JFK | 3696.00 | accepted | 3696.00 Fjordline | **yes** |
+| 4 | 947 | cheapest, pickup 51896 → ORD | 1599.41 | accepted | 1599.41 Xenon + Elbkante | **yes** |
+| 5 | 1233 | fastest STR → EZE | 4408.52 | accepted | 4408.52 Fjordline | **yes** |
+| 6 | 1470 | cheapest DUS → KUL | 3949.95 | accepted | 3949.95 Fjordline | **yes** |
+| 7 | 1638 | fastest MUC → LAX, 2 lots | 2780.00 | accepted | 2780.00 Fjordline | **yes** |
+| 8 | 1844 | cheapest MUC → CAI, 2 lots | 1475.00 | accepted | 1475.00 Borealis | **yes** |
+| 9 | 1977 | cheapest, pickup 36627 → LOS, 3 lots | no answer | – | Lumen 4840.96 + trucker | new: old process failed on the lots (note B) |
+| 10 | 2267 | cheapest, pickup 61391 → GRU | 2685.35 | rejected, dg_docs_missing | 2685.35 | yes: **same mistake** (note C) |
+| 11 | 2540 | cheapest, pickup 21663 → YYZ | 2085.80 | rejected, dg_docs_missing | 2085.80 | yes: **same mistake** (note C) |
+| 12 | 2829 | cheapest FRA → DOH | 324.36 | accepted | 324.36 Ultraviolet | **yes** |
+| 13 | 2977 | cheapest, pickup 24983 → DEL | 2875.06 | accepted | 2875.06 Borealis + Alpenblick | **yes** |
+| 14 | 3327 | cheapest, pickup 42401 → PEK | 3116.91 | rejected, too_low | 3116.91 | yes: **same rejected price** (note D) |
+| 15 | 3637 | cheapest → SGN, "pickup from our warehouse" | no answer | – | asks for the postal code or airport | new behaviour (note E) |
+| 16 | 3940 | fastest → PVG, "pickup from our warehouse" | quoted | rejected, too_high | asks for the postal code or airport | new behaviour (note E) |
+
+**Reading the table**
+
+- **All 8 quotes that customers accepted are reproduced to the cent** (rounds 3–8, 12, 13), including both two-lot requests and three "fastest" requests where a cheaper but slower tariff airline existed and was correctly not chosen.
+- **The state machine followed every recorded verdict:** 8 accepts → dry-run booking and a booking note; round 6's real airline confirmation (reference "1470") → CONFIRMED; rejections → REJECTED; 73 thank-you mails → no reply.
+
+**Notes**
+
+- **A. Rounds 1 and 2 (the two `too_low` rejections for missing trucking):** this router includes trucking and picks the airline with the fewest transit days (ADR 08). Whether that matches the scoring reference is unproven: no "fastest with pickup" quote has ever been accepted. In the replay the trucker part is a fallback price (189.28 and 403.45), because the old process asked the truckers late and their recorded replies arrive after our 90 s limit. Live, truckers answer about 30 s after our own request.
+- **B. Round 9:** the lots are summed correctly (1952 kg, 4.68 cbm). The recorded trucker replies say "we need the weight" (the old process had sent "n/a"), so the replay used the fallback trucker price: 547.57. That is 0.28 EUR/kg, which is far above any real trucker quote seen (75–380 EUR whatever the weight). **The fallback price is too high for heavy shipments.**
+- **C. Rounds 10 and 11, dangerous goods:** the router repeats the old process's mistake. Not built (backlog).
+- **D. Round 14:** the same price was rejected as `too_low`, and the reason is not understood. Air (Gannet 3003.86) and trucker (Spessart 113.05; the other three asked 322–380) are both the cheapest offers received.
+- **E. Rounds 15 and 16:** the request has no pickup postal code. The router asks instead of guessing. No reply from a simulated customer to such a question has been observed.
+
+### LLM cost and speed (from Langfuse, replay traffic)
+
+| Prompt | Calls | Avg. cost per call |
+|---|---|---|
+| `router-classification` | 157 | $0.00011 |
+| `talos-extract-rfq` | 16 | $0.00011 |
+| `talos-extract-trucker-quote` | 33 | $0.00010 |
+| `talos-extract-booking` | 12 | $0.00008 |
+| `talos-compose-mail` | 38 | $0.00017 |
+
+- A complete round with pickup (request, 4–5 trucker quotes, quote, accept, booking note) is about **15 calls and $0.002**. Costs are Langfuse's estimate from token counts; the gateway's own accounting is what is scored.
+- LLM latency: median 1.5 s, 90th percentile 2.6 s per call.
+- **Response time was not measured live.** Expected: under 10 s for requests without pickup (3 LLM calls + portal reads + up to 2 s poll delay), and about 35–40 s with pickup, bounded by the truckers' ~30 s.
 
 ## Where the implementation differs from the plan
 

@@ -726,5 +726,33 @@
   "valid_until": "2026-11-21T17:24:44.900875+00:00",
   "weight_kg": 2000.0,
   "volume_cbm": 7.66
+ },
+ "HAM-DEL-IB-2000-7.66": {
+  "source": "portal",
+  "airline": "Ibisair Cargo",
+  "airline_code": "IB",
+  "origin": "HAM",
+  "destination": "DEL",
+  "billed_kg": 2000.0,
+  "total_eur": 5560.0,
+  "transit_days": 3,
+  "rate_id": "R-2c3OIGRGguW4c0Fc",
+  "valid_until": "2026-11-21T17:25:31.234460+00:00",
+  "weight_kg": 2000.0,
+  "volume_cbm": 7.66
+ },
+ "DUS-PEK-GN-1081-8.03": {
+  "source": "portal",
+  "airline": "Gannet Airways",
+  "airline_code": "GN",
+  "origin": "DUS",
+  "destination": "PEK",
+  "billed_kg": 1341.01,
+  "total_eur": 3003.86,
+  "transit_days": 5,
+  "rate_id": "R-Xf2zYUePazKEQApi",
+  "valid_until": "2026-11-21T17:26:07.364126+00:00",
+  "weight_kg": 1081.0,
+  "volume_cbm": 8.03
  }
 }

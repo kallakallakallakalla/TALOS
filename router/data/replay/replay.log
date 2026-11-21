@@ -1,0 +1,173 @@
+15:00:59   275 rfq                  
+15:02:48   379 customer_reject      
+15:05:46   412 trucker_quote        
+15:05:46   413 trucker_quote        
+15:05:47   414 trucker_quote        
+15:05:48   415 trucker_quote        
+15:07:05   431 rfq                  
+15:09:52   644 customer_reject      
+15:13:10   741 rfq                  
+15:14:02   871 customer_accept      
+Composed trucker_request misses ['CGN']
+15:19:13   947 rfq                  
+15:19:46  1056 trucker_quote        
+15:19:46  1063 trucker_quote        
+15:19:48  1071 trucker_quote        
+15:19:48  1079 trucker_quote        
+15:19:52  1134 trucker_quote        
+15:19:53  1136 trucker_quote        
+15:19:53  1139 trucker_quote        
+15:19:53  1140 trucker_quote        
+15:20:14  1156 customer_accept      
+15:25:18  1233 rfq                  
+15:25:48  1304 customer_accept      
+15:31:22  1470 rfq                  
+15:31:51  1503 customer_accept      
+15:36:41  1623 booking_confirmation 
+15:37:26  1638 rfq                  
+15:37:54  1701 customer_accept      
+15:41:56  1814 tracking_request     
+15:43:30  1844 rfq                  
+15:44:01  1883 customer_accept      
+Composed trucker_request misses ['FRA']
+15:49:35  1977 rfq                  
+15:50:09  2062 trucker_decline      
+15:50:09  2063 trucker_decline      
+15:50:09  2068 trucker_decline      
+15:54:39  2199 other                
+15:54:40  2200 other                
+15:54:42  2204 other                
+15:54:45  2207 other                
+15:54:46  2210 other                
+15:54:48  2211 other                
+15:54:49  2212 other                
+15:54:53  2215 other                
+15:54:55  2216 other                
+15:54:56  2218 booking_confirmation 
+15:55:00  2219 other                
+15:55:03  2222 other                
+15:55:03  2223 other                
+15:55:03  2224 booking_confirmation 
+15:55:03  2225 booking_confirmation 
+15:55:03  2226 booking_confirmation 
+15:55:06  2228 other                
+15:55:11  2232 other                
+15:55:13  2234 other                
+15:55:13  2235 booking_confirmation 
+15:55:13  2236 booking_confirmation 
+15:55:15  2237 other                
+15:55:21  2241 other                
+15:55:23  2243 other                
+15:55:25  2245 other                
+15:55:31  2248 other                
+15:55:34  2250 other                
+15:55:36  2251 other                
+Composed trucker_request misses ['FRA']
+15:55:39  2267 rfq                  
+15:55:44  2322 other                
+15:55:49  2335 other                
+15:55:51  2339 other                
+15:55:53  2340 other                
+15:56:13  2377 other                
+15:56:15  2403 other                
+15:56:17  2410 other                
+15:56:19  2413 trucker_quote        
+15:56:20  2414 trucker_quote        
+15:56:20  2415 trucker_quote        
+15:56:20  2416 trucker_quote        
+15:56:20  2417 trucker_quote        
+15:56:28  2427 other                
+15:56:34  2428 customer_reject      
+15:56:36  2430 other                
+15:56:46  2434 other                
+15:56:52  2436 other                
+15:57:05  2438 other                
+15:57:07  2439 other                
+15:57:14  2440 booking_confirmation 
+16:01:46  2540 rfq                  
+16:02:21  2689 trucker_quote        
+16:02:21  2691 trucker_quote        
+16:02:21  2692 trucker_quote        
+16:02:22  2695 trucker_quote        
+16:02:22  2699 trucker_quote        
+16:02:35  2760 customer_reject      
+16:02:50  2774 other                
+16:03:06  2793 other                
+16:03:11  2794 other                
+16:03:14  2795 booking_confirmation 
+16:07:50  2829 rfq                  
+16:08:21  2858 customer_accept      
+16:08:35  2884 other                
+16:08:50  2890 other                
+16:08:54  2899 booking_confirmation 
+16:09:06  2912 other                
+16:09:21  2918 other                
+16:09:36  2929 other                
+16:09:50  2931 other                
+16:10:06  2933 other                
+16:10:21  2935 other                
+16:10:35  2937 other                
+16:10:51  2939 other                
+16:11:08  2941 other                
+16:11:23  2943 other                
+16:11:38  2945 other                
+16:11:53  2947 other                
+16:12:07  2949 other                
+16:12:22  2951 other                
+16:12:38  2953 other                
+16:12:52  2955 other                
+16:13:07  2957 other                
+16:13:22  2959 other                
+16:13:37  2961 other                
+16:13:52  2964 other                
+16:13:54  2977 rfq                  
+16:14:08  3087 other                
+16:14:23  3090 other                
+16:14:30  3165 trucker_quote        
+16:14:30  3168 trucker_quote        
+16:14:31  3172 trucker_quote        
+16:14:31  3174 trucker_quote        
+16:14:31  3175 trucker_quote        
+16:14:39  3208 other                
+16:14:53  3216 other                
+16:14:58  3223 customer_accept      
+16:15:10  3240 other                
+16:15:14  3244 other                
+16:15:36  3261 other                
+16:15:38  3263 other                
+16:15:41  3266 booking_confirmation 
+16:15:53  3273 other                
+16:18:25  3279 tracking_request     
+Composed trucker_request misses ['DUS']
+16:20:00  3327 rfq                  
+16:20:34  3461 trucker_quote        
+16:20:35  3471 trucker_quote        
+16:20:35  3477 trucker_quote        
+16:20:35  3480 trucker_quote        
+16:20:48  3518 customer_reject      
+16:21:03  3527 other                
+16:21:17  3553 other                
+16:21:21  3556 booking_confirmation 
+16:21:24  3559 other                
+16:21:33  3561 other                
+16:25:10  3612 tracking_request     
+16:26:03  3637 rfq                  
+16:32:07  3940 rfq                  
+
+classification: 151/151 as labelled; live rate reads: 46
+  275 REJECTED      CGN-ORD 3199.28 Meridian Freightways truck=189.28 (fallback) 
+  431 REJECTED      FRA-JFK 5503.45 Solace Air Cargo truck=403.45 (fallback) 
+  741 BOOKED        DUS-JFK 3696.0 Fjordline Air Cargo truck=0.0 
+  947 BOOKED        CGN-ORD 1599.41 Xenon Cargo Airlines truck=115.98 
+ 1233 BOOKED        STR-EZE 4408.52 Fjordline Air Cargo truck=0.0 
+ 1470 CONFIRMED     DUS-KUL 3949.95 Fjordline Air Cargo truck=0.0 
+ 1638 BOOKED        MUC-LAX 2780.0 Fjordline Air Cargo truck=0.0 
+ 1844 BOOKED        MUC-CAI 1475.0 Borealis Freight Airways truck=0.0 
+ 1977 QUOTED        FRA-LOS 5388.53 Lumen Air Cargo truck=547.57 (fallback) 
+ 2267 REJECTED      FRA-GRU 2685.35 Juniper Cargo Lines truck=75.6 
+ 2540 REJECTED      HAM-YYZ 2085.8 Juniper Cargo Lines truck=119.3 
+ 2829 BOOKED        FRA-DOH 324.36 Ultraviolet Air Freight truck=0.0 
+ 2977 BOOKED        HAM-DEL 2875.06 Borealis Freight Airways truck=122.76 
+ 3327 REJECTED      DUS-PEK 3116.91 Gannet Airways truck=113.05 
+ 3637 AWAITING_INFO ?-SGN   truck= 
+ 3940 AWAITING_INFO ?-PVG   truck= 
