@@ -65,31 +65,44 @@ def pick_best(
     goal: Goal | None,
     ready_date: date | None = None,
     deliver_by: date | None = None,
-    pickup_cutoff_hours: float = 14.0,
 ) -> tuple[AirOption, TruckerRequest | None]:
     """Choose the air option and the trucker for a goal (ADR 08). No goal means cheapest.
 
-    fastest:  fewest transit days, price breaks ties.
-    cheapest: lowest air total.
-    trucker (ADR 49, both goals): the cheapest one that picks up within the cut-off (it makes
-    the flight, so a faster one adds nothing); if none does, the cheapest of all.
-    deliver_by (ADR 44): only options that arrive by then; if none does, the fastest one.
+    Air - fastest: fewest transit days, price breaks ties; cheapest: lowest air total.
+    Trucker (ADR 52), counted in days like `eta`: always the cheapest one, unless the dates
+    need a faster one. Fastest goal: the cheapest of those that reach the earliest flight.
+    deliver_by (ADR 44): per air option the cheapest trucker that still arrives by then; only
+    options with such a trucker count. If none does, the fastest air with the fastest trucker.
     `trucks` may be empty (customer delivers, or no trucker answered).
     """
     priced = [t for t in trucks if t.price_eur is not None]
-    hours = lambda t: math.inf if t.pickup_hours is None else t.pickup_hours  # noqa: E731
-    in_time = [t for t in priced if hours(t) <= pickup_cutoff_hours]
-    best_truck = min(in_time or priced, key=lambda t: (t.price_eur, hours(t)), default=None)
-    fastest = min(air, key=lambda o: (o.transit_days, o.total_eur))
+    days = lambda t: pickup_days(t.pickup_hours)  # noqa: E731
+    cheapest = lambda ts: min(ts, key=lambda t: (t.price_eur, days(t)), default=None)  # noqa: E731
+    if goal == "fastest" and priced:
+        first = min(map(days, priced))
+        priced = [t for t in priced if days(t) == first]
     if deliver_by and ready_date:
-        pickup = best_truck.pickup_hours if best_truck else None
-        in_time = [o for o in air if eta(ready_date, pickup, o.transit_days)["arrival"] <= deliver_by]
-        if not in_time:
-            return fastest, best_truck
-        air = in_time
+        on_time = lambda o: [  # noqa: E731
+            t for t in priced if eta(ready_date, t.pickup_hours, o.transit_days)["arrival"] <= deliver_by
+        ]
+        fits = [o for o in air if on_time(o) or (not priced and eta(ready_date, None, o.transit_days)["arrival"] <= deliver_by)]
+        if not fits:
+            fastest = min(air, key=lambda o: (o.transit_days, o.total_eur))
+            return fastest, min(priced, key=lambda t: (days(t), t.price_eur), default=None)
+        choice = _by_goal(fits, goal)
+        return choice, cheapest(on_time(choice))
+    return _by_goal(air, goal), cheapest(priced)
+
+
+def _by_goal(air: list[AirOption], goal: Goal | None) -> AirOption:
     if goal == "fastest":
-        return min(air, key=lambda o: (o.transit_days, o.total_eur)), best_truck
-    return min(air, key=lambda o: (o.total_eur, o.transit_days)), best_truck
+        return min(air, key=lambda o: (o.transit_days, o.total_eur))
+    return min(air, key=lambda o: (o.total_eur, o.transit_days))
+
+
+def pickup_days(pickup_hours: float | None) -> int:
+    """Days the trucker adds before the flight: a pickup of up to 24 h flies the next day."""
+    return math.ceil(pickup_hours / 24) if pickup_hours else 0
 
 
 _NOISE = {"air", "airlines", "airline", "cargo", "freight", "airways", "logistik", "logistics",
@@ -129,8 +142,7 @@ def all_in(air_total_eur: float, truck_eur: float, margin_eur: float) -> float:
 
 def eta(ready_date: date, pickup_hours: float | None, transit_days: int) -> dict[str, date]:
     """Estimated dates: collected on the ready date, flown once the pickup has arrived."""
-    pickup_days = math.ceil(pickup_hours / 24) if pickup_hours else 0
-    departure = ready_date + timedelta(days=pickup_days)
+    departure = ready_date + timedelta(days=pickup_days(pickup_hours))
     return {
         "pickup": ready_date,
         "departure": departure,

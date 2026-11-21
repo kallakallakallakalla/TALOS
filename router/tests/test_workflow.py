@@ -196,7 +196,7 @@ class Harness:
 
 
 @pytest.mark.anyio
-async def test_round_4_replay_quotes_1671_40_and_books_with_reference_947(tmp_path: Path) -> None:
+async def test_round_4_replay_quotes_1599_41_and_books_with_reference_947(tmp_path: Path) -> None:
     h = Harness(tmp_path, send_enabled=True)
 
     await h.receive(ROUND_4_RFQ)
@@ -220,15 +220,17 @@ async def test_round_4_replay_quotes_1671_40_and_books_with_reference_947(tmp_pa
     assert schemas.count("ClassificationDecision") == 1 and schemas.count("TruckerQuotes") == 1
     assert [m.decision.category.value for m in map(h.store.get_message, ROUND_4_TRUCKER_REPLIES)] == ["trucker_quote"] * 4
     assert shipment.state == ShipmentState.QUOTED
-    assert shipment.quote["all_in_eur"] == 1671.4
-    assert (shipment.quote["air_eur"], shipment.quote["truck_eur"]) == (1483.43, 187.97)
-    assert shipment.quote["trucker"] == "westfalenroute@hackloop.mail"  # 11 h; Elbkante 115.98 takes 29 h (ADR 49)
+    assert shipment.quote["all_in_eur"] == 1599.41
+    assert (shipment.quote["air_eur"], shipment.quote["truck_eur"]) == (1483.43, 115.98)
+    assert shipment.quote["trucker"] == "elbkante-logistik@hackloop.mail"  # cheapest, 115.98 (ADR 52)
     (quote,) = [m for m in h.platform.sent if m["to"] == shipment.customer]
-    assert "1671.40 EUR" in quote["body"]
+    assert "1599.41 EUR" in quote["body"]
     assert quote["in_reply_to"] == ROUND_4_RFQ and quote["subject"] == "Re: Air freight quote to ORD"
 
     await h.receive(ROUND_4_ACCEPT, in_reply_to=quote["id"], references=[ROUND_4_RFQ, quote["id"]])
-    assert h.platform.bookings == [{"rate_id": shipment.chosen_option.rate_id, "team_reference": "947"}]
+    # The price is checked on the portal again before booking; it held, so the fresh rate is booked.
+    assert h.platform.bookings == [{"rate_id": h.shipment().chosen_option.rate_id, "team_reference": "947"}]
+    assert h.shipment().chosen_option.rate_id != shipment.chosen_option.rate_id
     assert h.shipment().state == ShipmentState.BOOKED
     assert h.shipment().booking_ref == "BK-ERC5OOW3"
     note = h.platform.sent[-1]
@@ -258,7 +260,7 @@ async def test_dry_run_composes_everything_but_never_sends_or_books(tmp_path: Pa
 
     shipment = h.shipment()
     assert shipment.state == ShipmentState.BOOKED and shipment.booking_ref == DRY_RUN_BOOKING_REF
-    assert "1671.40 EUR" in h.outbound("quote")[0].body
+    assert "1599.41 EUR" in h.outbound("quote")[0].body
     assert [len(h.outbound(k)) for k in ("trucker_request", "quote", "booking_note")] == [4, 1, 1]
     assert all(m.sent_message_id is None for m in h.store.outbound_mails())
     assert h.platform.sent == [] and h.platform.bookings == []
@@ -364,7 +366,7 @@ async def test_unknown_pickup_zone_asks_the_customer_for_an_airport(tmp_path: Pa
 
 
 @pytest.mark.anyio
-async def test_expired_rate_is_refetched_before_booking(tmp_path: Path) -> None:
+async def test_quoted_rate_is_refetched_before_booking(tmp_path: Path) -> None:
     h = Harness(tmp_path, send_enabled=True)
     await h.receive(ROUND_4_RFQ)
     await h.truckers_reply()
@@ -373,9 +375,32 @@ async def test_expired_rate_is_refetched_before_booking(tmp_path: Path) -> None:
 
     await h.receive(ROUND_4_ACCEPT)
     shipment = h.shipment()
-    assert shipment.state == ShipmentState.BOOKED and shipment.booking_attempts == 2
-    assert h.platform.bookings[0]["rate_id"] != old_rate_id
+    assert shipment.state == ShipmentState.BOOKED and shipment.booking_attempts == 1
+    assert h.platform.bookings[0]["rate_id"] not in (old_rate_id, None)
     assert h.platform.bookings[0]["team_reference"] == "947"
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(("new_air", "went"), [("1583.43", "up"), ("1383.43", "down")])
+async def test_changed_portal_price_asks_the_customer_again_before_booking(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, new_air: str, went: str
+) -> None:
+    h = Harness(tmp_path, send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    monkeypatch.setitem(CGN_ORD_TOTALS, "XC", new_air)  # the airline price moved since the quote
+
+    await h.receive(ROUND_4_ACCEPT)
+    shipment = h.shipment()
+    assert shipment.state == ShipmentState.QUOTED and h.platform.bookings == []
+    new_all_in = round(1599.41 - 1483.43 + float(new_air), 2)
+    assert shipment.quote["all_in_eur"] == new_all_in
+    (update,) = h.outbound("price_update")
+    assert f"{new_all_in:.2f} EUR" in h.platform.sent[-1]["body"]
+    assert h.platform.sent[-1]["to"] == shipment.customer
+
+    await h.receive(ROUND_4_ACCEPT, id=5001)  # the customer confirms the new price
+    assert h.shipment().state == ShipmentState.BOOKED and len(h.platform.bookings) == 1
 
 
 @pytest.mark.anyio
@@ -383,11 +408,11 @@ async def test_portal_booking_closed_books_by_email_with_the_rate_id(tmp_path: P
     h = Harness(tmp_path, send_enabled=True)
     await h.receive(ROUND_4_RFQ)
     await h.truckers_reply()
-    rate_id = h.shipment().chosen_option.rate_id
     h.platform.booking_closed = True
 
     await h.receive(ROUND_4_ACCEPT)
     shipment = h.shipment()
+    rate_id = shipment.chosen_option.rate_id  # the fresh rate from the price recheck
     assert shipment.state == ShipmentState.BOOKING and h.platform.bookings == []
     request = h.platform.sent[-1]
     assert request["to"] == "xenon-cargo-airlines@hackloop.mail"
@@ -522,7 +547,7 @@ async def test_tracking_question_is_answered_from_our_booking_record(tmp_path: P
     assert "BK-ERC5OOW3" in answer["body"]
     facts = llm.calls[-1][1]
     assert '"found": true' in facts and "CGN -> ORD" in facts and "Xenon Cargo Airlines" in facts
-    assert '"never_booked"' not in facts and "booked with the airline" in facts and '"estimated_arrival": "2026-12-02"' in facts
+    assert '"never_booked"' not in facts and "booked with the airline" in facts and '"estimated_arrival": "2026-12-03"' in facts  # 29 h pickup: 2 days (ADR 52)
     assert h.platform.rate_reads and len(h.platform.bookings) == 1  # nothing new was looked up
 
 
@@ -655,7 +680,7 @@ async def test_a_readable_attachment_reaches_the_extractor_without_vision(tmp_pa
 
 @pytest.mark.anyio
 async def test_a_preferred_airline_is_quoted_and_the_cheaper_one_is_named(tmp_path: Path) -> None:
-    """ADR 46: the customer asks for AU (1920.10); Xenon (1671.40 all-in) is cheaper and is named."""
+    """ADR 46: the customer asks for AU (1920.10); Xenon (1599.41 all-in) is cheaper and is named."""
     base = recorded_llm()._answer  # noqa: SLF001
 
     def answer(schema, system, user):
@@ -673,7 +698,7 @@ async def test_a_preferred_airline_is_quoted_and_the_cheaper_one_is_named(tmp_pa
     assert quote["airline"] == "AU"
     facts = next(c[1] for c in reversed(h.llm.calls) if "Mail to write: quote" in c[1])
     alternative = facts.split('"cheaper_alternative": ')[1].split("}")[0]
-    assert "Xenon Cargo Airlines" in alternative and "1671.40 EUR" in alternative  # air 1483.43 + truck
+    assert "Xenon Cargo Airlines" in alternative and "1599.41 EUR" in alternative  # air 1483.43 + truck
 
 
 @pytest.mark.anyio

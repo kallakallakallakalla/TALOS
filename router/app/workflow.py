@@ -256,6 +256,8 @@ class Workflow:
             msg, previous=shipment.request, thread=ctx.our_mail
         )
         shipment.goal = shipment.request.goal
+        # The customer may switch language mid-thread; we answer in the one they wrote last.
+        shipment.language = shipment.request.language or shipment.language
         shipment.state = ShipmentState.NEW
         self._store.save_shipment(shipment)
         await self._advance(shipment, reply_to=msg.id)
@@ -546,9 +548,6 @@ class Workflow:
         trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
         pick = lambda a, t: pricing.pick_best(  # noqa: E731
             a, t, shipment.goal, request.ready_date, request.deliver_by,
-            self._settings.trucker_pickup_cutoff_by_airport.get(
-                shipment.origin_airport or "", self._settings.trucker_pickup_cutoff_hours
-            ),
         )  # fmt: skip
         best = self._price_of(shipment, *pick(air, trucks))
 
@@ -838,7 +837,10 @@ class Workflow:
             await self._request_booking_by_email(shipment)
 
     async def _book_on_portal(self, shipment: Shipment) -> None:
-        """BOOKING -> BOOKED via the booking API; an expired rate is refetched (max 3 tries)."""
+        """BOOKING -> BOOKED via the booking API; an expired rate is refetched (max 3 tries).
+        The portal price is fetched fresh first: a changed price goes back to the customer (ADR 53)."""
+        if not await self._price_still_holds(shipment):
+            return
         booking_ref = None
         while booking_ref is None and shipment.booking_attempts < self._settings.max_booking_attempts:
             shipment.booking_attempts += 1
@@ -877,6 +879,54 @@ class Workflow:
         shipment.error = None
         self._store.save_shipment(shipment)
         await self._send_booking_note(shipment)
+
+    async def _price_still_holds(self, shipment: Shipment) -> bool:
+        """Refetch the portal rate. Same price: book the fresh rate_id. Changed (up or down):
+        mail the new all-in price and wait for a new yes in QUOTED (max 3 price updates).
+        Email and tariff prices stand as quoted, so only portal options get here (ADR 53)."""
+        option = shipment.chosen_option
+        try:
+            fresh = await self._portal.rate(
+                option.origin, option.destination, option.airline_code,
+                option.weight_kg, option.volume_cbm,
+            )  # fmt: skip
+        except PortalError as exc:
+            logger.warning("Shipment %s: price recheck failed: %s", shipment.id, exc)
+            shipment.error = str(exc)[:500]
+            self._store.save_shipment(shipment)
+            return False  # stays BOOKING; tick() tries again
+        shipment.chosen_option = fresh
+        if round(fresh.total_eur, 2) == round(option.total_eur, 2):
+            self._store.save_shipment(shipment)
+            return True
+        quote = shipment.quote or {}
+        updates = quote.get("price_updates", 0)
+        if updates >= self._settings.max_booking_attempts:
+            await self._booking_failed(shipment)
+            return False
+        old_all_in = quote["all_in_eur"]
+        new_all_in = round(old_all_in - option.total_eur + fresh.total_eur, 2)
+        price = _eur(new_all_in)
+        facts = {
+            "route": f"{fresh.origin} -> {fresh.destination}",
+            "airline": fresh.airline,
+            "old_all_in_price": _eur(old_all_in),
+            "all_in_price": price,
+            "price_went": "up" if new_all_in > old_all_in else "down",
+            "must_appear": [price],
+        }
+        out_id = await self._compose_and_send(
+            "price_update", facts, shipment, to=shipment.customer,
+            in_reply_to=quote.get("accept_message_id") or shipment.id,
+        )  # fmt: skip
+        shipment.quote = {
+            **quote, "all_in_eur": new_all_in, "air_eur": fresh.total_eur,
+            "price_updates": updates + 1, "price_update_message_id": out_id,
+        }  # fmt: skip
+        shipment.state = ShipmentState.QUOTED
+        self._store.save_shipment(shipment)
+        logger.info("Shipment %s: portal price %s -> %s, customer asked again", shipment.id, option.total_eur, fresh.total_eur)
+        return False
 
     async def _request_booking_by_email(self, shipment: Shipment) -> None:
         """Tariff airlines have no rate_id: ask the airline by mail; its confirmation books."""

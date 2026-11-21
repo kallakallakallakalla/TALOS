@@ -103,6 +103,12 @@ class Composer:
         to_customer = recipient_role == "customer"
         if to_customer:
             instruction += f" Wording for this mail: {wording()}."
+            if thread:
+                # The detected language can be missing or stale; the customer's own words are not.
+                instruction += (
+                    " Write in the language the customer wrote their mail in (see the thread),"
+                    " even if that differs from the Language field."
+                )
         mail, used_template = None, False
         for _attempt in range(2):
             try:

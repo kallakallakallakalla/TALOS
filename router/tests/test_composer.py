@@ -38,6 +38,10 @@ FACTS = {
         "estimated_arrival": "2026-12-03", "ready_date": "2026-11-28",
         "must_appear": ["BK-ERC5OOW3"],
     },
+    "price_update": {
+        "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines", "old_all_in_price": "1599.41 EUR",
+        "all_in_price": "1699.41 EUR", "price_went": "up", "must_appear": ["1699.41 EUR"],
+    },
     "booking_request": {
         **SHIPMENT, "lane": "FRA-ORD", "chargeable_weight": "699.73 kg",
         "tariff_total": "1700.00 EUR", "our_reference": "947",

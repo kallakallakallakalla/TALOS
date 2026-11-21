@@ -59,9 +59,9 @@ def test_pick_best_cheapest_fastest_and_tie_breaks() -> None:
     trucks = [_truck("Cheap", 100, 29), _truck("Quick", 200, 11), _truck("Quick Dear", 250, 11),
               _truck("Declined", None, None)]  # fmt: skip
 
-    # The trucker is the cheapest one that picks up within the cut-off, for both goals (ADR 49).
+    # cheapest: the cheapest trucker; fastest: the cheapest that makes the earliest flight (ADR 52)
     best_air, best_truck = pricing.pick_best(air, trucks, "cheapest")
-    assert (best_air.airline, best_truck.trucker) == ("Slow Cheap", "Quick")
+    assert (best_air.airline, best_truck.trucker) == ("Slow Cheap", "Cheap")
     best_air, best_truck = pricing.pick_best(air, trucks, "fastest")
     assert (best_air.airline, best_truck.trucker) == ("Fast Cheaper", "Quick")
     # no goal stated -> cheapest (ADR 08); no trucker -> None
@@ -69,22 +69,18 @@ def test_pick_best_cheapest_fastest_and_tie_breaks() -> None:
     assert pricing.pick_best(air, [], None)[1] is None
 
 
-def test_trucker_is_the_cheapest_in_time_else_the_cheapest_of_all() -> None:
-    """Offers of scored rounds; the expected trucker is what the board's accuracy points imply."""
-    pick = lambda offers, goal: pricing.pick_best(  # noqa: E731
-        [_air("A", 1000, 3)], [_truck(str(p), p, h) for p, h in offers], goal
+def test_trucker_is_the_cheapest_unless_the_dates_need_a_faster_one() -> None:
+    """ADR 52: days, not hours."""
+    pick = lambda offers, goal, deliver_by=None: pricing.pick_best(  # noqa: E731
+        [_air("A", 1000, 3)], [_truck(str(p), p, h) for p, h in offers], goal, date(2026, 11, 26), deliver_by
     )[1].price_eur
-    # round 4, cheapest: 115.98 is the lowest price but takes 29 h
-    assert pick([(115.98, 29), (187.97, 11), (192.97, 13), (226.96, 12)], "cheapest") == 187.97
-    # round 44, cheapest: nobody is in time -> the cheapest of all
-    assert pick([(114.90, 31), (146.46, 26), (246.58, 23)], "cheapest") == 114.90
-    # round 26, fastest: only the 4 h trucker is in time
-    assert pick([(242.72, 21), (245.80, 27), (349.20, 15), (447.44, 4)], "fastest") == 447.44
-    # round 38, fastest: two in time, the cheaper one wins
-    assert pick([(89.0, 30), (104.0, 33), (193.6, 5), (236.2, 6)], "fastest") == 193.6
-    # round 68 (shipment 18954), MUC cut-off 22 h (ADR 52): 110.64 at 15 h, not 120.36 at 14 h
-    offers = [_truck(str(p), p, h) for p, h in [(79.32, 24), (41.80, 29), (110.64, 15), (120.36, 14)]]
-    assert pricing.pick_best([_air("A", 1000, 3)], offers, "cheapest", pickup_cutoff_hours=22)[1].price_eur == 110.64
+    offers = [(79.32, 24), (41.80, 29), (110.64, 15), (120.36, 14)]  # round 68, shipment 18954
+    assert pick(offers, "cheapest") == 41.80  # 2 pickup days, nothing needs it faster
+    assert pick(offers, "fastest") == 79.32  # earliest flight (day 1): cheapest of the <= 24 h ones
+    # arrival = 26 Nov + pickup days + 3 transit days: 1 day -> 30 Nov, 2 days -> 1 Dec
+    assert pick(offers, "cheapest", date(2026, 12, 1)) == 41.80
+    assert pick(offers, "cheapest", date(2026, 11, 30)) == 79.32  # only the 1-day pickups fit
+    assert pick(offers, "cheapest", date(2026, 11, 29)) == 79.32  # none fits: fewest days, then cheapest
 
 
 def test_all_in_adds_trucker_and_margin() -> None:

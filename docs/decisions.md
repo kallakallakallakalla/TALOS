@@ -394,14 +394,15 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.
 
 
-### ADR 52: The trucker cut-off is per departure airport
+### ADR 52: The trucker is the cheapest one, unless the dates need a faster one
 
-**Decided 2026-11-21.** Refines ADR 49.
+**Decided 2026-11-21.** Replaces ADR 49 (fixed 14 h cut-off) and the trucker part of ADR 08.
 
-- **Rule:** a trucker is in time when its pickup hours are at most the cut-off of the departure airport (`TRUCKER_PICKUP_CUTOFF_BY_AIRPORT`: STR 14, MUC 22, DUS 10, HAM 19); other airports use `TRUCKER_PICKUP_CUTOFF_HOURS` (14). Rest of ADR 49 unchanged.
-- **Why:** the cut-off is the flight deadline on the departure day, and that depends on the airport. No API gives departure times, so the per-airport values are fitted to the expected trucker of rounds 31-66 (derived from `board/me` accuracy): 14 of 15 rounds match, against 11 of 15 for a flat 14 h. Round 68 (shipment 18954, MUC) was rejected `too_high` after the flat rule chose 120.36 EUR at 14 h; the MUC rule chooses 110.64 EUR at 15 h.
-- **Not known:** round 54 (HAM, Hamburg city, Saturday ready date) expected a cut-off under 17 h while Kiel rounds 13 and 36 expected 19 h or more; may depend on the airline or weekday. CGN and FRA have too few rounds to fit.
-
+- **Rule:** counted in days, not hours, with the same model as `eta()` (a pickup of up to 24 h flies the next day, up to 48 h the day after). Take the cheapest trucker. A faster one only when the dates need it:
+  - **fastest goal:** the fastest airline, and the cheapest trucker among those that reach the earliest flight (fewest pickup days).
+  - **deliver_by:** per airline, the cheapest trucker that still arrives by then; only airlines with such a trucker count, then the goal decides. If none arrives in time: the fastest airline with the fastest trucker.
+- **Why:** a cut-off in hours is a number fitted to scores, not derived from anything (no API gives departure times). Days follow from the dates we already quote, so the choice is deterministic and matches the dates in the mail.
+- **Round 68 (shipment 18954, cheapest):** the 14 h cut-off chose 120.36 EUR at 14 h and the customer rejected the quote as too high; this rule chooses 41.80 EUR at 29 h.
 
 ### ADR 50: One updatable store for reference data, changed by update mails
 
@@ -435,3 +436,13 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **How:** `pricing.by_source(options)` keeps one source per airline before `pick_best`. When the portal is down, every airline that is not tariff-only is asked by email (ADR 47); its local lanes are the fallback if it does not answer. Booking follows the source of the chosen price, as today.
 - **Why:** live prices beat stored ones, and a stored tariff can still save a quote when the portal and the airline are silent.
 
+
+
+### ADR 53: Recheck the portal price before booking
+
+**Decided and built 2026-11-21.**
+
+- **Context:** a portal price can change between the quote and the customer's yes. We booked the stored `rate_id` and only refetched it when the portal answered 410.
+- **Decision (user):** before every portal booking, fetch the rate again. Same price: book the fresh `rate_id`. Changed, up **or** down: mail the customer the new all-in price (`price_update`) and go back to QUOTED to wait for a new yes. Email airline and trucker prices stand as given by mail and are not asked twice; tariff prices stand too.
+- **How:** `_price_still_holds()` at the start of `_book_on_portal`, so it also covers the `tick()` retries. The new all-in is the old one minus the old air price plus the new air price (trucking and margin are unchanged). At most 3 price updates per shipment, then FAILED. If the recheck fails (portal down), the shipment stays BOOKING and `tick()` tries again.
+- **Why:** the customer only ever books a price they agreed to.
