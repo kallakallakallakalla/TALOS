@@ -39,6 +39,11 @@ Rules
   is "importing" the goods. The destination is the foreign airport.
 - Ignore older forwarded or quoted messages below the customer's own text (for example
   after "-----Original Message-----") and ignore a subject line that belongs to them.
+- The email may end with ATTACHMENT blocks: the text of files the customer attached (packing
+  list, packing specification, shipper's letter of instruction). They are part of the request.
+- If the email text and an attachment disagree on a cargo figure (pieces, gross weight,
+  volume, dimensions), use the attachment's value: it is the customer's formal shipping
+  document. Prefer its stated totals over figures computed from its dimension rows.
 - If PREVIOUS data is given below, keep every previous value unless this email
   explicitly corrects or adds it.
 

@@ -319,3 +319,9 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Measured** (evaluation key, all recorded trucker replies): 7 pickup requests with 34 replies (31 quotes, 3 "we need the weight"), every field correct, in three runs, with reasoning effort `none` and `low`. `none` is used.
 - **Effect:** for a request with 5 truckers, 10 LLM calls become 1.
 - **Note on ADR 12:** mail text is still read by an LLM. Code only checks that the extracted price occurs in the mail.
+
+### ADR 42: Customer attachments are read locally; vision only when they block a quote
+
+- **Decision:** customer attachments are downloaded once and turned into text without an LLM (`app/attachments.py`: pdftotext, xlsx/docx zip XML, csv/txt). The text (max 3,000 characters per file) is stored with the mail and added to `mail_text()` as `ATTACHMENT <name>:` blocks. A file with no usable text (a scan, an image, a broken PDF) gets one vision call, and only when the request is still missing fields. Otherwise we ask the customer as usual.
+- **Conflicts:** if the body and the attachment disagree on a cargo figure, the attachment wins (it is the formal document). Mails 8500, 8667 and 8869 had lower weight or volume in the attachment, and all three customers turned the quote down as too expensive.
+- **Not built:** tariff-update attachments, the dangerous-goods check, and xls files (no local parser).

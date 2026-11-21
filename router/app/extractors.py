@@ -4,12 +4,15 @@ Each extractor has one prompt and one small output schema. Mail text is never pa
 regex (ADR 12); the only plain Python here is `missing_fields`.
 """
 
+import base64
+
 from langfuse import observe
 
-from app import prompts
+from app import attachments, prompts
 from app.config import Settings
 from app.llm import StructuredLLM
 from app.schemas import (
+    AttachmentText,
     BookingConfirmation,
     MailboxMessage,
     ShipmentRequest,
@@ -19,8 +22,10 @@ from app.schemas import (
 
 
 def mail_text(msg: MailboxMessage) -> str:
-    """A mail as the LLM sees it."""
-    return f"From: {msg.sender}\nSubject: {msg.subject}\n\n{msg.body.strip()}"
+    """A mail as the LLM sees it, with its attachments' text (ADR 42)."""
+    text = f"From: {msg.sender}\nSubject: {msg.subject}\n\n{msg.body.strip()}"
+    files = attachments.as_text(msg)
+    return f"{text}\n\n{files}" if files else text
 
 
 def missing_fields(request: ShipmentRequest) -> list[str]:
@@ -50,7 +55,7 @@ class Extractors:
         self._settings = settings
         self._llm = llm
 
-    async def _parse(self, prompt_name: str, schema, user_content: str, label: str | None, **variables):
+    async def _parse(self, prompt_name: str, schema, user_content: str | list, label: str | None, **variables):
         return await self._llm.parse(
             prompt_name,
             schema,
@@ -84,6 +89,22 @@ class Extractors:
             received_at=received,
             previous_json=previous.model_dump_json(exclude_defaults=True) if previous else "",
         )
+
+    @observe(name="extract.attachment_vision")
+    async def read_attachment(
+        self, filename: str, data: bytes, prompt_label: str | None = None
+    ) -> str:
+        """One vision call for a file without usable text (scan, image, broken PDF)."""
+        b64 = base64.b64encode(data).decode()
+        kind = attachments.suffix(filename)
+        if kind == "pdf":
+            part = {"type": "file", "file": {"filename": filename, "file_data": f"data:application/pdf;base64,{b64}"}}
+        else:
+            mime = "image/png" if kind == "png" else "image/jpeg"
+            part = {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}
+        content = [{"type": "text", "text": f"ATTACHMENT {filename}"}, part]
+        result = await self._parse(prompts.READ_ATTACHMENT, AttachmentText, content, prompt_label)
+        return result.text
 
     @observe(name="extract.trucker_quotes")
     async def extract_trucker_quotes(

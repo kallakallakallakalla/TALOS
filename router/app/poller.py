@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from langfuse import get_client, observe, propagate_attributes
 
+from app import attachments
 from app.classifier import DecisionClassifier
 from app.config import Settings
 from app.mailbox_client import MailboxClient, mailbox_message_to_payload
@@ -71,6 +72,8 @@ class MailboxPoller:
             tags=[role],
             metadata={"message_id": str(msg.id)},
         ):
+            if role == "customer" and msg.attachments:
+                await attachments.enrich(msg, self._mailbox_client)  # stored with the mail
             payload = mailbox_message_to_payload(msg)
             if self._workflow and context and self._workflow.awaited_trucker_reply(context):
                 # A mail from a trucker we asked is their answer: no classifier call (ADR 41).

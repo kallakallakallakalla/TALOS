@@ -41,7 +41,7 @@ class StructuredLLM:
         self,
         prompt_name: str,
         schema: type[T],
-        user_content: str,
+        user_content: str | list[dict[str, Any]],
         *,
         model: str,
         reasoning_effort: str = "",

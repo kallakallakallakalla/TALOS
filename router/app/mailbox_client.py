@@ -191,6 +191,11 @@ class MailboxClient:
         response = await self._request("GET", f"/v1/mailbox/messages/{message_id}")
         return parse_mailbox_message(response.json())
 
+    async def download_attachment(self, message_id: int, attachment_id: int | str) -> bytes:
+        """The raw bytes of one attachment."""
+        path = f"/v1/mailbox/messages/{message_id}/attachments/{attachment_id}"
+        return (await self._request("GET", path)).content
+
     async def send(
         self, to: str, subject: str, body: str, in_reply_to: int | None = None
     ) -> MailboxMessage:

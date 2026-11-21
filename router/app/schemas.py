@@ -80,6 +80,16 @@ class MailboxAttachment(BaseModel):
     filename: str = ""
     content_type: str | None = None
     size: int | None = None
+    # Filled by app.attachments (ADR 42); stored with the mail, so a file is read only once.
+    text: str = ""
+    readable: bool = False
+    vision_tried: bool = False
+
+
+class AttachmentText(BaseModel):
+    """What a vision call read from an attachment."""
+
+    text: str
 
 
 class MailboxMessage(BaseModel):

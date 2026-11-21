@@ -52,3 +52,17 @@ def test_every_recorded_inbound_mail_has_a_label() -> None:
 
     inbound = {m["id"] for m in json.loads((FIXTURES / "mails.json").read_text())["inbound"]}
     assert inbound == set(labels())
+
+
+def test_attachment_files_turn_into_clean_text() -> None:
+    from pathlib import Path
+
+    from app import attachments
+
+    files = Path(__file__).parent / "fixtures/attachments"
+    pdf = attachments.clean(attachments.to_text("SLI_53351.pdf", (files / "SLI_53351.pdf").read_bytes()))
+    assert "Total volume (cbm): 1.92" in pdf and attachments.readable(pdf)
+    xlsx = attachments.to_text("x.xlsx", (files / "shipment_details_81971.xlsx").read_bytes())
+    assert "Total gross weight (kg):\t1751" in xlsx  # inline strings, no shared table
+    assert attachments.to_text("scan.jpg", b"\xff\xd8") == ""  # images need vision
+    assert not attachments.readable(attachments.clean("\x00\x01 ��" * 20))

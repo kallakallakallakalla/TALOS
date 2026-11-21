@@ -18,7 +18,7 @@ from typing import Any
 
 from langfuse import get_client, observe, propagate_attributes
 
-from app import pricing, templates
+from app import attachments, pricing, templates
 from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
@@ -32,6 +32,7 @@ from app.schemas import (
     MailboxMessage,
     MailContext,
     Shipment,
+    ShipmentRequest,
     ShipmentState,
     TrackingQuery,
     TruckerQuote,
@@ -220,7 +221,7 @@ class Workflow:
             # A second "request" in a known thread adds details to the same shipment.
             await self._on_customer_info(msg, ctx)
             return
-        request = await self._extractors.extract_rfq(msg)
+        request = await self._extract_rfq(msg)
         shipment = Shipment(
             id=msg.references[0] if msg.references else msg.id,
             customer=msg.sender or "",
@@ -240,13 +241,41 @@ class Workflow:
         if shipment.state not in (ShipmentState.NEW, ShipmentState.AWAITING_INFO):
             logger.info("Shipment %s is %s; extra details ignored", shipment.id, shipment.state)
             return
-        shipment.request = await self._extractors.extract_rfq(
+        shipment.request = await self._extract_rfq(
             msg, previous=shipment.request, thread=ctx.our_mail
         )
         shipment.goal = shipment.request.goal
         shipment.state = ShipmentState.NEW
         self._store.save_shipment(shipment)
         await self._advance(shipment, reply_to=msg.id)
+
+    async def _extract_rfq(self, msg: MailboxMessage, **kwargs) -> ShipmentRequest:
+        """Extract; if fields are missing and an attachment had no usable text, read it with
+        one vision call and extract again (ADR 42)."""
+        request = await self._extractors.extract_rfq(msg, **kwargs)
+        if missing_fields(request) and await self._read_unreadable(msg):
+            request = await self._extractors.extract_rfq(msg, **kwargs)
+        return request
+
+    async def _read_unreadable(self, msg: MailboxMessage) -> bool:
+        """Vision-read every unreadable pdf/image once. True if any of them gave text."""
+        # ponytail: the vision text lives on this msg only (not re-saved); a later mail in
+        # the thread starts from the extracted request, so it is never needed again.
+        found = False
+        for att in msg.attachments:
+            if att.readable or att.vision_tried or att.id is None:
+                continue
+            if attachments.suffix(att.filename) not in attachments.VISION_TYPES:
+                continue
+            att.vision_tried = True
+            try:
+                data = await self._mailbox.download_attachment(msg.id, att.id)
+                text = await self._extractors.read_attachment(att.filename, data)
+                attachments.set_text(att, text, from_vision=True)
+            except Exception as exc:  # noqa: BLE001 - fall back to asking the customer
+                logger.warning("Vision read of %s (mail %s) failed: %s", att.filename, msg.id, exc)
+            found = found or att.readable
+        return found
 
     async def _advance(self, shipment: Shipment, reply_to: int) -> None:
         """NEW -> PRICING if the request is complete, else ask (max 3 times) or fail."""

@@ -22,7 +22,9 @@ from app.poller import MailboxPoller
 from app.portal_client import PortalClient
 from app.reference import Reference
 from app.schemas import (
+    AttachmentText,
     BookingConfirmation,
+    MailboxAttachment,
     ClassificationDecision,
     ComposedMail,
     MailboxMessage,
@@ -54,6 +56,7 @@ class Platform:
         self.bookings: list[dict] = []
         self.rate_reads: list[dict] = []
         self.expired_rate_ids: set[str] = set()
+        self.files: dict[str, bytes] = {}  # attachment id -> bytes
 
     def __call__(self, request: httpx.Request) -> httpx.Response:
         path, params = request.url.path, request.url.params
@@ -61,6 +64,8 @@ class Platform:
             mail = {**json.loads(request.content), "id": 90000 + len(self.sent), "from": "talos@hackloop.mail"}
             self.sent.append(mail)
             return httpx.Response(201, json=mail)
+        if "/attachments/" in path and path.rsplit("/", 1)[1] in self.files:
+            return httpx.Response(200, content=self.files[path.rsplit("/", 1)[1]])
         if path.startswith("/v1/mailbox/messages/"):
             return httpx.Response(404)
         if path == "/v1/portal/ports":
@@ -537,3 +542,44 @@ async def test_backfill_closes_dry_run_shipments_so_cutover_cannot_book_them(tmp
 
     assert backfill(h.store, [], Reference(h.settings.start_kit_dir)) == (0, 1)
     assert (h.shipment().state, h.shipment().error) == (ShipmentState.FAILED, LEGACY_NOTE)
+
+
+@pytest.mark.anyio
+async def test_an_unreadable_attachment_is_read_by_vision_once_only_when_fields_are_missing(
+    tmp_path: Path,
+) -> None:
+    """ADR 42: a scan gives no text; the request lacks an origin, so ONE vision call reads the
+    scan and the request is extracted again. The vision text is in the second extraction."""
+    vision_text = "Pickup postal code: 51465 Bergisch Gladbach"
+    base = recorded_llm()._answer  # noqa: SLF001
+
+    def answer(schema, system, user):
+        if schema is AttachmentText:
+            return AttachmentText(text=vision_text)
+        return base(schema, system, user)
+
+    h = Harness(tmp_path, llm=ScriptedLLM(answer))
+    h.platform.files["7"] = b"%PDF-1.4 not really a pdf"
+    rfq = 3940  # no postal code, no airport
+    scan = MailboxAttachment(id=7, filename="scan.pdf", content_type="application/pdf", size=25)
+    await h.receive(rfq, attachments=[scan])
+
+    names = [c[0] for c in h.llm.calls]
+    assert names.count("AttachmentText") == 1
+    extractions = [c[2] for c in h.llm.calls if c[0] == "ShipmentRequest"]
+    assert len(extractions) == 2
+    assert "ATTACHMENT scan.pdf: (could not be read)" in extractions[0]
+    assert f"ATTACHMENT scan.pdf:\n{vision_text}" in extractions[1]
+    assert h.store.get_message(rfq).attachments[0].readable is False  # stored before vision
+
+
+@pytest.mark.anyio
+async def test_a_readable_attachment_reaches_the_extractor_without_vision(tmp_path: Path) -> None:
+    h = Harness(tmp_path)
+    pdf = Path(__file__).parent / "fixtures/attachments/SLI_53351.pdf"
+    h.platform.files["41"] = pdf.read_bytes()
+    att = MailboxAttachment(id=41, filename="SLI_53351.pdf", content_type="application/pdf", size=2045)
+    await h.receive(947, attachments=[att])
+    extraction = next(c[2] for c in h.llm.calls if c[0] == "ShipmentRequest")
+    assert "ATTACHMENT SLI_53351.pdf:\n" in extraction and "Total volume (cbm): 1.92" in extraction
+    assert "AttachmentText" not in [c[0] for c in h.llm.calls]

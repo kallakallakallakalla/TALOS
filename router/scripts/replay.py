@@ -30,7 +30,7 @@ from app.composer import Composer  # noqa: E402
 from app.config import evaluation_settings  # noqa: E402
 from app.extractors import Extractors  # noqa: E402
 from app.llm import StructuredLLM  # noqa: E402
-from app.mailbox_client import parse_mailbox_message  # noqa: E402
+from app.mailbox_client import MailboxClient, parse_mailbox_message  # noqa: E402
 from app.poller import MailboxPoller  # noqa: E402
 from app.portal_client import PortalClient  # noqa: E402
 from app.reference import Reference  # noqa: E402
@@ -45,12 +45,19 @@ OUT_DIR = ROOT / "data/replay"
 
 
 class FixtureMailbox:
-    """Read-only mailbox over the recorded mails. It has no way to send."""
+    """Read-only mailbox over the recorded mails. It has no way to send; attachments and
+    mails missing from the fixtures are read (GET only) from the live mailbox."""
 
-    def __init__(self, mails: dict[int, MailboxMessage]) -> None:
+    def __init__(self, mails: dict[int, MailboxMessage], live: MailboxClient) -> None:
         self._mails = mails
+        self._live = live
+
+    async def download_attachment(self, message_id: int, attachment_id) -> bytes:
+        return await self._live.download_attachment(message_id, attachment_id)
 
     async def get_message(self, message_id: int) -> MailboxMessage:
+        if message_id not in self._mails:
+            self._mails[message_id] = await self._live.get_message(message_id)
         return self._mails[message_id]
 
     async def send(self, *args, **kwargs):
@@ -80,6 +87,9 @@ async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--rate-reads-per-minute", type=int, default=3)
     parser.add_argument("--only", type=int, nargs="*", help="replay only these mail ids")
+    parser.add_argument(
+        "--live", type=int, nargs="*", help="replay these mail ids read from the live mailbox (read-only)"
+    )
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -100,12 +110,15 @@ async def main() -> None:
     inbound = [parse_mailbox_message(m) for m in sorted(data["inbound"], key=lambda m: m["id"])]
     if args.only:
         inbound = [m for m in inbound if m.id in set(args.only)]
+    live = MailboxClient(settings)
+    if args.live:
+        inbound = [await live.get_message(i) for i in sorted(args.live)]
 
     clock = {"now": datetime.fromisoformat(inbound[0].created_at)}
     store = MessageStore(str(db_path))
     llm = StructuredLLM(settings)
     portal = CachedPortal(settings, OUT_DIR / "rates.json")
-    mailbox = FixtureMailbox(everything)
+    mailbox = FixtureMailbox(everything, live)
     workflow = Workflow(
         settings, store, mailbox, portal, Reference(settings.start_kit_dir),
         Tariffs(settings.tariffs_path), Extractors(settings, llm), Composer(settings, llm),
