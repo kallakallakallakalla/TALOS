@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     decision_api_base_url: str = "https://api.openai.com/v1"
     decision_model: str = "gpt-6-luna"
     extract_model: str = "gpt-6-luna"
+    transcribe_model: str = "gpt-4o-mini-transcribe"
     compose_model: str = "gpt-6-luna"
     decision_temperature: float | None = None
     # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).

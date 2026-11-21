@@ -67,6 +67,7 @@ class PortalClient:
         self._rate_calls: deque[float] = deque()
         self._rate_lock = asyncio.Lock()
         self._lanes: dict[tuple[str, str], list[dict[str, str]]] | None = None
+        self.last_fx_eur_per_usd: float | None = None
         self._brackets: dict[str, list[float]] = {}
 
     async def _request(self, method: str, path: str, **kwargs: Any) -> httpx.Response:
@@ -78,6 +79,11 @@ class PortalClient:
             return await self._http_client.request(method, url, headers=headers, **kwargs)
         async with httpx.AsyncClient(timeout=self._settings.portal_timeout_seconds) as client:
             return await client.request(method, url, headers=headers, **kwargs)
+
+    @property
+    def known_lanes(self) -> dict[tuple[str, str], list[dict[str, str]]]:
+        """The lane list already read, without calling the portal ({} if none yet)."""
+        return self._lanes or {}
 
     async def lanes(self) -> dict[tuple[str, str], list[dict[str, str]]]:
         """`(origin, destination) -> airlines` for every lane the portal prices. Cached."""
@@ -161,6 +167,7 @@ class PortalClient:
             if data["currency"] != "USD" or not fx:
                 raise PortalError(f"rate in {data['currency']} without an exchange rate")
             total = round(total * float(fx), 2)
+            self.last_fx_eur_per_usd = float(fx)  # converts USD tariffs from update mails (ADR 50)
         return AirOption(
             source="portal",
             airline=data["airline"],

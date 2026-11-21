@@ -37,6 +37,15 @@ class StructuredLLM:
             base_url=settings.decision_api_base_url,
         )
 
+    async def transcribe(self, filename: str, data: bytes) -> str:
+        """Speech to text for a voice-message attachment."""
+        result = await self._openai.audio.transcriptions.create(
+            model=self._settings.transcribe_model,
+            file=(filename, data),
+            prompt="Freight price offer. Write all amounts, weights and times as digits, e.g. 340.60 EUR, 1410 kg, 12 hours.",
+        )
+        return result.text
+
     async def parse(
         self,
         prompt_name: str,

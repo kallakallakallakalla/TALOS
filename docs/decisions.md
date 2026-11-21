@@ -392,3 +392,37 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Evidence (16 scored rounds with pickup):** the rule picks the expected trucker in 13, is within 3 EUR in round 51, and is wrong in rounds 13 and 36 (both Kiel → HAM, where a 19 h trucker was expected, so the real cut-off was higher there). The old rules were right in 8.
 - **Not known:** what sets the scorer's cut-off. 14 hours is fitted to past rounds, not documented anywhere. Rejected rounds give no points, so the four `too_low` rejections (14, 46, 49, 50) cannot be checked.
 - **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.
+
+
+### ADR 50: One updatable store for reference data, changed by update mails
+
+**Decided and built 2026-11-21.** Plan and what was built: [data-updates.md](data-updates.md). Changes ADR 06 (`replace_airline()` hook) and ADR 19 (`tariff_update` had no handler and sent no mail).
+
+- **Context:** the carrier list, the pickup zones and the tariffs are read from files once, at startup. Carriers can mail us changes (new tariffs, single rates, new destinations or zones, new emails). These were tagged `tariff_update` and ignored, so the bot kept quoting from old data. Nobody knows yet what a real update mail looks like.
+- **Decision (user):**
+  - **One store, three separate tables:** `carriers`, `pickup_zones`, `tariff_lanes` in `router.db`, plus a `data_updates` log. They are not merged: they hold different kinds of data.
+  - **Read on every lookup, not at startup.** `Reference` and `Tariffs` keep their methods and query the DB. A change is used by the very next quote. A read-only `GET /reference/...` shows the current data.
+  - **The start-kit files are the seed.** They stay in git and fill the tables only when the tables are empty (a fresh checkout, a test DB, a replay).
+  - **Use the existing classifier type `tariff_update`**, with a wider description (tariffs, single rates, carrier changes, zone changes). No new category.
+  - **Both shapes of mail:** a full dataset like the start kit (attachments in any start-kit format, read as for RFQs, ADR 42/43) and a short mail changing one thing.
+  - **Two LLM calls on the mail:** one extracts typed changes, one **flags every change** (`ok` / `unclear` / `suspicious`, with a reason). Suspicious is kept lean: a price more than 4× (over +300 %) or less than ¼ of the old one (checked in code), an unclear removal, contradicting values, a one-shipment offer, or text aimed at the bot.
+  - **Put semantics:** insert if missing, overwrite only the fields given if it exists, lists (`serves`) only grow, lanes the mail does not mention stay. Delete only when the mail says so; a removed carrier is deactivated, not deleted. If two lanes are valid for the same route on the same day, the latest `valid_from` wins, then the later mail. Relative changes ("+5 %") are calculated in code. A changed email keeps the old one as an alias, and a deactivated carrier can still be booked for quotes already sent.
+  - **Checks in code, always:** an airline or trucker may only change its own data, the rate desk may change any carrier's data (matched by address). Values pass the same checks as `build_tariffs.py`; no zone may be left without a trucker.
+  - **Apply what passes**, `unclear` included. Only `suspicious` changes and failed checks are held (`needs_review`); the rest of the mail is still applied in one transaction, at most once per mail.
+  - **Prices are stored in EUR:** the rate in the mail, else the portal's `fx_eur_per_usd` for USD, else the change is held.
+  - **Confirm to the sender:** one `update_confirmation` mail per update mail, naming what changed and saying if something is held. It is a template with the stored values, not an LLM mail (as every carrier mail, ADR 38).
+  - **We never ask carriers for updates**; only incoming mails are handled.
+  - **UI:** a "Tariff updates" tab lists every change, one row each, with before → after, status and flag (table `data_changes`, `GET /data-updates`). Update mails that come in before the handler exists are listed as "not handled yet" and applied once by a one-off script when it ships.
+- **Why:** one place to look up and change reference data, no restart needed, no old data lost by accident, and a mail from outside never changes prices without a check and a record.
+- **Cost:** two extra LLM calls per update mail (extract, flag), plus vision for scanned files. Update mails are rare, so this is small next to the RFQ flow.
+
+
+### ADR 51: Price source per airline: portal, then email, then local tariff
+
+**Decided and built 2026-11-21.** Plan: [data-updates.md, section 8a](data-updates.md#8a-which-price-counts-per-airline). Changes ADR 06 ("portal and local tariff DB are equal price sources").
+
+- **Context:** today every airline has exactly one price source (15 portal, 10 tariff, 4 email-only), so the sources never compete. Once update mails can store tariffs (ADR 50), a portal or email-only airline can also have local lanes, and the same airline would appear twice with two prices.
+- **Decision (user):** the portal is the most reliable source. Per airline, use the portal price if there is one, else the price from the airline's email, else the local tariff. Who is asked how does not change: portal airlines on the portal, email-only airlines by email, tariff airlines from our table.
+- **How:** `pricing.by_source(options)` keeps one source per airline before `pick_best`. When the portal is down, every airline that is not tariff-only is asked by email (ADR 47); its local lanes are the fallback if it does not answer. Booking follows the source of the chosen price, as today.
+- **Why:** live prices beat stored ones, and a stored tariff can still save a quote when the portal and the airline are silent.
+

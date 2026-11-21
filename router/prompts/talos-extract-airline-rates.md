@@ -13,5 +13,7 @@ Fields per reply
 - quote_ref: their offer / quote reference exactly as written. null if none.
 
 Rules
+- A reply can carry its offer in ATTACHMENT blocks (an offer letter, a PDF, the transcript of a
+  voice message). They belong to that reply: read the price and the other fields there too.
 - Copy numbers and references exactly. Never compute, convert or guess a price.
 - Keep the replies apart: every value must come from the reply with that number.

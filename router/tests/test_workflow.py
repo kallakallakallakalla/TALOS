@@ -161,12 +161,12 @@ class Harness:
         http = httpx.AsyncClient(transport=httpx.MockTransport(self.platform))
         mailbox = MailboxClient(self.settings, http)
         structured = StructuredLLM(self.settings, openai_client=self.llm)
-        tariffs = Tariffs(str(tmp_path / "tariffs.json"))
-        if tariff_lanes:
-            tariffs.replace_airline(tariff_lanes[0].airline, list(tariff_lanes))
+        tariffs = Tariffs(str(tmp_path / "tariffs.json"), self.settings.sqlite_db_path)
+        with tariffs.db:
+            tariffs.put(list(tariff_lanes))
         self.workflow = Workflow(
             self.settings, self.store, mailbox, PortalClient(self.settings, http),
-            Reference(self.settings.start_kit_dir), tariffs,
+            Reference(self.settings.start_kit_dir, self.settings.sqlite_db_path), tariffs,
             Extractors(self.settings, structured), Composer(self.settings, structured),
             clock=lambda: self.now,
         )  # fmt: skip

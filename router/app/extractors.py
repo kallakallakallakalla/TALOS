@@ -15,6 +15,9 @@ from app.schemas import (
     AirlineRates,
     AttachmentText,
     BookingConfirmation,
+    DataChange,
+    DataUpdate,
+    DataUpdateFlags,
     MailboxMessage,
     ShipmentRequest,
     TrackingQuery,
@@ -120,6 +123,10 @@ class Extractors:
         result = await self._parse(prompts.READ_ATTACHMENT, AttachmentText, content, prompt_label)
         return result.text
 
+    @observe(name="extract.voice_message")
+    async def transcribe(self, filename: str, data: bytes) -> str:
+        return await self._llm.transcribe(filename, data)
+
     @observe(name="extract.airline_rates")
     async def extract_airline_rates(self, replies: list[str], prompt_label: str | None = None) -> AirlineRates:
         """Read all email-only airlines' replies to one rate request in one call (ADR 47)."""
@@ -171,3 +178,26 @@ class Extractors:
         return await self._parse(
             prompts.EXTRACT_TRACKING, TrackingQuery, mail_text(msg), prompt_label
         )
+
+    @observe(name="extract.data_update")
+    async def extract_data_update(self, msg: MailboxMessage, today: str, prompt_label: str | None = None) -> DataUpdate:
+        """Read the changes of an update mail, body and attachments together (ADR 50)."""
+        return await self._parse(
+            prompts.EXTRACT_DATA_UPDATE, DataUpdate, mail_text(msg), prompt_label,
+            today=today, sender=msg.sender or "",
+        )  # fmt: skip
+
+    @observe(name="extract.data_update_flags")
+    async def flag_data_update(
+        self, msg: MailboxMessage, changes: list[DataChange], stored: str, today: str, prompt_label: str | None = None
+    ) -> DataUpdateFlags:
+        """Second look: ok / unclear / suspicious for each change, next to what we store now."""
+        listed = "\n".join(
+            f"CHANGE {n}: {c.model_dump_json(exclude_none=True)}" for n, c in enumerate(changes, start=1)
+        )
+        content = f"THE MAIL:\n{mail_text(msg)}\n\nTHE CHANGES:\n{listed}\n\nSTORED TODAY:\n{stored}"
+        return await self._llm.parse(
+            prompts.FLAG_DATA_UPDATE, DataUpdateFlags, content,
+            model=self._settings.extract_model, reasoning_effort=self._settings.trucker_reasoning_effort,
+            prompt_label=prompt_label, today=today,
+        )  # fmt: skip

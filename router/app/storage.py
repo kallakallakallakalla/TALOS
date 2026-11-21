@@ -4,9 +4,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from app import refdb
 from app.schemas import (
     AirOption,
     ClassificationDecision,
+    DataChangeRow,
+    DataUpdateRecord,
     EmailCategory,
     MailboxAttachment,
     MailboxMessage,
@@ -59,6 +62,7 @@ class MessageStore:
 
     def _init_schema(self) -> None:
         with self._connect() as conn:
+            conn.executescript(refdb.SCHEMA)  # reference data + update log (ADR 50)
             conn.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS poller_state (
@@ -419,6 +423,34 @@ class MessageStore:
                 (shipment_id,),
             ).fetchall()
         return [TruckerRequest(**dict(row)) for row in rows]
+
+    def data_updates(self) -> list[DataUpdateRecord]:
+        """Every update mail, newest first, with its changes; also `tariff_update` mails that
+        were classified but not handled (yet), so none is invisible (Tariff updates tab)."""
+        with self._connect() as conn:
+            heads = conn.execute(
+                """
+                SELECT p.message_id, p.sender, p.subject, p.received_at, p.body, p.attachments_json,
+                       COALESCE(u.status, 'not_handled') AS status, u.confirmation_message_id,
+                       o.body AS confirmation, o.sent_message_id IS NOT NULL AS confirmation_sent
+                FROM processed_messages p LEFT JOIN data_updates u ON u.message_id = p.message_id
+                LEFT JOIN outbound_mails o ON o.in_reply_to = p.message_id AND o.kind = 'update_confirmation'
+                WHERE p.category = 'tariff_update' OR u.message_id IS NOT NULL
+                ORDER BY p.message_id DESC
+                """
+            ).fetchall()
+            rows = conn.execute("SELECT * FROM data_changes ORDER BY id").fetchall()
+        changes: dict[int, list[DataChangeRow]] = {}
+        for row in rows:
+            changes.setdefault(row["message_id"], []).append(DataChangeRow(**dict(row)))
+        return [
+            DataUpdateRecord(
+                **{k: h[k] for k in h.keys() if k != "attachments_json"},
+                attachments=[a.get("filename", "") for a in json.loads(h["attachments_json"] or "[]")],
+                changes=changes.get(h["message_id"], []),
+            )
+            for h in heads
+        ]
 
     def find_trucker_request(
         self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False,

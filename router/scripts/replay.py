@@ -120,8 +120,8 @@ async def main() -> None:
     portal = CachedPortal(settings, OUT_DIR / "rates.json")
     mailbox = FixtureMailbox(everything, live)
     workflow = Workflow(
-        settings, store, mailbox, portal, Reference(settings.start_kit_dir),
-        Tariffs(settings.tariffs_path), Extractors(settings, llm), Composer(settings, llm),
+        settings, store, mailbox, portal, Reference(settings.start_kit_dir, str(db_path)),
+        Tariffs(settings.tariffs_path, str(db_path)), Extractors(settings, llm), Composer(settings, llm),
         clock=lambda: clock["now"],
     )  # fmt: skip
     poller = MailboxPoller(settings, mailbox, DecisionClassifier(settings, llm=llm), store, workflow)

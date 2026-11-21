@@ -20,6 +20,7 @@ from app.schemas import MailboxAttachment, MailboxMessage
 logger = logging.getLogger(__name__)
 
 MAX_CHARS = 3000  # ~750 tokens per file; packing lists and SLIs are far shorter
+TARIFF_MAX_CHARS = 20000  # carrier files: a full start-kit tariff is up to ~4500 chars (ADR 50)
 _MIN_CHARS = 50
 _MIN_CLEAN_SHARE = 0.6
 _IMAGE_MIME = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "gif": "image/gif", "webp": "image/webp"}
@@ -114,11 +115,11 @@ def to_text(filename: str, data: bytes) -> str:
     return ""
 
 
-def clean(text: str) -> str:
-    """Squash blank runs and padding; cut to MAX_CHARS."""
+def clean(text: str, max_chars: int = MAX_CHARS) -> str:
+    """Squash blank runs and padding; cut to `max_chars`."""
     lines = [" ".join(line.split()) for line in text.splitlines()]
     text = "\n".join(line for line in lines if line).strip()
-    return text if len(text) <= MAX_CHARS else text[:MAX_CHARS] + " …[truncated]"
+    return text if len(text) <= max_chars else text[:max_chars] + " …[truncated]"
 
 
 def readable(text: str) -> bool:
@@ -165,9 +166,14 @@ def vision_replaces(filename: str) -> bool:
 
 
 Vision = Callable[[str, list[dict]], Awaitable[str]]
+Transcribe = Callable[[str, bytes], Awaitable[str]]
+_AUDIO = {"mp3", "m4a", "wav", "ogg", "webm", "mp4", "mpga", "mpeg"}
 
 
-async def enrich(msg: MailboxMessage, mailbox, vision: Vision | None = None) -> None:
+async def enrich(
+    msg: MailboxMessage, mailbox, vision: Vision | None = None, transcribe: Transcribe | None = None,
+    max_chars: int = MAX_CHARS,
+) -> None:
     """Read every attachment not read yet: local text first, then one vision call if the
     file holds something text extraction cannot see. Never raises: a failed file stays
     unreadable and the mail goes on with its body."""
@@ -176,23 +182,29 @@ async def enrich(msg: MailboxMessage, mailbox, vision: Vision | None = None) -> 
             continue
         try:
             data = await mailbox.download_attachment(msg.id, att.id)
+            if suffix(att.filename) in _AUDIO:  # voice messages: speech to text (one call)
+                if transcribe:
+                    att.vision_tried = True  # ponytail: reuses the "tried once" flag for audio
+                    att.text = clean(f"TRANSCRIPT OF THE VOICE MESSAGE:\n{await transcribe(att.filename, data)}")
+                    att.readable = len(att.text) > len("TRANSCRIPT OF THE VOICE MESSAGE:")
+                continue
             text = to_text(att.filename, data)
-            set_text(att, text)
+            set_text(att, text, max_chars)
             parts = vision_parts(att.filename, data, att.text) if vision else []
             if parts:
                 att.vision_tried = True
-                seen = clean(await vision(att.filename, parts))
+                seen = clean(await vision(att.filename, parts), max_chars)
                 if vision_replaces(att.filename):
                     att.text = seen or att.text
                 elif seen:
-                    att.text = clean(f"{att.text}\nPICTURES IN THE FILE:\n{seen}")
+                    att.text = clean(f"{att.text}\nPICTURES IN THE FILE:\n{seen}", max_chars)
                 att.readable = bool(att.text) and (bool(seen) or readable(att.text))
         except Exception as exc:  # noqa: BLE001 - one bad file must not stop the mail
             logger.warning("Attachment %s of mail %s unreadable: %s", att.filename, msg.id, exc)
 
 
-def set_text(att: MailboxAttachment, text: str) -> None:
-    att.text = clean(text)
+def set_text(att: MailboxAttachment, text: str, max_chars: int = MAX_CHARS) -> None:
+    att.text = clean(text, max_chars)
     att.readable = readable(att.text)
 
 

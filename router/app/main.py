@@ -9,6 +9,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from langfuse import get_client, observe
 
+from app import updates
 from app.classifier import DecisionClassifier
 from app.composer import Composer
 from app.config import Settings, configure_langfuse_env, get_settings
@@ -22,6 +23,7 @@ from app.reference import Reference
 from app.tariffs import Tariffs
 from app.workflow import Workflow
 from app.schemas import (
+    DataUpdateRecord,
     ClassifyRequest,
     EmailCategory,
     InputPayload,
@@ -64,8 +66,8 @@ def build_workflow(
         store=store,
         mailbox=mailbox_client,
         portal=PortalClient(settings),
-        reference=Reference(settings.start_kit_dir),
-        tariffs=Tariffs(settings.tariffs_path),
+        reference=Reference(settings.start_kit_dir, settings.sqlite_db_path),
+        tariffs=Tariffs(settings.tariffs_path, settings.sqlite_db_path),
         extractors=Extractors(settings, llm),
         composer=Composer(settings, llm),
     )
@@ -360,6 +362,26 @@ async def tracking(store: MessageStore = Depends(get_view_store)) -> list[dict]:
     questions, _ = store.list_messages(category=EmailCategory.TRACKING_REQUEST, limit=200)
     answers = {o.in_reply_to: o for o in store.outbound_mails() if o.kind == "tracking_answer"}
     return [{"question": q, "answer": answers.get(q.message_id)} for q in questions]
+
+
+@app.get("/data-updates", response_model=list[DataUpdateRecord])
+async def data_updates(store: MessageStore = Depends(get_view_store)) -> list[DataUpdateRecord]:
+    """Every update mail (newest first) with each change it made or tried (ADR 50)."""
+    return store.data_updates()
+
+
+@app.get("/reference/{kind}")
+async def reference_data(
+    kind: Literal["carriers", "zones", "tariffs"],
+    source: Literal["live", "replay"] = "live",
+    settings: Settings = Depends(get_settings),
+) -> list[dict]:
+    """The reference data as the router uses it right now (ADR 50)."""
+    db = settings.sqlite_db_path if source == "live" else str(_REPLAY_DIR / "replay.db")
+    if source == "replay" and not Path(db).exists():
+        raise HTTPException(status_code=404, detail="No replay yet: run scripts/replay.py")
+    rows = updates.current_rows(Reference(settings.start_kit_dir, db), Tariffs(settings.tariffs_path, db))
+    return rows[kind]
 
 
 @app.get("/replay/classification", include_in_schema=False)

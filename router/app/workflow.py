@@ -18,7 +18,7 @@ from typing import Any
 
 from langfuse import get_client, observe, propagate_attributes
 
-from app import attachments, pricing, templates
+from app import attachments, pricing, templates, updates
 from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
@@ -108,6 +108,8 @@ def _price_in_text(price: float | None, text: str) -> bool:
     if price is None:
         return True
     forms = {f"{price:.2f}", f"{price:g}"}
+    if "TRANSCRIPT OF THE VOICE MESSAGE" in text:  # spoken: "340 euros and 60 cents"
+        forms.add(f"{int(price)}")  # ponytail: euro part only for voice; a wrong-cents read slips through
     return any(form in text or form.replace(".", ",") in text for form in forms)
 
 
@@ -153,7 +155,8 @@ class Workflow:
             EmailCategory.CUSTOMER_REJECT: self._on_customer_reject,
             EmailCategory.CUSTOMER_QUESTION: self._on_customer_question,
             EmailCategory.TRACKING_REQUEST: self._on_tracking_request,
-            # rate_offer, tariff_update and other have no handler:
+            EmailCategory.TARIFF_UPDATE: self._on_tariff_update,  # ADR 50
+            # rate_offer and other have no handler:
             # they are stored and tagged, and never trigger a mail (ADR 19).
         }
 
@@ -258,8 +261,13 @@ class Workflow:
         await self._advance(shipment, reply_to=msg.id)
 
     async def read_attachments(self, msg: MailboxMessage) -> None:
-        """Text (and, where needed, one vision call) for each customer attachment (ADR 42/43)."""
-        await attachments.enrich(msg, self._mailbox, self._extractors.read_attachment)
+        """Text (and, where needed, one vision call) for each attachment (ADR 42/43). Carrier
+        and rate desk files may be whole tariffs, so they are not cut at the customer limit."""
+        carrier = self._reference.role_for_email(msg.sender) != "customer"
+        await attachments.enrich(
+            msg, self._mailbox, self._extractors.read_attachment, self._extractors.transcribe,
+            max_chars=attachments.TARIFF_MAX_CHARS if carrier else attachments.MAX_CHARS,
+        )
 
     async def _advance(self, shipment: Shipment, reply_to: int) -> None:
         """NEW -> PRICING if the request is complete, else ask (max 3 times) or fail."""
@@ -330,14 +338,16 @@ class Workflow:
         False if nobody was asked.
         """
         request = shipment.request
-        if not portal_down:
-            lanes = await self._portal.lanes()
-            if request.destination_iata in {destination for _, destination in lanes}:
-                return False
+        # Portal down: the lane list read before it went down (no second 60 s retry wait).
+        lanes = self._portal.known_lanes if portal_down else await self._portal.lanes()
+        if not portal_down and request.destination_iata in {destination for _, destination in lanes}:
+            return False
+        on_portal = {a["name"] for airlines in lanes.values() for a in airlines}
+        tariff_only = self._tariffs.airlines - on_portal  # ADR 51: an email price beats local lanes
         airlines = [
             c for c in self._reference.carriers
             if c.kind == "airline" and request.destination_iata in c.serves
-            and c.name not in self._tariffs.airlines
+            and c.name not in tariff_only
             and not pricing.carrier_in(c.name, request.excluded_carriers)
         ]  # fmt: skip
         if not airlines:
@@ -377,7 +387,7 @@ class Workflow:
         unread = [r for r in requests if r.reply_message_id and r.price_eur is None]
         if not unread:
             return
-        bodies = [(m.body if (m := self._store.get_message(r.reply_message_id)) else "") for r in unread]
+        bodies = [self._reply_text(r.reply_message_id) for r in unread]
         try:
             result = await self._extractors.extract_airline_rates(bodies)
         except Exception as exc:  # noqa: BLE001 - quote with what we have, or report no price
@@ -405,6 +415,14 @@ class Workflow:
             ))  # fmt: skip
         if new:
             self._store.replace_air_options(shipment.id, self._store.air_options(shipment.id) + new)
+
+    def _reply_text(self, message_id: int | None) -> str:
+        """A carrier's reply with its attachments' text: offers often come as PDF, Word or voice."""
+        m = self._store.get_message(message_id) if message_id else None
+        if not m:
+            return ""
+        files = attachments.as_text(m)
+        return f"{m.body.strip()}\n\n{files}" if files else m.body
 
     async def _request_truckers(self, shipment: Shipment, trucker_emails: list[str]) -> None:
         """The same fixed request to each trucker of the zone; each is asked once (ADR 05).
@@ -488,7 +506,7 @@ class Workflow:
         falls back to the estimated trucker price, so the customer still gets an answer.
         """
         unread = [r for r in requests if r.reply_message_id and r.price_eur is None]
-        bodies = [(m.body if (m := self._store.get_message(r.reply_message_id)) else "") for r in unread]
+        bodies = [self._reply_text(r.reply_message_id) for r in unread]
         if not unread:
             return requests
         offers: dict[int, TruckerQuote] = {}
@@ -522,8 +540,9 @@ class Workflow:
         """
         request = shipment.request
         excluded = request.excluded_carriers
-        air = [o for o in self._store.air_options(shipment.id) if not pricing.carrier_in(o.airline, excluded)]
-        air = air or self._store.air_options(shipment.id)  # ponytail: never fail on an exclusion
+        options = pricing.by_source(self._store.air_options(shipment.id))  # ADR 51
+        air = [o for o in options if not pricing.carrier_in(o.airline, excluded)]
+        air = air or options  # ponytail: never fail on an exclusion
         trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
         pick = lambda a, t: pricing.pick_best(  # noqa: E731
             a, t, shipment.goal, request.ready_date, request.deliver_by,
@@ -654,14 +673,20 @@ class Workflow:
 
     # --- Trucker replies ------------------------------------------------------------------
 
-    def awaited_trucker_reply(self, ctx: MailContext) -> bool:
+    def awaited_trucker_reply(self, ctx: MailContext, msg: MailboxMessage | None = None) -> bool:
         """True for a mail from a trucker we asked and who has not answered yet.
 
         Such a mail needs no classifier call: it is their answer, whatever it says. What it
         says is read later, together with the other replies.
+
+        Only a reply to our request counts, once the request was really sent: a new mail
+        from that carrier may be something else, such as a tariff update (ADR 50). In a dry
+        run (negative ids) our request never left, so every mail of theirs still counts.
         """
         request = ctx.trucker_request or ctx.airline_request
-        return request is not None and not request.answered
+        if request is None or request.answered:
+            return False
+        return msg is None or request.out_message_id < 0 or msg.in_reply_to == request.out_message_id
 
     async def _on_trucker_reply(self, msg: MailboxMessage, ctx: MailContext) -> None:
         """Note that this trucker answered; quote at once if they were the last one.
@@ -929,6 +954,67 @@ class Workflow:
             "booking_note", facts, shipment, to=shipment.customer,
             in_reply_to=quote.get("accept_message_id") or shipment.id,
         )  # fmt: skip
+
+    # --- Reference data updates (ADR 50) -------------------------------------------------
+
+    async def _on_tariff_update(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        """Read the changes (LLM), flag each one (LLM), check and put them (code), confirm."""
+        if ctx.sender_role not in ("airline", "trucker", "ratedesk"):
+            logger.info("Update mail %s from %s ignored: not a carrier or the rate desk", msg.id, msg.sender)
+            return
+        if updates.already_applied(self._reference, msg.id):
+            return  # replay or restart: a mail is applied and confirmed once
+        today = self._now().date()
+        found = await self._extractors.extract_data_update(msg, today.isoformat())
+        flags: dict[int, tuple[str, str]] = {}
+        if found.changes:
+            try:
+                checked = await self._extractors.flag_data_update(
+                    msg, found.changes, self._stored_for(found.changes), today.isoformat()
+                )
+                flags = {f.change: (f.flag, f.reason) for f in checked.flags}
+            except Exception as exc:  # noqa: BLE001 - apply with the code checks, marked unclear
+                logger.warning("Flagging update mail %s failed: %s", msg.id, exc)
+                flags = {n: ("unclear", "second check failed") for n in range(1, len(found.changes) + 1)}
+        outcomes = updates.apply_update(
+            self._reference, self._tariffs, message_id=msg.id, sender=msg.sender, subject=msg.subject,
+            changes=found.changes, flags=flags, today=today, fx_eur_per_usd=self._portal.last_fx_eur_per_usd,
+        )  # fmt: skip
+        logger.info("Update mail %s: %d applied, %d held", msg.id,
+                    sum(o.status == "applied" for o in outcomes), sum(o.status == "held" for o in outcomes))  # fmt: skip
+        if not found.changes:
+            return  # a newsletter or a plan without values: nothing to confirm
+        await self._confirm_update(msg, outcomes)
+
+    def _stored_for(self, changes: list) -> str:
+        """What we store today for the carriers and zones of these changes, for the flag call."""
+        lines: list[str] = []
+        for name in {c.carrier for c in changes if c.carrier}:
+            carrier = self._reference.carrier_named(name)
+            if carrier:
+                lines.append(f"carrier {carrier.name}: {carrier.kind}, {carrier.email}, serves {' '.join(sorted(carrier.serves))}")
+                lines += [
+                    f"lane {l.origin}-{l.destination} {l.valid_from}..{l.valid_to}: transit {l.transit_days}, "
+                    f"min {l.minimum_eur}, breaks {l.breaks_kg}, rates {l.rates_per_kg}, fuel {l.fuel_per_kg}, security {l.security_per_kg}"
+                    for l in self._tariffs.all_lanes(carrier.name)
+                ]
+        zones = self._reference.zones
+        lines += [f"zone {c.zone}: {zones[c.zone][0]} -> {zones[c.zone][1]}" for c in changes if c.zone in zones]
+        return "\n".join(lines)[:8000] or "(nothing stored for these)"
+
+    async def _confirm_update(self, msg: MailboxMessage, outcomes: list) -> None:
+        applied: dict[str, list[str]] = {}
+        for o in outcomes:
+            if o.status == "applied" and o.field != "-":
+                change = o.after if o.field in ("lane", "carrier", "zone") else f"{o.field} {o.before or '-'} -> {o.after or '-'}"
+                applied.setdefault(o.record_key, []).append(change)
+        lines = [f"{key}: {'; '.join(changes)}" for key, changes in applied.items()]
+        held = len({o.change_no for o in outcomes if o.status == "held"})
+        facts = {"subject": msg.subject or "your update", "applied": lines[:10], "more": max(0, len(lines) - 10),
+                 "held": held, "must_appear": []}  # fmt: skip
+        mail = templates.render("update_confirmation", facts, self._settings.mail_signature)
+        out_id = await self._send("update_confirmation", msg.sender or "", mail, None, msg.id, True)
+        updates.set_confirmation(self._reference, msg.id, out_id)
 
     # --- Mail helpers ---------------------------------------------------------------------
 

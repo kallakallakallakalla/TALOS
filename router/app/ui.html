@@ -58,12 +58,23 @@
   td, th { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line) } th { color:var(--muted); font-weight:500 }
   details { margin-top:16px; color:var(--muted); font-size:13px } pre { white-space:pre-wrap; font-size:12px }
   .empty { color:var(--muted); padding:40px; text-align:center }
+  .chips { display:flex; gap:6px; margin-left:auto }
+  .chips button { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:3px 12px; font:inherit; font-size:13px; cursor:pointer; color:var(--muted) }
+  .chips button.on { background:var(--blue-bg); border-color:#cfdafd; color:var(--accent) }
+  tr.change { cursor:pointer } tr.change:hover td { background:var(--bg) }
+  td.diff { font-variant-numeric:tabular-nums } td.diff s { color:var(--muted) }
+  tr.detail td { background:var(--bg); padding:12px 14px }
+  .num { font-variant-numeric:tabular-nums }
+  #main .sub { color:var(--muted); font-size:13px }
+  #main .row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap }
+  #main .row h3 { margin:0 }
   a.back { color:var(--accent); cursor:pointer; font-size:14px }
 </style></head>
 <body>
 <header>
   <h1>TALOS · Customer conversations</h1>
-  <div class="tabs"><button data-src="live" class="on">Live</button><button data-src="replay">Dry run</button></div>
+  <div class="tabs" id="views"><button data-view="conversations" class="on">Conversations</button><button data-view="updates">Tariff updates</button></div>
+  <div class="tabs" id="sources"><button data-src="live" class="on">Live</button><button data-src="replay">Dry run</button></div>
   <span class="hint" id="hint"></span>
 </header>
 <div class="layout"><nav id="list"></nav><main id="main"></main></div>
@@ -89,6 +100,7 @@ const STEP_OF = { NEW:0, AWAITING_INFO:0, PRICING:1, QUOTED:3, BOOKING:4, BOOKED
 const stateOf = s => s.booking_ref === 'DRY-RUN' ? 'DRY_BOOKED' : s.state;
 let sending = 'off';
 let source = 'live', shipments = [], tracking = [], current = null;
+let view = 'conversations', updateFilter = 'all', openUpdate = null;
 const $ = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const el = (tag, cls, ...kids) => { const e = $(tag, cls); e.append(...kids.filter(k => k != null)); return e; };
 const eur = v => v == null ? '–' : new Intl.NumberFormat('en-GB', { style:'currency', currency:'EUR' }).format(v);
@@ -100,9 +112,13 @@ const company = s => s.request?.company || s.customer.split('@')[0].replace(/[-_
 const route = s => `${s.request?.pickup_city || s.request?.pickup_postal_code || '?'} → ${s.request?.destination_iata || '?'}`;
 const api = async path => { const r = await fetch(path + (path.includes('?') ? '&' : '?') + 'source=' + source); if (!r.ok) throw new Error((await r.json()).detail); return r.json(); };
 
-document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
-  source = b.dataset.src; current = null; load();
+document.querySelectorAll('#sources button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#sources button').forEach(x => x.classList.toggle('on', x === b));
+  source = b.dataset.src; current = null; openUpdate = null; load();
+});
+document.querySelectorAll('#views button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#views button').forEach(x => x.classList.toggle('on', x === b));
+  view = b.dataset.view; current = null; openUpdate = null; history.replaceState(null, '', view === 'updates' ? '#updates' : '#'); load();
 });
 
 async function load() {
@@ -111,6 +127,8 @@ async function load() {
     ? 'Simulation of the recorded mailbox — nothing was really sent or booked'
     : sending === 'on' ? 'Real mailbox · TALOS sends and books for real · refreshes every 15 s'
     : 'Real mailbox · TALOS only drafts: nothing is sent or booked · refreshes every 15 s';
+  document.getElementById('list').hidden = view === 'updates';
+  if (view === 'updates') { showUpdates(); return; }
   try { tracking = await api('/tracking'); } catch { tracking = []; }
   try { shipments = await api('/shipments'); } catch (e) { shipments = []; document.getElementById('main').replaceChildren($('div', 'empty', e.message)); }
   renderList();
@@ -338,6 +356,77 @@ function bubble(cls, who, what, to, t, body, extra) {
     $('span', null, when(t)), ...extra.filter(Boolean)), b);
 }
 
-load(); setInterval(() => { if (source === 'live' && !current) load(); }, 15000);
+// --- Tariff updates tab (ADR 50): every change an update mail made or tried -------------
+const UPDATE_STATUS = {
+  applied:['All applied','good'], partly_applied:['Partly applied','wait'], needs_review:['Held for review','bad'],
+  nothing_found:['No change found','info'], not_handled:['Received, not handled yet','wait'],
+};
+const TARGET = { tariff_lane:'Tariff lane', carrier:'Carrier', zone:'Pickup zone' };
+const FIELD = {
+  rates_per_kg:'Rates per kg', minimum_eur:'Minimum', fuel_per_kg:'Fuel per kg', security_per_kg:'Security per kg',
+  transit_days:'Transit days', breaks_kg:'Weight breaks', valid_to:'Valid until', email:'Email', serves:'Serves',
+  active:'Active', airport:'Airport', area:'Area', lane:'New lane', carrier:'New carrier', zone:'New zone', '-':'',
+};
+
+async function showUpdates() {
+  const main = document.getElementById('main');
+  let mails; try { mails = await api('/data-updates'); } catch (e) { main.replaceChildren($('div', 'empty', e.message)); return; }
+  const rows = mails.flatMap(m => m.changes.length ? m.changes.map(c => ({ m, c })) : [{ m, c: null }]);
+  const applied = rows.filter(r => r.c?.status === 'applied').length, held = rows.filter(r => r.c?.status === 'held').length;
+  const chips = el('div', 'chips', ...[['all', 'All'], ['applied', 'Applied'], ['held', 'Held']].map(([k, l]) => {
+    const b = $('button', updateFilter === k ? 'on' : null, l); b.onclick = () => { updateFilter = k; showUpdates(); }; return b; }));
+  const head = el('div', 'card', el('div', 'row', $('h3', null,
+    `${mails.length} update mail${mails.length === 1 ? '' : 's'} · ${applied + held} changes · ${applied} applied · ${held} held`), chips));
+  if (!mails.length) {
+    main.replaceChildren($('h2', null, 'Tariff updates'), el('div', 'card', $('div', 'empty',
+      'No update mails yet. When a carrier or the rate desk mails a new tariff, rate, email or zone, every change shows up here.')));
+    return;
+  }
+  const shown = rows.filter(r => updateFilter === 'all' || r.c?.status === updateFilter || (!r.c && updateFilter === 'held'));
+  const table = el('table', null, el('tr', null, ...['When', 'From', 'What', 'Change', 'Status', 'Flag'].map(h => $('th', null, h))));
+  const detailShown = new Set();
+  for (const { m, c } of shown) {
+    const tr = el('tr', 'change',
+      $('td', 'num', when(m.received_at)), $('td', null, (m.sender ?? '').split('@')[0]),
+      el('td', null, $('div', null, c?.record_key ?? m.subject), $('div', 'sub', c ? TARGET[c.target] ?? c.target : 'Mail')),
+      changeCell(c, m),
+      el('td', null, c ? $('span', 'badge ' + (c.status === 'applied' ? 'good' : 'bad'), c.status === 'applied' ? 'Applied' : 'Held')
+                       : badge2(m.status)),
+      el('td', null, c && !(c.status === 'held' && c.flag === 'ok') ? $('span', 'badge ' + ({ ok:'good', unclear:'wait', suspicious:'bad' }[c.flag] ?? 'info'), c.flag) : c ? $('span', 'sub', 'failed a check') : null,
+        c?.status === 'applied' && c.reason ? $('div', 'sub', c.reason) : null));
+    tr.onclick = () => { openUpdate = openUpdate === m.message_id ? null : m.message_id; showUpdates(); };
+    table.append(tr);
+    if (openUpdate === m.message_id && !detailShown.has(m.message_id)) { detailShown.add(m.message_id); table.append(updateDetail(m)); }
+  }
+  main.replaceChildren($('h2', null, 'Tariff updates'), head, el('div', 'card', table));
+}
+
+const badge2 = st => { const [label, tone] = UPDATE_STATUS[st] ?? [pretty(st), 'info']; return $('span', 'badge ' + tone, label); };
+
+function changeCell(c, m) {
+  if (!c) return $('td', 'sub', m.status === 'not_handled' ? 'Waiting to be read' : 'Nothing to change');
+  if (c.field === '-') return $('td', c.status === 'held' ? null : 'sub', (c.status === 'held' ? 'Not changed: ' : '') + (c.reason || '–'));
+  const td = el('td', 'diff', $('div', 'sub', FIELD[c.field] ?? pretty(c.field)));
+  const line = $('div');
+  if (c.before != null) { line.append($('s', null, c.before), ' → '); }
+  line.append($('b', null, c.after ?? '–'));
+  td.append(line);
+  return td;
+}
+
+function updateDetail(m) {
+  const files = m.attachments.length ? $('div', 'sub', 'Attachments: ' + m.attachments.join(', ')) : null;
+  const answer = m.confirmation
+    ? bubble('us', 'TALOS', 'Confirmation' , m.sender, null, m.confirmation,
+        [!m.confirmation_sent && $('span', 'badge wait', source === 'replay' ? 'Simulated' : 'Draft · not sent')])
+    : $('div', 'note', 'No confirmation sent');
+  const td = el('td', null, el('div', 'row', $('b', null, m.subject), badge2(m.status)), files,
+    el('div', 'chat', bubble('trucker', (m.sender ?? '').split('@')[0], 'Update mail', null, m.received_at, m.body, []), answer));
+  td.colSpan = 6;
+  return el('tr', 'detail', td);
+}
+
+if (location.hash === '#updates') document.querySelector('#views [data-view=updates]').click(); else load();
+setInterval(() => { if (source === 'live' && !current) load(); }, 15000);
 </script>
 </body></html>

@@ -72,6 +72,9 @@ mail already in the mailbox as handled, so the router starts with the next new m
 - `GET /shipments[?state=QUOTED]`, `GET /shipments/{id}`: shipments with their trucker
   requests, air options and composed mails (in a dry run: what would have been sent)
 - `GET /messages[?category=trucker_quote]`, `GET /messages/{id}`: stored, classified mails
+- `GET /data-updates`: every update mail with each change it made or tried (ADR 50); the
+  UI shows it in the Tariff updates tab (`/ui#updates`)
+- `GET /reference/{carriers|zones|tariffs}`: the reference data as the router uses it now
 - `GET /poller/status`, `POST /poll`: poller state, one manual poll cycle
 - `POST /classify`, `POST /run`: classify a text directly (no context, no workflow)
 - `GET /health`, `GET /docs`
@@ -80,6 +83,7 @@ mail already in the mailbox as handled, so the router starts with the next new m
 
 | Script | What it does |
 |---|---|
+| `scripts/apply_pending_updates.py [--dry-run]` | Applies `tariff_update` mails that came in before the update handler existed (ADR 50). Idempotent |
 | `scripts/replay.py` | Replays the recorded mailbox through the whole pipeline as a dry run (real LLM, cached portal reads, virtual clock). Result: `data/replay/result.json` |
 | `scripts/export_mails.py` | Refreshes `tests/fixtures/mails.json` from the live mailbox (read-only) |
 | `scripts/build_datasets.py` | Builds the Langfuse datasets from the recorded mails + `tests/fixtures/labels.json` |

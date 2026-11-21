@@ -124,6 +124,21 @@ def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _update_confirmation(f: dict[str, Any]) -> tuple[str, str]:
+    """To the carrier or rate desk that mailed us an update (ADR 50). Exact, never the LLM:
+    the reader needs the facts, and the text is built from what we stored, not from their mail."""
+    subject = f["subject"] if f["subject"].lower().startswith("re:") else f"Re: {f['subject']}"
+    if not f["applied"]:
+        return subject, "thank you for your update. We are checking it and will come back to you."
+    lines = "\n".join(f"- {line}" for line in f["applied"])
+    more = f"\n- and {f['more']} more" if f.get("more") else ""
+    held = (
+        f"\n\n{f['held']} further change(s) need a check on our side; we will come back to you on them."
+        if f.get("held") else ""
+    )  # fmt: skip
+    return subject, f"thank you for your update. We have updated our records:\n{lines}{more}{held}"
+
+
 _TEMPLATES = {
     "quote": _quote,
     "trucker_request": _trucker_request,
@@ -134,6 +149,7 @@ _TEMPLATES = {
     "booking_request": _booking_request,
     "answer": _answer,
     "tracking_answer": _tracking_answer,
+    "update_confirmation": _update_confirmation,
 }
 MAIL_KINDS = tuple(_TEMPLATES)
 

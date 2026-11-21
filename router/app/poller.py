@@ -28,7 +28,6 @@ _TRUCKER_REPLY = ClassificationDecision(
 _UNHANDLED = {
     EmailCategory.OTHER,
     EmailCategory.RATE_OFFER,
-    EmailCategory.TARIFF_UPDATE,
 }
 
 
@@ -73,10 +72,10 @@ class MailboxPoller:
             tags=[role],
             metadata={"message_id": str(msg.id)},
         ):
-            if role == "customer" and msg.attachments:
+            if self._workflow and msg.attachments:  # customers and carriers (trucker offers come as files)
                 await self._workflow.read_attachments(msg)  # stored with the mail below
             payload = mailbox_message_to_payload(msg)
-            if self._workflow and context and self._workflow.awaited_trucker_reply(context):
+            if self._workflow and context and self._workflow.awaited_trucker_reply(context, msg):
                 # A mail from a trucker we asked is their answer: no classifier call (ADR 41).
                 decision, trace_id = _TRUCKER_REPLY, get_client().get_current_trace_id()
             else:

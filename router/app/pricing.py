@@ -49,6 +49,16 @@ def tariff_option(lane: TariffLane, gross_kg: float, volume_cbm: float) -> AirOp
     )
 
 
+_SOURCE_RANK = {"portal": 0, "email": 1, "tariff": 2}
+
+
+def by_source(options: list[AirOption]) -> list[AirOption]:
+    """One price source per airline: portal, else its email reply, else the local tariff
+    (ADR 51). Matters once an update mail gives a portal or email airline local lanes."""
+    best = {o.airline: min(_SOURCE_RANK[p.source] for p in options if p.airline == o.airline) for o in options}
+    return [o for o in options if _SOURCE_RANK[o.source] == best[o.airline]]
+
+
 def pick_best(
     air: list[AirOption],
     trucks: list[TruckerRequest],

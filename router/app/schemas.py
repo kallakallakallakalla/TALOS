@@ -321,6 +321,101 @@ class TariffLane(BaseModel):
     source_file: str = ""
 
 
+class DataChange(BaseModel):
+    """One change to our reference data read from an update mail (ADR 50).
+
+    Only the fields the mail gives are set; everything else stays null and keeps its value.
+    """
+
+    action: Literal["put", "remove", "adjust"] = Field(
+        description="put: add or overwrite; remove: the mail asks to delete or stop something; "
+        "adjust: a relative change such as '+5 %' or 'fuel +0.10'"
+    )
+    target: Literal["tariff_lane", "carrier", "zone"]
+    carrier: str | None = Field(None, description="carrier name as written (airline or trucker)")
+    # tariff_lane (put, remove) and adjust
+    origin: str | None = None
+    destination: str | None = None
+    valid_from: date | None = None
+    valid_to: date | None = None
+    transit_days: int | None = None
+    minimum: float | None = None
+    breaks_kg: list[float] | None = None
+    rates_per_kg: list[float] | None = None
+    fuel_per_kg: float | None = None
+    security_per_kg: float | None = None
+    currency: str | None = Field(None, description="currency of the prices, e.g. EUR, USD")
+    eur_per_unit: float | None = Field(None, description="exchange rate stated in the mail: 1 unit = x EUR")
+    copy_from_destination: str | None = Field(
+        None, description="a new lane 'with the same rates as' another destination of this airline"
+    )
+    # adjust
+    percent: float | None = None
+    amount: float | None = None
+    adjust_fields: list[Literal["rates", "minimum", "fuel", "security"]] | None = None
+    # carrier
+    kind: Literal["airline", "trucker"] | None = None
+    email: str | None = None
+    serves_add: list[str] | None = None
+    serves_remove: list[str] | None = None
+    # zone
+    zone: str | None = None
+    area: str | None = None
+    airport: str | None = None
+    quote: str = Field("", description="the sentence or table row in the mail this change comes from")
+
+
+class DataUpdate(BaseModel):
+    """Output of `talos-extract-data-update`."""
+
+    changes: list[DataChange] = Field(default_factory=list)
+
+
+class ChangeFlag(BaseModel):
+    change: int = Field(description="number of the change, 1-based")
+    flag: Literal["ok", "unclear", "suspicious"]
+    reason: str = ""
+
+
+class DataUpdateFlags(BaseModel):
+    """Output of `talos-flag-data-update`."""
+
+    flags: list[ChangeFlag] = Field(default_factory=list)
+
+
+class DataChangeRow(BaseModel):
+    """One row of the change list (table `data_changes`, the Tariff updates tab)."""
+
+    id: int
+    message_id: int
+    change_no: int
+    target: str
+    record_key: str
+    field: str
+    before: str | None = None
+    after: str | None = None
+    status: Literal["applied", "held"]
+    flag: str
+    reason: str = ""
+    created_at: str
+
+
+class DataUpdateRecord(BaseModel):
+    """One update mail with its changes (GET /data-updates)."""
+
+    message_id: int
+    sender: str | None = None
+    subject: str = ""
+    received_at: str | None = None
+    status: str  # applied | partly_applied | needs_review | nothing_found | not_handled
+    confirmation_message_id: int | None = None
+    body: str = ""
+    attachments: list[str] = Field(default_factory=list)
+    confirmation: str | None = None  # the mail we sent back (also when only drafted)
+    confirmation_sent: bool = False
+    changes: list[DataChangeRow] = Field(default_factory=list)
+
+
 class TruckerRequest(BaseModel):
     """One pickup request we sent to one trucker, and their answer once it arrives."""
 

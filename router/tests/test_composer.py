@@ -50,6 +50,10 @@ FACTS = {
         "booking_reference": "BK-ERC5OOW3", "transit_days": 3,
         "estimated_arrival": "2026-12-03", "must_appear": ["BK-ERC5OOW3"],
     },
+    "update_confirmation": {
+        "subject": "December tariff", "applied": ["Cobalt Skylift CGN-EZE from 2026-12-01: rates_per_kg 5.41 -> 5.60"],
+        "more": 3, "held": 1, "must_appear": ["CGN-EZE"],
+    },
 }  # fmt: skip
 
 
