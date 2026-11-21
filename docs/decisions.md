@@ -436,9 +436,43 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **How:** `pricing.by_source(options)` keeps one source per airline before `pick_best`. When the portal is down, every airline that is not tariff-only is asked by email (ADR 47); its local lanes are the fallback if it does not answer. Booking follows the source of the chosen price, as today.
 - **Why:** live prices beat stored ones, and a stored tariff can still save a quote when the portal and the airline are silent.
 
+### ADR 52: A local CRM over the router's data
 
 
-### ADR 53: Recheck the portal price before booking
+- **Context:** the only view into the system was `/ui`, a list of conversations. Accounts, carriers, lanes, the mail stream and the configuration could only be read from the database.
+- **Decision (user):** a browser interface for the whole system, run locally, as a CRM fitted to this use case: matte glass look, no gimmicks, real figures. It has to include all data, follow the live database, and show the routes on an interactive 3D globe.
+- **How:**
+  - `GET /crm` serves plain HTML, CSS and JavaScript from `app/crm_ui/`. No build step, no framework, no request to another host.
+  - `app/insights.py` computes every figure from stored rows: shipments as deals, accounts, airlines, truckers, lanes, the attention list and the findings. `app/crm_api.py` exposes them under `/crm/api/`. The interface only formats.
+  - Live updates: `MessageStore.change_token()` is one cheap query that changes whenever a mail, shipment, trucker answer, air option or composed mail changes. The page polls it every 3 s and reloads the snapshot only when it moved.
+  - The dry run is readable on a fresh checkout: `app/replay_data.py` rebuilds `replay.db` from the committed `result.json` and the recorded mails.
+  - The globe is drawn on a canvas with an orthographic projection of the sphere. Routes are great circles between airport coordinates (`app/airports.py`); the land outline is Natural Earth 1:110m, simplified (`land.js`).
+- **What is deliberately not shown:**
+  - In a dry run: timings (two clocks are mixed) and win rates (the recorded verdicts answered the old process's quotes).
+  - Aircraft positions: there is no such data. A shipment in transit is placed along its route by its planned dates, and the page says so.
+  - LLM cost: it is in Langfuse, not in the database.
+- **Read-only:** the CRM never sends, books or calls an LLM, and the system page shows no keys. Notes, tasks and manual actions (requote, book by hand) are not part of this version.
+- **Safety when only looking:** start the app with `MAILBOX_POLL_ENABLED=false`, otherwise the poller reads the mailbox and spends LLM calls.
+- **Tests:** `tests/test_crm.py` checks the figures against the recorded replay (`data/replay/recorded-run.json`) (counts, money adding up to the cent, pricing flags, conversation order), the endpoints, the change token and that no secret reaches the system page.
+- **Later additions:** an Analysis page (all metrics, a quote comparison per shipment), CSV export of every table, pipeline filters, formal wording. `crm.sh` / `crm.bat` start it; given the database file of a running router as second argument, it follows that router's live data.
+- **File handles:** `MessageStore` now closes every connection after its block. Before, connections stayed open until garbage collection; with the page polling every 3 s the process ran out of file handles on macOS (limit 256).
+- **Branch:** the CRM lives on `entwicklung`. It was merged into `main` and reverted there; merging `main` back into `entwicklung` keeps it, with reference data and tariffs now read from the database (ADR 50).
+
+### ADR 53: Customer mails mirror the customer; no footer, no canned wording, no planted slips
+
+- **Context:** the "most human email" award (+10, the jury picks up to three accepted mails per round with team names hidden) kept going to other teams. The style of ADR 48 worked against it in three ways: office phrases ("kindly note", "as per your request") read as boilerplate, the divider footer reads as an automatic signature and adds nothing when names are hidden, and a planted typing slip is a trick, not a voice. The customers' own mails, on the other hand, have distinct voices: "Cheers, Klaus", "have a lovely day", "Viele Gruesse / Many greetings", a formal "Dear Sir or Madam" signed with a job title.
+- **Decision (user):** rewrite the prompt, remove the footer and the typos. This replaces the style rules of ADR 48; its fact rules, the 3 to 5 sentence limit and the natural dates stay.
+- **How:**
+  - The prompt tells the model to mirror the customer's register from the mail we reply to: greeting, formality, and their sign-off returned in kind. It starts with the answer instead of thanks, uses one concrete thing from their mail, writes no label lines, and ends a quote with one short question.
+  - A formal greeting uses the full name as signed. Mr or Ms is never guessed.
+  - One true remark shows the work: the quote facts now carry `airlines_compared`, so "I compared three airlines" is only written when it is so.
+  - Removed from code: `MAIL_FOOTER` and `composer.with_footer`, the random wording slots (`composer.wording`) and the slip instruction. The mail goes out as the model wrote it, signed with name and company on two lines. The check for em dashes and bold stays.
+  - Two examples in the prompt, one relaxed and one formal, with placeholders instead of values.
+- **Not measured:** no evaluation key was available in the session, so no mail was generated with the new prompt. Read `scripts/compose_samples.py --label staging` before promoting it. Whether the jury rewards this is a judgment; there is no data on which mails it picked.
+- **To go live:** the running router needs this code, and the prompt has to be pushed to Langfuse and promoted (`scripts/push_prompts.py`, then `--promote talos-compose-mail`).
+
+
+### ADR 54: Recheck the portal price before booking
 
 **Decided and built 2026-11-21.**
 

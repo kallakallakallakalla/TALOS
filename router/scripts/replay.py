@@ -94,8 +94,8 @@ async def main() -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     db_path = OUT_DIR / "replay.db"
-    for leftover in OUT_DIR.glob("replay.db*"):
-        leftover.unlink()
+    for leftover in [*OUT_DIR.glob("replay.db*"), OUT_DIR / ".from-recorded"]:
+        leftover.unlink(missing_ok=True)
 
     settings = evaluation_settings().model_copy(
         update={

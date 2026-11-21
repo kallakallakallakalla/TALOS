@@ -625,6 +625,7 @@ class Workflow:
             "transit_days": air.transit_days,
             "all_in_price": price,
             "customer_priority": shipment.goal,  # "fastest" | "cheapest" | None (not stated)
+            "airlines_compared": len(self._store.air_options(shipment.id)),
             "price_includes": (
                 "pickup at your site and trucking to the airport, air freight, fuel and "
                 "security surcharges"
