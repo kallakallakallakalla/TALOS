@@ -4,6 +4,7 @@ Each extractor has one prompt and one small output schema. Mail text is never pa
 regex (ADR 12); the only plain Python here is `missing_fields`.
 """
 
+import json
 from datetime import date
 
 from langfuse import observe
@@ -21,6 +22,7 @@ from app.schemas import (
     MailboxMessage,
     ShipmentRequest,
     TrackingQuery,
+    TruckerChoice,
     TruckerQuotes,
 )
 
@@ -158,6 +160,18 @@ class Extractors:
             content,
             model=self._settings.extract_model,
             reasoning_effort=self._settings.trucker_reasoning_effort,
+            prompt_label=prompt_label,
+        )
+
+    @observe(name="choose.trucker")
+    async def choose_trucker(self, facts: dict, prompt_label: str | None = None) -> TruckerChoice:
+        """Choose one trucker offer from compact JSON facts (ADR 55). Checked by the caller."""
+        return await self._llm.parse(
+            prompts.CHOOSE_TRUCKER,
+            TruckerChoice,
+            json.dumps(facts, ensure_ascii=False, indent=1),
+            model=self._settings.decision_model,
+            reasoning_effort=self._settings.choose_trucker_reasoning_effort,
             prompt_label=prompt_label,
         )
 

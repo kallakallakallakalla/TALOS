@@ -113,6 +113,61 @@ def _price_in_text(price: float | None, text: str) -> bool:
     return any(form in text or form.replace(".", ",") in text for form in forms)
 
 
+def trucker_choice_facts(
+    shipment: Shipment,
+    air: list[AirOption],
+    offers: list[TruckerRequest],
+    now: datetime,
+    name_of: Callable[[TruckerRequest], str],
+) -> dict[str, Any]:
+    """What the trucker chooser sees (ADR 55): compact facts, no raw mails. OFFER n is
+    `offers[n - 1]`. Shared by the router and scripts/eval_trucker_choice.py."""
+    request = shipment.request
+    return {
+        "now_utc": now.astimezone(UTC).strftime("%Y-%m-%d %H:%M (%A)"),
+        "customer_priority": shipment.goal or "not stated (treat as cheapest)",
+        "ready_date": request.ready_date.strftime("%Y-%m-%d (%A)") if request.ready_date else None,
+        "deliver_by": request.deliver_by.isoformat() if request.deliver_by else None,
+        "pickup_from": f"{request.pickup_postal_code} {request.pickup_city or ''}".strip(),
+        "departure_airport": shipment.origin_airport,
+        "flights": [
+            {"airline": o.airline, "price_eur": o.total_eur, "transit_days": o.transit_days}
+            for o in sorted(air, key=lambda o: (o.total_eur, o.transit_days))
+        ],
+        "offers": [
+            {
+                "offer": n, "trucker": name_of(t), "price_eur": t.price_eur,
+                "pickup_hours": t.pickup_hours, "valid_until": t.valid_until,
+                "conditions": t.conditions,
+            }
+            for n, t in enumerate(offers, start=1)
+        ],  # fmt: skip
+    }
+
+
+def check_trucker_choice(
+    number: int, offers: list[TruckerRequest], air: list[AirOption], shipment: Shipment, now: datetime
+) -> str | None:
+    """Why a chosen OFFER may not be used, or None (ADR 55)."""
+    if not 1 <= number <= len(offers):
+        return f"there is no offer {number}"
+    truck = offers[number - 1]
+    try:
+        if truck.valid_until and datetime.fromisoformat(truck.valid_until.replace("Z", "+00:00")) < now:
+            return "the offer has expired"
+    except ValueError:
+        pass  # an unreadable date is no reason to drop the offer
+    request = shipment.request
+    if request.deliver_by and request.ready_date:
+        arrives = lambda t: any(  # noqa: E731
+            pricing.eta(request.ready_date, t.pickup_hours, o.transit_days)["arrival"] <= request.deliver_by
+            for o in air
+        )
+        if not arrives(truck) and any(map(arrives, offers)):
+            return f"with it no flight arrives by {request.deliver_by.isoformat()}, with another offer one does"
+    return None
+
+
 def needs_pickup(shipment: Shipment) -> bool:
     """We collect unless the customer brings the goods to a named airport themselves."""
     request = shipment.request
@@ -530,26 +585,66 @@ class Workflow:
                 request.pickup_hours = offer.pickup_hours
                 request.valid_until = offer.valid_until
                 request.ref = offer.quote_ref
+                request.conditions = offer.conditions
                 self._store.save_trucker_request(request)
         return requests
 
+    def _air_and_trucks(
+        self, shipment: Shipment, requests: list[TruckerRequest]
+    ) -> tuple[list[AirOption], list[TruckerRequest]]:
+        """Air options and trucker offers we may use: one source per airline (ADR 51), no
+        excluded carrier (ADR 46)."""
+        excluded = shipment.request.excluded_carriers
+        options = pricing.by_source(self._store.air_options(shipment.id))
+        air = [o for o in options if not pricing.carrier_in(o.airline, excluded)]
+        air = air or options  # ponytail: never fail on an exclusion
+        trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
+        return air, trucks
+
+    async def _choose_trucker(
+        self, shipment: Shipment, requests: list[TruckerRequest]
+    ) -> tuple[TruckerRequest | None, dict[str, Any]]:
+        """The LLM chooses the trucker from all offers (ADR 55); code checks the answer.
+
+        One retry with the reason of the rejection, then `(None, ...)`: the cut-off rule
+        (ADR 49) chooses instead, so a quote never waits on the chooser.
+        """
+        air, trucks = self._air_and_trucks(shipment, requests)
+        offers = [t for t in trucks if t.price_eur is not None]
+        if self._settings.trucker_chooser != "llm" or len(offers) < 2 or not air:
+            return None, {"source": "rule"}
+        facts = trucker_choice_facts(shipment, air, offers, self._now(), self._trucker_name)
+        for _attempt in range(2):
+            try:
+                choice = await self._extractors.choose_trucker(facts)
+            except Exception as exc:  # noqa: BLE001 - the rule chooses instead
+                logger.warning("Trucker chooser failed for shipment %s: %s", shipment.id, exc)
+                continue
+            problem = check_trucker_choice(choice.offer, offers, air, shipment, self._now())
+            if not problem:
+                truck = offers[choice.offer - 1]
+                return truck, {"source": "llm", "reason": choice.reason, "concerns": choice.concerns}
+            logger.warning("Trucker choice rejected for shipment %s: %s", shipment.id, problem)
+            facts["previous_answer_rejected"] = f"offer {choice.offer}: {problem}"
+        return None, {"source": "rule", "why": "chooser failed or its answer was rejected twice"}
+
     @observe(name="pricing.pick_best")
-    def _price(self, shipment: Shipment, requests: list[TruckerRequest]) -> dict[str, Any]:
+    def _price(
+        self, shipment: Shipment, requests: list[TruckerRequest], chosen: TruckerRequest | None = None
+    ) -> dict[str, Any]:
         """Choose airline and trucker for the goal and compute the all-in price.
 
+        `chosen`: the trucker the LLM chose (ADR 55); without it the cut-off rule chooses.
         ADR 46: excluded carriers are never used; a preferred carrier is used when it can
         carry the shipment, and the cheapest option is named when it is cheaper.
         """
         request = shipment.request
-        excluded = request.excluded_carriers
-        options = pricing.by_source(self._store.air_options(shipment.id))  # ADR 51
-        air = [o for o in options if not pricing.carrier_in(o.airline, excluded)]
-        air = air or options  # ponytail: never fail on an exclusion
-        trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
+        air, trucks = self._air_and_trucks(shipment, requests)
         pick = lambda a, t: pricing.pick_best(  # noqa: E731
             a, t, shipment.goal, request.ready_date, request.deliver_by,
+            self._settings.trucker_pickup_cutoff_hours,
         )  # fmt: skip
-        best = self._price_of(shipment, *pick(air, trucks))
+        best = self._price_of(shipment, *pick(air, [chosen] if chosen else trucks))
 
         notes: list[str] = []
         pref_air = [o for o in air if pricing.carrier_in(o.airline, [request.preferred_airline])]
@@ -614,7 +709,9 @@ class Workflow:
     async def _quote(self, shipment: Shipment, requests: list[TruckerRequest]) -> None:
         if shipment.quote_message_id is not None:
             return  # only the first quote in a thread counts (ADR 19)
-        quote = self._price(shipment, requests)
+        chosen, choice = await self._choose_trucker(shipment, requests)
+        quote = self._price(shipment, requests, chosen)
+        quote["trucker_choice"] = choice
         air: AirOption = quote.pop("chosen_option")
         request = shipment.request
         price = _eur(quote["all_in_eur"])

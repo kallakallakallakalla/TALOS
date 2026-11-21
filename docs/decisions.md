@@ -480,3 +480,14 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Decision (user):** before every portal booking, fetch the rate again. Same price: book the fresh `rate_id`. Changed, up **or** down: mail the customer the new all-in price (`price_update`) and go back to QUOTED to wait for a new yes. Email airline and trucker prices stand as given by mail and are not asked twice; tariff prices stand too.
 - **How:** `_price_still_holds()` at the start of `_book_on_portal`, so it also covers the `tick()` retries. The new all-in is the old one minus the old air price plus the new air price (trucking and margin are unchanged). At most 3 price updates per shipment, then FAILED. If the recheck fails (portal down), the shipment stays BOOKING and `tick()` tries again.
 - **Why:** the customer only ever books a price they agreed to.
+
+
+### ADR 55: An LLM can choose the trucker; off until it beats the rule
+
+**Decided and built 2026-11-21.** Plan: [trucker-choice.md](trucker-choice.md). Default and fallback is the 14 h cut-off rule (ADR 49); the days rule tried in between is reverted.
+
+- **Built:** trucker extraction keeps every other stated fact in `conditions` (`trucker_requests.conditions_json`). `talos-choose-trucker` gets compact facts (dates, now, flights, all offers with conditions) and returns an offer number with a reason. Code checks it (offer exists, still valid, deliver_by still reachable); one retry, then the rule. The all-in price is always computed in code. `quote_json.trucker_choice` records `llm` or `rule` and the reason. Setting `TRUCKER_CHOOSER=llm|rule`.
+- **Eval (`scripts/eval_trucker_choice.py`: offline, EVALUATION_KEY straight at OpenAI, local prompts, no platform call), 18 scored rounds:** rule 11/18 truckers as expected, 736.0 accuracy points; LLM 6/18, 673.6. No check failed; re-reading changed no price.
+- **Why the LLM loses:** truckers state their lead time "from order to collection"; we order days before the ready date, so the LLM correctly finds that every trucker makes the flight and takes the cheapest. The scorer expects a faster, dearer trucker in many rounds (31, 47, 57, 66). That preference is in none of the facts we get, so no prompt over these facts follows it.
+- **Hence:** `TRUCKER_CHOOSER=rule` by default. Switch to `llm` only after the eval shows it at least as good as the rule.
+

@@ -229,6 +229,17 @@ class TruckerQuote(BaseModel):
     pickup_hours: float | None = None
     valid_until: str | None = None
     quote_ref: str | None = None
+    # Every other limit or extra the trucker states, in their words (ADR 55): pickup windows,
+    # weekdays, waiting time, surcharges, how the lead time is counted. Read by the chooser.
+    conditions: list[str] = Field(default_factory=list)
+
+
+class TruckerChoice(BaseModel):
+    """Output of the `talos-choose-trucker` prompt (ADR 55)."""
+
+    offer: int  # OFFER number in the facts
+    reason: str
+    concerns: list[str] = Field(default_factory=list)
 
 
 class AirlineRate(BaseModel):
@@ -430,6 +441,7 @@ class TruckerRequest(BaseModel):
     ref: str | None = None
     reply_message_id: int | None = None
     transit_days: int | None = None  # airline rate requests only (ADR 47)
+    conditions: list[str] = Field(default_factory=list)  # trucker requests only (ADR 55)
 
 
 class Shipment(BaseModel):
