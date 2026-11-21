@@ -31,6 +31,16 @@ def _category_where(category: EmailCategory | None) -> tuple[str, tuple[Any, ...
     return "WHERE category = ?", (category.value,)
 
 
+_AIRLINE = "airline_requests"
+
+
+def _table(name: str) -> str:
+    """Only these two table names are ever put into SQL."""
+    if name not in ("trucker_requests", _AIRLINE):
+        raise ValueError(f"unknown table {name}")
+    return name
+
+
 class MessageStore:
     """SQLite-backed store for polling cursor, deduplication, and classified mails."""
 
@@ -105,6 +115,14 @@ class MessageStore:
                     answered INTEGER NOT NULL DEFAULT 0,
                     price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
                     reply_message_id INTEGER
+                );
+                -- Rate requests to email-only airlines (ADR 47), same shape as trucker_requests.
+                CREATE TABLE IF NOT EXISTS airline_requests (
+                    out_message_id INTEGER PRIMARY KEY, shipment_id INTEGER NOT NULL,
+                    trucker TEXT NOT NULL, sent_at TEXT NOT NULL,  -- trucker = airline email
+                    answered INTEGER NOT NULL DEFAULT 0,
+                    price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
+                    reply_message_id INTEGER, transit_days INTEGER
                 );
                 CREATE TABLE IF NOT EXISTS air_options (
                     shipment_id INTEGER NOT NULL, source TEXT NOT NULL,  -- portal | tariff
@@ -367,15 +385,17 @@ class MessageStore:
             ).fetchall()
         return [self._row_to_shipment(row) for row in rows]
 
-    def save_trucker_request(self, request: TruckerRequest) -> None:
-        """Insert a pickup request we sent, or update it with the trucker's answer."""
+    def save_trucker_request(self, request: TruckerRequest, table: str = "trucker_requests") -> None:
+        """Insert a pickup request we sent, or update it with the trucker's answer.
+        `table="airline_requests"` does the same for a rate request to an airline."""
+        transit = ", transit_days" if table == _AIRLINE else ""
         with self._connect() as conn:
             conn.execute(
-                """
-                INSERT OR REPLACE INTO trucker_requests (
+                f"""
+                INSERT OR REPLACE INTO {_table(table)} (
                     out_message_id, shipment_id, trucker, sent_at, answered, price_eur,
-                    pickup_hours, valid_until, ref, reply_message_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    pickup_hours, valid_until, ref, reply_message_id{transit}
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?{", ?" if transit else ""})
                 """,
                 (
                     request.out_message_id,
@@ -388,19 +408,21 @@ class MessageStore:
                     request.valid_until,
                     request.ref,
                     request.reply_message_id,
+                    *([request.transit_days] if transit else []),
                 ),
             )
 
-    def trucker_requests(self, shipment_id: int) -> list[TruckerRequest]:
+    def trucker_requests(self, shipment_id: int, table: str = "trucker_requests") -> list[TruckerRequest]:
         with self._connect() as conn:
             rows = conn.execute(
-                "SELECT * FROM trucker_requests WHERE shipment_id = ? ORDER BY out_message_id",
+                f"SELECT * FROM {_table(table)} WHERE shipment_id = ? ORDER BY out_message_id",
                 (shipment_id,),
             ).fetchall()
         return [TruckerRequest(**dict(row)) for row in rows]
 
     def find_trucker_request(
-        self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False
+        self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False,
+        table: str = "trucker_requests",
     ) -> TruckerRequest | None:
         """The pickup request a trucker's mail answers: the one we sent as `reply_to_id`.
 
@@ -409,12 +431,12 @@ class MessageStore:
         """
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT * FROM trucker_requests WHERE out_message_id = ?", (reply_to_id,)
+                f"SELECT * FROM {_table(table)} WHERE out_message_id = ?", (reply_to_id,)
             ).fetchone()
             if row is None and match_by_sender:
                 row = conn.execute(
-                    """
-                    SELECT * FROM trucker_requests WHERE trucker = ? AND answered = 0
+                    f"""
+                    SELECT * FROM {_table(table)} WHERE trucker = ? AND answered = 0
                     ORDER BY sent_at DESC LIMIT 1
                     """,
                     (trucker,),
@@ -517,7 +539,8 @@ class MessageStore:
                        SELECT COALESCE(sent_message_id, -id) FROM outbound_mails
                        WHERE shipment_id = :id)
                    OR message_id IN (
-                       SELECT reply_message_id FROM trucker_requests WHERE shipment_id = :id)
+                       SELECT reply_message_id FROM trucker_requests WHERE shipment_id = :id
+                       UNION SELECT reply_message_id FROM airline_requests WHERE shipment_id = :id)
                 ORDER BY message_id
                 """,
                 {"id": shipment_id},

@@ -4,10 +4,12 @@ Its JSON responses are read directly; no LLM is involved.
 """
 
 import asyncio
+import json
 import logging
 import time
 from collections import deque
 from collections.abc import Awaitable, Callable
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -29,6 +31,14 @@ _NEXT_BREAK_MAX_FACTOR = 1.5
 
 class PortalError(Exception):
     """The portal answered with an error we cannot act on."""
+
+
+class PortalDown(PortalError):
+    """503 that did not go away after one retry, or "contact the airline directly" (ADR 47)."""
+
+
+def _says_contact_airline(response: httpx.Response) -> bool:
+    return "airline directly" in response.text.lower()
 
 
 class RateExpired(PortalError):
@@ -67,12 +77,22 @@ class PortalClient:
     async def lanes(self) -> dict[tuple[str, str], list[dict[str, str]]]:
         """`(origin, destination) -> airlines` for every lane the portal prices. Cached."""
         if self._lanes is None:
+            cache = Path(self._settings.portal_lanes_cache_path)
             response = await self._request("GET", "/v1/portal/ports")
-            response.raise_for_status()
-            self._lanes = {
-                (lane["origin"], lane["destination"]): lane["airlines"]
-                for lane in response.json()["lanes"]
-            }
+            if response.status_code == 503 and not _says_contact_airline(response):
+                await self._sleep(self._settings.portal_unavailable_retry_seconds)  # ADR 47
+                response = await self._request("GET", "/v1/portal/ports")
+            if response.status_code == 200:
+                raw = response.json()["lanes"]
+                cache.write_text(json.dumps(raw))
+            elif cache.exists():  # the lane list never changes; the last copy is good
+                logger.warning("Portal lanes unavailable (%s); using %s", response.status_code, cache)
+                raw = json.loads(cache.read_text())
+            elif response.status_code == 503:
+                raise PortalDown(f"ports: {response.text[:200]}")
+            else:
+                response.raise_for_status()
+            self._lanes = {(lane["origin"], lane["destination"]): lane["airlines"] for lane in raw}
         return self._lanes
 
     async def brackets(self, airline_code: str) -> list[float]:
@@ -110,12 +130,22 @@ class PortalClient:
             "weight_kg": weight_kg,
             "volume_cbm": volume_cbm,
         }
-        for _ in range(_MAX_429_RETRIES + 1):
+        retries_429, retried_503 = 0, False
+        while True:
             await self._take_rate_slot()
             response = await self._request("GET", "/v1/portal/rates", params=params)
-            if response.status_code != 429:
+            if response.status_code == 503 and not retried_503 and not _says_contact_airline(response):
+                # The rate API is down for a while (the portal page has the same data): wait
+                # once, then ask again (ADR 47).
+                retried_503 = True
+                await self._sleep(self._settings.portal_unavailable_retry_seconds)
+            elif response.status_code == 429 and retries_429 < _MAX_429_RETRIES:
+                retries_429 += 1
+                await self._sleep(float(response.headers.get("Retry-After", "5")))
+            else:
                 break
-            await self._sleep(float(response.headers.get("Retry-After", "5")))
+        if response.status_code == 503:
+            raise PortalDown(f"rate {origin}-{destination} {airline_code}: {response.text[:200]}")
         if response.status_code != 200:
             raise PortalError(f"rate {origin}-{destination} {airline_code}: {response.status_code} {response.text[:200]}")
 
@@ -165,6 +195,8 @@ class PortalClient:
                 at_break = await self.rate(origin, destination, code, higher[0], volume_cbm)
                 best = min(best, at_break, key=lambda option: option.total_eur)
             return best
+        except PortalDown:
+            raise
         except (PortalError, httpx.HTTPError) as exc:
             logger.warning("No portal rate from %s for %s-%s: %s", code, origin, destination, exc)
             return None
@@ -172,9 +204,17 @@ class PortalClient:
     async def portal_options(
         self, origin: str, destination: str, weight_kg: float, volume_cbm: float
     ) -> list[AirOption]:
-        """Every portal airline on the lane, each at its cheapest billable weight."""
+        """Every portal airline on the lane, each at its cheapest billable weight.
+        Raises PortalDown when the portal is down and gave no price at all (ADR 47)."""
         airlines = (await self.lanes()).get((origin, destination), [])
-        options = await asyncio.gather(
-            *(self._airline_option(origin, destination, a["code"], weight_kg, volume_cbm) for a in airlines)
+        results = await asyncio.gather(
+            *(self._airline_option(origin, destination, a["code"], weight_kg, volume_cbm) for a in airlines),
+            return_exceptions=True,
         )
-        return [option for option in options if option is not None]
+        options = [r for r in results if isinstance(r, AirOption)]
+        down = [r for r in results if isinstance(r, PortalDown)]
+        for other in (r for r in results if isinstance(r, BaseException) and not isinstance(r, PortalDown)):
+            raise other
+        if down and not options:
+            raise down[0]
+        return options

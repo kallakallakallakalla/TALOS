@@ -22,6 +22,11 @@ FACTS = {
         **SHIPMENT, "pickup_postal_code": "51896", "pickup_city": "Bergisch Gladbach",
         "airport": "CGN", "must_appear": ["51896", "CGN", "2026-11-28", "679 kg", "4.19 cbm"],
     },
+    "airline_rate_request": {
+        **SHIPMENT, "lane": "FRA-ULN", "commodity": "machine parts", "our_reference": "10830",
+        "must_appear": ["FRA-ULN", "10830", "679 kg"],
+    },
+    "no_price": {"destination": "ULN", "route": "FRA-ULN", "must_appear": ["ULN"]},
     "clarification": {"missing_fields": ["total gross weight in kg"], "must_appear": []},
     "booking_note": {
         "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines", "booking_ref": "BK-ERC5OOW3",

@@ -58,7 +58,7 @@ class Settings(BaseSettings):
     hackloop_api_key: str = ""
     hackloop_mailbox: str = ""
     mailbox_poll_enabled: bool = True
-    mailbox_poll_interval_seconds: float = 2.0
+    mailbox_poll_interval_seconds: float = 5.0  # platform limit: one poll per 5 seconds
     mailbox_poll_limit: int = 100
     mailbox_timeout_seconds: float = 10.0
 
@@ -82,6 +82,10 @@ class Settings(BaseSettings):
     tariffs_path: str = "../data/tariffs.json"
     portal_rate_limit_per_minute: int = 10
     portal_timeout_seconds: float = 10.0
+    portal_unavailable_retry_seconds: float = 60.0
+    portal_lanes_cache_path: str = "data/portal_lanes.json"  # a 503 is retried once after this (ADR 47)
+    # Email-only airlines (ADR 47): quote after this wait with whatever prices came back.
+    airline_wait_seconds: float = 60.0
 
 
 def as_test_settings(settings: Settings) -> Settings:

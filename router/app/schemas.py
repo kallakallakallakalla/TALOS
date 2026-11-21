@@ -231,6 +231,22 @@ class TruckerQuote(BaseModel):
     quote_ref: str | None = None
 
 
+class AirlineRate(BaseModel):
+    """One email-only airline's rate offer, by the number of the reply it was read from."""
+
+    reply: int
+    total_eur: float | None = None  # all-in airport to airport: freight + fuel + security
+    transit_days: int | None = None
+    valid_until: str | None = None
+    quote_ref: str | None = None
+
+
+class AirlineRates(BaseModel):
+    """Output of the `talos-extract-airline-rates` prompt."""
+
+    rates: list[AirlineRate] = Field(default_factory=list)
+
+
 class TruckerQuotes(BaseModel):
     """All offers for one pickup request. Output of the `talos-extract-trucker-quotes` prompt."""
 
@@ -272,7 +288,7 @@ class ComposedMail(BaseModel):
 class AirOption(BaseModel):
     """One priced airport-to-airport option, from the portal or from a local tariff."""
 
-    source: Literal["portal", "tariff"]
+    source: Literal["portal", "tariff", "email"]
     airline: str
     airline_code: str | None = None
     origin: str
@@ -318,6 +334,7 @@ class TruckerRequest(BaseModel):
     valid_until: str | None = None
     ref: str | None = None
     reply_message_id: int | None = None
+    transit_days: int | None = None  # airline rate requests only (ADR 47)
 
 
 class Shipment(BaseModel):
@@ -367,6 +384,7 @@ class MailContext(BaseModel):
     sender_role: SenderRole
     shipment: Shipment | None = None
     trucker_request: TruckerRequest | None = None
+    airline_request: TruckerRequest | None = None  # a rate request to an email-only airline
     our_mail: str = ""
 
 

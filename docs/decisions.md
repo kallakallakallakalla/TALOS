@@ -348,3 +348,15 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - Excluded carriers are never asked or used. If excluding them would leave no airline at all, we ignore the exclusion rather than fail.
 - A preferred carrier with a price is used. If the best option without the preference is cheaper, the quote names it with its price (`cheaper_alternative`). A preferred carrier without a price gets a short note in the mail.
 - The template fallback mail does not mention preferences or the arrive-by date. It is only used when the LLM mail fails its checks.
+
+### ADR 47: Airlines are asked by email when the portal cannot price; a 503 is retried once
+
+- **Email-only destinations** (ASU, KTM, PPT, TNR, ULN, i.e. not on the portal's lane list): the airlines in `carrier-list.csv` that serve the destination get a rate request (template `airline_rate_request`). Mail 10830 (FRA-ULN) failed silently for lack of this.
+- **Portal down** (503 "The rate portal is down. Contact the airline directly."): every non-tariff airline that serves the destination gets the same request. Tariff prices are still used.
+- **Temporary 503** ("Rates are still published on the portal page"; the page has the same data as the API): wait 60 s, retry once (`portal_unavailable_retry_seconds`). If it still fails, the portal counts as down.
+- **Lane list:** the 114 lanes are saved to `data/portal_lanes.json` and used when `/ports` is down.
+- **Replies:** like trucker replies (ADR 41), with no classifier call, matched by `in_reply_to` or sender and read in ONE LLM call (`talos-extract-airline-rates`). A price counts only if it appears in the mail. It becomes an `AirOption(source="email")`, and booking goes by email, as for tariff airlines.
+- **Wait:** quote after 60 s (`airline_wait_seconds`) or once all airlines have answered. With no price at all, keep waiting for a late reply up to 10 minutes, then send the customer a `no_price` mail and mark the shipment FAILED. No more silence.
+- **Storage:** table `airline_requests`, the same shape as `trucker_requests` plus `transit_days`.
+- **Booking an email quote:** the airline's offer reference (for example "R-NGz6tmITGPLXxEZU") goes into the booking request.
+- **Mailbox limit:** the platform now allows one poll per 5 seconds (429 "one poll per 5 seconds"). The poll interval is 5 s, and a 429 waits for its Retry-After + 1 s. The timers (quotes, reminders) also run when a poll fails.

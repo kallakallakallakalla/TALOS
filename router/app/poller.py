@@ -3,6 +3,7 @@ import logging
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+import httpx
 from langfuse import get_client, observe, propagate_attributes
 
 from app.classifier import DecisionClassifier
@@ -55,6 +56,7 @@ class MailboxPoller:
         self.running: bool = False
         self.last_poll_at: str | None = None
         self.last_error: str | None = None
+        self._backoff = 0.0
 
     @observe(name="mail")
     async def process_message(self, msg: MailboxMessage) -> ClassificationDecision:
@@ -185,15 +187,30 @@ class MailboxPoller:
             )
 
     async def _cycle(self) -> None:
-        """One poll, then the workflow's timers (trucker deadlines, booking reminders)."""
+        """One poll, then the workflow's timers (trucker deadlines, booking reminders).
+
+        The timers run even when the poll fails, so quotes still go out. A 429 makes the
+        next poll wait for its Retry-After instead of hammering the limit.
+        """
+        self._backoff = 0.0
         try:
             await self.poll_once()
+        except httpx.HTTPStatusError as exc:
+            self._note_error(exc)
+            if exc.response.status_code == 429:
+                self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
+        except Exception as exc:  # noqa: BLE001 - keep background poller alive
+            self._note_error(exc)
+        try:
             if self._workflow:
                 await self._workflow.tick()
         except Exception as exc:  # noqa: BLE001 - keep background poller alive
-            self.last_poll_at = datetime.now(UTC).isoformat()
-            self.last_error = str(exc)
-            logger.exception("Mailbox poll cycle failed")
+            self._note_error(exc)
+
+    def _note_error(self, exc: Exception) -> None:
+        self.last_poll_at = datetime.now(UTC).isoformat()
+        self.last_error = str(exc)
+        logger.warning("Mailbox poll cycle failed: %s", str(exc).splitlines()[0])
 
     async def run_forever(self) -> None:
         """Continuously poll every mailbox_poll_interval_seconds until stopped."""
@@ -205,7 +222,8 @@ class MailboxPoller:
             while not self._stop_event.is_set():
                 await self._cycle()
                 try:
-                    await asyncio.wait_for(self._stop_event.wait(), timeout=interval)
+                    wait = max(interval, self._backoff)
+                    await asyncio.wait_for(self._stop_event.wait(), timeout=wait)
                 except TimeoutError:
                     continue
         finally:

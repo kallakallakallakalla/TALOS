@@ -39,6 +39,29 @@ def _trucker_request(f: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _airline_rate_request(f: dict[str, Any]) -> tuple[str, str]:
+    return (
+        f"Rate request {f['lane']} on {f['ready_date']}, our reference {f['our_reference']}",
+        f"please quote air freight on lane {f['lane']}:\n"
+        f"Ready date: {f['ready_date']}\n"
+        f"Pieces: {f['pieces']}\n"
+        f"Gross weight: {f['gross_weight']}\n"
+        f"Volume: {f['volume']}\n"
+        f"Commodity: {f.get('commodity') or 'general cargo'}\n"
+        f"Our reference: {f['our_reference']}\n\n"
+        "Please reply with your all-in price in EUR airport to airport (freight, fuel and "
+        "security), the transit time in days and the validity.",
+    )
+
+
+def _no_price(f: dict[str, Any]) -> tuple[str, str]:
+    return (
+        "Your air freight request",
+        f"thank you for your request to {f['destination']}. Unfortunately we could not get an "
+        "airline price for this route in time, so we cannot send you a quote for it right now.",
+    )
+
+
 def _clarification(f: dict[str, Any]) -> tuple[str, str]:
     questions = "\n".join(f"- {item}" for item in f["missing_fields"])
     return (
@@ -68,8 +91,9 @@ def _booking_request(f: dict[str, Any]) -> tuple[str, str]:
         f"Volume: {f['volume']}\n"
         f"Chargeable weight: {f['chargeable_weight']}\n"
         f"Rate per your tariff: {f['tariff_total']}\n"
-        f"Our reference: {f['our_reference']}\n\n"
-        "Please confirm the booking with your booking reference.",
+        f"Our reference: {f['our_reference']}\n"
+        + (f"Your offer reference: {f['your_offer_reference']}\n" if f.get("your_offer_reference") else "")
+        + "\nPlease confirm the booking with your booking reference.",
     )
 
 
@@ -97,6 +121,8 @@ def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
 _TEMPLATES = {
     "quote": _quote,
     "trucker_request": _trucker_request,
+    "airline_rate_request": _airline_rate_request,
+    "no_price": _no_price,
     "clarification": _clarification,
     "booking_note": _booking_note,
     "booking_request": _booking_request,

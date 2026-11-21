@@ -12,6 +12,7 @@ from app import attachments, pricing, prompts
 from app.config import Settings
 from app.llm import StructuredLLM
 from app.schemas import (
+    AirlineRates,
     AttachmentText,
     BookingConfirmation,
     MailboxMessage,
@@ -118,6 +119,19 @@ class Extractors:
         content = [{"type": "text", "text": f"ATTACHMENT {filename}"}, *parts]
         result = await self._parse(prompts.READ_ATTACHMENT, AttachmentText, content, prompt_label)
         return result.text
+
+    @observe(name="extract.airline_rates")
+    async def extract_airline_rates(self, replies: list[str], prompt_label: str | None = None) -> AirlineRates:
+        """Read all email-only airlines' replies to one rate request in one call (ADR 47)."""
+        content = "\n\n".join(f"REPLY {n}:\n{body.strip()}" for n, body in enumerate(replies, start=1))
+        return await self._llm.parse(
+            prompts.EXTRACT_AIRLINE_RATES,
+            AirlineRates,
+            content,
+            model=self._settings.extract_model,
+            reasoning_effort=self._settings.trucker_reasoning_effort,
+            prompt_label=prompt_label,
+        )
 
     @observe(name="extract.trucker_quotes")
     async def extract_trucker_quotes(

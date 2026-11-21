@@ -22,6 +22,8 @@ from app.poller import MailboxPoller
 from app.portal_client import PortalClient
 from app.reference import Reference
 from app.schemas import (
+    AirlineRate,
+    AirlineRates,
     AttachmentText,
     BookingConfirmation,
     MailboxAttachment,
@@ -45,6 +47,10 @@ LABELS = labels()
 ROUND_4_RFQ, ROUND_4_ACCEPT = 947, 1156
 ROUND_4_TRUCKER_REPLIES = (1056, 1063, 1071, 1079)  # Maintal, Elbkante 115.98, Westfalen, Bodensee
 # Portal totals for CGN-ORD at the real weight (699.73 kg chargeable); XC is the cheapest.
+PORTAL_DESTINATIONS = (
+    "ATL BKK BOG BOM CAI DEL DFW DOH DXB EZE GRU HKG ICN JFK JNB KUL LAX LIM LOS MEL MEX MIA "
+    "MNL NBO NRT ORD PEK PVG RUH SCL SGN SIN SYD TLV TPE YYZ"
+).split()  # docs/platform-api.md
 CGN_ORD_TOTALS = {"AU": "1920.10", "IB": "1701.55", "MD": "1650.00", "XC": "1483.43"}
 
 
@@ -70,7 +76,10 @@ class Platform:
             return httpx.Response(404)
         if path == "/v1/portal/ports":
             airlines = [{"code": code, "name": code} for code in CGN_ORD_TOTALS]
-            return httpx.Response(200, json={"lanes": [{"origin": "CGN", "destination": "ORD", "airlines": airlines}]})
+            # The other portal destinations exist, but this mock prices none of them.
+            others = [{"origin": "FRA", "destination": d, "airlines": []} for d in PORTAL_DESTINATIONS]
+            lanes = [{"origin": "CGN", "destination": "ORD", "airlines": airlines}, *others]
+            return httpx.Response(200, json={"lanes": lanes})
         if path == "/v1/portal/brackets":
             return httpx.Response(200, json={"breaks_kg": [0, 45, 100, 250, 500, 1000, 2000]})
         if path == "/v1/portal/rates":
@@ -142,7 +151,8 @@ class Harness:
         self.llm = llm or recorded_llm()
         self.settings = Settings(
             langfuse_enabled=False, hackloop_api_key="team-key", decision_api_key="k",
-            sqlite_db_path=str(tmp_path / "wf.db"), **settings,
+            sqlite_db_path=str(tmp_path / "wf.db"), portal_lanes_cache_path=str(tmp_path / "lanes.json"),
+            **settings,
         )  # fmt: skip
         self.store = MessageStore(self.settings.sqlite_db_path)
         http = httpx.AsyncClient(transport=httpx.MockTransport(self.platform))
@@ -631,3 +641,102 @@ async def test_a_preferred_airline_is_quoted_and_the_cheaper_one_is_named(tmp_pa
     facts = next(c[1] for c in reversed(h.llm.calls) if "Mail to write: quote" in c[1])
     alternative = facts.split('"cheaper_alternative": ')[1].split("}")[0]
     assert "Xenon Cargo Airlines" in alternative and "1599.41 EUR" in alternative  # air 1483.43 + truck
+
+
+@pytest.mark.anyio
+async def test_a_route_only_email_airlines_fly_is_priced_by_email_and_booked_by_email(
+    tmp_path: Path,
+) -> None:
+    """ADR 47 (mail 10830, FRA-ULN failed silently): no portal or tariff price, so the four
+    email-only airlines get a rate request; Zephyr answers; after 60 s it is quoted."""
+    base = recorded_llm()._answer  # noqa: SLF001
+
+    def answer(schema, system, user):
+        if schema is AirlineRates:
+            return AirlineRates(rates=[AirlineRate(reply=1, total_eur=2450.0, transit_days=4, quote_ref="ZS-1")])
+        result = base(schema, system, user)
+        if schema is ShipmentRequest:
+            result.destination_iata = "ULN"
+        return result
+
+    h = Harness(tmp_path, llm=ScriptedLLM(answer), send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    asked = {m["to"]: m["id"] for m in h.platform.sent if m["subject"].startswith("Rate request")}
+    assert set(asked) == {
+        "zephyr-steppe-cargo@hackloop.mail", "himalaya-bridge-air@hackloop.mail",
+        "lagoon-isles-airways@hackloop.mail", "pampero-air-cargo@hackloop.mail",
+    }
+    assert h.shipment().state == ShipmentState.PRICING
+
+    reply = MailboxMessage(
+        id=95000, sender="zephyr-steppe-cargo@hackloop.mail", subject="Re: Rate request",
+        body="Dear team, our all-in rate CGN-ULN is 2450.00 EUR, transit 4 days. Ref ZS-1.",
+        in_reply_to=asked["zephyr-steppe-cargo@hackloop.mail"], created_at="2026-11-21T15:19:30+00:00",
+    )  # fmt: skip
+    await h.receive(reply)
+    assert "ClassificationDecision" not in [c[0] for c in h.llm.calls[-1:]]  # no classifier call
+    await h.wait(61)
+    quote = h.shipment().quote
+    assert h.shipment().state == ShipmentState.QUOTED
+    assert (quote["airline"], quote["air_source"], quote["air_eur"]) == ("Zephyr Steppe Cargo", "email", 2450.0)
+
+    accept = MAILS[ROUND_4_ACCEPT].model_copy(update={"in_reply_to": h.shipment().quote_message_id})
+    await h.receive(accept)
+    booking = [m for m in h.platform.sent if m["to"] == "zephyr-steppe-cargo@hackloop.mail"][-1]
+    assert booking["subject"] == "booking_request"  # the scripted composer writes the kind
+
+
+@pytest.mark.anyio
+async def test_no_airline_price_at_all_tells_the_customer(tmp_path: Path) -> None:
+    base = recorded_llm()._answer  # noqa: SLF001
+
+    def answer(schema, system, user):
+        result = base(schema, system, user)
+        if schema is ShipmentRequest:
+            result.destination_iata = "XXX"  # nobody flies there
+        return result
+
+    h = Harness(tmp_path, llm=ScriptedLLM(answer), send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    assert h.shipment().state == ShipmentState.FAILED
+    to_customer = [m for m in h.platform.sent if m["to"] == MAILS[ROUND_4_RFQ].sender]
+    assert len(to_customer) == 1 and to_customer[0]["body"].startswith("no_price")
+
+
+@pytest.mark.anyio
+async def test_when_the_portal_is_down_the_airlines_of_the_destination_are_emailed(tmp_path: Path) -> None:
+    """ADR 47: 503 "The rate portal is down. Contact the airline directly." -> rate requests by
+    email to every non-tariff airline that serves ORD; no 60 s retry for that message."""
+    h = Harness(tmp_path, send_enabled=True)
+    original = h.platform.__call__
+
+    def down(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/portal/rates":
+            return httpx.Response(503, json={"detail": "The rate portal is down. Contact the airline directly."})
+        return original(request)
+
+    h.platform.__class__ = type("DownPlatform", (Platform,), {"__call__": lambda self, r: down(r)})
+    await h.receive(ROUND_4_RFQ)
+    asked = {m["to"] for m in h.platform.sent if m["subject"].startswith("Rate request")}
+    ord_airlines = {c.email for c in h.workflow._reference.carriers if c.kind == "airline" and "ORD" in c.serves}  # noqa: SLF001
+    assert asked and asked <= ord_airlines
+    assert h.shipment().state == ShipmentState.PRICING
+
+
+@pytest.mark.anyio
+async def test_a_429_on_the_poll_waits_its_retry_after_and_the_timers_still_run(tmp_path: Path) -> None:
+    h = Harness(tmp_path, send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    assert h.shipment().state == ShipmentState.PRICING
+    original = h.platform.__call__
+
+    def limited(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/mailbox/messages" and request.method == "GET":
+            return httpx.Response(429, headers={"Retry-After": "4"})
+        return original(request)
+
+    h.platform.__class__ = type("Limited", (Platform,), {"__call__": lambda self, r: limited(r)})
+    h.now += timedelta(seconds=61)
+    await h.poller._cycle()  # noqa: SLF001
+    assert h.poller._backoff == 5.0 and "429" in h.poller.last_error  # noqa: SLF001
+    assert h.shipment().state == ShipmentState.QUOTED  # the quote went out despite the 429
