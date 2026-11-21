@@ -42,8 +42,6 @@ storage.py       SQLite: mails, shipments, trucker requests, air options, outbou
 | `app/pricing.py`, `app/tariffs.py`, `app/reference.py` | deterministic rules and data, no I/O beyond reading files |
 | `app/portal_client.py`, `app/mailbox_client.py` | platform API clients |
 | `app/schemas.py`, `app/storage.py`, `app/config.py` | models, SQLite store, settings |
-| `app/crm_api.py`, `app/insights.py`, `app/crm_ui/` | the CRM at `/crm`: read-only endpoints, the figures behind them, the interface |
-| `app/airports.py`, `app/replay_data.py` | airport coordinates for the globe; the dry-run database rebuilt from `result.json` |
 | `prompts/*.md` | local copy of each prompt (fallback and source for `push_prompts.py`) |
 
 ## Setup and run
@@ -69,39 +67,8 @@ Every setting is listed with its default in `.env.example` and `app/config.py`.
 Before the first start in a mode, and at cutover, run `scripts/backfill_legacy.py`: it marks all
 mail already in the mailbox as handled, so the router starts with the next new mail.
 
-## CRM
-
-`http://localhost:8000/crm` (the root URL redirects there) is the interface for everything the
-router stores. It is read-only: it never sends, books or calls an LLM.
-
-| Page | Shows |
-|---|---|
-| Desk | key figures, the route globe, what needs a person, findings on prices, incoming mail |
-| Pipeline | every shipment with its state, price split, airline; opens the shipment with the compared flights, trucker offers and the whole conversation |
-| Accounts | one row per customer: requests, values, what they ask for, their mail |
-| Network | the globe with great-circle routes, demand per destination, a table of lanes |
-| Carriers | airlines, truckers, pickup zones, tariff lanes |
-| Inbox | every stored mail with its classification, searchable in full text |
-| System | mode, poller, configuration without keys, data held, classifier accuracy, prompts |
-
-- **Live** reads the router's database and follows it: the page asks for a change token every
-  3 s and reloads the figures when it moves. **Dry run** reads the last replay; on a fresh
-  checkout that database is rebuilt from `data/replay/result.json` and the recorded mails.
-- A dry run shows no timings and no win rates: its clocks are mixed, and the recorded customer
-  verdicts answered the old process's quotes. The page says so where it applies.
-- The globe places a shipment in transit by its planned departure and arrival dates. The
-  system has no aircraft positions.
-- No build step and no external requests: plain HTML, CSS and JavaScript in `app/crm_ui/`.
-
-To look at it without touching the mailbox (no polling, so no LLM calls):
-
-```bash
-MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000
-```
-
 ## Endpoints
 
-- `GET /crm`: the CRM; its data comes from `GET /crm/api/{sources,version,snapshot,shipments/{id},mails,tariffs,system}`
 - `GET /shipments[?state=QUOTED]`, `GET /shipments/{id}`: shipments with their trucker
   requests, air options and composed mails (in a dry run: what would have been sent)
 - `GET /messages[?category=trucker_quote]`, `GET /messages/{id}`: stored, classified mails
