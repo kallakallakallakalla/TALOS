@@ -94,3 +94,10 @@ def test_office_files_and_images_decide_what_vision_must_see() -> None:
     assert attachments.vision_parts("a.pdf", text_pdf, text) == []  # text only: no vision
     assert attachments.vision_parts("photo.jpg", b"\xff\xd8", "")[0]["type"] == "image_url"
     assert attachments.vision_parts("data.csv", b"a,b", "a,b") == []
+
+
+def test_special_cargo_is_asked_about_until_its_details_are_known() -> None:
+    complete = ShipmentRequest(destination_iata="MIA", gross_kg=40, volume_cbm=0.5, origin_airport="FRA")
+    dog = complete.model_copy(update={"special_cargo": "live_animals"})
+    assert len(missing_fields(dog)) == 1 and "IATA Live Animals" in missing_fields(dog)[0]
+    assert missing_fields(dog.model_copy(update={"special_cargo_details_received": True})) == []

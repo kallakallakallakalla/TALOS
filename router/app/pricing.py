@@ -7,6 +7,7 @@ from statistics import median
 from app.schemas import AirOption, Goal, TariffLane, TruckerRequest
 
 VOLUME_KG_PER_CBM = 167
+MAX_DAYS_AHEAD = 90  # ponytail: a ready date further out is most likely a typo
 
 
 def chargeable_kg(gross_kg: float, volume_cbm: float) -> float:
@@ -49,23 +50,65 @@ def tariff_option(lane: TariffLane, gross_kg: float, volume_cbm: float) -> AirOp
 
 
 def pick_best(
-    air: list[AirOption], trucks: list[TruckerRequest], goal: Goal | None
+    air: list[AirOption],
+    trucks: list[TruckerRequest],
+    goal: Goal | None,
+    ready_date: date | None = None,
+    deliver_by: date | None = None,
 ) -> tuple[AirOption, TruckerRequest | None]:
     """Choose the air option and the trucker for a goal (ADR 08). No goal means cheapest.
 
     fastest:  fewest transit days, then shortest pickup time, price breaks ties.
     cheapest: lowest air total plus lowest trucker price.
+    deliver_by (ADR 44): only options that arrive by then; if none does, the fastest one.
     `trucks` may be empty (customer delivers, or no trucker answered).
     """
     priced = [t for t in trucks if t.price_eur is not None]
+    hours = lambda t: math.inf if t.pickup_hours is None else t.pickup_hours  # noqa: E731
     if goal == "fastest":
-        best_air = min(air, key=lambda o: (o.transit_days, o.total_eur))
-        hours = lambda t: math.inf if t.pickup_hours is None else t.pickup_hours  # noqa: E731
         best_truck = min(priced, key=lambda t: (hours(t), t.price_eur), default=None)
     else:
-        best_air = min(air, key=lambda o: (o.total_eur, o.transit_days))
         best_truck = min(priced, key=lambda t: t.price_eur, default=None)
-    return best_air, best_truck
+    fastest = min(air, key=lambda o: (o.transit_days, o.total_eur))
+    if deliver_by and ready_date:
+        pickup = best_truck.pickup_hours if best_truck else None
+        in_time = [o for o in air if eta(ready_date, pickup, o.transit_days)["arrival"] <= deliver_by]
+        if not in_time:
+            return fastest, best_truck
+        air = in_time
+    if goal == "fastest":
+        return min(air, key=lambda o: (o.transit_days, o.total_eur)), best_truck
+    return min(air, key=lambda o: (o.total_eur, o.transit_days)), best_truck
+
+
+_NOISE = {"air", "airlines", "airline", "cargo", "freight", "airways", "logistik", "logistics",
+          "gmbh", "spedition", "transport", "ag", "kg", "co", "the"}
+
+
+def _words(name: str) -> set[str]:
+    return {w for w in "".join(c if c.isalnum() else " " for c in name.lower()).split() if w not in _NOISE}
+
+
+def carrier_in(name: str, wanted: list[str | None]) -> bool:
+    """Is `name` one of the carriers the customer named? ("Solace" matches "Solace Air Cargo")."""
+    words = _words(name)
+    return any(w and (ws := _words(w)) and ws <= words for w in wanted)
+
+
+def date_problems(ready: date | None, deliver_by: date | None, today: date) -> list[str]:
+    """Dates that cannot be right, as questions for the customer (ADR 44)."""
+    problems = []
+    if ready and ready < today:
+        problems.append(f"the ready date: {ready.isoformat()} is in the past - which date did you mean?")
+    if ready and deliver_by and deliver_by < ready:
+        problems.append(
+            f"the dates: the delivery date {deliver_by.isoformat()} is before the ready date "
+            f"{ready.isoformat()} - are they swapped (ready {deliver_by.isoformat()}, delivery by "
+            f"{ready.isoformat()})?"
+        )
+    if ready and (ready - today).days > MAX_DAYS_AHEAD:
+        problems.append(f"the ready date: {ready.isoformat()} is more than {MAX_DAYS_AHEAD} days ahead - is it correct?")
+    return problems
 
 
 def all_in(air_total_eur: float, truck_eur: float, margin_eur: float) -> float:

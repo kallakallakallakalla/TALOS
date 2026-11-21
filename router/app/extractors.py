@@ -4,9 +4,11 @@ Each extractor has one prompt and one small output schema. Mail text is never pa
 regex (ADR 12); the only plain Python here is `missing_fields`.
 """
 
+from datetime import date
+
 from langfuse import observe
 
-from app import attachments, prompts
+from app import attachments, pricing, prompts
 from app.config import Settings
 from app.llm import StructuredLLM
 from app.schemas import (
@@ -26,7 +28,20 @@ def mail_text(msg: MailboxMessage) -> str:
     return f"{text}\n\n{files}" if files else text
 
 
-def missing_fields(request: ShipmentRequest) -> list[str]:
+# What we must know before quoting special cargo (ADR 45).
+SPECIAL_CARGO_DETAILS = {
+    "live_animals": "for the live animals: species and number of animals, crate dimensions and "
+    "weight with the animals inside, and whether the crates meet the IATA Live Animals Regulations",
+    "perishables": "for the perishable goods: the required temperature range and the shelf life",
+    "temperature_controlled": "for the temperature-controlled goods: the required temperature "
+    "range and whether active cooling is needed",
+    "valuables": "for the valuable goods: the declared value in EUR",
+    "human_remains": "for the human remains: the death certificate and the funeral home "
+    "handling the shipment at destination",
+}
+
+
+def missing_fields(request: ShipmentRequest, today: date | None = None) -> list[str]:
     """What we still need before a request can be priced, as phrases the composer can ask for.
 
     Required: destination, weight, volume, and either a pickup postal code or a departure
@@ -43,6 +58,10 @@ def missing_fields(request: ShipmentRequest) -> list[str]:
         missing.append(
             "pickup address with postal code, or the German airport you deliver the goods to"
         )
+    if today:
+        missing += pricing.date_problems(request.ready_date, request.deliver_by, today)
+    if request.special_cargo and not request.special_cargo_details_received:
+        missing.append(f"the handling details {SPECIAL_CARGO_DETAILS[request.special_cargo]}")
     if request.dangerous_goods and not request.dg_documents_received:
         missing.append(
             f"the dangerous goods documents for {request.dangerous_goods}: the Shipper's "

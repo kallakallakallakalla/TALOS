@@ -331,3 +331,20 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Dangerous goods:** the quote-request extractor fills `dangerous_goods` from a UN number, a hazard class, a dangerous-goods entry in an attachment, or goods that are regulated by nature (lithium batteries, aerosols, flammable liquids, adhesives, ...). "Non-dangerous" in the mail does not override this. Until `dg_documents_received` is true, `missing_fields` asks for the Shipper's Declaration and the MSDS. We send no quote and do no pricing; after 3 questions the shipment fails. Mails 2267, 2540 and 10142 were turned down for exactly this reason.
 - **Vision when the mail comes in:** one call per file, and only for files with something text extraction cannot see: an image (png/jpg/gif/webp), a PDF with images or with no usable text (the whole PDF is sent), or a docx/xlsx/pptx with pictures (at most 4 pictures of at least 5 KB each; the vision text is added to the file's own text). Text-only files never trigger a vision call. The result is stored with the mail.
 - This replaces ADR 42's "vision only when fields are missing": a dangerous-goods label in a picture never shows up as a missing field.
+
+### ADR 44: Arrive-by dates and date checks
+
+- **Arrive-by date:** `deliver_by` is the latest arrival date the customer accepts. `pick_best` keeps only the options whose estimated arrival is on or before it, then applies the goal. If none arrives in time, we quote the fastest option and the mail says so.
+- **Date checks:** `pricing.date_problems` checks, in code, for a ready date in the past, a delivery date before the ready date (probably swapped) and a ready date more than 90 days ahead. Each problem becomes a follow-up question through `missing_fields` (at most 3 questions). The extractor copies dates as written and does not "fix" them.
+- **Tariff validity:** tariff lanes must be valid on the shipping day, which is the later of today and the ready date, not only today.
+
+### ADR 45: Special cargo is quoted only once its handling details are known
+
+- `special_cargo` is one of: live_animals, perishables, temperature_controlled, valuables, human_remains. Until `special_cargo_details_received` is true, `missing_fields` asks for the details listed per type in `SPECIAL_CARGO_DETAILS`. After that we quote normally, with no special-cargo surcharge, because we have no data for one.
+
+### ADR 46: Preferred and excluded carriers
+
+- The extractor copies the names as written. `pricing.carrier_in` matches them in code, by word, ignoring words like "Air", "Cargo" and "GmbH".
+- Excluded carriers are never asked or used. If excluding them would leave no airline at all, we ignore the exclusion rather than fail.
+- A preferred carrier with a price is used. If the best option without the preference is cheaper, the quote names it with its price (`cheaper_alternative`). A preferred carrier without a price gets a short note in the mail.
+- The template fallback mail does not mention preferences or the arrive-by date. It is only used when the LLM mail fails its checks.

@@ -256,7 +256,7 @@ class Workflow:
     async def _advance(self, shipment: Shipment, reply_to: int) -> None:
         """NEW -> PRICING if the request is complete, else ask (max 3 times) or fail."""
         request = shipment.request
-        missing = missing_fields(request)
+        missing = missing_fields(request, self._now().date())
         get_client().score_current_trace(name="extraction_complete", value=0 if missing else 1)
 
         zone = airport = None
@@ -298,6 +298,7 @@ class Workflow:
     async def _start_pricing(self, shipment: Shipment) -> None:
         """Ask the zone's truckers and price the air leg at the same time (response time)."""
         truckers = self._reference.truckers_for_zone(shipment.zone) if shipment.zone else []
+        truckers = [t for t in truckers if not pricing.carrier_in(t.name, shipment.request.excluded_carriers)]
         _, options = await asyncio.gather(
             self._request_truckers(shipment, [t.email for t in truckers]),
             self._air_options(shipment),
@@ -354,9 +355,11 @@ class Workflow:
         except Exception as exc:  # noqa: BLE001 - tariffs can still price the lane
             logger.warning("Portal unavailable for %s-%s: %s", origin, destination, exc)
             options = []
+        # Tariffs must be valid when the goods fly, not only today (ADR 44).
+        ship_day = max(self._now().date(), request.ready_date or self._now().date())
         options += [
             pricing.tariff_option(lane, request.gross_kg, request.volume_cbm)
-            for lane in self._tariffs.lanes(origin, destination, self._now().date())
+            for lane in self._tariffs.lanes(origin, destination, ship_day)
         ]
         return options
 
@@ -407,9 +410,48 @@ class Workflow:
 
     @observe(name="pricing.pick_best")
     def _price(self, shipment: Shipment, requests: list[TruckerRequest]) -> dict[str, Any]:
-        """Choose airline and trucker for the goal and compute the all-in price."""
+        """Choose airline and trucker for the goal and compute the all-in price.
+
+        ADR 46: excluded carriers are never used; a preferred carrier is used when it can
+        carry the shipment, and the cheapest option is named when it is cheaper.
+        """
         request = shipment.request
-        air, truck = pricing.pick_best(self._store.air_options(shipment.id), requests, shipment.goal)
+        excluded = request.excluded_carriers
+        air = [o for o in self._store.air_options(shipment.id) if not pricing.carrier_in(o.airline, excluded)]
+        air = air or self._store.air_options(shipment.id)  # ponytail: never fail on an exclusion
+        trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
+        pick = lambda a, t: pricing.pick_best(  # noqa: E731
+            a, t, shipment.goal, request.ready_date, request.deliver_by
+        )
+        best = self._price_of(shipment, *pick(air, trucks))
+
+        notes: list[str] = []
+        pref_air = [o for o in air if pricing.carrier_in(o.airline, [request.preferred_airline])]
+        pref_trucks = [
+            r for r in trucks
+            if r.price_eur is not None and pricing.carrier_in(self._trucker_name(r), [request.preferred_trucker])
+        ]  # fmt: skip
+        if request.preferred_airline and not pref_air:
+            notes.append(f"{request.preferred_airline} has no price for this route, so we chose the best other airline")
+        if request.preferred_trucker and shipment.zone and not pref_trucks:
+            notes.append(f"{request.preferred_trucker} did not quote this pickup, so we chose another trucker")
+        if not (pref_air or pref_trucks):
+            return {**best, "preference_notes": notes}
+
+        chosen = self._price_of(shipment, *pick(pref_air or air, pref_trucks or trucks))
+        if best["all_in_eur"] < chosen["all_in_eur"]:
+            chosen["cheaper_alternative"] = {
+                "airline": best["airline"], "all_in_price": _eur(best["all_in_eur"]),
+                "transit_days": best["transit_days"],
+            }  # fmt: skip
+        return {**chosen, "preference_notes": notes}
+
+    def _trucker_name(self, request: TruckerRequest) -> str:
+        carrier = self._reference.carrier_for_email(request.trucker)
+        return carrier.name if carrier else request.trucker
+
+    def _price_of(self, shipment: Shipment, air: AirOption, truck: TruckerRequest | None) -> dict[str, Any]:
+        request = shipment.request
         truck_eur, truck_fallback = 0.0, False
         if shipment.zone:
             if truck:
@@ -472,6 +514,12 @@ class Workflow:
             "estimated_departure": quote["estimated_departure"],
             "estimated_arrival": quote["estimated_arrival"],
             "extra_questions": request.extra_questions,
+            "preference_notes": quote.pop("preference_notes", []),
+            "cheaper_alternative": quote.pop("cheaper_alternative", None),
+            "requested_delivery_by": request.deliver_by.isoformat() if request.deliver_by else None,
+            "arrives_by_requested_date": (
+                quote["estimated_arrival"] <= request.deliver_by.isoformat() if request.deliver_by else None
+            ),
             "valid_until": valid_until,
             "must_appear": [price],
         }

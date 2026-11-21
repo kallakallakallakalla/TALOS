@@ -34,6 +34,12 @@ What each kind must contain
   transit time, that pickup/trucking is included when it is); the all-in price on its
   own line; estimated pickup, departure and arrival from FACTS; answers to every item in
   FACTS.extra_questions; validity; "simply reply to this email and we will book it".
+  If FACTS.requested_delivery_by is set: when arrives_by_requested_date is true, say it
+  arrives in time; when it is false, say plainly that no option arrives by that date, that
+  this is the fastest one, and when it arrives.
+  If FACTS.cheaper_alternative is set: we used the carrier the customer asked for; add one
+  sentence naming the cheaper alternative with its price. Mention every FACTS.preference_notes
+  item in one short sentence each.
 - clarification: say we are preparing the quote; ask ONLY for FACTS.missing_fields, at most
   3 short questions, each with a one-line reason why we need it.
 - booking_note: confirm the booking: booking reference, airline, route, ETA; say what

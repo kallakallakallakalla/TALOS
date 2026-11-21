@@ -184,6 +184,7 @@ class ShipmentState(StrEnum):
 
 SenderRole = Literal["customer", "trucker", "airline", "ratedesk", "tracking"]
 Goal = Literal["fastest", "cheapest"]
+SpecialCargo = Literal["live_animals", "perishables", "temperature_controlled", "valuables", "human_remains"]
 
 
 class ShipmentRequest(BaseModel):
@@ -196,6 +197,7 @@ class ShipmentRequest(BaseModel):
     destination_iata: str | None = None
     destination_inferred: bool = False
     ready_date: date | None = None
+    deliver_by: date | None = None  # latest arrival the customer accepts (ADR 44)
     pieces: int | None = None
     gross_kg: float | None = None
     weight_computed: bool = False
@@ -205,6 +207,13 @@ class ShipmentRequest(BaseModel):
     # ADR 43: dangerous goods are never quoted before the customer sent the DG documents.
     dangerous_goods: str | None = None  # e.g. "UN3481, Class 9, lithium ion batteries"
     dg_documents_received: bool = False
+    # ADR 45: special cargo is quoted only once its handling details are known.
+    special_cargo: SpecialCargo | None = None
+    special_cargo_details_received: bool = False
+    # ADR 46: carriers the customer names; matched to our airlines and truckers in code.
+    preferred_airline: str | None = None
+    preferred_trucker: str | None = None
+    excluded_carriers: list[str] = Field(default_factory=list)
     goal: Goal | None = None
     extra_questions: list[str] = Field(default_factory=list)
     contact_name: str | None = None

@@ -608,3 +608,26 @@ async def test_a_readable_attachment_reaches_the_extractor_without_vision(tmp_pa
     extraction = next(c[2] for c in h.llm.calls if c[0] == "ShipmentRequest")
     assert "ATTACHMENT SLI_53351.pdf:\n" in extraction and "Total volume (cbm): 1.92" in extraction
     assert "AttachmentText" not in [c[0] for c in h.llm.calls]
+
+
+@pytest.mark.anyio
+async def test_a_preferred_airline_is_quoted_and_the_cheaper_one_is_named(tmp_path: Path) -> None:
+    """ADR 46: the customer asks for AU (1920.10); Xenon (1599.41 all-in) is cheaper and is named."""
+    base = recorded_llm()._answer  # noqa: SLF001
+
+    def answer(schema, system, user):
+        result = base(schema, system, user)
+        if schema is ShipmentRequest:
+            result.preferred_airline = "AU"
+            result.excluded_carriers = ["MD"]
+        return result
+
+    h = Harness(tmp_path, llm=ScriptedLLM(answer), send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    await h.wait(61)
+    quote = h.shipment().quote
+    assert quote["airline"] == "AU"
+    facts = next(c[1] for c in reversed(h.llm.calls) if "Mail to write: quote" in c[1])
+    alternative = facts.split('"cheaper_alternative": ')[1].split("}")[0]
+    assert "Xenon Cargo Airlines" in alternative and "1599.41 EUR" in alternative  # air 1483.43 + truck
