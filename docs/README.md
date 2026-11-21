@@ -8,7 +8,8 @@ TALOS acts as an **air-freight forwarder** in a scored hackathon simulation ("Ha
 |---|---|
 | **[HANDOFF.md](HANDOFF.md)** | **For the implementer:** read order, current state, rules, traps, open items, session timeline, later backlog |
 | **[workflow.md](workflow.md)** | **The agreed implementation plan:** architecture, flow, state machine, loop guards, data model, config, module specs, build order, cutover |
-| [decisions.md](decisions.md) | All 24 architecture and product decisions, with context and who decided |
+| **[implementation.md](implementation.md)** | **What was built (steps 0–8), deviations from the plan, test and replay results, what is still open** |
+| [decisions.md](decisions.md) | All 36 architecture and product decisions, with context and who decided |
 | [prompts.md](prompts.md) | v1 drafts of all system prompts (classifier, extractors, composer) |
 | [platform-api.md](platform-api.md) | Every API endpoint, limit and error, the webhook, booking, the LLM gateway |
 | [data.md](data.md) | Start kit: carrier list, pickup zones, the 10 airline tariff files, pricing formula |

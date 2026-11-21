@@ -160,6 +160,8 @@ class Workflow:
     # --- Customer request -----------------------------------------------------------------
 
     async def _on_rfq(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        if ctx.sender_role != "customer":
+            return  # a carrier's mail never opens a shipment, whatever the classifier says
         if ctx.shipment is not None:
             # A second "request" in a known thread adds details to the same shipment.
             await self._on_customer_info(msg, ctx)

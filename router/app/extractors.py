@@ -4,8 +4,6 @@ Each extractor has one prompt and one small output schema. Mail text is never pa
 regex (ADR 12); the only plain Python here is `missing_fields`.
 """
 
-import json
-
 from langfuse import observe
 
 from app import prompts
@@ -99,8 +97,3 @@ class Extractors:
         return await self._parse(
             prompts.EXTRACT_BOOKING, BookingConfirmation, mail_text(msg), prompt_label
         )
-
-
-def request_summary(request: ShipmentRequest) -> str:
-    """Compact JSON of a request, for prompts and logs."""
-    return json.dumps(request.model_dump(mode="json", exclude_defaults=True))

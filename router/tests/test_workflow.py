@@ -380,3 +380,11 @@ async def test_rejection_closes_the_shipment_and_questions_are_answered_at_most_
     await h.receive(379, references=[ROUND_4_RFQ, 1])  # "That seems too low to be right..."
     assert h.shipment().state == ShipmentState.REJECTED
     assert h.platform.bookings == []
+
+
+@pytest.mark.anyio
+async def test_a_carrier_mail_never_opens_a_shipment_even_if_classified_as_rfq(tmp_path: Path) -> None:
+    """ADR 16: the old classifier labelled trucker quotes "RFQ"; that must not start a shipment."""
+    h = Harness(tmp_path, llm=recorded_llm({1063: "rfq"}), send_enabled=True)
+    await h.receive(1063)  # Elbkante's trucker quote
+    assert h.store.list_shipments() == [] and h.platform.sent == []

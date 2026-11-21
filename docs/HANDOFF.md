@@ -2,6 +2,8 @@
 
 For: the implementing agent (Fable). Written 2026-11-21 at the end of the planning session. **The plan is reviewed and agreed. Implement it as written. If something in the plan turns out to be wrong, stop and ask the user. Don't redesign.**
 
+> **Update, 2026-11-21 evening:** steps 0–8 of the plan are implemented on branch `quote-workflow` (one commit per step). Read [implementation.md](implementation.md) first: it has the current state, the deviations from the plan, the measured results and what is still open (steps 9 and 10). The sections below describe the state *before* the implementation and are kept for the rules, traps and backlog.
+
 ## Read in this order
 
 1. **[workflow.md](workflow.md): the implementation plan.** It covers architecture, flow, state machine, loop guards, data model, config, module specs, build order (steps 0–10) and cutover.
@@ -97,8 +99,7 @@ When the customer accepts, we **book**. Score per accepted mail: 45 price accura
 
 ## Still open (ask the user)
 
-- `MAIL_SIGNATURE`: which person's name should sign the mails? Default: `TALOS Air Freight`.
-- Whether to commit `docs/` and the refreshed `openapi.json`.
+Both points from the planning session are closed: the signature is "Alex, TALOS Air Freight" (ADR 25), and `docs/` plus `openapi.json` are committed on `quote-workflow` (ADR 26). What is open now is listed in [implementation.md](implementation.md).
 
 ## What happened in the session (timeline, CET)
 

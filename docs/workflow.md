@@ -1,6 +1,6 @@
 # Implementation plan: quote workflow
 
-Status: **for review, no code written yet.** Everything extends the existing `router/` app: FastAPI + `MailboxPoller` + `MessageStore` (SQLite) + `DecisionClassifier` + Langfuse. It adds no new framework, scheduler or service. The draft system prompts are in [prompts.md](prompts.md). Every decision behind this plan, with its context, is in [decisions.md](decisions.md). Rules and traps for the implementer are in [HANDOFF.md](HANDOFF.md).
+Status: **steps 0–8 are implemented on branch `quote-workflow`; steps 9 (live dry run) and 10 (cutover) are open.** What was built, where it differs from this plan, and how it performed is in [implementation.md](implementation.md). Everything extends the existing `router/` app: FastAPI + `MailboxPoller` + `MessageStore` (SQLite) + `DecisionClassifier` + Langfuse. It adds no new framework, scheduler or service. The draft system prompts are in [prompts.md](prompts.md). Every decision behind this plan, with its context, is in [decisions.md](decisions.md). Rules and traps for the implementer are in [HANDOFF.md](HANDOFF.md).
 
 ## 1. Decisions
 

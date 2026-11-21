@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Every decision taken in the planning session of 2026-11-21 (16:00–17:20 CET). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–36 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -28,6 +28,18 @@ Every decision taken in the planning session of 2026-11-21 (16:00–17:20 CET). 
 | 22 | Start kit committed to the repo | User |
 | 23 | Classifier improvement happens later, on the mail history | User |
 | 24 | No manual bookings; booking belongs in code | User |
+| 25 | Mails are signed "Alex, TALOS Air Freight" | User |
+| 26 | Work on branch `quote-workflow`, one commit per build step | User |
+| 27 | Prompts are measured on all recorded mails with real `gpt-6-luna` calls | User |
+| 28 | Live portal reads in tests are allowed, throttled to 3 per minute | User |
+| 29 | Unknown pickup zone: ask the customer for an airport | User |
+| 30 | No live dry run yet; testing is on recorded mails only | User |
+| 31 | Reasoning effort per task: classifier none, extractors low, composer none | Proposed |
+| 32 | Prices are written as `1599.41 EUR` | Proposed |
+| 33 | Composed mails are stored in an `outbound_mails` table | Proposed |
+| 34 | The next weight break is only priced when it is at most 50% above the chargeable weight | Proposed |
+| 35 | Prompt additions from the eval loop (lots, "import" wording, quoted mails, acknowledgements) | Proposed |
+| 36 | In a dry run, trucker replies are matched to our request by sender | Proposed |
 
 ---
 
@@ -196,3 +208,65 @@ Every decision taken in the planning session of 2026-11-21 (16:00–17:20 CET). 
 
 - **Context:** during the session, Claude booked round 6 by hand with the user's approval (`BK-8RCF17DZ`, team_reference "1470"). Afterwards the user said: **don't book anything by hand; booking is supposed to be in the code.**
 - **Decision:** no manual bookings from dev sessions. Booking only happens through the workflow (ADR 07).
+
+---
+
+## Implementation session (2026-11-21, from 17:25 CET)
+
+### 25 · Mails are signed "Alex, TALOS Air Freight"
+
+- **Decision (user):** `MAIL_SIGNATURE=Alex, TALOS Air Freight`. A person's name reads more human, and round 1 was already signed "Alex". This closes the open point of ADR 13.
+
+### 26 · Work on branch `quote-workflow`, one commit per build step
+
+- **Decision (user):** `docs/` and the refreshed `openapi.json` are committed first, then one commit per build step of workflow.md section 11. `main` stays untouched until the user merges.
+
+### 27 · Prompts are measured on all recorded mails with real `gpt-6-luna` calls
+
+- **Context:** LLM cost is scored, and test calls go through the same team gateway.
+- **Decision (user):** a full pass over all recorded mails is worth the one-off cost. The recorded mails live in `router/tests/fixtures/mails.json`, the hand labels in `labels.json`.
+
+### 28 · Live portal reads in tests are allowed, throttled to 3 per minute
+
+- **Decision (user):** the replay may read real portal rates, capped at 3 per minute so the live process keeps 7 of the shared 10. `scripts/replay.py` also caches every rate on disk, so a second run costs no reads.
+
+### 29 · Unknown pickup zone: ask the customer for an airport
+
+- **Context:** a postal zone that is not in `pickup_zones.csv` (e.g. 90 Nuremberg) has no airport and no trucker. The user asked whether an API could resolve it. It can't: the platform only has mailbox, portal, gateway and board endpoints.
+- **Decision (user):** treat it as missing information and ask the customer which German airport they can deliver to. It counts against the limit of 3 clarification questions.
+
+### 30 · No live dry run yet; testing is on recorded mails only
+
+- **Decision (user):** the classify-only process on port 8000 is left alone. Step 9 of the build order (live dry run for 2 rounds) and step 10 (cutover) stay open.
+
+### 31 · Reasoning effort per task
+
+- **Finding:** `gpt-6-luna` is a reasoning model. With the default effort a one-word answer cost 33 reasoning tokens; `reasoning_effort="none"` cost 0 and was 3 times faster. Supported values are none, low, medium, high, xhigh.
+- **Decision (proposed):** classifier `none`, extractors `low` (multi-lot arithmetic), composer `none`. Each is a setting (`*_REASONING_EFFORT`). With these values the classifier scored 151/151 and the extractors 59/59 on the recorded mails.
+
+### 32 · Prices are written as `1599.41 EUR`
+
+- **Context:** the plan's example was "EUR 1,599.41". The quotes that customers accepted used "1599.41 EUR", and a thousands separator can be misread as a decimal comma.
+- **Decision (proposed):** two decimals, no thousands separator, currency after the number. The fact check requires exactly this string in the mail.
+
+### 33 · Composed mails are stored in an `outbound_mails` table
+
+- **Context:** the plan's data model had no place for outgoing mail. In a dry run nothing is sent, so there was nothing to inspect, and a reply's "our mail" context could not be looked up.
+- **Decision (proposed):** every composed mail is stored (kind, recipient, subject, body, `in_reply_to`, template flag). `sent_message_id` stays empty in a dry run. `GET /shipments/{id}` shows them.
+
+### 34 · The next weight break is only priced when it is close
+
+- **Context:** the plan reads two portal rates per airline (real weight + next break). A lane has up to 4 airlines, so one request could use 8 of the 10 reads per minute.
+- **Decision (proposed):** the next break is only read when it is at most 50% above the chargeable weight. In all start-kit tariffs a rate drops by less than 35% per break, so a break further away can't be cheaper.
+
+### 35 · Prompt additions from the eval loop
+
+- `talos-extract-rfq`: several lots are one shipment (sum pieces, gross weight, volume); every request is an export even if the buyer "imports"; ignore quoted older mails below the customer's text; always gross weight.
+- `router-classification`: a customer who only thanks or acknowledges is `other`; a trucker who asks for more details instead of quoting is `trucker_decline`; a trucker answering a pickup order with "nothing to book" is `other`.
+- `talos-compose-mail`: every `must_appear` value must occur character for character; arrival and departure questions are answered from the estimated dates.
+- **Note:** these cover backlog items 1, 3 and 5 of HANDOFF.md at prompt level only. Dangerous goods, attachments and tracking answers are still not built.
+
+### 36 · In a dry run, trucker replies are matched to our request by sender
+
+- **Context:** in a dry run our trucker requests are never sent, so the truckers' replies answer the old process's mails and can't be matched by `in_reply_to`.
+- **Decision (proposed):** only while `SEND_ENABLED=false`, a trucker's reply is matched to that trucker's newest unanswered request. With sending on, only the exact mail id counts.
