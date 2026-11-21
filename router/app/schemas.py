@@ -202,6 +202,9 @@ class ShipmentRequest(BaseModel):
     volume_cbm: float | None = None
     volume_computed: bool = False
     commodity: str | None = None
+    # ADR 43: dangerous goods are never quoted before the customer sent the DG documents.
+    dangerous_goods: str | None = None  # e.g. "UN3481, Class 9, lithium ion batteries"
+    dg_documents_received: bool = False
     goal: Goal | None = None
     extra_questions: list[str] = Field(default_factory=list)
     contact_name: str | None = None

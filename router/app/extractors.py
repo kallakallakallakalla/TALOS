@@ -4,8 +4,6 @@ Each extractor has one prompt and one small output schema. Mail text is never pa
 regex (ADR 12); the only plain Python here is `missing_fields`.
 """
 
-import base64
-
 from langfuse import observe
 
 from app import attachments, prompts
@@ -32,7 +30,7 @@ def missing_fields(request: ShipmentRequest) -> list[str]:
     """What we still need before a request can be priced, as phrases the composer can ask for.
 
     Required: destination, weight, volume, and either a pickup postal code or a departure
-    airport. A missing goal is not asked for; it defaults to cheapest (ADR 08).
+    airport; for dangerous goods also the DG documents (ADR 43). A missing goal is not asked for; it defaults to cheapest (ADR 08).
     """
     missing = []
     if not request.destination_iata:
@@ -44,6 +42,11 @@ def missing_fields(request: ShipmentRequest) -> list[str]:
     if not request.pickup_postal_code and not request.origin_airport:
         missing.append(
             "pickup address with postal code, or the German airport you deliver the goods to"
+        )
+    if request.dangerous_goods and not request.dg_documents_received:
+        missing.append(
+            f"the dangerous goods documents for {request.dangerous_goods}: the Shipper's "
+            "Declaration for Dangerous Goods and the safety data sheet (MSDS)"
         )
     return missing
 
@@ -91,18 +94,9 @@ class Extractors:
         )
 
     @observe(name="extract.attachment_vision")
-    async def read_attachment(
-        self, filename: str, data: bytes, prompt_label: str | None = None
-    ) -> str:
-        """One vision call for a file without usable text (scan, image, broken PDF)."""
-        b64 = base64.b64encode(data).decode()
-        kind = attachments.suffix(filename)
-        if kind == "pdf":
-            part = {"type": "file", "file": {"filename": filename, "file_data": f"data:application/pdf;base64,{b64}"}}
-        else:
-            mime = "image/png" if kind == "png" else "image/jpeg"
-            part = {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}
-        content = [{"type": "text", "text": f"ATTACHMENT {filename}"}, part]
+    async def read_attachment(self, filename: str, parts: list[dict], prompt_label: str | None = None) -> str:
+        """One vision call: what a file shows that text extraction cannot read (ADR 43)."""
+        content = [{"type": "text", "text": f"ATTACHMENT {filename}"}, *parts]
         result = await self._parse(prompts.READ_ATTACHMENT, AttachmentText, content, prompt_label)
         return result.text
 

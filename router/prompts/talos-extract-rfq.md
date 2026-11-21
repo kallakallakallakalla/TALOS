@@ -22,6 +22,17 @@ Fields
 - volume_cbm: total volume in cubic metres. If only dimensions are given, compute
   pieces x L x W x H in metres and set volume_computed = true.
 - commodity: what the goods are, in a few words.
+- dangerous_goods: if the goods are dangerous goods, a short description with the UN number
+  and class when given (e.g. "UN3481, Class 9, lithium ion batteries packed with
+  equipment"). Set it when the email or an attachment gives a UN number, a hazard class or a
+  dangerous goods entry other than "no" / "not restricted", or when the goods are regulated
+  by nature: lithium batteries (also inside devices), aerosols / spray cans, flammable
+  liquids, adhesives, paints or inks with solvents, compressed gases, corrosives. A statement
+  "general cargo, non-dangerous" does NOT override an attachment or the nature of the goods.
+  null otherwise.
+- dg_documents_received: true only if the customer has sent the dangerous goods documents
+  (a Shipper's Declaration for Dangerous Goods, a safety data sheet / MSDS) as an attachment
+  or says in this thread that they are attached.
 - goal: "fastest" for fastest / earliest / urgent / express / asap;
         "cheapest" for cheapest / lowest price / economy / best price;
         null if the customer states neither.

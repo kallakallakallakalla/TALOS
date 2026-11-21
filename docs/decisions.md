@@ -322,6 +322,12 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 
 ### ADR 42: Customer attachments are read locally; vision only when they block a quote
 
-- **Decision:** customer attachments are downloaded once and turned into text without an LLM (`app/attachments.py`: pdftotext, xlsx/docx zip XML, csv/txt). The text (max 3,000 characters per file) is stored with the mail and added to `mail_text()` as `ATTACHMENT <name>:` blocks. A file with no usable text (a scan, an image, a broken PDF) gets one vision call, and only when the request is still missing fields. Otherwise we ask the customer as usual.
+- **Decision:** customer attachments are downloaded once and turned into text without an LLM (`app/attachments.py`: pdftotext, xlsx/docx zip XML, csv/txt). The text (max 3,000 characters per file) is stored with the mail and added to `mail_text()` as `ATTACHMENT <name>:` blocks. Vision: see ADR 43.
 - **Conflicts:** if the body and the attachment disagree on a cargo figure, the attachment wins (it is the formal document). Mails 8500, 8667 and 8869 had lower weight or volume in the attachment, and all three customers turned the quote down as too expensive.
-- **Not built:** tariff-update attachments, the dangerous-goods check, and xls files (no local parser).
+- **Not built:** tariff-update attachments and xls files (no local parser).
+
+### ADR 43: Dangerous goods wait for their documents; vision reads what text extraction cannot see
+
+- **Dangerous goods:** the quote-request extractor fills `dangerous_goods` from a UN number, a hazard class, a dangerous-goods entry in an attachment, or goods that are regulated by nature (lithium batteries, aerosols, flammable liquids, adhesives, ...). "Non-dangerous" in the mail does not override this. Until `dg_documents_received` is true, `missing_fields` asks for the Shipper's Declaration and the MSDS. We send no quote and do no pricing; after 3 questions the shipment fails. Mails 2267, 2540 and 10142 were turned down for exactly this reason.
+- **Vision when the mail comes in:** one call per file, and only for files with something text extraction cannot see: an image (png/jpg/gif/webp), a PDF with images or with no usable text (the whole PDF is sent), or a docx/xlsx/pptx with pictures (at most 4 pictures of at least 5 KB each; the vision text is added to the file's own text). Text-only files never trigger a vision call. The result is stored with the mail.
+- This replaces ADR 42's "vision only when fields are missing": a dangerous-goods label in a picture never shows up as a missing field.

@@ -545,11 +545,9 @@ async def test_backfill_closes_dry_run_shipments_so_cutover_cannot_book_them(tmp
 
 
 @pytest.mark.anyio
-async def test_an_unreadable_attachment_is_read_by_vision_once_only_when_fields_are_missing(
-    tmp_path: Path,
-) -> None:
-    """ADR 42: a scan gives no text; the request lacks an origin, so ONE vision call reads the
-    scan and the request is extracted again. The vision text is in the second extraction."""
+async def test_an_image_attachment_is_read_by_one_vision_call_and_stored(tmp_path: Path) -> None:
+    """ADR 43: a photo has no text; one vision call reads it when the mail comes in, and the
+    extractor gets that text. The text is stored with the mail, so it is read only once."""
     vision_text = "Pickup postal code: 51465 Bergisch Gladbach"
     base = recorded_llm()._answer  # noqa: SLF001
 
@@ -559,18 +557,45 @@ async def test_an_unreadable_attachment_is_read_by_vision_once_only_when_fields_
         return base(schema, system, user)
 
     h = Harness(tmp_path, llm=ScriptedLLM(answer))
-    h.platform.files["7"] = b"%PDF-1.4 not really a pdf"
-    rfq = 3940  # no postal code, no airport
-    scan = MailboxAttachment(id=7, filename="scan.pdf", content_type="application/pdf", size=25)
-    await h.receive(rfq, attachments=[scan])
+    h.platform.files["7"] = b"\xff\xd8 a photo"
+    rfq = 3940
+    photo = MailboxAttachment(id=7, filename="label.jpg", content_type="image/jpeg", size=9)
+    await h.receive(rfq, attachments=[photo])
 
-    names = [c[0] for c in h.llm.calls]
-    assert names.count("AttachmentText") == 1
-    extractions = [c[2] for c in h.llm.calls if c[0] == "ShipmentRequest"]
-    assert len(extractions) == 2
-    assert "ATTACHMENT scan.pdf: (could not be read)" in extractions[0]
-    assert f"ATTACHMENT scan.pdf:\n{vision_text}" in extractions[1]
-    assert h.store.get_message(rfq).attachments[0].readable is False  # stored before vision
+    vision = [c for c in h.llm.calls if c[0] == "AttachmentText"]
+    assert len(vision) == 1 and vision[0][2][1]["type"] == "image_url"
+    extraction = next(c[2] for c in h.llm.calls if c[0] == "ShipmentRequest")
+    assert f"ATTACHMENT label.jpg:\n{vision_text}" in extraction
+    stored = h.store.get_message(rfq).attachments[0]
+    assert stored.text == vision_text and stored.readable and stored.vision_tried
+
+
+@pytest.mark.anyio
+async def test_dangerous_goods_are_not_quoted_until_the_dg_documents_arrive(tmp_path: Path) -> None:
+    """ADR 43 (mails 2267, 2540, 10142): DG goods get a request for the DG documents, no quote."""
+    base = recorded_llm()._answer  # noqa: SLF001
+    received = {"docs": False}
+
+    def answer(schema, system, user):
+        result = base(schema, system, user)
+        if schema is ShipmentRequest:
+            result.dangerous_goods = "UN3481, Class 9, lithium ion batteries"
+            result.dg_documents_received = received["docs"]
+        return result
+
+    h = Harness(tmp_path, llm=ScriptedLLM(answer))
+    await h.receive(ROUND_4_RFQ)
+    assert h.shipment().state == ShipmentState.AWAITING_INFO
+    assert h.platform.rate_reads == [] and not h.outbound("quote")
+    facts = next(c[1] for c in h.llm.calls if "Mail to write: clarification" in c[1])
+    assert "Shipper's Declaration for Dangerous Goods" in facts and "UN3481" in facts
+
+    received["docs"] = True
+    docs = MAILS[ROUND_4_RFQ].model_copy(update={"id": 4100, "references": [ROUND_4_RFQ]})
+    h.llm._answer = _as_customer_info(h.llm._answer, docs.id)  # noqa: SLF001
+    await h.receive(docs)
+    assert h.shipment().state != ShipmentState.AWAITING_INFO
+    assert h.platform.rate_reads  # now it is priced
 
 
 @pytest.mark.anyio
