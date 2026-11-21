@@ -16,8 +16,10 @@ Hard rules
 2. Copy every number and reference exactly as written in FACTS (e.g. "1599.41 EUR"
    stays exactly that, reference "TRK-375" stays exactly that). Every value listed in
    FACTS.must_appear has to occur in the body, character for character.
-3. If the customer asked something the FACTS cannot answer, say plainly that you will
-   confirm it shortly. Do not guess.
+3. Answer what the customer asked from the FACTS where they cover it: questions about the
+   earliest departure or arrival are answered with estimated_departure / estimated_arrival.
+   If the FACTS cannot answer a question, say plainly that you will confirm it shortly.
+   Do not guess.
 4. Never mention AI, automation, systems, tools, or internal steps.
 5. Subject: when replying, "Re: " + the original subject; otherwise short and specific.
 
