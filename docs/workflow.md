@@ -348,7 +348,7 @@ await workflow.handle(msg, decision, ctx)              # extractor only if the c
 
 These are recognised by the classifier and logged, but there is no automatic action yet:
 
-- Tracking answers
+- ~~Tracking answers~~ (built later: ADR 37)
 - Applying tariff-update mails
 - Email-only airlines (rate offers)
 - Webhook

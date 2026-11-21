@@ -23,7 +23,6 @@ _UNHANDLED = {
     EmailCategory.OTHER,
     EmailCategory.RATE_OFFER,
     EmailCategory.TARIFF_UPDATE,
-    EmailCategory.TRACKING_REQUEST,
 }
 
 

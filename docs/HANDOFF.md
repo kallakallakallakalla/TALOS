@@ -129,7 +129,7 @@ The user said these will be implemented later; **don't build them now.** They ar
    - Weights may be given per piece, and volumes as per-piece dimensions (e.g. "4 cartons, each 48 kg, each 110 x 110 x 52 cm").
    - Gross and net weight are both given; use gross.
    - Round 9 (Fulda → LOS, 3 lots) got **no answer** from the old process: it asked the truckers with "Weight: n/a", and a trucker replied asking for the weight.
-4. **Tracking questions** arrive from `tracking@hackloop.mail`, unthreaded, on behalf of a customer. They name the customer, lane, weight and ready date ("Kessler Feinmechanik GmbH, DUS to KUL, 1549 kg … Where is it now?"). The shipment has to be matched by those facts, and the answer comes from our booking records. This is worth +10 per booked shipment.
+4. **Tracking questions** (**built since, see ADR 37**) arrive from `tracking@hackloop.mail`, unthreaded, on behalf of a customer. They name the customer, lane, weight and ready date ("Kessler Feinmechanik GmbH, DUS to KUL, 1549 kg … Where is it now?"). The shipment has to be matched by those facts, and the answer comes from our booking records. This is worth +10 per booked shipment.
 5. **"Import" wording.** Some requests say "our buyer in Doha is importing … we deliver to FRA". It's still an export from Germany; the extractor must not be confused by the wording.
 6. **Late bookings didn't count.**
    - The old process booked rounds 3, 4, 5, 7 and 8 at about 16:54, long after the customers accepted. `board/me` shows `booked: false` for those rounds.

@@ -24,6 +24,7 @@ poller.py        every 2 s: fetch new mail, one Langfuse trace per mail
     tariffs.py            local tariffs of the 10 non-portal airlines
     pricing.py            chargeable weight, anti-weight-break, pick_best, all-in
     composer.py           LLM #3: writes the mail; code checks the facts; templates.py fallback
+                          (also answers tracking questions from the shipment record)
   workflow.tick()         timers: trucker wait 45 s / 90 s, booking reminders
 storage.py       SQLite: mails, shipments, trucker requests, air options, outbound mails
 ```

@@ -9,7 +9,13 @@ from langfuse import observe
 from app import prompts
 from app.config import Settings
 from app.llm import StructuredLLM
-from app.schemas import BookingConfirmation, MailboxMessage, ShipmentRequest, TruckerQuote
+from app.schemas import (
+    BookingConfirmation,
+    MailboxMessage,
+    ShipmentRequest,
+    TrackingQuery,
+    TruckerQuote,
+)
 
 
 def mail_text(msg: MailboxMessage) -> str:
@@ -96,4 +102,13 @@ class Extractors:
         """Read an airline's booking confirmation."""
         return await self._parse(
             prompts.EXTRACT_BOOKING, BookingConfirmation, mail_text(msg), prompt_label
+        )
+
+    @observe(name="extract.tracking")
+    async def extract_tracking(
+        self, msg: MailboxMessage, prompt_label: str | None = None
+    ) -> TrackingQuery:
+        """Read which shipment a tracking question is about."""
+        return await self._parse(
+            prompts.EXTRACT_TRACKING, TrackingQuery, mail_text(msg), prompt_label
         )

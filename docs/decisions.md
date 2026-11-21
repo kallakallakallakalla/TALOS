@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–36 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–37 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -40,6 +40,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 | 34 | The next weight break is only priced when it is at most 50% above the chargeable weight | Proposed |
 | 35 | Prompt additions from the eval loop (lots, "import" wording, quoted mails, acknowledgements) | Proposed |
 | 36 | In a dry run, trucker replies are matched to our request by sender | Proposed |
+| 37 | Tracking questions are answered from our own records, without asking carriers | User |
 
 ---
 
@@ -270,3 +271,10 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 
 - **Context:** in a dry run our trucker requests are never sent, so the truckers' replies answer the old process's mails and can't be matched by `in_reply_to`.
 - **Decision (proposed):** only while `SEND_ENABLED=false`, a trucker's reply is matched to that trucker's newest unanswered request. With sending on, only the exact mail id counts.
+
+### 37 · Tracking questions are answered from our own records
+
+- **Context:** the plan left tracking answers out of scope. The old process started answering them at about 16:49 UTC and earned the 10 tracking points on rounds 17–22; its answer went to `tracking@hackloop.mail` in the thread and listed route, airline, booking reference, status, booking time and transit time.
+- **Decision (user):** when a tracking request comes in, answer with the latest state we know from our database, as humanly as possible. No mail is written to an airline or trucker to look anything up, for now.
+- **How:** `talos-extract-tracking` reads which shipment is meant; `workflow.match_shipment()` finds it by booking reference, or by destination and gross weight (then ready date and origin); the composer writes a `tracking_answer` from the shipment's state and booking facts. Details and test results are in [implementation.md](implementation.md#tracking-answers-added-after-step-8-adr-37).
+- **Consequence:** shipments booked by the old process can't be answered with details after cutover, because our database has no booking facts for them.

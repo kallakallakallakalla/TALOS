@@ -17,8 +17,16 @@ CLASSIFY = "router-classification"
 EXTRACT_RFQ = "talos-extract-rfq"
 EXTRACT_TRUCKER_QUOTE = "talos-extract-trucker-quote"
 EXTRACT_BOOKING = "talos-extract-booking"
+EXTRACT_TRACKING = "talos-extract-tracking"
 COMPOSE_MAIL = "talos-compose-mail"
-ALL_PROMPTS = (CLASSIFY, EXTRACT_RFQ, EXTRACT_TRUCKER_QUOTE, EXTRACT_BOOKING, COMPOSE_MAIL)
+ALL_PROMPTS = (
+    CLASSIFY,
+    EXTRACT_RFQ,
+    EXTRACT_TRUCKER_QUOTE,
+    EXTRACT_BOOKING,
+    EXTRACT_TRACKING,
+    COMPOSE_MAIL,
+)
 
 
 def local_prompt(settings: Settings, name: str) -> str:

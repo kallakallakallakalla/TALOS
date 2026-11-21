@@ -29,11 +29,12 @@ from app.schemas import (
     ShipmentRequest,
     ShipmentState,
     TariffLane,
+    TrackingQuery,
     TruckerQuote,
 )
 from app.storage import MessageStore
 from app.tariffs import Tariffs
-from app.workflow import DRY_RUN_BOOKING_REF, Workflow
+from app.workflow import DRY_RUN_BOOKING_REF, Workflow, match_shipment
 from tests.fakes import ScriptedLLM, labels, recorded_mails
 
 MAILS = recorded_mails()
@@ -107,6 +108,11 @@ def recorded_llm(overrides: dict | None = None) -> ScriptedLLM:
             return ShipmentRequest(**label, contact_name="Deniz", language="en", pickup_city="Bergisch Gladbach")
         if schema is TruckerQuote:
             return TruckerQuote(**LABELS[mail_id_in(user)]["trucker_quote"])
+        if schema is TrackingQuery:
+            return overrides.get("tracking") or TrackingQuery(
+                company="Rheintal Elektronik GmbH", contact_name="Deniz", origin="51896",
+                destination_iata="ORD", gross_kg=679, ready_date="2026-11-28", language="en",
+            )  # fmt: skip
         if schema is BookingConfirmation:
             reference = user.split("Your reference: ")[1].split("\n")[0]
             return BookingConfirmation(booking_ref="BK-ERC5OOW3", our_reference=reference)
@@ -410,3 +416,66 @@ async def test_after_the_legacy_backfill_old_threads_trigger_nothing(tmp_path: P
 
     await h.receive(1638)  # a NEW request after cutover is handled normally
     assert h.shipment(1638) is not None and h.shipment(1638).error != LEGACY_NOTE
+
+
+def _tracking_mail(mail_id: int = 8000, references: list[int] | None = None) -> MailboxMessage:
+    return parse_mailbox_message({
+        "id": mail_id, "from": "tracking@hackloop.mail", "references": references or [],
+        "subject": "Status of our shipment 51896 to ORD, 679 kg",
+        "body": "Hello, could you please tell me the current status of our shipment: Rheintal "
+                "Elektronik GmbH, 51896 to ORD, 679 kg, ready on 2026-11-28? Where is it now?\nDeniz",
+    })  # fmt: skip
+
+
+@pytest.mark.anyio
+async def test_tracking_question_is_answered_from_our_booking_record(tmp_path: Path) -> None:
+    llm = recorded_llm()
+    h = Harness(tmp_path, llm=llm, send_enabled=True)
+    llm._answer = _as_category(llm._answer, 8000, "tracking_request")  # noqa: SLF001
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    await h.receive(ROUND_4_ACCEPT)  # booked: BK-ERC5OOW3
+
+    await h.receive(_tracking_mail())
+    answer = h.platform.sent[-1]
+    assert answer["to"] == "tracking@hackloop.mail" and answer["in_reply_to"] == 8000
+    assert answer["subject"] == "Re: Status of our shipment 51896 to ORD, 679 kg"
+    assert "BK-ERC5OOW3" in answer["body"]
+    facts = llm.calls[-1][1]
+    assert '"found": true' in facts and "CGN -> ORD" in facts and "Xenon Cargo Airlines" in facts
+    assert "booked with the airline" in facts and '"estimated_arrival": "2026-12-03"' in facts
+    assert h.platform.rate_reads and len(h.platform.bookings) == 1  # nothing new was looked up
+
+
+@pytest.mark.anyio
+async def test_tracking_for_an_unknown_shipment_asks_for_the_reference_at_most_three_times(
+    tmp_path: Path,
+) -> None:
+    llm = recorded_llm()
+    h = Harness(tmp_path, llm=llm, send_enabled=True)
+    for mail_id, references in ((8000, []), (8001, [8000, 1]), (8002, [8000, 1, 8001, 2]),
+                                (8003, [8000, 1, 8001, 2, 8002, 3])):  # fmt: skip
+        llm._answer = _as_category(llm._answer, mail_id, "tracking_request")  # noqa: SLF001
+        await h.receive(_tracking_mail(mail_id, references))
+    assert len(h.outbound("tracking_answer")) == 3  # the 4th mail of the thread gets no reply
+    composed = [system for schema, system, _ in llm.calls if schema == "ComposedMail"]
+    assert len(composed) == 3 and '"found": false' in composed[-1]
+
+
+def test_match_shipment_uses_destination_weight_then_date_and_origin(tmp_path: Path) -> None:
+    from app.schemas import Shipment, ShipmentRequest
+
+    def shipment(shipment_id, dest, kg, ready, postal=None, airport=None, ref=None):
+        request = ShipmentRequest(destination_iata=dest, gross_kg=kg, ready_date=ready, pickup_postal_code=postal)
+        return Shipment(id=shipment_id, customer="c", subject="s", request=request, origin_airport=airport, booking_ref=ref)
+
+    older = shipment(1, "EZE", 676, "2026-11-20", airport="STR")
+    wanted = shipment(2, "EZE", 676, "2026-11-26", postal="28261", airport="HAM", ref="BK-8Q49D0LR")
+    other = shipment(3, "EZE", 1805, "2026-11-30", postal="72146")
+    everything = [older, wanted, other]
+    query = TrackingQuery(origin="28261", destination_iata="EZE", gross_kg=676, ready_date="2026-11-26")
+    assert match_shipment(query, everything) is wanted
+    assert match_shipment(TrackingQuery(destination_iata="EZE", gross_kg=1805.4), everything) is other
+    assert match_shipment(TrackingQuery(destination_iata="SGN", gross_kg=676), everything) is None
+    assert match_shipment(TrackingQuery(destination_iata="EZE"), everything) is None  # weight missing
+    assert match_shipment(TrackingQuery(booking_ref="BK-8Q49D0LR"), everything) is wanted

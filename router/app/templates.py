@@ -1,4 +1,4 @@
-"""Plain fallback texts for the six mail kinds.
+"""Plain fallback texts for the seven mail kinds.
 
 Only used when the LLM-written mail fails the fact check twice (ADR 13), so that a mail
 always goes out. Every template prints the values in `facts["must_appear"]` verbatim.
@@ -77,6 +77,23 @@ def _answer(f: dict[str, Any]) -> tuple[str, str]:
     return ("Your question", "thank you for your message. We will confirm the details shortly.")
 
 
+def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
+    if not f.get("found"):
+        return (
+            "Your shipment status",
+            "thank you for your message. We could not match your shipment from the details "
+            "given. Could you please send us your booking reference?",
+        )
+    return (
+        "Your shipment status",
+        f"here is the current status of your shipment {f['route']} with {f['airline']}:\n\n"
+        f"Status: {f['status']}\n"
+        f"Booking reference: {f['booking_reference']}\n"
+        f"Planned transit time: {f['transit_days']} days\n"
+        f"Estimated arrival: {f['estimated_arrival']}",
+    )
+
+
 _TEMPLATES = {
     "quote": _quote,
     "trucker_request": _trucker_request,
@@ -84,6 +101,7 @@ _TEMPLATES = {
     "booking_note": _booking_note,
     "booking_request": _booking_request,
     "answer": _answer,
+    "tracking_answer": _tracking_answer,
 }
 MAIL_KINDS = tuple(_TEMPLATES)
 

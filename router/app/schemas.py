@@ -221,6 +221,19 @@ class BookingConfirmation(BaseModel):
     currency: str | None = None
 
 
+class TrackingQuery(BaseModel):
+    """What a "where is my shipment" mail says about the shipment. Output of `talos-extract-tracking`."""
+
+    company: str | None = None
+    contact_name: str | None = None
+    origin: str | None = None
+    destination_iata: str | None = None
+    gross_kg: float | None = None
+    ready_date: date | None = None
+    booking_ref: str | None = None
+    language: str | None = None
+
+
 class ComposedMail(BaseModel):
     """An outgoing mail. Output of the `talos-compose-mail` prompt."""
 
@@ -336,3 +349,4 @@ class ShipmentDetail(BaseModel):
     trucker_requests: list[TruckerRequest]
     air_options: list[AirOption]
     outbound: list[OutboundMail]
+    inbound: list[StoredMessageRecord] = Field(default_factory=list)

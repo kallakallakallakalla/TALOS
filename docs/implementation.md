@@ -25,7 +25,7 @@ The module map, setup and every script are described in [`router/README.md`](../
 
 ## How it was tested
 
-1. **Unit tests** (`cd router && .venv/bin/pytest`): 59 tests, no network. The platform is an `httpx.MockTransport`, LLM answers are scripted from the hand labels. `tests/test_workflow.py` covers: the round 4 replay, the dry run (nothing sent, nothing booked), the 45 s / 90 s trucker wait, 3 clarifications then FAILED, unknown zone, expired rate refetch, booking by email with reminders, 3 answers per thread, rejection, and "a carrier mail never opens a shipment".
+1. **Unit tests** (`cd router && .venv/bin/pytest`): 63 tests, no network. The platform is an `httpx.MockTransport`, LLM answers are scripted from the hand labels. `tests/test_workflow.py` covers: the round 4 replay, the dry run (nothing sent, nothing booked), the 45 s / 90 s trucker wait, 3 clarifications then FAILED, unknown zone, expired rate refetch, booking by email with reminders, 3 answers per thread, rejection, and "a carrier mail never opens a shipment".
 2. **Prompt evals** (`scripts/eval_prompts.py`): every prompt against its Langfuse dataset, built from all 151 recorded mails and the hand labels. Real `gpt-6-luna` calls.
 3. **Full replay** (`scripts/replay.py`): all 151 recorded mails through the whole pipeline in time order, with real LLM calls, real (cached, throttled) portal rates and a virtual clock. Nothing is sent: `SEND_ENABLED` is forced to false and the mailbox stub cannot send.
 
@@ -99,6 +99,35 @@ Our quote next to the old process's quote for the same request ("verdict" is the
 - LLM latency: median 1.5 s, 90th percentile 2.6 s per call.
 - **Response time was not measured live.** Expected: under 10 s for requests without pickup (3 LLM calls + portal reads + up to 2 s poll delay), and about 35–40 s with pickup, bounded by the truckers' ~30 s.
 
+## Tracking answers (added after step 8, ADR 37)
+
+**What the old process did, and why it scored:** from about 16:49 UTC the old process answered tracking mails. It replied in the thread to `tracking@hackloop.mail` with route, airline, booking reference, status, booking time and transit time (e.g. mail 4633). `GET /v1/board/me` shows `tracking: 10.0` for rounds 17–22 and `0.0` for the earlier ones, where it either did not answer (mail 1814) or answered "we could not find a booking under your address" (mail 3286). So an answer in that thread with the booking facts is what earns the 10 points.
+
+**How this router answers a tracking question**
+
+1. The classifier labels the mail `tracking_request`. They come from `tracking@hackloop.mail`, unthreaded, on behalf of a customer.
+2. `talos-extract-tracking` (LLM) reads which shipment is meant: company, origin (postal code or airport), destination, gross weight, ready date, and a booking reference if one is stated.
+3. `workflow.match_shipment()` (plain Python) finds the shipment in our database: a stated booking reference wins; otherwise destination and gross weight (±1 kg) must match, and among several the one with the same ready date and origin, then the newest.
+4. The answer is built **only from our own records**: status text for the shipment's state (`TRACKING_STATUS` in `workflow.py`), route, airline, booking reference, booking time, transit days, estimated pickup / departure / arrival, and who brings the goods to the airport. No airline or trucker is asked.
+5. The composer writes it (`tracking_answer` kind) in the language of the question, addressed to the person who signed it; the booking reference must appear verbatim. It is sent as a reply in the tracking thread.
+6. No match: the answer says so and asks for the booking reference. A thread gets at most 3 answers from us.
+
+**Tested on the recorded tracking questions** (dry-run replay, real LLM): all three that belong to shipments in the recording were matched to the right shipment and answered.
+
+| Tracking mail | Asked about | Matched shipment | Answer |
+|---|---|---|---|
+| 1814 | Kessler, DUS to KUL, 1549 kg | 1470 (CONFIRMED) | "booked and confirmed by the airline", BK-8RCF17DZ, Fjordline, departure 2026-11-26, arrival 2026-12-01 |
+| 3279 | Hofmann, FRA to DOH, 102 kg | 2829 (BOOKED) | "booked with the airline", Ultraviolet, 3 days |
+| 3612 | Auer, 24983 to DEL, 1619 kg | 2977 (BOOKED) | "booked with the airline", Borealis, pickup 2026-11-28, arrival 2026-12-05 |
+
+In the replay the last two carry the placeholder reference "DRY-RUN", because a dry run does not book.
+
+**Limits**
+
+- **Shipments the old process booked can't be answered with details after the switch.** They exist in our database only as closed legacy rows without destination, weight or booking reference, so a tracking question about them gets the "please send your booking reference" answer. Tracking questions arrive roughly 5–10 minutes after a booking, so this affects the last one or two old bookings.
+- The status is what we know (booked / confirmed); there is no flight or location data, and the mail says so.
+- What exactly the scorer checks is not documented. The answer contains everything the old process's scored answers contained.
+
 ## Where the implementation differs from the plan
 
 Each of these is recorded as a decision (ADR 31–36 in [decisions.md](decisions.md)).
@@ -124,7 +153,7 @@ Known gap: a request the old process quoted, but whose acceptance arrives only a
 
 ## Limits and things to know
 
-- **Not built** (out of scope in the plan, or backlog in HANDOFF.md): tracking answers, applying tariff-update mails, rate offers from email-only airlines, the webhook, attachment reading and the dangerous-goods check. These mails are classified, stored and tagged `needs_review`; no mail goes out.
+- **Not built** (out of scope in the plan, or backlog in HANDOFF.md): applying tariff-update mails, rate offers from email-only airlines, the webhook, attachment reading and the dangerous-goods check. These mails are classified, stored and tagged `needs_review`; no mail goes out.
 - **Dangerous goods:** rounds 10 and 11 were rejected with `dg_docs_missing`. This router would also quote them without asking for documents.
 - **Requests without a pickup address** (rounds 15 and 16: "pickup from our warehouse", no postal code): the router asks the customer for the postal code or an airport. Whether the simulated customer answers such a question has never been observed.
 - **Trace tags** can't be read back through the public API of the local Langfuse (v4 "events only" mode has no trace endpoint). Session id, user id, prompt version and cost were read back; tags were verified on the OpenTelemetry span attributes. Check the tags once in the Langfuse UI.
@@ -138,4 +167,4 @@ Known gap: a request the old process quoted, but whose acceptance arrives only a
 1. **Step 9, live dry run:** restart the local router with the new code (`SEND_ENABLED=false`) and watch 2 live rounds: `GET /shipments`, Langfuse sessions. It shares the portal rate limit with the old process.
 2. **Step 10, cutover:** [workflow.md](workflow.md) section 12. Stop the old process right after a round closes, set `SEND_ENABLED=true`, restart.
 3. **Merge** `quote-workflow` into `main`.
-4. Backlog from HANDOFF.md: dangerous goods + attachments, tracking answers (+10 per booked shipment), tariff updates.
+4. Backlog from HANDOFF.md: dangerous goods + attachments, tariff updates.

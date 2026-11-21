@@ -34,6 +34,12 @@ FACTS = {
         "must_appear": ["FRA-ORD", "947", "1700.00 EUR"],
     },
     "answer": {"question": "When does it arrive?", "must_appear": []},
+    "tracking_answer": {
+        "found": True, "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines",
+        "status": "booked and confirmed by the airline, ready to ship",
+        "booking_reference": "BK-ERC5OOW3", "transit_days": 3,
+        "estimated_arrival": "2026-12-03", "must_appear": ["BK-ERC5OOW3"],
+    },
 }  # fmt: skip
 
 

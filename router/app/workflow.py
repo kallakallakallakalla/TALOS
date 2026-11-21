@@ -33,6 +33,7 @@ from app.schemas import (
     MailContext,
     Shipment,
     ShipmentState,
+    TrackingQuery,
     TruckerRequest,
 )
 from app.storage import MessageStore
@@ -54,6 +55,49 @@ def _cbm(value: float | None) -> str:
 
 def _eur(value: float) -> str:
     return f"{value:.2f} EUR"
+
+
+# What we tell a customer who asks where the shipment is, per state. Our own records only.
+TRACKING_STATUS = {
+    ShipmentState.CONFIRMED: "booked and confirmed by the airline, ready to ship",
+    ShipmentState.BOOKED: "booked with the airline; the airline's written confirmation is on its way",
+    ShipmentState.BOOKING: "the booking with the airline is in progress",
+    ShipmentState.QUOTED: "quoted and waiting for your go-ahead; not booked yet",
+    ShipmentState.PRICING: "we are preparing your quote; not booked yet",
+    ShipmentState.AWAITING_INFO: "we are waiting for the details we asked you for; not booked yet",
+    ShipmentState.NEW: "we are preparing your quote; not booked yet",
+    ShipmentState.REJECTED: "our quote was declined, so nothing is booked",
+    ShipmentState.FAILED: "not booked",
+}
+_TRACKING_KG_TOLERANCE = 1.0
+
+
+def match_shipment(query: TrackingQuery, shipments: list[Shipment]) -> Shipment | None:
+    """Find the shipment a tracking question is about.
+
+    Tracking mails come from the tracking desk, unthreaded, so the sender and thread say
+    nothing. A stated booking reference wins. Otherwise destination and gross weight must
+    match; among several, the one with the same ready date and origin, then the newest.
+    """
+    if query.booking_ref:
+        by_ref = [s for s in shipments if s.booking_ref == query.booking_ref]
+        if by_ref:
+            return by_ref[0]
+    if not query.destination_iata or query.gross_kg is None:
+        return None
+    candidates = [
+        s
+        for s in shipments
+        if s.request.destination_iata == query.destination_iata
+        and s.request.gross_kg is not None
+        and abs(s.request.gross_kg - query.gross_kg) <= _TRACKING_KG_TOLERANCE
+    ]
+
+    def closeness(s: Shipment) -> tuple[bool, bool, int]:
+        same_origin = query.origin in (s.request.pickup_postal_code, s.origin_airport)
+        return (s.request.ready_date == query.ready_date, bool(query.origin) and same_origin, s.id)
+
+    return max(candidates, key=closeness, default=None)
 
 
 def needs_pickup(shipment: Shipment) -> bool:
@@ -97,7 +141,8 @@ class Workflow:
             EmailCategory.CUSTOMER_ACCEPT: self._on_customer_accept,
             EmailCategory.CUSTOMER_REJECT: self._on_customer_reject,
             EmailCategory.CUSTOMER_QUESTION: self._on_customer_question,
-            # rate_offer, tariff_update, tracking_request and other have no handler:
+            EmailCategory.TRACKING_REQUEST: self._on_tracking_request,
+            # rate_offer, tariff_update and other have no handler:
             # they are stored and tagged, and never trigger a mail (ADR 19).
         }
 
@@ -492,6 +537,73 @@ class Workflow:
         shipment.answers_sent += 1
         self._store.save_shipment(shipment)
 
+    # --- Tracking -------------------------------------------------------------------------
+
+    async def _on_tracking_request(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        """Answer "where is my shipment" from our own records, in the thread it came in.
+
+        No carrier is asked. Each tracking mail gets one answer; a thread that keeps coming
+        back stops after `max_answers` of ours (every second mail in `references` is ours).
+        """
+        if len(msg.references) // 2 >= self._settings.max_answers:
+            return
+        query = await self._extractors.extract_tracking(msg)
+        shipment = match_shipment(query, self._store.list_shipments())
+        if shipment is None:
+            facts: dict[str, Any] = {
+                "found": False,
+                "asked_about": query.model_dump(mode="json", exclude_none=True),
+                "must_appear": [],
+            }
+        else:
+            quote, option = shipment.quote or {}, shipment.chosen_option
+            booked = shipment.state in (ShipmentState.BOOKED, ShipmentState.CONFIRMED)
+            facts = {
+                "found": True,
+                "status": TRACKING_STATUS[shipment.state],
+                "route": f"{shipment.origin_airport} -> {shipment.request.destination_iata}",
+                "airline": option.airline if option else None,
+                "booking_reference": shipment.booking_ref,
+                "booked_at": self._minute(shipment.last_booking_attempt_at) if booked else None,
+                "transit_days": option.transit_days if option else None,
+                "handover": (
+                    "we collect the goods at your site"
+                    if shipment.zone
+                    else f"you deliver the goods to {shipment.origin_airport} yourselves; no pickup by us"
+                ),
+                "estimated_pickup": quote.get("estimated_pickup") if shipment.zone else None,
+                "estimated_departure": quote.get("estimated_departure"),
+                "estimated_arrival": quote.get("estimated_arrival"),
+                **self._cargo_facts(shipment),
+                "must_appear": [shipment.booking_ref] if shipment.booking_ref else [],
+            }
+        # Facts we do not have are left out, so the mail does not list them as "not available".
+        facts = {key: value for key, value in facts.items() if value is not None}
+        mail, used_template = await self._composer.compose(
+            "tracking_answer",
+            facts,
+            recipient_role="customer",
+            recipient_name=query.contact_name or "",
+            language=query.language or "en",
+            thread=mail_text(msg)[:_THREAD_MAX_CHARS],
+            reply_to_subject=msg.subject,
+        )
+        await self._send(
+            "tracking_answer",
+            msg.sender,
+            mail,
+            shipment.id if shipment else None,
+            msg.id,
+            used_template,
+        )
+
+    @staticmethod
+    def _minute(timestamp: str | None) -> str | None:
+        """An ISO timestamp as "2026-11-21 16:39 UTC"."""
+        if not timestamp:
+            return None
+        return datetime.fromisoformat(timestamp).astimezone(UTC).strftime("%Y-%m-%d %H:%M UTC")
+
     # --- Booking --------------------------------------------------------------------------
 
     async def _book(self, shipment: Shipment) -> None:
@@ -657,7 +769,13 @@ class Workflow:
 
     @observe(name="mail.send")
     async def _send(
-        self, kind: str, to: str, mail, shipment_id: int, in_reply_to: int | None, used_template: bool
+        self,
+        kind: str,
+        to: str,
+        mail,
+        shipment_id: int | None,
+        in_reply_to: int | None,
+        used_template: bool,
     ) -> int:
         """Record the mail, and send it unless this is a dry run. Returns its mailbox id.
 
