@@ -1,0 +1,674 @@
+"""The quote workflow: a shipment state machine driven by classified mails and a timer.
+
+    NEW -> AWAITING_INFO -> NEW -> PRICING -> QUOTED -> BOOKING -> BOOKED -> CONFIRMED
+                                      |          |          |
+                                    FAILED    REJECTED    FAILED
+
+`handle()` reacts to one classified mail, `tick()` to the passing of time (trucker deadlines,
+booking reminders). Every loop is bounded (docs/workflow.md section 5). This module decides
+what happens and who gets which mail; LLMs only read mail (extractors) and write mail
+(composer). With `send_enabled=False` nothing is sent and nothing is booked.
+"""
+
+import asyncio
+import logging
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Any
+
+from langfuse import get_client, observe, propagate_attributes
+
+from app import pricing
+from app.composer import Composer
+from app.config import Settings
+from app.extractors import Extractors, mail_text, missing_fields
+from app.mailbox_client import MailboxClient
+from app.portal_client import PortalClient, PortalError, RateExpired
+from app.reference import Reference, zone_of
+from app.schemas import (
+    AirOption,
+    ClassificationDecision,
+    EmailCategory,
+    MailboxMessage,
+    MailContext,
+    Shipment,
+    ShipmentState,
+    TruckerRequest,
+)
+from app.storage import MessageStore
+from app.tariffs import Tariffs
+
+logger = logging.getLogger(__name__)
+
+DRY_RUN_BOOKING_REF = "DRY-RUN"
+_THREAD_MAX_CHARS = 2000
+
+
+def _kg(value: float | None) -> str:
+    return f"{round(value or 0, 2):g} kg"
+
+
+def _cbm(value: float | None) -> str:
+    return f"{round(value or 0, 2):g} cbm"
+
+
+def _eur(value: float) -> str:
+    return f"{value:.2f} EUR"
+
+
+def needs_pickup(shipment: Shipment) -> bool:
+    """We collect unless the customer brings the goods to a named airport themselves."""
+    request = shipment.request
+    return bool(request.pickup_postal_code) and not (
+        request.delivers_to_airport and request.origin_airport
+    )
+
+
+class Workflow:
+    """Owns every shipment from the first mail to the booking."""
+
+    def __init__(
+        self,
+        settings: Settings,
+        store: MessageStore,
+        mailbox: MailboxClient,
+        portal: PortalClient,
+        reference: Reference,
+        tariffs: Tariffs,
+        extractors: Extractors,
+        composer: Composer,
+        clock: Callable[[], datetime] = lambda: datetime.now(UTC),
+    ) -> None:
+        self._settings = settings
+        self._store = store
+        self._mailbox = mailbox
+        self._portal = portal
+        self._reference = reference
+        self._tariffs = tariffs
+        self._extractors = extractors
+        self._composer = composer
+        self._now = clock
+        self._handlers = {
+            EmailCategory.RFQ: self._on_rfq,
+            EmailCategory.CUSTOMER_INFO: self._on_customer_info,
+            EmailCategory.TRUCKER_QUOTE: self._on_trucker_quote,
+            EmailCategory.TRUCKER_DECLINE: self._on_trucker_decline,
+            EmailCategory.BOOKING_CONFIRMATION: self._on_booking_confirmation,
+            EmailCategory.CUSTOMER_ACCEPT: self._on_customer_accept,
+            EmailCategory.CUSTOMER_REJECT: self._on_customer_reject,
+            EmailCategory.CUSTOMER_QUESTION: self._on_customer_question,
+            # rate_offer, tariff_update, tracking_request and other have no handler:
+            # they are stored and tagged, and never trigger a mail (ADR 19).
+        }
+
+    # --- Entry points ---------------------------------------------------------------------
+
+    async def context(self, msg: MailboxMessage) -> MailContext:
+        """Who sent this and which shipment it belongs to. API metadata only, no LLM (ADR 16)."""
+        role = self._reference.role_for_email(msg.sender)
+        shipment = trucker_request = None
+        if role == "trucker":
+            trucker_request = self._store.find_trucker_request(
+                msg.in_reply_to,
+                (msg.sender or "").lower(),
+                # In a dry run our requests were never sent, so replies cannot thread to them.
+                match_by_sender=not self._settings.send_enabled,
+            )
+            if trucker_request:
+                shipment = self._store.get_shipment(trucker_request.shipment_id)
+        elif role == "customer":
+            # references[0] is the customer's first mail, which is the shipment id.
+            root = msg.references[0] if msg.references else msg.in_reply_to
+            shipment = self._store.get_shipment(root) if root else None
+        return MailContext(
+            sender_role=role,
+            shipment=shipment,
+            trucker_request=trucker_request,
+            our_mail=await self._our_mail(msg.in_reply_to),
+        )
+
+    async def handle(
+        self, msg: MailboxMessage, decision: ClassificationDecision, ctx: MailContext
+    ) -> None:
+        """Act on one classified mail. Errors are stored on the shipment, never raised."""
+        handler = self._handlers.get(decision.category)
+        if handler is None:
+            return
+        try:
+            await handler(msg, ctx)
+        except Exception as exc:  # noqa: BLE001 - one mail must never stop the poller
+            logger.exception("Workflow failed on mail id=%s (%s)", msg.id, decision.category.value)
+            if ctx.shipment and (shipment := self._store.get_shipment(ctx.shipment.id)):
+                shipment.error = f"mail {msg.id}: {exc}"[:500]
+                self._store.save_shipment(shipment)
+
+    async def tick(self) -> None:
+        """Timer work: quote shipments whose trucker wait is over, follow up open bookings."""
+        waiting = self._store.list_shipments(ShipmentState.PRICING)
+        booking = self._store.list_shipments(ShipmentState.BOOKING)
+        for shipment, step in [(s, self._maybe_quote) for s in waiting] + [
+            (s, self._booking_followup) for s in booking
+        ]:
+            try:
+                with propagate_attributes(session_id=f"shipment-{shipment.id}", tags=["tick"]):
+                    await step(shipment)
+            except Exception as exc:  # noqa: BLE001 - one shipment must not block the others
+                logger.exception("Tick failed for shipment %s", shipment.id)
+                shipment.error = f"tick: {exc}"[:500]
+                self._store.save_shipment(shipment)
+
+    # --- Customer request -----------------------------------------------------------------
+
+    async def _on_rfq(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        if ctx.shipment is not None:
+            # A second "request" in a known thread adds details to the same shipment.
+            await self._on_customer_info(msg, ctx)
+            return
+        request = await self._extractors.extract_rfq(msg)
+        shipment = Shipment(
+            id=msg.references[0] if msg.references else msg.id,
+            customer=msg.sender or "",
+            subject=msg.subject,
+            language=request.language,
+            request=request,
+            goal=request.goal,
+        )
+        self._store.save_shipment(shipment)
+        await self._advance(shipment, reply_to=msg.id)
+
+    async def _on_customer_info(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        shipment = ctx.shipment
+        if shipment is None:
+            await self._on_rfq(msg, ctx)
+            return
+        if shipment.state not in (ShipmentState.NEW, ShipmentState.AWAITING_INFO):
+            logger.info("Shipment %s is %s; extra details ignored", shipment.id, shipment.state)
+            return
+        shipment.request = await self._extractors.extract_rfq(
+            msg, previous=shipment.request, thread=ctx.our_mail
+        )
+        shipment.goal = shipment.request.goal
+        shipment.state = ShipmentState.NEW
+        self._store.save_shipment(shipment)
+        await self._advance(shipment, reply_to=msg.id)
+
+    async def _advance(self, shipment: Shipment, reply_to: int) -> None:
+        """NEW -> PRICING if the request is complete, else ask (max 3 times) or fail."""
+        request = shipment.request
+        missing = missing_fields(request)
+        get_client().score_current_trace(name="extraction_complete", value=0 if missing else 1)
+
+        zone = airport = None
+        if not missing:
+            if needs_pickup(shipment):
+                zone = zone_of(request.pickup_postal_code)
+                airport = self._reference.airport_for_zone(zone)
+                if airport is None:
+                    zone = None
+                    missing.append(
+                        "a German airport you can deliver the goods to (we cannot arrange a "
+                        f"pickup from postal code {request.pickup_postal_code})"
+                    )
+            else:
+                airport = request.origin_airport
+
+        if missing:
+            await self._clarify(shipment, missing, reply_to)
+            return
+        shipment.zone, shipment.origin_airport = zone, airport
+        await self._start_pricing(shipment)
+
+    async def _clarify(self, shipment: Shipment, missing: list[str], reply_to: int) -> None:
+        if shipment.clarifications >= self._settings.max_clarifications:
+            shipment.state = ShipmentState.FAILED
+            shipment.error = f"still incomplete after {shipment.clarifications} questions: {missing}"
+            self._store.save_shipment(shipment)
+            return
+        facts = {"missing_fields": missing, "what_we_have": self._cargo_facts(shipment), "must_appear": []}
+        await self._compose_and_send(
+            "clarification", facts, shipment, to=shipment.customer, in_reply_to=reply_to
+        )
+        shipment.clarifications += 1
+        shipment.state = ShipmentState.AWAITING_INFO
+        self._store.save_shipment(shipment)
+
+    # --- Pricing --------------------------------------------------------------------------
+
+    async def _start_pricing(self, shipment: Shipment) -> None:
+        """Ask the zone's truckers and price the air leg at the same time (response time)."""
+        truckers = self._reference.truckers_for_zone(shipment.zone) if shipment.zone else []
+        _, options = await asyncio.gather(
+            self._request_truckers(shipment, [t.email for t in truckers]),
+            self._air_options(shipment),
+        )
+        self._store.replace_air_options(shipment.id, options)
+        if not options:
+            shipment.state = ShipmentState.FAILED
+            shipment.error = (
+                f"no airline prices {shipment.origin_airport}-{shipment.request.destination_iata}"
+            )
+            self._store.save_shipment(shipment)
+            return
+        shipment.state = ShipmentState.PRICING
+        shipment.pricing_started_at = self._now().isoformat()
+        self._store.save_shipment(shipment)
+        await self._maybe_quote(shipment)
+
+    async def _request_truckers(self, shipment: Shipment, trucker_emails: list[str]) -> None:
+        """One request text, sent to each trucker of the zone; each is asked once (ADR 05)."""
+        if not trucker_emails:
+            return
+        request = shipment.request
+        facts = {
+            **self._cargo_facts(shipment),
+            "pickup_postal_code": request.pickup_postal_code,
+            "pickup_city": request.pickup_city,
+            "airport": shipment.origin_airport,
+            "must_appear": [
+                request.pickup_postal_code,
+                shipment.origin_airport,
+                _kg(request.gross_kg),
+                _cbm(request.volume_cbm),
+            ],
+        }
+        mail, used_template = await self._composer.compose(
+            "trucker_request", facts, recipient_role="trucker", language="en"
+        )
+        for email in trucker_emails:
+            out_id = await self._send("trucker_request", email, mail, shipment.id, None, used_template)
+            self._store.save_trucker_request(
+                TruckerRequest(
+                    out_message_id=out_id,
+                    shipment_id=shipment.id,
+                    trucker=email,
+                    sent_at=self._now().isoformat(),
+                )
+            )
+
+    @observe(name="air.options")
+    async def _air_options(self, shipment: Shipment) -> list[AirOption]:
+        """Portal rates and valid local tariff lanes are equal price sources (ADR 06)."""
+        request = shipment.request
+        origin, destination = shipment.origin_airport, request.destination_iata
+        try:
+            options = await self._portal.portal_options(
+                origin, destination, request.gross_kg, request.volume_cbm
+            )
+        except Exception as exc:  # noqa: BLE001 - tariffs can still price the lane
+            logger.warning("Portal unavailable for %s-%s: %s", origin, destination, exc)
+            options = []
+        options += [
+            pricing.tariff_option(lane, request.gross_kg, request.volume_cbm)
+            for lane in self._tariffs.lanes(origin, destination, self._now().date())
+        ]
+        return options
+
+    async def _maybe_quote(self, shipment: Shipment) -> None:
+        """PRICING -> QUOTED once all truckers answered, at 45 s with a price, or at 90 s."""
+        requests = self._store.trucker_requests(shipment.id)
+        if shipment.zone:
+            elapsed = (
+                self._now() - datetime.fromisoformat(shipment.pricing_started_at)
+            ).total_seconds()
+            has_price = any(r.price_eur is not None for r in requests)
+            ready = (
+                all(r.answered for r in requests)
+                or (has_price and elapsed >= self._settings.trucker_wait_seconds)
+                or elapsed >= self._settings.trucker_fallback_seconds
+            )
+            if not ready:
+                return
+        await self._quote(shipment, requests)
+
+    @observe(name="pricing.pick_best")
+    def _price(self, shipment: Shipment, requests: list[TruckerRequest]) -> dict[str, Any]:
+        """Choose airline and trucker for the goal and compute the all-in price."""
+        request = shipment.request
+        air, truck = pricing.pick_best(self._store.air_options(shipment.id), requests, shipment.goal)
+        truck_eur, truck_fallback = 0.0, False
+        if shipment.zone:
+            if truck:
+                truck_eur = truck.price_eur
+            else:
+                truck_fallback = True
+                truck_eur = pricing.fallback_truck(
+                    request.gross_kg,
+                    shipment.zone,
+                    self._store.trucker_quote_history(),
+                    self._settings.fallback_truck_eur_per_kg,
+                )
+        dates = pricing.eta(
+            request.ready_date or self._now().date(),
+            truck.pickup_hours if truck else None,
+            air.transit_days,
+        )
+        return {
+            "all_in_eur": pricing.all_in(air.total_eur, truck_eur, self._settings.margin_eur),
+            "air_eur": air.total_eur,
+            "airline": air.airline,
+            "air_source": air.source,
+            "billed_kg": air.billed_kg,
+            "transit_days": air.transit_days,
+            "truck_eur": truck_eur,
+            "trucker": truck.trucker if truck else None,
+            "trucker_ref": truck.ref if truck else None,
+            "truck_fallback": truck_fallback,
+            "pickup_hours": truck.pickup_hours if truck else None,
+            **{f"estimated_{name}": day.isoformat() for name, day in dates.items()},
+            "chosen_option": air,
+        }
+
+    async def _quote(self, shipment: Shipment, requests: list[TruckerRequest]) -> None:
+        if shipment.quote_message_id is not None:
+            return  # only the first quote in a thread counts (ADR 19)
+        quote = self._price(shipment, requests)
+        air: AirOption = quote.pop("chosen_option")
+        request = shipment.request
+        price = _eur(quote["all_in_eur"])
+        valid_until = self._quote_validity(air, requests, quote["trucker"])
+        facts = {
+            "route": f"{air.origin} -> {air.destination}",
+            "airline": air.airline,
+            "transit_days": air.transit_days,
+            "all_in_price": price,
+            "price_includes": (
+                "pickup at your site and trucking to the airport, air freight, fuel and "
+                "security surcharges"
+                if shipment.zone
+                else "air freight, fuel and security surcharges (you deliver to the airport)"
+            ),
+            "pickup_included": bool(shipment.zone),
+            "pickup_from": f"{request.pickup_postal_code} {request.pickup_city or ''}".strip()
+            if shipment.zone
+            else None,
+            **self._cargo_facts(shipment),
+            "chargeable_weight": _kg(air.billed_kg),
+            "estimated_pickup": quote["estimated_pickup"] if shipment.zone else None,
+            "estimated_departure": quote["estimated_departure"],
+            "estimated_arrival": quote["estimated_arrival"],
+            "extra_questions": request.extra_questions,
+            "valid_until": valid_until,
+            "must_appear": [price],
+        }
+        out_id = await self._compose_and_send(
+            "quote", facts, shipment, to=shipment.customer, in_reply_to=shipment.id
+        )
+        shipment.quote = {**quote, "valid_until": valid_until}
+        shipment.chosen_option = air
+        shipment.quote_message_id = out_id
+        shipment.state = ShipmentState.QUOTED
+        self._store.save_shipment(shipment)
+        logger.info("Quoted shipment %s: %s (%s)", shipment.id, price, air.airline)
+
+    @staticmethod
+    def _quote_validity(air: AirOption, requests: list[TruckerRequest], trucker: str | None) -> str:
+        """The quote holds as long as its shortest-lived part (rate id or trucker offer)."""
+        limits = [air.valid_until] if air.source == "portal" else []
+        limits += [r.valid_until for r in requests if r.trucker == trucker and r.valid_until]
+        instants = [datetime.fromisoformat(limit) for limit in limits if limit]
+        if not instants:
+            return air.valid_until or ""
+        return min(i if i.tzinfo else i.replace(tzinfo=UTC) for i in instants).strftime(
+            "%Y-%m-%d %H:%M UTC"
+        )
+
+    # --- Trucker replies ------------------------------------------------------------------
+
+    async def _on_trucker_quote(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        request = ctx.trucker_request
+        if request is None or request.answered:
+            return  # not an answer to one of our requests, or this trucker already answered
+        quote = await self._extractors.extract_trucker_quote(msg, ctx.our_mail)
+        request.answered = True
+        request.price_eur = quote.price_eur
+        request.pickup_hours = quote.pickup_hours
+        request.valid_until = quote.valid_until
+        request.ref = quote.quote_ref
+        request.reply_message_id = msg.id
+        await self._trucker_answered(request)
+
+    async def _on_trucker_decline(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        request = ctx.trucker_request
+        if request is None or request.answered:
+            return
+        request.answered = True
+        request.reply_message_id = msg.id
+        await self._trucker_answered(request)
+
+    async def _trucker_answered(self, request: TruckerRequest) -> None:
+        """Store the answer; quote at once if that was the last trucker we waited for.
+
+        No mail ever goes back to a carrier because of a carrier's reply (ADR 19).
+        """
+        self._store.save_trucker_request(request)
+        shipment = self._store.get_shipment(request.shipment_id)
+        if shipment and shipment.state == ShipmentState.PRICING:
+            await self._maybe_quote(shipment)
+
+    # --- Customer verdict -----------------------------------------------------------------
+
+    async def _on_customer_accept(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        shipment = ctx.shipment
+        if shipment is None or shipment.state != ShipmentState.QUOTED:
+            return  # nothing open to accept; also stops "thanks for booking" loops
+        self._verdict(shipment, 1)
+        shipment.state = ShipmentState.BOOKING
+        shipment.quote = {**(shipment.quote or {}), "accept_message_id": msg.id}
+        self._store.save_shipment(shipment)
+        await self._book(shipment)
+
+    async def _on_customer_reject(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        shipment = ctx.shipment
+        if shipment is None or shipment.state != ShipmentState.QUOTED:
+            return
+        self._verdict(shipment, 0)
+        shipment.state = ShipmentState.REJECTED
+        shipment.quote = {**(shipment.quote or {}), "reject_message_id": msg.id}
+        self._store.save_shipment(shipment)
+
+    @staticmethod
+    def _verdict(shipment: Shipment, value: int) -> None:
+        get_client().create_score(
+            name="customer_verdict", value=value, session_id=f"shipment-{shipment.id}"
+        )
+
+    async def _on_customer_question(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        shipment = ctx.shipment
+        if shipment is None or shipment.answers_sent >= self._settings.max_answers:
+            return
+        facts = {
+            "question": mail_text(msg),
+            "shipment_state": shipment.state.value,
+            **self._cargo_facts(shipment),
+            "quote": shipment.quote,
+            "booking_reference": shipment.booking_ref,
+            "must_appear": [],
+        }
+        await self._compose_and_send(
+            "answer", facts, shipment, to=shipment.customer, in_reply_to=msg.id
+        )
+        shipment.answers_sent += 1
+        self._store.save_shipment(shipment)
+
+    # --- Booking --------------------------------------------------------------------------
+
+    async def _book(self, shipment: Shipment) -> None:
+        """Book right away: a late booking does not count (HANDOFF backlog 6)."""
+        if shipment.chosen_option.source == "portal":
+            await self._book_on_portal(shipment)
+        else:
+            await self._request_booking_by_email(shipment)
+
+    async def _book_on_portal(self, shipment: Shipment) -> None:
+        """BOOKING -> BOOKED via the booking API; an expired rate is refetched (max 3 tries)."""
+        booking_ref = None
+        while booking_ref is None and shipment.booking_attempts < self._settings.max_booking_attempts:
+            shipment.booking_attempts += 1
+            shipment.last_booking_attempt_at = self._now().isoformat()
+            self._store.save_shipment(shipment)
+            option = shipment.chosen_option
+            if not self._settings.send_enabled:
+                booking_ref = DRY_RUN_BOOKING_REF
+                break
+            try:
+                result = await self._portal.book(option.rate_id, str(shipment.id))
+                booking_ref = result["booking_reference"]
+            except RateExpired:
+                shipment.chosen_option = await self._portal.rate(
+                    option.origin, option.destination, option.airline_code,
+                    option.weight_kg, option.volume_cbm,
+                )  # fmt: skip
+            except PortalError as exc:
+                shipment.error = str(exc)[:500]
+                self._store.save_shipment(shipment)
+                return  # stays BOOKING; tick() tries again
+
+        if booking_ref is None:
+            await self._booking_failed(shipment)
+            return
+        shipment.booking_ref = booking_ref
+        shipment.state = ShipmentState.BOOKED
+        shipment.error = None
+        self._store.save_shipment(shipment)
+        await self._send_booking_note(shipment)
+
+    async def _request_booking_by_email(self, shipment: Shipment) -> None:
+        """Tariff airlines have no rate_id: ask the airline by mail; its confirmation books."""
+        if shipment.booking_attempts >= self._settings.max_booking_attempts:
+            await self._booking_failed(shipment)
+            return
+        option = shipment.chosen_option
+        lane = f"{option.origin}-{option.destination}"
+        facts = {
+            **self._cargo_facts(shipment),
+            "airline": option.airline,
+            "lane": lane,
+            "chargeable_weight": _kg(option.billed_kg),
+            "tariff_total": _eur(option.total_eur),
+            "our_reference": str(shipment.id),
+            "is_reminder": shipment.booking_attempts > 0,
+            "must_appear": [lane, str(shipment.id), _eur(option.total_eur)],
+        }
+        to = self._reference.airline_email(option.airline)
+        if to is None:
+            raise ValueError(f"no booking address for airline {option.airline}")
+        mail, used_template = await self._composer.compose(
+            "booking_request", facts, recipient_role="airline", language="en"
+        )
+        await self._send("booking_request", to, mail, shipment.id, None, used_template)
+        shipment.booking_attempts += 1
+        shipment.last_booking_attempt_at = self._now().isoformat()
+        self._store.save_shipment(shipment)
+
+    async def _booking_followup(self, shipment: Shipment) -> None:
+        """BOOKING for too long: retry the portal, or remind the airline after 10 minutes."""
+        if shipment.chosen_option.source == "portal":
+            await self._book_on_portal(shipment)
+            return
+        waited = (
+            self._now() - datetime.fromisoformat(shipment.last_booking_attempt_at)
+        ).total_seconds()
+        if waited >= self._settings.booking_reminder_seconds:
+            await self._request_booking_by_email(shipment)
+
+    async def _booking_failed(self, shipment: Shipment) -> None:
+        shipment.state = ShipmentState.FAILED
+        shipment.error = f"not booked after {shipment.booking_attempts} attempts"
+        self._store.save_shipment(shipment)
+
+    async def _on_booking_confirmation(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        """Confirmations arrive unthreaded; "Your reference" is the shipment id we booked with."""
+        confirmation = await self._extractors.extract_booking(msg)
+        reference = (confirmation.our_reference or "").strip()
+        shipment = self._store.get_shipment(int(reference)) if reference.isdigit() else None
+        if shipment is None or shipment.state not in (ShipmentState.BOOKING, ShipmentState.BOOKED):
+            logger.info("Booking confirmation %s matches no open booking", confirmation.booking_ref)
+            return
+        booked_by_email = shipment.state == ShipmentState.BOOKING
+        shipment.booking_ref = confirmation.booking_ref or shipment.booking_ref
+        shipment.state = ShipmentState.CONFIRMED
+        self._store.save_shipment(shipment)
+        if booked_by_email:
+            await self._send_booking_note(shipment)
+
+    async def _send_booking_note(self, shipment: Shipment) -> None:
+        quote, option = shipment.quote or {}, shipment.chosen_option
+        facts = {
+            "booking_ref": shipment.booking_ref,
+            "airline": option.airline,
+            "route": f"{option.origin} -> {option.destination}",
+            "all_in_price": _eur(quote["all_in_eur"]) if "all_in_eur" in quote else None,
+            "ready_date": shipment.request.ready_date,
+            "pickup_included": bool(shipment.zone),
+            "estimated_departure": quote.get("estimated_departure"),
+            "estimated_arrival": quote.get("estimated_arrival"),
+            "must_appear": [shipment.booking_ref],
+        }
+        await self._compose_and_send(
+            "booking_note", facts, shipment, to=shipment.customer,
+            in_reply_to=quote.get("accept_message_id") or shipment.id,
+        )  # fmt: skip
+
+    # --- Mail helpers ---------------------------------------------------------------------
+
+    @staticmethod
+    def _cargo_facts(shipment: Shipment) -> dict[str, Any]:
+        request = shipment.request
+        return {
+            "ready_date": request.ready_date.isoformat() if request.ready_date else None,
+            "pieces": request.pieces,
+            "gross_weight": _kg(request.gross_kg) if request.gross_kg else None,
+            "volume": _cbm(request.volume_cbm) if request.volume_cbm else None,
+            "commodity": request.commodity,
+            "destination_airport": request.destination_iata,
+        }
+
+    async def _our_mail(self, message_id: int | None) -> str:
+        """Text of the mail of ours that a reply answers ("" if unknown)."""
+        if message_id is None:
+            return ""
+        mail = self._store.find_outbound(message_id)
+        if mail is None:
+            try:
+                mail = await self._mailbox.get_message(message_id)
+            except Exception as exc:  # noqa: BLE001 - context is helpful, not required
+                logger.debug("Could not read mail %s: %s", message_id, exc)
+                return ""
+        return f"Subject: {mail.subject}\n\n{mail.body}"[:_THREAD_MAX_CHARS]
+
+    async def _compose_and_send(
+        self, kind: str, facts: dict[str, Any], shipment: Shipment, *, to: str, in_reply_to: int
+    ) -> int:
+        """Write a mail to the customer in their thread and language, and send it."""
+        stored = self._store.get_message(in_reply_to)
+        thread = f"Subject: {stored.subject}\n\n{stored.body}"[:_THREAD_MAX_CHARS] if stored else ""
+        mail, used_template = await self._composer.compose(
+            kind,
+            facts,
+            recipient_role="customer",
+            recipient_name=shipment.request.contact_name or "",
+            language=shipment.language or "en",
+            thread=thread,
+            reply_to_subject=shipment.subject,
+        )
+        return await self._send(kind, to, mail, shipment.id, in_reply_to, used_template)
+
+    @observe(name="mail.send")
+    async def _send(
+        self, kind: str, to: str, mail, shipment_id: int, in_reply_to: int | None, used_template: bool
+    ) -> int:
+        """Record the mail, and send it unless this is a dry run. Returns its mailbox id.
+
+        A dry-run mail gets the negative id `-outbound.id`, which can never collide with a
+        real mailbox id.
+        """
+        outbound = self._store.add_outbound(
+            kind=kind, to=to, subject=mail.subject, body=mail.body,
+            shipment_id=shipment_id, in_reply_to=in_reply_to, used_template=used_template,
+        )  # fmt: skip
+        if not self._settings.send_enabled:
+            logger.info("DRY RUN, not sent: %s to %s (shipment %s)", kind, to, shipment_id)
+            return -outbound.id
+        sent = await self._mailbox.send(to, mail.subject, mail.body, in_reply_to)
+        self._store.mark_outbound_sent(outbound.id, sent.id)
+        return sent.id

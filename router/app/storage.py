@@ -399,24 +399,26 @@ class MessageStore:
             ).fetchall()
         return [TruckerRequest(**dict(row)) for row in rows]
 
-    def find_trucker_request(self, reply_to_id: int | None, trucker: str) -> TruckerRequest | None:
-        """The pickup request a trucker's mail answers.
+    def find_trucker_request(
+        self, reply_to_id: int | None, trucker: str, match_by_sender: bool = False
+    ) -> TruckerRequest | None:
+        """The pickup request a trucker's mail answers: the one we sent as `reply_to_id`.
 
-        Normally that is the request with `out_message_id == reply_to_id`. In a dry run our
-        requests are never sent, so the reply answers someone else's mail; then the trucker's
-        newest unanswered request is used.
-        ponytail: sender-based fallback; exact ids are enough once this router is the sender.
+        `match_by_sender` is for dry runs, where our requests are never sent and the reply
+        answers someone else's mail: then the trucker's newest unanswered request is used.
         """
         with self._connect() as conn:
             row = conn.execute(
                 "SELECT * FROM trucker_requests WHERE out_message_id = ?", (reply_to_id,)
-            ).fetchone() or conn.execute(
-                """
-                SELECT * FROM trucker_requests WHERE trucker = ? AND answered = 0
-                ORDER BY sent_at DESC LIMIT 1
-                """,
-                (trucker,),
             ).fetchone()
+            if row is None and match_by_sender:
+                row = conn.execute(
+                    """
+                    SELECT * FROM trucker_requests WHERE trucker = ? AND answered = 0
+                    ORDER BY sent_at DESC LIMIT 1
+                    """,
+                    (trucker,),
+                ).fetchone()
         return TruckerRequest(**dict(row)) if row else None
 
     def trucker_quote_history(self) -> list[tuple[str | None, float, float]]:

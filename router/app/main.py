@@ -7,10 +7,17 @@ from fastapi.responses import RedirectResponse
 from langfuse import get_client, observe
 
 from app.classifier import DecisionClassifier
+from app.composer import Composer
 from app.config import Settings, configure_langfuse_env, get_settings
+from app.extractors import Extractors
 from app.input_client import InputApiClient
+from app.llm import StructuredLLM
 from app.mailbox_client import MailboxClient
 from app.poller import MailboxPoller
+from app.portal_client import PortalClient
+from app.reference import Reference
+from app.tariffs import Tariffs
+from app.workflow import Workflow
 from app.schemas import (
     ClassifyRequest,
     EmailCategory,
@@ -20,6 +27,9 @@ from app.schemas import (
     PollSummary,
     RouteResponse,
     RunRequest,
+    Shipment,
+    ShipmentDetail,
+    ShipmentState,
     StoredMessageRecord,
 )
 from app.storage import MessageStore
@@ -39,6 +49,23 @@ def _configure_app_logging() -> None:
 def _resolve_override(app: FastAPI, dep, default_factory):
     provider = app.dependency_overrides.get(dep)
     return provider() if provider is not None else default_factory()
+
+
+def build_workflow(
+    settings: Settings, store: MessageStore, mailbox_client: MailboxClient
+) -> Workflow:
+    """Wire the quote workflow. All its LLM calls share one client and one prompt loader."""
+    llm = StructuredLLM(settings)
+    return Workflow(
+        settings=settings,
+        store=store,
+        mailbox=mailbox_client,
+        portal=PortalClient(settings),
+        reference=Reference(settings.start_kit_dir),
+        tariffs=Tariffs(settings.tariffs_path),
+        extractors=Extractors(settings, llm),
+        composer=Composer(settings, llm),
+    )
 
 
 @asynccontextmanager
@@ -61,6 +88,7 @@ async def lifespan(app: FastAPI):
         mailbox_client=mailbox_client,
         classifier=classifier,
         store=store,
+        workflow=build_workflow(settings, store, mailbox_client),
     )
 
     app.state.store = store
@@ -83,10 +111,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="TALOS Router MVP",
-    version="0.1.0",
+    version="0.2.0",
     description=(
         "Polls the Hackloop mailbox every 2 s without duplicates, "
-        "classifies mails via gpt-6-luna, persists results in SQLite, and traces with Langfuse."
+        "classifies every mail, runs the quote workflow (price, quote, book), persists in SQLite "
+        "and traces with Langfuse. With SEND_ENABLED=false it never sends or books."
     ),
     docs_url="/docs",
     redoc_url="/redoc",
@@ -278,3 +307,29 @@ async def get_message(
     if record is None:
         raise HTTPException(status_code=404, detail=f"Message {message_id} not found")
     return record
+
+
+@app.get("/shipments", response_model=list[Shipment])
+async def list_shipments(
+    state: ShipmentState | None = None,
+    store: MessageStore = Depends(get_store),
+) -> list[Shipment]:
+    """List shipments (newest first), optionally only those in one state."""
+    return store.list_shipments(state)
+
+
+@app.get("/shipments/{shipment_id}", response_model=ShipmentDetail)
+async def get_shipment(
+    shipment_id: int,
+    store: MessageStore = Depends(get_store),
+) -> ShipmentDetail:
+    """One shipment with its trucker requests, air options and composed mails."""
+    shipment = store.get_shipment(shipment_id)
+    if shipment is None:
+        raise HTTPException(status_code=404, detail=f"Shipment {shipment_id} not found")
+    return ShipmentDetail(
+        shipment=shipment,
+        trucker_requests=store.trucker_requests(shipment_id),
+        air_options=store.air_options(shipment_id),
+        outbound=store.outbound_mails(shipment_id),
+    )

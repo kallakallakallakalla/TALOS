@@ -18,6 +18,13 @@ logger = logging.getLogger(__name__)
 
 _MAX_PAGES_PER_TICK = 10
 _LOW_CONFIDENCE = 0.7
+# Understood and stored, but nothing acts on them yet (docs/workflow.md section 13).
+_UNHANDLED = {
+    EmailCategory.OTHER,
+    EmailCategory.RATE_OFFER,
+    EmailCategory.TARIFF_UPDATE,
+    EmailCategory.TRACKING_REQUEST,
+}
 
 
 class MailboxPoller:
@@ -65,7 +72,7 @@ class MailboxPoller:
             tags = [decision.category.value]
             if shipment:
                 tags.append(shipment.state.value)
-            if decision.confidence < _LOW_CONFIDENCE:
+            if decision.confidence < _LOW_CONFIDENCE or decision.category in _UNHANDLED:
                 tags.append("needs_review")
             with propagate_attributes(tags=tags):
                 inserted = self._store.save_processed_message(

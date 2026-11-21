@@ -49,13 +49,14 @@ def test_trucker_requests_air_options_and_outbound(tmp_path: Path) -> None:
 
     # exact match on the mail we sent; otherwise the trucker's open request (dry run)
     assert store.find_trucker_request(964, "someone@x").trucker == "elbkante@x"
-    assert store.find_trucker_request(1033, "elbkante@x").out_message_id == 964
-    assert store.find_trucker_request(1033, "maintal@x") is None
+    assert store.find_trucker_request(1033, "elbkante@x") is None
+    assert store.find_trucker_request(1033, "elbkante@x", match_by_sender=True).out_message_id == 964
+    assert store.find_trucker_request(1033, "maintal@x", match_by_sender=True) is None
 
     request.answered, request.price_eur, request.pickup_hours, request.ref = True, 115.98, 29, "TRK-375"
     store.save_trucker_request(request)
     assert store.trucker_requests(947)[0].price_eur == 115.98
-    assert store.find_trucker_request(None, "elbkante@x") is None  # already answered
+    assert store.find_trucker_request(None, "elbkante@x", match_by_sender=True) is None  # answered
     assert store.trucker_quote_history() == [("51", 115.98, 679.0)]
 
     option = AirOption(source="tariff", airline="Elbflug Air Freight", origin="CGN", destination="ORD",
