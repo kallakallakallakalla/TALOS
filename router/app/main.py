@@ -7,9 +7,11 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from langfuse import get_client, observe
 
 from app.classifier import DecisionClassifier
+from app import crm_api
 from app.composer import Composer
 from app.config import Settings, configure_langfuse_env, get_settings
 from app.extractors import Extractors
@@ -19,6 +21,7 @@ from app.mailbox_client import MailboxClient
 from app.poller import MailboxPoller
 from app.portal_client import PortalClient
 from app.reference import Reference
+from app.replay_data import REPLAY_DIR, ensure_replay_db
 from app.tariffs import Tariffs
 from app.workflow import Workflow
 from app.schemas import (
@@ -127,9 +130,13 @@ app = FastAPI(
 )
 
 
+app.include_router(crm_api.router)
+app.mount("/crm/assets", StaticFiles(directory=crm_api.UI_DIR), name="crm-assets")
+
+
 @app.get("/", include_in_schema=False)
 async def root_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/docs")
+    return RedirectResponse(url="/crm")
 
 
 def get_input_client(settings: Settings = Depends(get_settings)) -> InputApiClient:
@@ -155,7 +162,7 @@ def get_store(
     return _get_or_create_state(request, "store", lambda: MessageStore(settings.sqlite_db_path))
 
 
-_REPLAY_DIR = Path(__file__).parent.parent / "data/replay"
+_REPLAY_DIR = REPLAY_DIR
 
 
 def get_view_store(
@@ -165,9 +172,10 @@ def get_view_store(
     """Read-only views can show the live DB or the last dry-run replay (scripts/replay.py)."""
     if source == "live":
         return store
-    if not (_REPLAY_DIR / "replay.db").exists():
+    replay_db = ensure_replay_db()  # rebuilt from result.json on a fresh checkout
+    if replay_db is None:
         raise HTTPException(status_code=404, detail="No replay yet: run scripts/replay.py")
-    return MessageStore(str(_REPLAY_DIR / "replay.db"))
+    return MessageStore(str(replay_db))
 
 
 def get_mailbox_client(
