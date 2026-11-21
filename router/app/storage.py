@@ -506,6 +506,24 @@ class MessageStore:
             ).fetchall()
         return [self._row_to_outbound(row) for row in rows]
 
+    def shipment_inbound(self, shipment_id: int) -> list[StoredMessageRecord]:
+        """Mails we received for a shipment: the customer thread plus replies to our mails."""
+        with self._connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT * FROM processed_messages
+                WHERE message_id = :id OR json_extract(references_json, '$[0]') = :id
+                   OR in_reply_to IN (  -- a dry-run mail has the id -outbound.id
+                       SELECT COALESCE(sent_message_id, -id) FROM outbound_mails
+                       WHERE shipment_id = :id)
+                   OR message_id IN (
+                       SELECT reply_message_id FROM trucker_requests WHERE shipment_id = :id)
+                ORDER BY message_id
+                """,
+                {"id": shipment_id},
+            ).fetchall()
+        return [self._row_to_record(row) for row in rows]
+
     def find_outbound(self, message_id: int) -> OutboundMail | None:
         """Our mail with this mailbox id. A dry-run mail has the id `-outbound.id`."""
         with self._connect() as conn:

@@ -1,9 +1,12 @@
 import asyncio
+import json
 import logging
+from typing import Literal
+from pathlib import Path
 from contextlib import asynccontextmanager, suppress
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from langfuse import get_client, observe
 
 from app.classifier import DecisionClassifier
@@ -152,6 +155,21 @@ def get_store(
     return _get_or_create_state(request, "store", lambda: MessageStore(settings.sqlite_db_path))
 
 
+_REPLAY_DIR = Path(__file__).parent.parent / "data/replay"
+
+
+def get_view_store(
+    source: Literal["live", "replay"] = "live",
+    store: MessageStore = Depends(get_store),
+) -> MessageStore:
+    """Read-only views can show the live DB or the last dry-run replay (scripts/replay.py)."""
+    if source == "live":
+        return store
+    if not (_REPLAY_DIR / "replay.db").exists():
+        raise HTTPException(status_code=404, detail="No replay yet: run scripts/replay.py")
+    return MessageStore(str(_REPLAY_DIR / "replay.db"))
+
+
 def get_mailbox_client(
     request: Request,
     settings: Settings = Depends(get_settings),
@@ -179,8 +197,8 @@ def get_poller(
 
 
 @app.get("/health")
-async def health() -> dict[str, str]:
-    return {"status": "ok"}
+async def health(settings: Settings = Depends(get_settings)) -> dict[str, str]:
+    return {"status": "ok", "sending": "on" if settings.send_enabled else "off"}
 
 
 async def _run_or_502(coro):
@@ -312,7 +330,7 @@ async def get_message(
 @app.get("/shipments", response_model=list[Shipment])
 async def list_shipments(
     state: ShipmentState | None = None,
-    store: MessageStore = Depends(get_store),
+    store: MessageStore = Depends(get_view_store),
 ) -> list[Shipment]:
     """List shipments (newest first), optionally only those in one state."""
     return store.list_shipments(state)
@@ -321,7 +339,7 @@ async def list_shipments(
 @app.get("/shipments/{shipment_id}", response_model=ShipmentDetail)
 async def get_shipment(
     shipment_id: int,
-    store: MessageStore = Depends(get_store),
+    store: MessageStore = Depends(get_view_store),
 ) -> ShipmentDetail:
     """One shipment with its trucker requests, air options and composed mails."""
     shipment = store.get_shipment(shipment_id)
@@ -332,4 +350,20 @@ async def get_shipment(
         trucker_requests=store.trucker_requests(shipment_id),
         air_options=store.air_options(shipment_id),
         outbound=store.outbound_mails(shipment_id),
+        inbound=store.shipment_inbound(shipment_id),
     )
+
+
+@app.get("/replay/classification", include_in_schema=False)
+async def replay_classification() -> list[dict]:
+    """Per-mail classifier result vs. the hand label from the last replay."""
+    path = _REPLAY_DIR / "result.json"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="No replay yet: run scripts/replay.py")
+    return json.loads(path.read_text())["classified"]
+
+
+@app.get("/ui", include_in_schema=False)
+async def ui() -> HTMLResponse:
+    """Observability page: every shipment thread, inbound and outbound, in one view."""
+    return HTMLResponse((Path(__file__).parent / "ui.html").read_text())

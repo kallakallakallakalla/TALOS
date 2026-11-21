@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TALOS Conversations</title>
+<style>
+  :root {
+    --bg:#f6f7f9; --card:#fff; --ink:#1d2330; --muted:#6b7280; --line:#e5e7eb; --accent:#2f5bea;
+    --green:#15803d; --green-bg:#e7f6ec; --amber:#b45309; --amber-bg:#fdf3e1; --red:#b91c1c; --red-bg:#fdeaea;
+    --blue-bg:#e9efff; --grey-bg:#f0f1f3;
+  }
+  * { box-sizing:border-box }
+  body { margin:0; font:15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--ink) }
+  header { display:flex; align-items:center; gap:16px; padding:14px 24px; background:var(--card); border-bottom:1px solid var(--line) }
+  header h1 { font-size:18px; margin:0 }
+  .tabs { display:flex; gap:4px; background:var(--grey-bg); padding:3px; border-radius:8px }
+  .tabs button { border:0; background:none; padding:6px 14px; border-radius:6px; font:inherit; cursor:pointer; color:var(--muted) }
+  .tabs button.on { background:var(--card); color:var(--ink); box-shadow:0 1px 2px #0002 }
+  .hint { color:var(--muted); font-size:13px; margin-left:auto }
+  .layout { display:flex; height:calc(100vh - 57px) }
+  #list { width:360px; flex-shrink:0; overflow:auto; background:var(--card); border-right:1px solid var(--line) }
+  .item { padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer }
+  .item:hover { background:var(--bg) } .item.on { background:var(--blue-bg) }
+  .item .top { display:flex; justify-content:space-between; gap:8px; font-weight:600 }
+  .item .sub { color:var(--muted); font-size:13px; margin-top:2px }
+  .item .row { display:flex; justify-content:space-between; align-items:center; margin-top:6px }
+  #main { flex:1; overflow:auto; padding:24px 32px; max-width:1000px }
+  .badge { display:inline-block; padding:2px 9px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap }
+  .good { background:var(--green-bg); color:var(--green) } .wait { background:var(--amber-bg); color:var(--amber) }
+  .bad { background:var(--red-bg); color:var(--red) } .info { background:var(--blue-bg); color:var(--accent) }
+  .tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:16px 0 24px }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px }
+  .tile .n { font-size:26px; font-weight:700 } .tile .l { color:var(--muted); font-size:13px }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px 20px; margin-bottom:16px }
+  .card h3 { margin:0 0 10px; font-size:15px }
+  .bar { display:flex; height:14px; border-radius:7px; overflow:hidden; background:var(--grey-bg) }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; font-size:13px; color:var(--muted) }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px }
+  .steps { display:flex; margin:16px 0 20px }
+  .step { flex:1; text-align:center; font-size:12px; color:var(--muted); position:relative }
+  .step::before { content:""; display:block; width:14px; height:14px; border-radius:50%; margin:0 auto 6px; background:var(--line); position:relative; z-index:1 }
+  .step::after { content:""; position:absolute; top:6px; left:-50%; width:100%; height:2px; background:var(--line) }
+  .step:first-child::after { display:none }
+  .step.done { color:var(--ink) } .step.done::before, .step.done::after { background:var(--green) }
+  .step.stop::before { background:var(--red) } .step.stop { color:var(--red); font-weight:600 }
+  .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px }
+  .facts div span { display:block; color:var(--muted); font-size:12px }
+  .opt { display:grid; grid-template-columns:200px 1fr 90px 70px; align-items:center; gap:10px; padding:5px 0; font-size:14px }
+  .opt .track { background:var(--grey-bg); border-radius:4px; height:10px } .opt .fill { background:#9db3f5; height:10px; border-radius:4px }
+  .opt.chosen { font-weight:700 } .opt.chosen .fill { background:var(--green) }
+  .chat { display:flex; flex-direction:column; gap:12px }
+  .msg { max-width:78%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--card) }
+  .msg.us { align-self:flex-end; background:var(--blue-bg); border-color:#cfdafd }
+  .msg.trucker { background:var(--amber-bg); border-color:#f3dfb8 }
+  .msg .who { font-size:12px; color:var(--muted); margin-bottom:4px; display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+  .msg .body { white-space:pre-wrap; font-size:14px }
+  .msg .body.short { max-height:7.5em; overflow:hidden; cursor:pointer; mask-image:linear-gradient(#000 60%, transparent) }
+  .note { align-self:center; font-size:12px; color:var(--muted); background:var(--grey-bg); padding:4px 12px; border-radius:999px }
+  table { width:100%; border-collapse:collapse; font-size:14px }
+  td, th { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line) } th { color:var(--muted); font-weight:500 }
+  details { margin-top:16px; color:var(--muted); font-size:13px } pre { white-space:pre-wrap; font-size:12px }
+  .empty { color:var(--muted); padding:40px; text-align:center }
+  a.back { color:var(--accent); cursor:pointer; font-size:14px }
+</style></head>
+<body>
+<header>
+  <h1>TALOS · Customer conversations</h1>
+  <div class="tabs"><button data-src="live" class="on">Live</button><button data-src="replay">Dry run</button></div>
+  <span class="hint" id="hint"></span>
+</header>
+<div class="layout"><nav id="list"></nav><main id="main"></main></div>
+<script>
+const STATE = {
+  NEW:['New request','info'], AWAITING_INFO:['Waiting for customer info','wait'], PRICING:['Getting prices','wait'],
+  QUOTED:['Quote sent','info'], BOOKING:['Booking in progress','wait'], BOOKED:['Booked','good'],
+  CONFIRMED:['Booked & confirmed','good'], DRY_BOOKED:['Would be booked (dry run)','info'], REJECTED:['Customer declined','bad'], FAILED:['Needs attention','bad'],
+};
+const STATE_COLOR = { good:'#15803d', info:'#2f5bea', wait:'#d97706', bad:'#dc2626' };
+const KIND = {
+  trucker_request:'Asked a trucker for a pickup price', quote:'Sent the quote', clarification:'Asked the customer for missing details',
+  answer:'Answered the customer’s question', booking_note:'Confirmed the booking to the customer',
+};
+const CATEGORY = {
+  rfq:'New quote request', trucker_quote:'Pickup price from trucker', customer_accept:'Customer accepted',
+  customer_reject:'Customer declined', customer_question:'Customer question', other:'Other mail',
+};
+const STEPS = ['Request received','Details complete','Prices collected','Quote sent','Customer decided','Booked'];
+const STEP_OF = { NEW:0, AWAITING_INFO:0, PRICING:1, QUOTED:3, BOOKING:4, BOOKED:5, DRY_BOOKED:5, CONFIRMED:5, REJECTED:4, FAILED:null };
+
+// ponytail: the workflow stores booking_ref 'DRY-RUN' when it only pretended to book (workflow.py DRY_RUN_BOOKING_REF)
+const stateOf = s => s.booking_ref === 'DRY-RUN' ? 'DRY_BOOKED' : s.state;
+let sending = 'off';
+let source = 'live', shipments = [], current = null;
+const $ = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const el = (tag, cls, ...kids) => { const e = $(tag, cls); e.append(...kids.filter(k => k != null)); return e; };
+const eur = v => v == null ? '–' : new Intl.NumberFormat('en-GB', { style:'currency', currency:'EUR' }).format(v);
+const when = t => t ? new Date(t).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+const day = d => d ? new Date(d).toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }) : '–';
+const badge = st => { const [label, tone] = STATE[st] ?? [st, 'info']; return $('span', 'badge ' + tone, label); };
+const pretty = s => (s ?? '').replaceAll('_', ' ').replace(/^./, c => c.toUpperCase());
+const company = s => s.request?.company || s.customer.split('@')[0].replace(/[-_.]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+const route = s => `${s.request?.pickup_city || s.request?.pickup_postal_code || '?'} → ${s.request?.destination_iata || '?'}`;
+const api = async path => { const r = await fetch(path + (path.includes('?') ? '&' : '?') + 'source=' + source); if (!r.ok) throw new Error((await r.json()).detail); return r.json(); };
+
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  source = b.dataset.src; current = null; load();
+});
+
+async function load() {
+  try { sending = (await (await fetch('/health')).json()).sending; } catch {}
+  document.getElementById('hint').textContent = source === 'replay'
+    ? 'Simulation of the recorded mailbox — nothing was really sent or booked'
+    : sending === 'on' ? 'Real mailbox · TALOS sends and books for real · refreshes every 15 s'
+    : 'Real mailbox · TALOS only drafts: nothing is sent or booked · refreshes every 15 s';
+  try { shipments = await api('/shipments'); } catch (e) { shipments = []; document.getElementById('main').replaceChildren($('div', 'empty', e.message)); }
+  renderList();
+  if (current) showShipment(current); else showOverview();
+}
+
+function renderList() {
+  const nav = document.getElementById('list'); nav.replaceChildren();
+  if (!shipments.length) nav.append($('div', 'empty', 'No conversations yet.'));
+  for (const s of shipments) {
+    const d = el('div', 'item' + (s.id === current ? ' on' : ''),
+      el('div', 'top', $('span', null, company(s)), $('span', null, s.quote ? eur(s.quote.all_in_eur) : '')),
+      $('div', 'sub', `${route(s)} · ${s.subject}`),
+      s.quote && $('div', 'sub', `✈ ${s.quote.airline} · 🚚 ${trucker(s.quote)}`),
+      el('div', 'row', badge(stateOf(s)), $('span', 'sub', when(s.updated_at))));
+    d.onclick = () => { current = s.id; renderList(); showShipment(s.id); };
+    nav.append(d);
+  }
+}
+
+async function showOverview() {
+  const main = document.getElementById('main');
+  const count = st => shipments.filter(s => st.includes(stateOf(s))).length;
+  const booked = shipments.filter(s => ['BOOKED','CONFIRMED'].includes(stateOf(s)));
+  const quoted = shipments.filter(s => s.quote);
+  const tiles = el('div', 'tiles',
+    tile(shipments.length, 'Conversations'), tile(quoted.length, 'Quotes sent'), tile(booked.length, 'Booked'),
+    tile(count(['DRY_BOOKED']), 'Would be booked (dry run)'), tile(count(['REJECTED']), 'Declined'), tile(count(['FAILED']), 'Need attention'),
+    tile(eur(booked.reduce((a, s) => a + (s.quote?.all_in_eur ?? 0), 0)), 'Booked value'));
+
+  const byState = Object.keys(STATE).map(st => [st, count([st])]).filter(([, n]) => n);
+  const bar = el('div', 'bar', ...byState.map(([st, n]) => { const seg = $('div'); seg.style.flex = n; seg.style.background = STATE_COLOR[STATE[st][1]]; seg.style.opacity = 0.35 + 0.65 * (n / shipments.length); seg.title = `${STATE[st][0]}: ${n}`; return seg; }));
+  const legend = el('div', 'legend', ...byState.map(([st, n]) => { const s = $('span', null, `${STATE[st][0]} (${n})`); const dot = $('span', 'dot'); dot.style.background = STATE_COLOR[STATE[st][1]]; s.prepend(dot); return s; }));
+
+  const picks = el('div', 'card', $('h3', null, 'Airline and trucker picked per conversation'), el('table', null,
+    el('tr', null, $('th', null, 'Customer'), $('th', null, 'Route'), $('th', null, 'Airline'), $('th', null, 'Trucker'), $('th', null, 'Price'), $('th', null, 'Status')),
+    ...quoted.map(s => { const tr = el('tr', null, $('td', null, company(s)), $('td', null, route(s)), $('td', null, `✈ ${s.quote.airline}`),
+      $('td', null, `🚚 ${trucker(s.quote)}`), $('td', null, eur(s.quote.all_in_eur)), el('td', null, badge(stateOf(s))));
+      tr.style.cursor = 'pointer'; tr.onclick = () => { current = s.id; renderList(); showShipment(s.id); }; return tr; })));
+  main.replaceChildren($('h2', null, source === 'replay' ? 'Dry run results' : 'Overview'), tiles,
+    el('div', 'card', $('h3', null, 'Where conversations stand'), bar, legend), quoted.length ? picks : null);
+  if (shipments.length) main.append($('p', 'sub', 'Pick a conversation on the left to see the full story.'));
+  if (source === 'replay') main.append(await classificationCard());
+}
+
+const trucker = q => q.trucker ? q.trucker.split('@')[0] : q.truck_fallback ? 'none answered (estimated price)'
+  : !q.truck_eur ? 'not needed (customer brings it to the airport)' : '–';
+const tile = (n, l) => el('div', 'tile', $('div', 'n', String(n)), $('div', 'l', l));
+
+async function classificationCard() {
+  let rows; try { rows = await (await fetch('/replay/classification')).json(); } catch { return $('div'); }
+  const labelled = rows.filter(r => r.expected), right = labelled.filter(r => r.category === r.expected);
+  const wrong = labelled.filter(r => r.category !== r.expected);
+  const pct = labelled.length ? Math.round(100 * right.length / labelled.length) : 0;
+  const bar = el('div', 'bar', (() => { const g = $('div'); g.style.flex = right.length; g.style.background = STATE_COLOR.good; return g; })(),
+                               (() => { const r = $('div'); r.style.flex = wrong.length; r.style.background = STATE_COLOR.bad; return r; })());
+  const card = el('div', 'card', $('h3', null, `How well the bot understood incoming mail: ${pct}% correct`), bar,
+    $('div', 'legend', `${right.length} of ${labelled.length} mails sorted into the right bucket · ${rows.length} mails read in total`));
+  if (wrong.length) card.append($('h3', null, 'Mails it misread'), el('table', null,
+    el('tr', null, $('th', null, 'Mail'), $('th', null, 'From'), $('th', null, 'Bot thought'), $('th', null, 'Actually was')),
+    ...wrong.map(r => el('tr', null, $('td', null, '#' + r.id), $('td', null, r.from),
+      el('td', null, $('span', 'badge bad', CATEGORY[r.category] ?? pretty(r.category))),
+      el('td', null, $('span', 'badge good', CATEGORY[r.expected] ?? pretty(r.expected)))))));
+  return card;
+}
+
+async function showShipment(id) {
+  const main = document.getElementById('main');
+  let r; try { r = await api(`/shipments/${id}`); } catch (e) { main.replaceChildren($('div', 'empty', e.message)); return; }
+  const s = r.shipment, q = s.quote, req = s.request ?? {};
+  const back = $('a', 'back', '← Overview'); back.onclick = () => { current = null; renderList(); showOverview(); };
+
+  // Progress
+  const reached = STEP_OF[s.state];
+  const steps = el('div', 'steps', ...STEPS.map((label, i) => {
+    let cls = 'step';
+    if (reached != null && i <= reached) cls += ' done';
+    if ((s.state === 'REJECTED' && i === 4) || (s.state === 'FAILED' && i === 0)) cls += ' stop';
+    return $('div', cls, s.state === 'REJECTED' && i === 4 ? 'Declined' : label);
+  }));
+
+  // Summary in plain words
+  const what = [req.pieces && `${req.pieces} pieces`, req.gross_kg && `${req.gross_kg} kg`, req.volume_cbm && `${req.volume_cbm} m³`].filter(Boolean).join(', ');
+  const summary = `${req.contact_name ? req.contact_name + ' from ' : ''}${company(s)} wants ${what || 'a shipment'}`
+    + `${req.commodity ? ' of ' + req.commodity : ''} moved from ${req.pickup_city || req.pickup_postal_code || 'an unknown place'}`
+    + ` to ${req.destination_iata || 'an unknown airport'}${req.ready_date ? ', ready ' + day(req.ready_date) : ''}.`
+    + (s.goal ? ` They asked for the ${s.goal} option.` : '');
+
+  const cards = [el('div', 'card', $('h3', null, 'The request'), $('p', null, summary))];
+  if (s.error) cards.push(el('div', 'card', $('h3', null, '⚠ What went wrong'), $('p', null, s.error)));
+  if (q) cards.push(el('div', 'card', $('h3', null, 'Our offer'), el('div', 'facts',
+    fact('All-in price', eur(q.all_in_eur)), fact('Airline', `${q.airline} (${q.transit_days} day${q.transit_days === 1 ? '' : 's'})`),
+    fact('Flight', `${s.origin_airport ?? '?'} → ${req.destination_iata ?? '?'}`),
+    fact('Trucker', trucker(q)), fact('Price split', `Air ${eur(q.air_eur)} + Truck ${eur(q.truck_eur)}${q.truck_fallback ? ' (estimate)' : ''}`),
+    fact('Pickup', day(q.estimated_pickup)), fact('Arrival', day(q.estimated_arrival)),
+    fact('Offer valid until', q.valid_until), s.booking_ref && fact('Booking reference', s.booking_ref === 'DRY-RUN' ? 'none (dry run, not booked)' : s.booking_ref))));
+
+  if (r.air_options.length) {
+    const max = Math.max(...r.air_options.map(o => o.total_eur));
+    const chosen = s.chosen_option ?? (q && { airline: q.airline });
+    cards.push(el('div', 'card', $('h3', null, `Flights we compared (${r.air_options.length})`),
+      ...[...r.air_options].sort((a, b) => a.total_eur - b.total_eur).map(o => {
+        const fill = $('div', 'fill'); fill.style.width = (100 * o.total_eur / max) + '%';
+        return el('div', 'opt' + (chosen && o.airline === chosen.airline ? ' chosen' : ''),
+          $('span', null, (chosen && o.airline === chosen.airline ? '✓ ' : '') + o.airline), el('div', 'track', fill),
+          $('span', null, eur(o.total_eur)), $('span', 'sub', `${o.transit_days} d`));
+      })));
+  }
+
+  if (r.trucker_requests.length) cards.push(el('div', 'card', $('h3', null, 'Pickup prices from truckers'), el('table', null,
+    el('tr', null, $('th', null, 'Trucker'), $('th', null, 'Price'), $('th', null, 'Pickup within'), $('th', null, '')),
+    ...r.trucker_requests.map(t => el('tr', null, $('td', null, t.trucker.split('@')[0]), $('td', null, t.answered ? eur(t.price_eur) : '–'),
+      $('td', null, t.pickup_hours != null ? `${t.pickup_hours} h` : '–'),
+      el('td', null, $('span', 'badge ' + (t.answered ? 'good' : 'wait'), t.answered ? 'Answered' : 'No answer')))))));
+
+  cards.push(el('div', 'card', $('h3', null, 'The conversation'), conversation(r)));
+
+  main.replaceChildren(back, el('h2', null, $('span', null, company(s) + ' · '), $('span', null, s.subject)),
+    el('div', null, badge(stateOf(s))), steps, ...cards,
+    el('details', null, $('summary', null, 'Technical details'), $('pre', null, JSON.stringify(r, null, 2))));
+}
+
+const fact = (label, value) => el('div', null, $('span', null, label), $('b', null, value ?? '–'));
+
+function conversation(r) {
+  const s = r.shipment, truckers = new Set(r.trucker_requests.map(t => t.trucker));
+  const inTime = Object.fromEntries(r.inbound.map(m => [m.message_id, m.received_at ?? m.processed_at]));
+  const sentAt = Object.fromEntries(r.trucker_requests.map(t => [t.out_message_id, t.sent_at]));
+  // Live: every timestamp is wall time, so sort by it.
+  // ponytail: a dry run mixes a virtual clock (inbound, trucker requests) with wall time (our other mails);
+  // there our mail goes after the mail it answers, the previous mail of ours, and (for a quote) the last trucker answer.
+  const lastTruckerAnswer = r.trucker_requests.map(t => inTime[t.reply_message_id] ?? '').reduce((a, b) => a > b ? a : b, '');
+  const max = (...ts) => ts.reduce((a, b) => (b ?? '') > a ? b : a, '');
+  let prev = '';
+  const items = [
+    ...r.inbound.map(m => ({ t: inTime[m.message_id] ?? '', m })),
+    ...r.outbound.map(o => {
+      if (source === 'live') return { t: o.created_at, o };
+      prev = sentAt[o.sent_message_id ?? -o.id]
+        ?? max(prev, inTime[o.in_reply_to], o.kind === 'quote' ? lastTruckerAnswer : '') + '~';
+      return { t: prev, o };
+    }),
+  ].sort((a, b) => a.t.localeCompare(b.t));
+
+  const chat = $('div', 'chat');
+  if (!items.length) chat.append($('div', 'note', 'No mails stored for this conversation.'));
+  for (const { m, o } of items) {
+    if (o) {
+      chat.append(bubble('us', 'TALOS', KIND[o.kind] ?? pretty(o.kind), o.to, o.created_at, o.body, [
+        !o.sent_message_id && $('span', 'badge wait', source === 'replay' ? 'Simulated' : 'Draft · not sent'),
+        o.used_template && $('span', 'badge info', 'Standard template')]));
+    } else {
+      const who = m.sender === s.customer ? 'customer' : truckers.has(m.sender) ? 'trucker' : 'other';
+      chat.append(bubble(who === 'trucker' ? 'trucker' : '', who === 'customer' ? company(s) : m.sender?.split('@')[0],
+        CATEGORY[m.decision.category] ?? pretty(m.decision.category), null, m.received_at, m.body,
+        [m.decision.confidence < 0.7 && $('span', 'badge wait', 'Bot was unsure')]));
+    }
+  }
+  return chat;
+}
+
+function bubble(cls, who, what, to, t, body, extra) {
+  const b = $('div', 'body short', body); b.title = 'Click to expand'; b.onclick = () => b.classList.toggle('short');
+  return el('div', 'msg ' + cls, el('div', 'who', $('b', null, who), $('span', null, '· ' + what + (to ? ` → ${to.split('@')[0]}` : '')),
+    $('span', null, when(t)), ...extra.filter(Boolean)), b);
+}
+
+load(); setInterval(() => { if (source === 'live' && !current) load(); }, 15000);
+</script>
+</body></html>
