@@ -19,7 +19,9 @@ class Settings(BaseSettings):
     langfuse_host: str = "http://localhost:3000"
     langfuse_base_url: str = ""
     langfuse_prompt_name: str = "router-classification"
-    # Langfuse prompt label the running router reads ("staging" for evals).
+    # Prompts come from prompts/*.md in the repo. True reads them from Langfuse by label instead.
+    prompts_from_langfuse: bool = False
+    # Langfuse prompt label read when prompts_from_langfuse is on ("staging" for evals).
     prompt_label: str = "production"
     prompts_dir: str = "prompts"
 
@@ -75,6 +77,13 @@ class Settings(BaseSettings):
     # Quote when every asked trucker has answered, or after this many seconds with whatever
     # came back (nothing came back: fallback trucker price).
     trucker_wait_seconds: float = 60.0
+    # Fallback rule when the LLM chooser fails or is off (ADR 55): a trucker within this many hours counts
+    # as in time, the cheapest of those is used (ADR 49). Fitted to the board, not documented.
+    trucker_pickup_cutoff_hours: float = 14.0
+    # "llm": talos-choose-trucker picks the trucker, checked in code; "rule": ADR 49 only.
+    # "rule" until the LLM beats it in scripts/eval_trucker_choice.py (ADR 55).
+    trucker_chooser: str = "rule"
+    choose_trucker_reasoning_effort: str = "low"
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3

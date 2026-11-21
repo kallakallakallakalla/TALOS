@@ -23,6 +23,7 @@ READ_ATTACHMENT = "talos-read-attachment"
 EXTRACT_AIRLINE_RATES = "talos-extract-airline-rates"
 EXTRACT_DATA_UPDATE = "talos-extract-data-update"
 FLAG_DATA_UPDATE = "talos-flag-data-update"
+CHOOSE_TRUCKER = "talos-choose-trucker"
 ALL_PROMPTS = (
     CLASSIFY,
     EXTRACT_RFQ,
@@ -34,6 +35,7 @@ ALL_PROMPTS = (
     EXTRACT_AIRLINE_RATES,
     EXTRACT_DATA_UPDATE,
     FLAG_DATA_UPDATE,
+    CHOOSE_TRUCKER,
 )
 
 
@@ -68,7 +70,8 @@ class Prompts:
         Pass `lf_prompt` as `langfuse_prompt=` so the generation is linked to its prompt version.
         """
         local = local_prompt(self._settings, name)
-        if not self._use_langfuse:
+        # The router reads the repo files; only an explicit label (evals) or the setting asks Langfuse.
+        if not self._use_langfuse or not (label or self._settings.prompts_from_langfuse):
             return fill(local, variables), None
         try:
             # The SDK caches the prompt for ~60 s and serves `fallback` if Langfuse is down.
