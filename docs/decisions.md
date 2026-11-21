@@ -319,3 +319,25 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Measured** (evaluation key, all recorded trucker replies): 7 pickup requests with 34 replies (31 quotes, 3 "we need the weight"), every field correct, in three runs, with reasoning effort `none` and `low`. `none` is used.
 - **Effect:** for a request with 5 truckers, 10 LLM calls become 1.
 - **Note on ADR 12:** mail text is still read by an LLM. Code only checks that the extracted price occurs in the mail.
+
+### 42 · Customer mails: short, corporate-light, varied, with a footer
+
+- **Context:** the composer wrote correct but uniform mails: the same structure and closing every time, raw timestamps ("2026-11-21 15:34 UTC"), the price on its own line after a longer lead-in. The "most human email" jury reads exactly these mails.
+- **Decision (user):** the user set the style rules and picked the tone from five written examples (the "corporate light" one):
+  - plain text only: no markdown, no lists, no em dashes; none of the stock phrases "Certainly", "I hope this finds you well", "Please find below", "do not hesitate to reach out"
+  - greeting, a short thank-you ("thanks for contacting us"), then 3 to 5 short sentences that lead with the all-in price and the customer's priority (fastest, cheapest, or the date they asked about)
+  - timestamps in natural wording ("28 Nov", "today until 15:34 UTC")
+  - loosely built sentences, a little office and trade wording, now and then one small typing slip, never in a number, date, name, airline, route or reference
+  - a call to action and an offer to phone at the end, then a sign-off
+  - a footer between two divider lines: company, Theresienstraße 90, 80333 München (TUM main campus, building N1), phone number
+  - variety from mail to mail
+- **How:**
+  - `talos-compose-mail` carries the rules and the chosen example with placeholders instead of values, so no example number can leak into a mail.
+  - Variety comes from code, not from asking the model to vary: `composer.wording()` picks a greeting, opener, call to action, questions line, sign-off and slip at random for each mail and names them in the request. The same request also gives today's date, which the model needs for "today until ...".
+  - The footer is appended in code (`MAIL_FOOTER`, `composer.with_footer`): always exact, no output tokens. The fallback templates get it too.
+  - `composer.plain_text()` removes em dashes and bold from a draft before the fact check, in case the model ignores the rule.
+  - The quote facts now include `customer_priority` (the extracted goal), so "the fastest option" is only written when the option was chosen as the fastest.
+- **Scope:** mails to customers only. The booking request to the airline stays exact and structured, with ISO dates, no slips and no footer. The trucker request (ADR 38) is unchanged: a second postal code in a pickup request could be read as the pickup address.
+- **Phone number:** `+49 89 99998 417` is from the range the Bundesnetzagentur reserves for media productions (089 99998 000 to 999). It reaches nobody. A real number goes into `MAIL_FOOTER`.
+- **Not measured:** the five examples were written by hand, not by `gpt-6-luna`; no `EVALUATION_KEY` was available in the session. `scripts/compose_samples.py` is the check before the prompt gets the production label.
+
