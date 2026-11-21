@@ -298,11 +298,15 @@ class MessageStore:
 
     # --- Quote workflow -------------------------------------------------------------------
 
-    def save_shipment(self, shipment: Shipment) -> Shipment:
-        """Insert or fully replace a shipment row; stamps created_at / updated_at."""
+    def save_shipment(self, shipment: Shipment, *, touch: bool = True) -> Shipment:
+        """Insert or fully replace a shipment row; stamps created_at / updated_at.
+
+        `touch=False` keeps a given `updated_at` (for importing recorded shipments).
+        """
         now = _utc_now_iso()
         shipment.created_at = shipment.created_at or now
-        shipment.updated_at = now
+        if touch or not shipment.updated_at:
+            shipment.updated_at = now
         with self._connect() as conn:
             conn.execute(
                 """
@@ -532,3 +536,81 @@ class MessageStore:
                 (message_id, -message_id),
             ).fetchone()
         return self._row_to_outbound(row) if row else None
+
+    # --- Read models for the CRM (app/insights.py) ------------------------------------------
+
+    def change_token(self) -> str:
+        """Changes whenever a mail, shipment, trucker answer, air option or outbound mail does."""
+        with self._connect() as conn:
+            row = conn.execute(
+                """
+                SELECT
+                  (SELECT COUNT(*) || ':' || COALESCE(MAX(message_id), 0) FROM processed_messages)
+                  || '|' || (SELECT COUNT(*) || ':' || COALESCE(MAX(updated_at), '') FROM shipments)
+                  || '|' || (SELECT COUNT(*) || ':' || COALESCE(SUM(answered), 0) FROM trucker_requests)
+                  || '|' || (SELECT COUNT(*) FROM air_options)
+                  || '|' || (SELECT COUNT(*) || ':' || COUNT(sent_message_id) FROM outbound_mails)
+                  || '|' || (SELECT COALESCE(SUM(attempts), 0) FROM message_failures)
+                """
+            ).fetchone()
+        return row[0]
+
+    def all_trucker_requests(self) -> list[TruckerRequest]:
+        with self._connect() as conn:
+            rows = conn.execute("SELECT * FROM trucker_requests ORDER BY out_message_id").fetchall()
+        return [TruckerRequest(**dict(row)) for row in rows]
+
+    def all_air_options(self) -> dict[int, list[AirOption]]:
+        """Air options of every shipment, cheapest first, by shipment id."""
+        with self._connect() as conn:
+            rows = conn.execute("SELECT * FROM air_options ORDER BY total_eur").fetchall()
+        by_shipment: dict[int, list[AirOption]] = {}
+        for row in rows:
+            data = dict(row)
+            by_shipment.setdefault(data.pop("shipment_id"), []).append(AirOption(**data))
+        return by_shipment
+
+    def mail_index(self, *, with_body: bool = False, limit: int | None = None) -> list[dict[str, Any]]:
+        """Stored mails as plain rows, newest first, with the category label exactly as stored.
+
+        Without `with_body` the rows are light enough to load all of them for counting.
+        """
+        body = ", body" if with_body else ""
+        tail = " LIMIT ?" if limit else ""
+        with self._connect() as conn:
+            rows = conn.execute(
+                f"""
+                SELECT message_id AS id, sender, subject, in_reply_to, references_json, category,
+                       confidence, reasoning, trace_id, received_at, processed_at{body}
+                FROM processed_messages ORDER BY message_id DESC{tail}
+                """,
+                (limit,) if limit else (),
+            ).fetchall()
+        mails = []
+        for row in rows:
+            mail = dict(row)
+            mail["references"] = json.loads(mail.pop("references_json"))
+            mails.append(mail)
+        return mails
+
+    def message_failures(self) -> list[dict[str, Any]]:
+        """Mails that failed processing at least once (ADR 20)."""
+        with self._connect() as conn:
+            rows = conn.execute("SELECT * FROM message_failures ORDER BY message_id DESC").fetchall()
+        return [dict(row) for row in rows]
+
+    def import_outbound(self, mail: OutboundMail) -> None:
+        """Store a recorded outbound mail with its own id and time (app/replay_data.py)."""
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO outbound_mails (
+                    id, shipment_id, kind, recipient, subject, body, in_reply_to,
+                    sent_message_id, used_template, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    mail.id, mail.shipment_id, mail.kind, mail.to, mail.subject, mail.body,
+                    mail.in_reply_to, mail.sent_message_id, int(mail.used_template), mail.created_at,
+                ),
+            )  # fmt: skip

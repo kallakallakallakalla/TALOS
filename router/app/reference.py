@@ -47,8 +47,13 @@ class Reference:
         return {c.email: c for c in self.carriers}
 
     @cached_property
+    def zones(self) -> list[dict[str, str]]:
+        """Rows of `pickup_zones.csv`: zone, area, airport."""
+        return self._rows("pickup_zones.csv")
+
+    @cached_property
     def _zone_airports(self) -> dict[str, str]:
-        return {r["zone"]: r["airport"] for r in self._rows("pickup_zones.csv")}
+        return {r["zone"]: r["airport"] for r in self.zones}
 
     def airport_for_zone(self, zone: str) -> str | None:
         """Departure airport for a pickup zone, or None if we do not serve the zone."""

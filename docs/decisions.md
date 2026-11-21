@@ -341,3 +341,21 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Phone number:** `+49 89 99998 417` is from the range the Bundesnetzagentur reserves for media productions (089 99998 000 to 999). It reaches nobody. A real number goes into `MAIL_FOOTER`.
 - **Not measured:** the five examples were written by hand, not by `gpt-6-luna`; no `EVALUATION_KEY` was available in the session. `scripts/compose_samples.py` is the check before the prompt gets the production label.
 
+### 43 · A local CRM over the router's data
+
+- **Context:** the only view into the system was `/ui`, a list of conversations. Accounts, carriers, lanes, the mail stream and the configuration could only be read from the database.
+- **Decision (user):** a browser interface for the whole system, run locally, as a CRM fitted to this use case: matte glass look, no gimmicks, real figures. It has to include all data, follow the live database, and show the routes on an interactive 3D globe.
+- **How:**
+  - `GET /crm` serves plain HTML, CSS and JavaScript from `app/crm_ui/`. No build step, no framework, no request to another host.
+  - `app/insights.py` computes every figure from stored rows: shipments as deals, accounts, airlines, truckers, lanes, the attention list and the findings. `app/crm_api.py` exposes them under `/crm/api/`. The interface only formats.
+  - Live updates: `MessageStore.change_token()` is one cheap query that changes whenever a mail, shipment, trucker answer, air option or composed mail changes. The page polls it every 3 s and reloads the snapshot only when it moved.
+  - The dry run is readable on a fresh checkout: `app/replay_data.py` rebuilds `replay.db` from the committed `result.json` and the recorded mails.
+  - The globe is drawn on a canvas with an orthographic projection of the sphere. Routes are great circles between airport coordinates (`app/airports.py`); the land outline is Natural Earth 1:110m, simplified (`land.js`).
+- **What is deliberately not shown:**
+  - In a dry run: timings (two clocks are mixed) and win rates (the recorded verdicts answered the old process's quotes).
+  - Aircraft positions: there is no such data. A shipment in transit is placed along its route by its planned dates, and the page says so.
+  - LLM cost: it is in Langfuse, not in the database.
+- **Read-only:** the CRM never sends, books or calls an LLM, and the system page shows no keys. Notes, tasks and manual actions (requote, book by hand) are not part of this version.
+- **Safety when only looking:** start the app with `MAILBOX_POLL_ENABLED=false`, otherwise the poller reads the mailbox and spends LLM calls.
+- **Tests:** `tests/test_crm.py` checks the figures against the committed replay (counts, money adding up to the cent, pricing flags, conversation order), the endpoints, the change token and that no secret reaches the system page.
+
