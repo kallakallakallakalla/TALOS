@@ -82,6 +82,9 @@ def test_trucker_is_the_cheapest_in_time_else_the_cheapest_of_all() -> None:
     assert pick([(242.72, 21), (245.80, 27), (349.20, 15), (447.44, 4)], "fastest") == 447.44
     # round 38, fastest: two in time, the cheaper one wins
     assert pick([(89.0, 30), (104.0, 33), (193.6, 5), (236.2, 6)], "fastest") == 193.6
+    # round 68 (shipment 18954), MUC cut-off 22 h (ADR 52): 110.64 at 15 h, not 120.36 at 14 h
+    offers = [_truck(str(p), p, h) for p, h in [(79.32, 24), (41.80, 29), (110.64, 15), (120.36, 14)]]
+    assert pricing.pick_best([_air("A", 1000, 3)], offers, "cheapest", pickup_cutoff_hours=22)[1].price_eur == 110.64
 
 
 def test_all_in_adds_trucker_and_margin() -> None:

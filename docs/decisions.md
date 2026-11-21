@@ -394,6 +394,15 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.
 
 
+### ADR 52: The trucker cut-off is per departure airport
+
+**Decided 2026-11-21.** Refines ADR 49.
+
+- **Rule:** a trucker is in time when its pickup hours are at most the cut-off of the departure airport (`TRUCKER_PICKUP_CUTOFF_BY_AIRPORT`: STR 14, MUC 22, DUS 10, HAM 19); other airports use `TRUCKER_PICKUP_CUTOFF_HOURS` (14). Rest of ADR 49 unchanged.
+- **Why:** the cut-off is the flight deadline on the departure day, and that depends on the airport. No API gives departure times, so the per-airport values are fitted to the expected trucker of rounds 31-66 (derived from `board/me` accuracy): 14 of 15 rounds match, against 11 of 15 for a flat 14 h. Round 68 (shipment 18954, MUC) was rejected `too_high` after the flat rule chose 120.36 EUR at 14 h; the MUC rule chooses 110.64 EUR at 15 h.
+- **Not known:** round 54 (HAM, Hamburg city, Saturday ready date) expected a cut-off under 17 h while Kiel rounds 13 and 36 expected 19 h or more; may depend on the airline or weekday. CGN and FRA have too few rounds to fit.
+
+
 ### ADR 50: One updatable store for reference data, changed by update mails
 
 **Decided and built 2026-11-21.** Plan and what was built: [data-updates.md](data-updates.md). Changes ADR 06 (`replace_airline()` hook) and ADR 19 (`tariff_update` had no handler and sent no mail).

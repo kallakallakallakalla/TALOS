@@ -546,7 +546,9 @@ class Workflow:
         trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
         pick = lambda a, t: pricing.pick_best(  # noqa: E731
             a, t, shipment.goal, request.ready_date, request.deliver_by,
-            self._settings.trucker_pickup_cutoff_hours,
+            self._settings.trucker_pickup_cutoff_by_airport.get(
+                shipment.origin_airport or "", self._settings.trucker_pickup_cutoff_hours
+            ),
         )  # fmt: skip
         best = self._price_of(shipment, *pick(air, trucks))
 

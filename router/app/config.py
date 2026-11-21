@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     decision_model: str = "gpt-6-luna"
     extract_model: str = "gpt-6-luna"
     transcribe_model: str = "gpt-4o-mini-transcribe"
+    # The gateway has no /audio endpoint (404), so speech to text goes straight to OpenAI.
+    openai_api_key: str = ""
     compose_model: str = "gpt-6-luna"
     decision_temperature: float | None = None
     # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).
@@ -80,6 +82,10 @@ class Settings(BaseSettings):
     # A trucker that picks up within this many hours counts as in time for the flight; the
     # cheapest of those is used (ADR 49). Fitted to the board's accuracy points, not documented.
     trucker_pickup_cutoff_hours: float = 14.0
+    # The cut-off is the flight's deadline at the departure airport, so it differs per airport
+    # (ADR 52). Fitted per airport to the board's accuracy points, rounds 31-66; others use the
+    # default above. ponytail: per airport, not per airline; HAM fits Kiel (19 h) but not round 54.
+    trucker_pickup_cutoff_by_airport: dict[str, float] = {"STR": 14.0, "MUC": 22.0, "DUS": 10.0, "HAM": 19.0}
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3
@@ -113,6 +119,7 @@ def as_test_settings(settings: Settings) -> Settings:
     return settings.model_copy(
         update={
             "decision_api_key": settings.evaluation_key,
+            "openai_api_key": settings.evaluation_key,
             "decision_api_base_url": settings.evaluation_api_base_url,
             "send_enabled": False,
             "sqlite_db_path": settings.test_sqlite_db_path,
