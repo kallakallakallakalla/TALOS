@@ -1,0 +1,1039 @@
+carrier,origin,destination,transit_days,minimum_eur,fuel_eur_kg,security_eur_kg,break_kg,rate_eur_kg
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,0,5.92
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,45,5.03
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,100,3.87
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,250,3.02
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,500,2.33
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,1000,1.86
+Yellowtail Air Freight,CGN,SYD,5,75.0,0.76,0.21,2000,1.54
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,0,3.96
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,45,3.21
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,100,2.82
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,250,2.34
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,500,1.83
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,1000,1.5
+Yellowtail Air Freight,DUS,JFK,5,100.0,1.09,0.13,2000,1.25
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,0,4.19
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,45,3.4
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,100,2.86
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,250,2.26
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,500,1.9
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,1000,1.58
+Yellowtail Air Freight,FRA,BKK,2,91.0,1.05,0.27,2000,1.26
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,0,3.76
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,45,2.78
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,100,2.42
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,250,2.2
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,500,1.69
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,1000,1.52
+Yellowtail Air Freight,FRA,DFW,2,109.0,0.85,0.25,2000,1.22
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,0,5.09
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,45,4.12
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,100,3.63
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,250,2.72
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,500,2.2
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,1000,1.58
+Yellowtail Air Freight,FRA,LIM,5,72.0,1.1,0.19,2000,1.37
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,0,4.3
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,45,3.78
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,100,2.87
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,250,2.18
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,500,1.98
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,1000,1.54
+Yellowtail Air Freight,FRA,NBO,7,91.0,0.94,0.16,2000,1.19
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,0,3.73
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,45,3.32
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,100,2.42
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,250,1.82
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,500,1.64
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,1000,1.46
+Yellowtail Air Freight,FRA,ORD,4,110.0,0.66,0.11,2000,1.14
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,0,4.62
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,45,4.06
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,100,3.53
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,250,3.53
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,500,2.44
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,1000,1.76
+Yellowtail Air Freight,HAM,BOG,2,127.2,1.43,0.23,2000,1.29
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,0,3.28
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,45,2.49
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,100,2.17
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,250,1.67
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,500,1.5
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,1000,1.38
+Yellowtail Air Freight,HAM,MEX,3,81.0,0.68,0.21,2000,1.1
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,0,4.45
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,45,3.69
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,100,2.77
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,250,2.47
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,500,1.8
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,1000,1.46
+Yellowtail Air Freight,HAM,SGN,6,68.0,0.91,0.11,2000,1.28
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,0,4.02
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,45,3.1
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,100,2.54
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,250,2.33
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,500,1.48
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,1000,1.3
+Yellowtail Air Freight,MUC,JNB,4,117.0,0.91,0.26,2000,1.3
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,0,3.12
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,45,2.28
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,100,1.73
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,250,1.4
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,500,1.08
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,1000,0.98
+Yellowtail Air Freight,MUC,LAX,5,82.0,1.17,0.14,2000,0.83
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,0,3.81
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,45,2.78
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,100,2.37
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,250,2.37
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,500,1.55
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,1000,1.25
+Yellowtail Air Freight,STR,LAX,2,137.8,1.06,0.27,2000,1.25
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,0,6.48
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,45,5.83
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,100,5.01
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,250,4.36
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,500,3.49
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,1000,2.97
+Yellowtail Air Freight,STR,MEL,5,102.0,1.16,0.24,2000,2.38
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,0,3.37
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,45,2.76
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,100,2.35
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,250,1.76
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,500,1.6
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,1000,1.44
+Yellowtail Air Freight,STR,MNL,5,61.0,1.32,0.23,2000,1.17
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,0,4.62
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,45,3.83
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,100,3.49
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,250,2.65
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,500,1.93
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,1000,1.7
+Helix Air Freight,CGN,LOS,4,76.0,1.04,0.12,2000,1.29
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,0,5.52
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,45,4.91
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,100,3.98
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,250,3.62
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,500,2.93
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,1000,2.67
+Helix Air Freight,CGN,SYD,6,124.0,0.98,0.11,2000,2.22
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,0,3.37
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,45,2.93
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,100,2.64
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,250,2.09
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,500,1.88
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,1000,1.73
+Helix Air Freight,DUS,RUH,3,64.0,0.6,0.13,2000,1.37
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,0,3.33
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,45,2.73
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,100,2.24
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,250,2.24
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,500,1.62
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,1000,1.25
+Helix Air Freight,FRA,LAX,1,112.0,1.4,0.21,2000,1.25
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,0,4.66
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,45,3.45
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,100,3.03
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,250,2.64
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,500,2.4
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,1000,2.17
+Helix Air Freight,FRA,PVG,2,102.0,0.85,0.23,2000,1.82
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,0,4.68
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,45,3.84
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,100,3.11
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,250,2.24
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,500,1.86
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,1000,1.66
+Helix Air Freight,FRA,SCL,3,92.0,0.84,0.23,2000,1.31
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,0,4.16
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,45,3.62
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,100,2.61
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,250,2.52
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,500,1.9
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,1000,1.69
+Helix Air Freight,HAM,HKG,2,130.38,1.29,0.25,2000,1.69
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,0,3.68
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,45,2.94
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,100,2.68
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,250,2.44
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,500,2.22
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,1000,2.02
+Helix Air Freight,MUC,HKG,5,105.0,0.84,0.21,2000,1.58
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,0,3.54
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,45,2.58
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,100,2.17
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,250,1.82
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,500,1.64
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,1000,1.48
+Helix Air Freight,MUC,PVG,5,140.0,0.86,0.13,2000,1.2
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,0,4.56
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,45,4.1
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,100,3.57
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,250,3.07
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,500,2.49
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,1000,1.87
+Helix Air Freight,MUC,SGN,6,65.0,1.32,0.24,2000,1.55
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,0,3.84
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,45,3.11
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,100,2.86
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,250,2.37
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,500,2.16
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,1000,1.56
+Helix Air Freight,STR,ORD,3,133.0,0.82,0.23,2000,1.36
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,0,3.79
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,45,3.34
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,100,2.74
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,250,2.52
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,500,1.92
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,1000,1.67
+Helix Air Freight,STR,PVG,4,81.0,0.74,0.2,2000,1.5
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,0,5.41
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,45,4.17
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,100,3.21
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,300,2.89
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,500,2.54
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,1000,2.06
+Cobalt Skylift,CGN,EZE,5,79.0,0.7,0.2,2000,1.67
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,0,4.22
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,45,3.67
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,100,3.19
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,300,2.49
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,500,1.84
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,1000,1.51
+Cobalt Skylift,CGN,SGN,4,73.0,1.01,0.23,2000,1.27
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,0,4.7
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,45,3.48
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,100,2.61
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,300,1.91
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,500,1.74
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,1000,1.46
+Cobalt Skylift,CGN,SIN,4,102.0,1.16,0.21,2000,1.27
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,0,3.42
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,45,2.8
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,100,2.24
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,300,1.79
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,500,1.58
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,1000,1.17
+Cobalt Skylift,DUS,BOM,5,115.0,1.16,0.2,2000,0.92
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,0,4.18
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,45,3.3
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,100,2.87
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,300,2.44
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,500,2.2
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,1000,1.63
+Cobalt Skylift,DUS,DEL,4,68.0,0.62,0.22,2000,1.34
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,0,3.13
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,45,2.38
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,100,2.17
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,300,1.84
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,500,1.36
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,1000,1.22
+Cobalt Skylift,DUS,JFK,4,78.0,0.8,0.23,2000,0.93
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,0,6.53
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,45,4.9
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,100,3.63
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,300,2.61
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,500,2.24
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,1000,2.02
+Cobalt Skylift,DUS,SYD,4,68.0,0.85,0.11,2000,1.47
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,0,5.1
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,45,4.1
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,100,3.24
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,300,2.92
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,500,2.25
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,1000,1.76
+Cobalt Skylift,FRA,BOG,4,83.74,1.34,0.17,2000,1.46
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,0,3.23
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,45,2.55
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,100,1.84
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,300,1.36
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,500,1.17
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,1000,1.01
+Cobalt Skylift,FRA,ICN,6,58.0,1.21,0.11,2000,0.85
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,0,5.33
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,45,4.37
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,100,3.36
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,300,2.99
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,500,2.45
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,1000,2.25
+Cobalt Skylift,FRA,JNB,4,118.72,1.3,0.23,2000,1.71
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,0,5.36
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,45,4.45
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,100,4.05
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,300,3.04
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,500,2.71
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,1000,2.44
+Cobalt Skylift,FRA,SYD,6,124.0,0.65,0.18,2000,2.15
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,0,4.33
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,45,3.46
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,100,2.56
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,300,1.95
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,500,1.72
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,1000,1.55
+Cobalt Skylift,FRA,TPE,3,71.0,1.12,0.1,2000,1.3
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,0,4.63
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,45,3.94
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,100,3.03
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,300,2.39
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,500,1.82
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,1000,1.57
+Cobalt Skylift,HAM,BOG,3,77.0,1.04,0.25,2000,1.22
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,0,3.32
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,45,2.62
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,100,2.12
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,300,1.55
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,500,1.26
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,1000,1.15
+Cobalt Skylift,HAM,RUH,3,114.0,0.92,0.21,2000,1.04
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,0,5.11
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,45,3.74
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,100,3.03
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,300,2.63
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,500,2.4
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,1000,2.0
+Cobalt Skylift,MUC,BOG,4,94.34,1.28,0.23,2000,1.84
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,0,4.49
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,45,3.23
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,100,2.49
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,300,2.17
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,500,1.84
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,1000,1.62
+Cobalt Skylift,MUC,LIM,6,137.0,0.7,0.22,2000,1.31
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,0,6.24
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,45,5.49
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,100,4.83
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,300,4.2
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,500,3.49
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,1000,2.69
+Cobalt Skylift,MUC,MEL,3,138.0,0.99,0.25,2000,2.37
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,0,3.98
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,45,2.95
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,100,2.36
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,300,1.94
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,500,1.63
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,1000,1.35
+Cobalt Skylift,MUC,MEX,3,63.0,0.73,0.16,2000,1.04
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,0,4.0
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,45,3.37
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,100,2.62
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,300,2.23
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,500,2.05
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,1000,1.61
+Cobalt Skylift,MUC,MIA,2,134.0,0.84,0.18,2000,1.61
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,0,3.93
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,45,3.22
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,100,2.32
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,300,2.06
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,500,1.9
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,1000,1.43
+Cobalt Skylift,MUC,YYZ,3,123.0,1.29,0.15,2000,1.13
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,0,3.08
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,45,2.22
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,100,1.6
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,300,1.46
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,500,1.23
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,1000,1.07
+Cobalt Skylift,STR,YYZ,4,72.0,0.71,0.17,2000,0.77
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,0,2.91
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,45,2.12
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,100,1.61
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,300,1.26
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,500,1.1
+Orion Cargo Air,CGN,MIA,2,78.0,1.11,0.23,1000,0.84
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,0,3.25
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,45,2.54
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,100,1.83
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,300,1.68
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,500,1.55
+Orion Cargo Air,CGN,TLV,2,73.0,0.61,0.1,1000,1.19
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,0,3.04
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,45,2.4
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,100,1.97
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,300,1.67
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,500,1.29
+Orion Cargo Air,FRA,KUL,4,72.0,0.69,0.17,1000,1.1
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,0,4.56
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,45,4.01
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,100,3.05
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,300,2.37
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,500,2.1
+Orion Cargo Air,FRA,NBO,4,96.46,1.0,0.17,1000,1.64
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,0,3.46
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,45,3.15
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,100,2.52
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,300,2.02
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,500,1.47
+Orion Cargo Air,FRA,ORD,2,114.0,0.97,0.13,1000,1.07
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,0,4.05
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,45,3.4
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,100,2.65
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,300,1.99
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,500,1.57
+Orion Cargo Air,FRA,PEK,4,139.0,0.87,0.15,1000,1.43
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,0,2.92
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,45,2.19
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,100,1.97
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,300,1.58
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,500,1.33
+Orion Cargo Air,FRA,SGN,5,77.0,1.19,0.13,1000,1.06
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,0,3.37
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,45,2.49
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,100,2.07
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,300,1.76
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,500,1.5
+Orion Cargo Air,HAM,DXB,4,91.0,1.01,0.17,1000,1.14
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,0,5.26
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,45,4.47
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,100,3.58
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,300,3.11
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,500,2.49
+Orion Cargo Air,MUC,GRU,4,103.0,1.02,0.11,1000,2.12
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,0,4.31
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,45,3.84
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,100,3.46
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,300,3.01
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,500,2.5
+Orion Cargo Air,MUC,HKG,3,111.3,0.96,0.23,1000,2.15
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,0,5.25
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,45,4.68
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,100,4.08
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,300,3.26
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,500,2.77
+Orion Cargo Air,MUC,NBO,3,132.0,1.2,0.27,1000,2.19
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,0,3.72
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,45,3.27
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,100,2.58
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,300,2.09
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,500,1.63
+Orion Cargo Air,STR,MNL,4,120.0,1.03,0.14,1000,1.43
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,0,3.36
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,45,2.76
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,100,2.37
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,300,1.85
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,500,1.48
+Orion Cargo Air,STR,PEK,5,70.0,0.71,0.19,1000,1.08
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,0,3.43
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,45,2.78
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,100,2.22
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,300,1.86
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,500,1.34
+Orion Cargo Air,STR,TLV,4,118.0,0.94,0.23,1000,0.98
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,0,3.87
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,45,3.06
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,100,2.63
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,300,2.18
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,500,1.94
+Elbflug Air Freight,CGN,LOS,5,108.0,1.21,0.1,1000,1.59
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,0,3.1
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,45,2.29
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,100,1.65
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,300,1.32
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,500,1.19
+Elbflug Air Freight,DUS,HKG,4,67.0,0.76,0.12,1000,0.96
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,0,3.52
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,45,2.89
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,100,2.49
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,300,1.87
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,500,1.35
+Elbflug Air Freight,DUS,TLV,1,85.86,1.34,0.14,1000,1.04
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,0,4.69
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,45,3.94
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,100,3.51
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,300,2.56
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,500,2.28
+Elbflug Air Freight,FRA,BOG,7,65.0,0.84,0.13,1000,1.85
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,0,2.79
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,45,2.01
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,100,1.57
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,300,1.19
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,500,0.92
+Elbflug Air Freight,FRA,DFW,3,108.0,0.74,0.14,1000,0.84
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,0,2.73
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,45,2.1
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,100,1.93
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,300,1.56
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,500,1.36
+Elbflug Air Freight,FRA,DXB,3,131.0,0.91,0.2,1000,1.25
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,0,3.32
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,45,2.39
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,100,1.91
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,300,1.51
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,500,1.22
+Elbflug Air Freight,FRA,HKG,4,75.0,0.84,0.22,1000,0.98
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,0,4.99
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,45,3.79
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,100,3.26
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,300,2.71
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,500,2.09
+Elbflug Air Freight,FRA,MEL,7,134.0,1.22,0.14,1000,1.76
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,0,3.84
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,45,3.11
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,100,2.46
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,300,2.14
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,500,1.9
+Elbflug Air Freight,FRA,MIA,5,91.0,1.29,0.25,1000,1.52
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,0,4.07
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,45,3.7
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,100,3.15
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,300,2.71
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,500,2.2
+Elbflug Air Freight,FRA,SGN,3,115.0,0.77,0.14,1000,1.74
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,0,4.07
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,45,3.34
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,100,2.54
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,300,2.24
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,500,2.06
+Elbflug Air Freight,FRA,SIN,3,72.0,0.85,0.24,1000,1.65
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,0,3.1
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,45,2.48
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,100,2.03
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,300,1.46
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,500,1.27
+Elbflug Air Freight,HAM,DFW,4,79.0,1.29,0.13,1000,0.97
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,0,3.58
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,45,2.64
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,100,2.31
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,300,1.87
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,500,1.59
+Elbflug Air Freight,HAM,DXB,2,114.0,1.09,0.21,1000,1.44
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,0,2.86
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,45,2.57
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,100,1.98
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,300,1.43
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,500,1.27
+Elbflug Air Freight,HAM,MEX,3,117.0,1.34,0.25,1000,1.12
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,0,2.72
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,45,2.48
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,100,2.21
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,300,1.9
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,500,1.6
+Elbflug Air Freight,HAM,TLV,3,128.0,0.66,0.22,1000,1.22
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,0,4.38
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,45,3.15
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,100,2.74
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,300,2.22
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,500,1.95
+Elbflug Air Freight,MUC,BOG,6,75.0,0.89,0.14,1000,1.79
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,0,5.52
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,45,4.42
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,100,3.54
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,300,3.12
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,500,2.43
+Elbflug Air Freight,MUC,SYD,6,105.0,0.77,0.22,1000,1.87
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,0,4.08
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,45,3.3
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,100,3.04
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,300,2.52
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,500,2.29
+Elbflug Air Freight,STR,ORD,2,140.98,0.87,0.25,1000,1.66
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,0,4.72
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,45,3.45
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,100,2.76
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,300,2.04
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,500,1.61
+Elbflug Air Freight,STR,PVG,4,112.0,1.24,0.1,1000,1.37
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,0,3.05
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,45,2.35
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,100,1.72
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,250,1.38
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,500,1.16
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,1000,0.97
+Kestrel Airways,CGN,MIA,4,76.0,0.69,0.24,2000,0.85
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,0,4.06
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,45,3.45
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,100,3.11
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,250,2.72
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,500,1.86
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,1000,1.56
+Kestrel Airways,DUS,DFW,1,119.0,1.29,0.21,2000,1.47
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,0,4.15
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,45,3.11
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,100,2.74
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,250,2.52
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,500,1.92
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,1000,1.73
+Kestrel Airways,DUS,KUL,5,56.0,1.04,0.15,2000,1.51
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,0,4.39
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,45,4.04
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,100,3.31
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,250,2.78
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,500,1.91
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,1000,1.43
+Kestrel Airways,DUS,NRT,2,113.42,1.31,0.21,2000,1.17
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,0,4.25
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,45,3.23
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,100,2.34
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,250,2.34
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,500,1.93
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,1000,1.7
+Kestrel Airways,FRA,BOM,2,134.62,0.81,0.13,2000,1.3
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,0,4.64
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,45,3.62
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,100,2.64
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,250,1.9
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,500,1.52
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,1000,1.19
+Kestrel Airways,FRA,CAI,3,118.0,0.88,0.22,2000,1.09
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,0,3.2
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,45,2.82
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,100,2.48
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,250,2.03
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,500,1.75
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,1000,1.45
+Kestrel Airways,FRA,DEL,3,97.52,1.27,0.27,2000,1.32
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,0,3.11
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,45,2.61
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,100,2.19
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,250,1.95
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,500,1.44
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,1000,1.15
+Kestrel Airways,FRA,MEX,4,79.0,1.15,0.17,2000,0.94
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,0,3.18
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,45,2.52
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,100,2.04
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,250,1.93
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,500,1.55
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,1000,1.19
+Kestrel Airways,FRA,MIA,2,137.8,0.94,0.21,2000,1.02
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,0,3.5
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,45,2.66
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,100,2.34
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,250,2.01
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,500,1.61
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,1000,1.37
+Kestrel Airways,FRA,NRT,4,116.0,0.89,0.14,2000,1.14
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,0,3.18
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,45,2.7
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,100,2.48
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,250,1.93
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,500,1.66
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,1000,1.2
+Kestrel Airways,HAM,HKG,4,73.0,0.63,0.15,2000,1.06
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,0,4.47
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,45,3.7
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,100,3.26
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,250,3.26
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,500,2.34
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,1000,1.75
+Kestrel Airways,HAM,PEK,3,133.56,0.96,0.21,2000,1.3
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,0,4.09
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,45,3.39
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,100,2.92
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,250,2.69
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,500,2.1
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,1000,1.87
+Kestrel Airways,MUC,GRU,5,127.0,0.62,0.18,2000,1.53
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,0,3.47
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,45,2.78
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,100,2.34
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,250,1.78
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,500,1.5
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,1000,1.28
+Kestrel Airways,MUC,LAX,6,59.0,1.13,0.18,2000,0.95
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,0,5.88
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,45,5.06
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,100,4.35
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,250,3.83
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,500,2.87
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,1000,2.35
+Kestrel Airways,MUC,MEL,4,69.0,0.91,0.23,2000,1.79
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,0,4.39
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,45,3.73
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,100,3.39
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,250,2.78
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,500,2.06
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,1000,1.5
+Kestrel Airways,MUC,PEK,6,113.0,1.23,0.25,2000,1.31
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,0,4.15
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,45,3.2
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,100,2.66
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,250,2.21
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,500,1.92
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,1000,1.75
+Kestrel Airways,MUC,SIN,6,104.0,0.98,0.18,2000,1.54
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,0,3.87
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,45,2.86
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,100,2.26
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,250,1.83
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,500,1.45
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,1000,1.1
+Kestrel Airways,STR,MIA,4,63.0,0.84,0.1,2000,1.0
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,0,4.6
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,45,4.19
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,100,3.73
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,300,2.69
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,500,2.42
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,1000,1.94
+Vega Skyfreight,CGN,LOS,3,114.48,1.29,0.13,2000,1.69
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,0,4.47
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,45,3.38
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,100,2.77
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,300,2.41
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,500,2.12
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,1000,1.55
+Vega Skyfreight,DUS,KUL,2,72.0,1.15,0.14,2000,1.35
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,0,3.88
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,45,3.42
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,100,2.46
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,300,1.8
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,500,1.53
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,1000,1.22
+Vega Skyfreight,DUS,PEK,2,118.72,1.34,0.24,2000,1.22
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,0,4.04
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,45,3.64
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,100,3.06
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,300,2.36
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,500,2.15
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,1000,1.55
+Vega Skyfreight,FRA,MNL,5,65.0,1.04,0.13,2000,1.24
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,0,3.21
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,45,2.76
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,100,2.4
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,300,2.06
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,500,1.59
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,1000,1.45
+Vega Skyfreight,HAM,DEL,4,66.0,0.65,0.25,2000,1.25
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,0,3.84
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,45,2.76
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,100,2.35
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,300,2.14
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,500,1.78
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,1000,1.57
+Vega Skyfreight,HAM,DFW,1,83.74,1.37,0.14,2000,1.3
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,0,4.16
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,45,3.49
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,100,3.07
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,300,2.79
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,500,2.2
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,1000,1.65
+Vega Skyfreight,HAM,PEK,4,126.0,0.9,0.1,2000,1.22
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,0,6.2
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,45,5.15
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,100,4.53
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,300,3.49
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,500,2.79
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,1000,2.04
+Vega Skyfreight,HAM,SYD,6,56.0,0.76,0.23,2000,1.82
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,0,5.3
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,45,4.56
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,100,3.56
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,300,3.24
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,500,2.4
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,1000,2.09
+Vega Skyfreight,MUC,LIM,3,124.0,1.2,0.19,2000,1.65
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,0,4.64
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,45,4.08
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,100,3.35
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,300,2.51
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,500,1.91
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,1000,1.53
+Vega Skyfreight,MUC,NBO,4,140.0,1.2,0.12,2000,1.39
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,0,3.07
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,45,2.79
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,100,2.4
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,300,2.04
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,500,1.86
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,1000,1.4
+Vega Skyfreight,MUC,ORD,1,144.16,1.16,0.22,2000,1.02
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,0,3.69
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,45,3.28
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,100,2.53
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,300,2.18
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,500,1.77
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,1000,1.27
+Vega Skyfreight,STR,MIA,6,117.0,0.68,0.15,2000,1.16
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,0,2.93
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,45,2.4
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,100,2.06
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,300,1.77
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,500,1.49
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,1000,1.36
+Vega Skyfreight,STR,YYZ,5,122.0,1.19,0.18,2000,1.24
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,0,4.69
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,45,3.67
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,100,3.02
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,300,2.38
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,500,2.09
+Wayzata Air Cargo,CGN,DEL,2,87.98,1.15,0.26,1000,1.64
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,0,3.99
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,45,3.27
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,100,2.65
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,300,2.09
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,500,1.61
+Wayzata Air Cargo,CGN,EZE,4,80.0,0.8,0.19,1000,1.19
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,0,5.59
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,45,5.09
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,100,4.48
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,300,3.9
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,500,2.81
+Wayzata Air Cargo,CGN,LIM,5,62.0,0.77,0.21,1000,2.5
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,0,4.54
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,45,3.27
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,100,2.49
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,300,2.29
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,500,2.04
+Wayzata Air Cargo,CGN,SCL,6,131.0,1.05,0.16,1000,1.61
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,0,4.46
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,45,3.84
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,100,3.26
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,300,3.0
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,500,2.46
+Wayzata Air Cargo,DUS,BOG,3,125.08,0.73,0.2,1000,2.02
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,0,4.55
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,45,3.96
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,100,3.6
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,300,2.59
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,500,2.36
+Wayzata Air Cargo,DUS,NBO,4,119.78,1.31,0.17,1000,1.86
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,0,3.32
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,45,2.72
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,100,2.34
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,300,1.76
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,500,1.27
+Wayzata Air Cargo,DUS,TLV,2,81.0,0.73,0.12,1000,0.98
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,0,3.27
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,45,2.71
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,100,2.06
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,300,1.73
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,500,1.42
+Wayzata Air Cargo,FRA,ATL,5,129.0,0.78,0.23,1000,1.08
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,0,3.44
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,45,2.64
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,100,2.2
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,300,1.67
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,500,1.48
+Wayzata Air Cargo,FRA,DOH,1,136.0,1.21,0.19,1000,1.15
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,0,4.93
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,45,4.39
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,100,3.47
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,300,2.85
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,500,2.39
+Wayzata Air Cargo,FRA,EZE,5,121.0,1.15,0.18,1000,2.03
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,0,3.39
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,45,2.92
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,100,2.22
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,300,1.73
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,500,1.49
+Wayzata Air Cargo,FRA,JFK,4,93.0,0.92,0.22,1000,1.25
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,0,2.85
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,45,2.48
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,100,1.81
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,300,1.45
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,500,1.23
+Wayzata Air Cargo,FRA,LAX,4,107.0,1.19,0.14,1000,0.97
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,0,3.49
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,45,2.65
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,100,2.09
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,300,1.88
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,500,1.45
+Wayzata Air Cargo,FRA,MEX,4,126.0,1.0,0.23,1000,1.25
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,0,4.29
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,45,3.64
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,100,3.31
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,300,2.75
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,500,2.45
+Wayzata Air Cargo,FRA,NRT,3,136.74,0.61,0.15,1000,2.04
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,0,4.81
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,45,3.56
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,100,2.67
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,300,1.98
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,500,1.62
+Wayzata Air Cargo,HAM,EZE,6,56.0,0.72,0.21,1000,1.2
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,0,3.78
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,45,2.95
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,100,2.66
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,300,2.18
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,500,1.7
+Wayzata Air Cargo,HAM,HKG,4,130.0,1.16,0.18,1000,1.36
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,0,2.89
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,45,2.63
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,100,2.35
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,300,2.02
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,500,1.7
+Wayzata Air Cargo,HAM,TLV,1,135.68,1.2,0.24,1000,1.3
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,0,4.49
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,45,3.46
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,100,3.09
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,300,2.41
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,500,1.96
+Wayzata Air Cargo,MUC,CAI,2,144.16,0.97,0.24,1000,1.49
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,0,2.76
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,45,2.51
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,100,1.86
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,300,1.67
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,500,1.2
+Wayzata Air Cargo,MUC,DXB,2,106.0,0.56,0.19,1000,1.0
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,0,4.94
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,45,4.35
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,100,3.87
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,300,3.33
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,500,2.83
+Wayzata Air Cargo,MUC,EZE,4,121.0,1.23,0.21,1000,2.04
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,0,3.73
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,45,3.02
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,100,2.3
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,300,1.75
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,500,1.31
+Wayzata Air Cargo,MUC,ICN,5,111.0,1.08,0.2,1000,0.94
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,0,3.77
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,45,3.17
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,100,2.47
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,300,2.1
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,500,1.93
+Wayzata Air Cargo,MUC,MIA,5,55.0,0.74,0.11,1000,1.51
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,0,4.2
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,45,3.53
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,100,2.61
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,300,2.25
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,500,1.85
+Wayzata Air Cargo,MUC,NRT,2,140.98,1.26,0.24,1000,1.52
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,0,4.27
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,45,3.63
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,100,3.16
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,300,2.84
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,500,2.22
+Wayzata Air Cargo,MUC,PEK,6,112.0,1.3,0.25,1000,1.75
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,0,5.61
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,45,4.88
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,100,3.57
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,300,3.17
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,500,2.76
+Wayzata Air Cargo,MUC,SCL,4,138.0,1.11,0.2,1000,2.4
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,0,4.41
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,45,4.01
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,100,3.29
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,300,2.6
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,500,2.39
+Wayzata Air Cargo,STR,SGN,5,71.0,0.95,0.12,1000,1.82
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,0,3.1
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,45,2.79
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,100,2.18
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,300,1.61
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,500,1.19
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,1000,0.89
+Quetzal Air Freight,CGN,DFW,2,76.0,1.14,0.24,2000,0.75
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,0,5.31
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,45,4.19
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,100,3.23
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,300,2.84
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,500,2.13
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,1000,1.83
+Quetzal Air Freight,CGN,LOS,4,139.0,1.16,0.22,2000,1.68
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,0,4.68
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,45,3.93
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,100,3.18
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,300,2.58
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,500,2.04
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,1000,1.53
+Quetzal Air Freight,DUS,HKG,4,108.0,1.26,0.13,2000,1.41
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,0,3.44
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,45,2.75
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,100,2.2
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,300,1.98
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,500,1.82
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,1000,1.6
+Quetzal Air Freight,FRA,BOM,3,127.0,0.56,0.11,2000,1.22
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,0,4.45
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,45,3.65
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,100,2.88
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,300,2.33
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,500,1.89
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,1000,1.55
+Quetzal Air Freight,FRA,LIM,5,106.0,1.26,0.18,2000,1.4
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,0,3.17
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,45,2.63
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,100,2.26
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,300,1.79
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,500,1.43
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,1000,1.26
+Quetzal Air Freight,FRA,RUH,2,129.0,0.95,0.18,2000,1.26
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,0,3.43
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,45,2.81
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,100,2.31
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,300,2.05
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,500,1.58
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,1000,1.17
+Quetzal Air Freight,HAM,JFK,1,116.0,0.83,0.23,2000,1.03
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,0,3.09
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,45,2.53
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,100,2.2
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,300,1.94
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,500,1.71
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,1000,1.47
+Quetzal Air Freight,MUC,DXB,2,97.0,1.01,0.25,2000,1.26
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,0,5.01
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,45,4.51
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,100,3.88
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,300,2.79
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,500,2.48
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,1000,1.96
+Quetzal Air Freight,MUC,EZE,5,132.0,1.28,0.24,2000,1.69
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,0,3.05
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,45,2.41
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,100,2.22
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,300,2.04
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,500,1.59
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,1000,1.16
+Quetzal Air Freight,MUC,RUH,3,70.0,0.74,0.14,2000,0.88
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,0,4.82
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,45,4.14
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,100,3.64
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,300,3.16
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,500,2.75
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,1000,2.39
+Quetzal Air Freight,STR,SCL,2,111.3,1.23,0.24,2000,2.39
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,0,6.28
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,45,5.34
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,100,4.28
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,300,3.89
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,500,3.27
+Danube Wings Cargo,CGN,SYD,4,134.0,1.13,0.23,1000,2.84
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,0,3.02
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,45,2.36
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,100,1.89
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,300,1.57
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,500,1.32
+Danube Wings Cargo,DUS,MEX,5,101.0,0.74,0.24,1000,1.0
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,0,5.78
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,45,4.45
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,100,3.92
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,300,2.9
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,500,2.2
+Danube Wings Cargo,DUS,SYD,5,110.0,0.69,0.16,1000,1.89
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,0,3.08
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,45,2.62
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,100,2.07
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,300,1.61
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,500,1.22
+Danube Wings Cargo,DUS,YYZ,4,62.0,0.88,0.21,1000,0.96
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,0,2.9
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,45,2.23
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,100,2.05
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,300,1.66
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,500,1.45
+Danube Wings Cargo,FRA,DXB,2,138.86,1.12,0.22,1000,1.33
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,0,4.57
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,45,3.34
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,100,2.74
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,300,2.52
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,500,1.92
+Danube Wings Cargo,FRA,EZE,2,126.0,1.06,0.21,1000,1.48
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,0,3.74
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,45,2.81
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,100,2.19
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,300,1.62
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,500,1.39
+Danube Wings Cargo,MUC,JNB,7,105.0,0.85,0.24,1000,1.22
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,0,4.1
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,45,3.73
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,100,3.21
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,300,2.57
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,500,2.36
+Danube Wings Cargo,MUC,TPE,5,69.0,1.15,0.21,1000,2.03
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,0,4.63
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,45,4.21
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,100,3.45
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,300,2.93
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,500,2.4
+Danube Wings Cargo,STR,SGN,5,83.0,1.09,0.11,1000,2.18
