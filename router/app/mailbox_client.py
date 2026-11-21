@@ -147,7 +147,7 @@ def mailbox_message_to_payload(msg: MailboxMessage) -> InputPayload:
 
 
 class MailboxClient:
-    """Client for polling GET /v1/mailbox/messages per openapi.json."""
+    """Client for the Hackloop mailbox API (poll, read one, send) per openapi.json."""
 
     def __init__(
         self,
@@ -157,27 +157,49 @@ class MailboxClient:
         self._settings = settings
         self._http_client = http_client
 
-    async def poll_messages(self, since_id: int = 0, limit: int = 100) -> MailboxPollResponse:
-        """Fetch messages with id > since_id (oldest first, max 200 per call)."""
+    async def _request(self, method: str, path: str, **kwargs: Any) -> httpx.Response:
         if not self._settings.hackloop_api_key:
-            raise ValueError("HACKLOOP_API_KEY is required to poll the mailbox API.")
-
-        bounded_since_id = max(0, since_id)
-        bounded_limit = max(1, min(200, limit))
-        url = f"{self._settings.hackloop_base_url.rstrip('/')}/v1/mailbox/messages"
+            raise ValueError("HACKLOOP_API_KEY is required to call the mailbox API.")
+        url = f"{self._settings.hackloop_base_url.rstrip('/')}{path}"
         headers = {"X-API-Key": self._settings.hackloop_api_key}
-        params = {"since_id": bounded_since_id, "limit": bounded_limit}
-
         if self._http_client is not None:
-            response = await self._http_client.get(url, headers=headers, params=params)
+            response = await self._http_client.request(method, url, headers=headers, **kwargs)
         else:
             async with httpx.AsyncClient(timeout=self._settings.mailbox_timeout_seconds) as client:
-                response = await client.get(url, headers=headers, params=params)
-
+                response = await client.request(method, url, headers=headers, **kwargs)
         response.raise_for_status()
+        return response
+
+    async def poll_messages(self, since_id: int = 0, limit: int = 100) -> MailboxPollResponse:
+        """Fetch messages with id > since_id (oldest first, max 200 per call)."""
+        bounded_since_id = max(0, since_id)
+        bounded_limit = max(1, min(200, limit))
+        response = await self._request(
+            "GET",
+            "/v1/mailbox/messages",
+            params={"since_id": bounded_since_id, "limit": bounded_limit},
+        )
         data = response.json()
         raw_messages = data.get("messages") or []
         messages = [parse_mailbox_message(item) for item in raw_messages]
         default_next = max([bounded_since_id, *(msg.id for msg in messages)])
         next_since_id = int(data.get("next_since_id", default_next))
         return MailboxPollResponse(messages=messages, next_since_id=next_since_id)
+
+    async def get_message(self, message_id: int) -> MailboxMessage:
+        """Read one mail by id. Also returns mail WE sent, e.g. our own quote."""
+        response = await self._request("GET", f"/v1/mailbox/messages/{message_id}")
+        return parse_mailbox_message(response.json())
+
+    async def send(
+        self, to: str, subject: str, body: str, in_reply_to: int | None = None
+    ) -> MailboxMessage:
+        """Send a mail from our address and return it as stored (with its new id).
+
+        Callers must respect `settings.send_enabled`; this method always sends.
+        """
+        payload: dict[str, Any] = {"to": to, "subject": subject, "body": body}
+        if in_reply_to is not None:
+            payload["in_reply_to"] = in_reply_to
+        response = await self._request("POST", "/v1/mailbox/messages", json=payload)
+        return parse_mailbox_message(response.json())

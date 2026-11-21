@@ -5,11 +5,17 @@ from pathlib import Path
 from typing import Any
 
 from app.schemas import (
+    AirOption,
     ClassificationDecision,
     EmailCategory,
     MailboxAttachment,
     MailboxMessage,
+    OutboundMail,
+    Shipment,
+    ShipmentRequest,
+    ShipmentState,
     StoredMessageRecord,
+    TruckerRequest,
 )
 
 _SINCE_ID_KEY = "mailbox_since_id"
@@ -77,6 +83,41 @@ class MessageStore:
                     message_id INTEGER PRIMARY KEY,
                     attempts INTEGER NOT NULL,
                     last_error TEXT
+                );
+
+                -- Quote workflow (docs/workflow.md section 8)
+                CREATE TABLE IF NOT EXISTS shipments (
+                    id INTEGER PRIMARY KEY,           -- customer's first mail id = team_reference
+                    customer TEXT NOT NULL, subject TEXT NOT NULL, language TEXT,
+                    state TEXT NOT NULL, request_json TEXT NOT NULL,
+                    goal TEXT, origin_airport TEXT, zone TEXT,
+                    clarifications INTEGER NOT NULL DEFAULT 0,
+                    answers_sent INTEGER NOT NULL DEFAULT 0,
+                    pricing_started_at TEXT,
+                    quote_json TEXT, quote_message_id INTEGER, chosen_option_json TEXT,
+                    booking_ref TEXT, booking_attempts INTEGER NOT NULL DEFAULT 0,
+                    last_booking_attempt_at TEXT,
+                    error TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS trucker_requests (
+                    out_message_id INTEGER PRIMARY KEY, shipment_id INTEGER NOT NULL,
+                    trucker TEXT NOT NULL, sent_at TEXT NOT NULL,
+                    answered INTEGER NOT NULL DEFAULT 0,
+                    price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
+                    reply_message_id INTEGER
+                );
+                CREATE TABLE IF NOT EXISTS air_options (
+                    shipment_id INTEGER NOT NULL, source TEXT NOT NULL,  -- portal | tariff
+                    airline TEXT NOT NULL, airline_code TEXT, origin TEXT, destination TEXT,
+                    billed_kg REAL, total_eur REAL NOT NULL, transit_days INTEGER NOT NULL,
+                    rate_id TEXT, valid_until TEXT, weight_kg REAL, volume_cbm REAL
+                );
+                -- Every mail the workflow composed. In a dry run sent_message_id stays NULL.
+                CREATE TABLE IF NOT EXISTS outbound_mails (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, shipment_id INTEGER,
+                    kind TEXT NOT NULL, recipient TEXT NOT NULL, subject TEXT NOT NULL,
+                    body TEXT NOT NULL, in_reply_to INTEGER, sent_message_id INTEGER,
+                    used_template INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL
                 );
                 """
             )
@@ -254,3 +295,220 @@ class MessageStore:
             processed_at=row["processed_at"],
             raw=json.loads(row["raw_json"]),
         )
+
+    # --- Quote workflow -------------------------------------------------------------------
+
+    def save_shipment(self, shipment: Shipment) -> Shipment:
+        """Insert or fully replace a shipment row; stamps created_at / updated_at."""
+        now = _utc_now_iso()
+        shipment.created_at = shipment.created_at or now
+        shipment.updated_at = now
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO shipments (
+                    id, customer, subject, language, state, request_json, goal, origin_airport,
+                    zone, clarifications, answers_sent, pricing_started_at, quote_json,
+                    quote_message_id, chosen_option_json, booking_ref, booking_attempts,
+                    last_booking_attempt_at, error, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    shipment.id,
+                    shipment.customer,
+                    shipment.subject,
+                    shipment.language,
+                    shipment.state.value,
+                    shipment.request.model_dump_json(),
+                    shipment.goal,
+                    shipment.origin_airport,
+                    shipment.zone,
+                    shipment.clarifications,
+                    shipment.answers_sent,
+                    shipment.pricing_started_at,
+                    json.dumps(shipment.quote) if shipment.quote is not None else None,
+                    shipment.quote_message_id,
+                    shipment.chosen_option.model_dump_json() if shipment.chosen_option else None,
+                    shipment.booking_ref,
+                    shipment.booking_attempts,
+                    shipment.last_booking_attempt_at,
+                    shipment.error,
+                    shipment.created_at,
+                    shipment.updated_at,
+                ),
+            )
+        return shipment
+
+    @staticmethod
+    def _row_to_shipment(row: sqlite3.Row) -> Shipment:
+        data = dict(row)
+        return Shipment(
+            **{k: v for k, v in data.items() if not k.endswith("_json")},
+            request=ShipmentRequest.model_validate_json(data["request_json"]),
+            quote=json.loads(data["quote_json"]) if data["quote_json"] else None,
+            chosen_option=(
+                AirOption.model_validate_json(data["chosen_option_json"])
+                if data["chosen_option_json"]
+                else None
+            ),
+        )
+
+    def get_shipment(self, shipment_id: int) -> Shipment | None:
+        with self._connect() as conn:
+            row = conn.execute("SELECT * FROM shipments WHERE id = ?", (shipment_id,)).fetchone()
+        return self._row_to_shipment(row) if row else None
+
+    def list_shipments(self, state: ShipmentState | None = None) -> list[Shipment]:
+        """All shipments, newest first, optionally only those in one state."""
+        where, params = ("WHERE state = ?", (state.value,)) if state else ("", ())
+        with self._connect() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM shipments {where} ORDER BY id DESC", params
+            ).fetchall()
+        return [self._row_to_shipment(row) for row in rows]
+
+    def save_trucker_request(self, request: TruckerRequest) -> None:
+        """Insert a pickup request we sent, or update it with the trucker's answer."""
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO trucker_requests (
+                    out_message_id, shipment_id, trucker, sent_at, answered, price_eur,
+                    pickup_hours, valid_until, ref, reply_message_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    request.out_message_id,
+                    request.shipment_id,
+                    request.trucker,
+                    request.sent_at,
+                    int(request.answered),
+                    request.price_eur,
+                    request.pickup_hours,
+                    request.valid_until,
+                    request.ref,
+                    request.reply_message_id,
+                ),
+            )
+
+    def trucker_requests(self, shipment_id: int) -> list[TruckerRequest]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM trucker_requests WHERE shipment_id = ? ORDER BY out_message_id",
+                (shipment_id,),
+            ).fetchall()
+        return [TruckerRequest(**dict(row)) for row in rows]
+
+    def find_trucker_request(self, reply_to_id: int | None, trucker: str) -> TruckerRequest | None:
+        """The pickup request a trucker's mail answers.
+
+        Normally that is the request with `out_message_id == reply_to_id`. In a dry run our
+        requests are never sent, so the reply answers someone else's mail; then the trucker's
+        newest unanswered request is used.
+        ponytail: sender-based fallback; exact ids are enough once this router is the sender.
+        """
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM trucker_requests WHERE out_message_id = ?", (reply_to_id,)
+            ).fetchone() or conn.execute(
+                """
+                SELECT * FROM trucker_requests WHERE trucker = ? AND answered = 0
+                ORDER BY sent_at DESC LIMIT 1
+                """,
+                (trucker,),
+            ).fetchone()
+        return TruckerRequest(**dict(row)) if row else None
+
+    def trucker_quote_history(self) -> list[tuple[str | None, float, float]]:
+        """Every stored trucker price as `(zone, price_eur, gross_kg)`, for the fallback price."""
+        with self._connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT s.zone, t.price_eur, json_extract(s.request_json, '$.gross_kg') AS kg
+                FROM trucker_requests t JOIN shipments s ON s.id = t.shipment_id
+                WHERE t.price_eur IS NOT NULL AND kg IS NOT NULL
+                """
+            ).fetchall()
+        return [(row["zone"], row["price_eur"], row["kg"]) for row in rows]
+
+    def replace_air_options(self, shipment_id: int, options: list[AirOption]) -> None:
+        with self._connect() as conn:
+            conn.execute("DELETE FROM air_options WHERE shipment_id = ?", (shipment_id,))
+            conn.executemany(
+                """
+                INSERT INTO air_options (
+                    shipment_id, source, airline, airline_code, origin, destination, billed_kg,
+                    total_eur, transit_days, rate_id, valid_until, weight_kg, volume_cbm
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        shipment_id, o.source, o.airline, o.airline_code, o.origin, o.destination,
+                        o.billed_kg, o.total_eur, o.transit_days, o.rate_id, o.valid_until,
+                        o.weight_kg, o.volume_cbm,
+                    )
+                    for o in options
+                ],
+            )  # fmt: skip
+
+    def air_options(self, shipment_id: int) -> list[AirOption]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM air_options WHERE shipment_id = ? ORDER BY total_eur",
+                (shipment_id,),
+            ).fetchall()
+        return [AirOption(**{k: v for k, v in dict(row).items() if k != "shipment_id"}) for row in rows]
+
+    @staticmethod
+    def _row_to_outbound(row: sqlite3.Row) -> OutboundMail:
+        data = dict(row)
+        return OutboundMail(to=data.pop("recipient"), **data)
+
+    def add_outbound(
+        self,
+        *,
+        kind: str,
+        to: str,
+        subject: str,
+        body: str,
+        shipment_id: int | None = None,
+        in_reply_to: int | None = None,
+        used_template: bool = False,
+    ) -> OutboundMail:
+        """Record a composed mail before it is sent (or instead of sending, in a dry run)."""
+        with self._connect() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO outbound_mails (
+                    shipment_id, kind, recipient, subject, body, in_reply_to, used_template,
+                    created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *
+                """,
+                (shipment_id, kind, to, subject, body, in_reply_to, int(used_template), _utc_now_iso()),
+            ).fetchone()
+        return self._row_to_outbound(row)
+
+    def mark_outbound_sent(self, outbound_id: int, sent_message_id: int) -> None:
+        with self._connect() as conn:
+            conn.execute(
+                "UPDATE outbound_mails SET sent_message_id = ? WHERE id = ?",
+                (sent_message_id, outbound_id),
+            )
+
+    def outbound_mails(self, shipment_id: int | None = None) -> list[OutboundMail]:
+        """Composed mails, oldest first, of one shipment or of all."""
+        where, params = ("WHERE shipment_id = ?", (shipment_id,)) if shipment_id else ("", ())
+        with self._connect() as conn:
+            rows = conn.execute(
+                f"SELECT * FROM outbound_mails {where} ORDER BY id", params
+            ).fetchall()
+        return [self._row_to_outbound(row) for row in rows]
+
+    def find_outbound(self, message_id: int) -> OutboundMail | None:
+        """Our mail with this mailbox id. A dry-run mail has the id `-outbound.id`."""
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM outbound_mails WHERE sent_message_id = ? OR id = ?",
+                (message_id, -message_id),
+            ).fetchone()
+        return self._row_to_outbound(row) if row else None
