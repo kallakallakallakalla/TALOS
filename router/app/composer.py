@@ -28,6 +28,24 @@ def plain_text(body: str) -> str:
     return re.sub(r"\s*—\s*", ", ", body).replace("–", "-").replace("**", "")
 
 
+# ponytail: stopword ratio, not a language detector. Catches the failure we saw (English
+# reply to a non-English customer); use a real detector if other mix-ups show up.
+_ENGLISH_WORDS = set(
+    "the and you your we our for is are to of with this that will can please on at it be "
+    "have has from by as an if any".split()
+)
+LANGUAGE_NAMES = {
+    "de": "German", "en": "English", "fr": "French", "es": "Spanish", "it": "Italian",
+    "nl": "Dutch", "pl": "Polish", "pt": "Portuguese", "tr": "Turkish", "zh": "Chinese",
+    "ja": "Japanese", "ar": "Arabic", "ru": "Russian", "cs": "Czech", "sv": "Swedish",
+}
+
+
+def looks_english(body: str) -> bool:
+    words = re.findall(r"[a-z']+", body.lower())
+    return len(words) >= 10 and sum(w in _ENGLISH_WORDS for w in words) / len(words) >= 0.15
+
+
 def reply_subject(original_subject: str) -> str:
     return original_subject if original_subject.lower().startswith("re:") else f"Re: {original_subject}"
 
@@ -60,11 +78,15 @@ class Composer:
         """
         # The prompt turns dates into "today until 15:34 UTC"; for that the model needs the date.
         instruction = f"Write the mail. Today is {datetime.now(UTC):%Y-%m-%d}."
-        if recipient_role == "customer" and thread:
-            # The detected language can be missing or stale; the customer's own words are not.
+        to_customer = recipient_role == "customer"
+        language = (language or "en").lower()
+        language_name = LANGUAGE_NAMES.get(language, language)
+        if to_customer:
+            # Seen live: told "de" with a German thread, the model still wrote English.
             instruction += (
-                " Write in the language the customer wrote their mail in (see the thread),"
-                " even if that differs from the Language field."
+                f" Write the whole mail, greeting and sign-off included, in {language_name},"
+                " the language the customer wrote in (see the thread); if the thread is in"
+                " another language, use that one."
             )
         mail, used_template = None, False
         for _attempt in range(2):
@@ -79,7 +101,7 @@ class Composer:
                     mail_kind=kind,
                     recipient_role=recipient_role,
                     recipient_name=recipient_name,
-                    language=language or "en",
+                    language=language_name,
                     signature=self._settings.mail_signature,
                     thread=thread,
                     facts_json=json.dumps(facts, indent=1, default=str),
@@ -89,14 +111,22 @@ class Composer:
                 continue
             draft = draft.model_copy(update={"body": plain_text(draft.body)})
             missing = missing_facts(facts, draft)
-            if not missing:
+            wrong_language = to_customer and language != "en" and looks_english(draft.body)
+            if not missing and not wrong_language:
                 mail = draft
                 break
-            logger.warning("Composed %s misses %s", kind, missing)
-            instruction += (
-                " Your previous draft left out these values; they must appear "
-                f"in the body exactly as written here: {missing}"
-            )
+            if missing:
+                logger.warning("Composed %s misses %s", kind, missing)
+                instruction += (
+                    " Your previous draft left out these values; they must appear "
+                    f"in the body exactly as written here: {missing}"
+                )
+            if wrong_language:
+                logger.warning("Composed %s in English, customer wrote %s", kind, language)
+                instruction += (
+                    f" Your previous draft was in English. The customer wrote in"
+                    f" {language_name}: write the whole mail in {language_name}."
+                )
 
         langfuse = get_client()
         if mail is None:
