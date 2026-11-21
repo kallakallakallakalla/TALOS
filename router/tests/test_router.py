@@ -483,23 +483,22 @@ async def test_poller_skips_a_mail_after_three_failed_attempts(tmp_path: Path) -
     assert store.get_message(2).decision.category == EmailCategory.RFQ
 
 
-def test_evaluation_runs_never_use_the_gateway(monkeypatch: pytest.MonkeyPatch) -> None:
-    """ADR 39: eval scripts call OpenAI directly, and refuse to run without their own key."""
-    from app import config
+def test_test_mode_never_uses_the_gateway_never_sends_and_has_its_own_database() -> None:
+    """ADR 39/40: a test run calls OpenAI directly, cannot send, and keeps its own shipments."""
+    from app.config import as_test_settings
 
-    gateway = Settings(decision_api_key="team-key", decision_api_base_url="https://api.start-hack.5u.ai/v1/gateway")
-    monkeypatch.setattr(config, "get_settings", lambda: gateway.model_copy(update={"evaluation_key": "sk-eval"}))
-    settings = config.evaluation_settings()
-    assert settings.decision_api_key == "sk-eval"
-    assert settings.decision_api_base_url == "https://api.openai.com/v1"
+    live = Settings(
+        decision_api_key="team-key", decision_api_base_url="https://api.start-hack.5u.ai/v1/gateway",
+        send_enabled=True, evaluation_key="sk-eval", sqlite_db_path="data/router.db",
+    )  # fmt: skip
+    test = as_test_settings(live)
+    assert test.decision_api_key == "sk-eval"
+    assert test.decision_api_base_url == "https://api.openai.com/v1"
+    assert test.send_enabled is False
+    assert test.sqlite_db_path == "data/test.db"
+    assert test.portal_rate_limit_per_minute == 3
 
-    monkeypatch.setattr(config, "get_settings", lambda: gateway.model_copy(update={"evaluation_key": ""}))
     with pytest.raises(RuntimeError, match="EVALUATION_KEY"):
-        config.evaluation_settings()
-
-    at_gateway = gateway.model_copy(
-        update={"evaluation_key": "sk-eval", "evaluation_api_base_url": "https://api.start-hack.5u.ai/v1/gateway"}
-    )
-    monkeypatch.setattr(config, "get_settings", lambda: at_gateway)
+        as_test_settings(live.model_copy(update={"evaluation_key": ""}))
     with pytest.raises(RuntimeError, match="gateway"):
-        config.evaluation_settings()
+        as_test_settings(live.model_copy(update={"evaluation_api_base_url": live.decision_api_base_url}))

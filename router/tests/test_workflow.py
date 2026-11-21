@@ -482,3 +482,17 @@ def test_match_shipment_uses_destination_weight_then_date_and_origin(tmp_path: P
     assert match_shipment(TrackingQuery(destination_iata="SGN", gross_kg=676), everything) is None
     assert match_shipment(TrackingQuery(destination_iata="EZE"), everything) is None  # weight missing
     assert match_shipment(TrackingQuery(booking_ref="BK-8Q49D0LR"), everything) is wanted
+
+
+@pytest.mark.anyio
+async def test_backfill_closes_dry_run_shipments_so_cutover_cannot_book_them(tmp_path: Path) -> None:
+    from scripts.backfill_legacy import LEGACY_NOTE, backfill
+
+    h = Harness(tmp_path)  # dry run
+    await h.receive(ROUND_4_RFQ)
+    for reply_id in ROUND_4_TRUCKER_REPLIES:
+        await h.receive(reply_id)
+    assert h.shipment().state == ShipmentState.QUOTED and h.shipment().quote_message_id < 0
+
+    assert backfill(h.store, [], Reference(h.settings.start_kit_dir)) == (0, 1)
+    assert (h.shipment().state, h.shipment().error) == (ShipmentState.FAILED, LEGACY_NOTE)

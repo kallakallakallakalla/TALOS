@@ -40,6 +40,12 @@ class Settings(BaseSettings):
     # scored production usage.
     evaluation_key: str = ""
     evaluation_api_base_url: str = "https://api.openai.com/v1"
+    # TEST_MODE=true runs the whole router as a test: nothing is sent or booked, LLM calls
+    # use EVALUATION_KEY directly, shipments go to their own database, and portal reads are
+    # throttled so the live process keeps most of the shared limit.
+    test_mode: bool = False
+    test_sqlite_db_path: str = "data/test.db"
+    test_portal_rate_limit_per_minute: int = 3
 
     # Input API (empty = use built-in placeholder)
     input_api_url: str = ""
@@ -76,28 +82,42 @@ class Settings(BaseSettings):
     portal_timeout_seconds: float = 10.0
 
 
-def get_settings() -> Settings:
-    """Return a fresh Settings instance."""
-    return Settings()
+def as_test_settings(settings: Settings) -> Settings:
+    """The same settings, made safe for a test run (ADR 39, ADR 40).
 
+    - LLM calls go straight to OpenAI with EVALUATION_KEY, never through the scored gateway
+    - nothing is sent and nothing is booked
+    - a separate database, so test shipments never mix with production ones
+    - portal rate reads are throttled
 
-def evaluation_settings() -> Settings:
-    """Settings for test, eval and replay runs: LLM calls go straight to OpenAI.
-
-    Raises instead of falling back to the gateway, so a missing key can never turn a test
-    run into scored production usage.
+    Raises instead of falling back to the gateway when the evaluation key is missing.
     """
-    settings = get_settings()
     if not settings.evaluation_key:
-        raise RuntimeError("EVALUATION_KEY is not set; refusing to run evaluations on the gateway.")
+        raise RuntimeError("EVALUATION_KEY is not set; refusing to run a test on the gateway.")
     if settings.evaluation_api_base_url.startswith(settings.hackloop_base_url):
         raise RuntimeError("EVALUATION_API_BASE_URL points at the challenge gateway.")
     return settings.model_copy(
         update={
             "decision_api_key": settings.evaluation_key,
             "decision_api_base_url": settings.evaluation_api_base_url,
+            "send_enabled": False,
+            "sqlite_db_path": settings.test_sqlite_db_path,
+            "portal_rate_limit_per_minute": min(
+                settings.portal_rate_limit_per_minute, settings.test_portal_rate_limit_per_minute
+            ),
         }
     )
+
+
+def get_settings() -> Settings:
+    """Settings from the environment; in TEST_MODE they are the test-safe variant."""
+    settings = Settings()
+    return as_test_settings(settings) if settings.test_mode else settings
+
+
+def evaluation_settings() -> Settings:
+    """Settings for eval, replay and sample scripts: always the test-safe variant."""
+    return as_test_settings(Settings())
 
 
 def configure_langfuse_env(settings: Settings) -> bool:

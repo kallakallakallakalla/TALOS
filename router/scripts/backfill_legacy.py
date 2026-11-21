@@ -9,6 +9,7 @@ After it ran, the router starts with the next new mail and never acts on an olde
 - every customer thread gets a closed shipment (`FAILED`, note "legacy: ..."), so a late
   reply in an old thread (thanks, accept, more details) finds a closed shipment and
   triggers nothing: no second quote, no booking
+- every shipment left over from a dry run (quote never sent, booking "DRY-RUN") is closed too
 
 Read-only on the platform, idempotent, and it never touches a shipment that already exists.
 """
@@ -68,6 +69,14 @@ def backfill(store: MessageStore, mails: list[MailboxMessage], reference: Refere
                     error=LEGACY_NOTE,
                 )
             )
+            shipments_closed += 1
+    # A shipment from a dry run was never really quoted or booked. Left open, a later
+    # "please book" from the customer would book it for real after cutover.
+    for shipment in store.list_shipments():
+        dry_run = (shipment.quote_message_id or 0) < 0 or shipment.booking_ref == "DRY-RUN"
+        if dry_run and shipment.error != LEGACY_NOTE:
+            shipment.state, shipment.error = ShipmentState.FAILED, LEGACY_NOTE
+            store.save_shipment(shipment)
             shipments_closed += 1
     return mails_added, shipments_closed
 

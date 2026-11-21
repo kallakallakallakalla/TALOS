@@ -165,7 +165,7 @@ Known gap: a request the old process quoted, but whose acceptance arrives only a
 
 ## What is open
 
-1. **Step 9, live dry run:** restart the local router with the new code (`SEND_ENABLED=false`) and watch 2 live rounds: `GET /shipments`, Langfuse sessions. It shares the portal rate limit with the old process.
-2. **Step 10, cutover:** [workflow.md](workflow.md) section 12. Stop the old process right after a round closes, set `SEND_ENABLED=true`, restart.
+1. **Step 9, live dry run: running since 2026-11-21 17:45 UTC** in test mode (`TEST_MODE=true`, ADR 40) on port 8000: own database `router/data/test.db`, LLM calls on `EVALUATION_KEY`, nothing sent or booked. Watch `GET /shipments` and `router/data/router.log`.
+2. **Step 10, cutover:** stop the old process right after a round closes; set `TEST_MODE=false` and `SEND_ENABLED=true` in `router/.env`; run `scripts/backfill_legacy.py`; restart the router. See [workflow.md](workflow.md) section 12.
 3. **Merge** `quote-workflow` into `main`.
 4. Backlog from HANDOFF.md: dangerous goods + attachments, tariff updates.

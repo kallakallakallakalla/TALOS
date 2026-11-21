@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–39 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–40 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -43,6 +43,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 | 37 | Tracking questions are answered from our own records, without asking carriers | User |
 | 38 | Trucker requests are a fixed template, not LLM-written (amends 13) | User |
 | 39 | Tests, evals and replays call OpenAI directly with `EVALUATION_KEY`, never the gateway (amends 27) | User |
+| 40 | `TEST_MODE=true` runs the live router as a test (amends 30) | User (test mode) + proposed (what it switches) |
 
 ---
 
@@ -293,3 +294,14 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Decision (user):** `EVALUATION_KEY` in `router/.env` is a separate OpenAI key for every test, evaluation and replay run from now on. It is used directly against `https://api.openai.com/v1`. **It must never be registered at the gateway** (`POST /v1/gateway/openai-key`).
 - **How:** `config.evaluation_settings()` swaps the key and base URL and is used by `eval_prompts.py`, `replay.py`, `compose_samples.py` and `build_tariffs.py`. It raises if the key is missing or if the evaluation URL points at the gateway, so a test run can't fall back to scored usage. The running router is unchanged: it uses `DECISION_API_KEY` through the gateway.
 - **Checked:** `gpt-6-luna` is available with this key directly at OpenAI; the booking-extractor eval scored 12/12 on that route.
+
+### 40 · `TEST_MODE=true` runs the live router as a test
+
+- **Context:** the user asked to restart the servers "in test mode". A new-code dry run had already been running on port 8000 since about 17:14 UTC, started outside this session: it used the gateway for its LLM calls and wrote 6 dry-run shipments into the production database `router.db`.
+- **Decision:** one switch, `TEST_MODE=true` in `router/.env`, makes the whole router test-safe (`config.as_test_settings`):
+  - nothing is sent, nothing is booked (`send_enabled` is forced to false)
+  - LLM calls use `EVALUATION_KEY` directly at OpenAI, not the scored gateway (ADR 39)
+  - shipments and mails go to `data/test.db`, so test shipments never mix with production ones
+  - portal rate reads are throttled to 3 per minute (ADR 28)
+- **This is step 9 of the build order** (live dry run), which ADR 30 had postponed.
+- **Cutover from test mode:** set `TEST_MODE=false` and `SEND_ENABLED=true`, run `scripts/backfill_legacy.py`, restart. The backfill now also closes every shipment left over from a dry run (quote never sent, booking "DRY-RUN"); otherwise a later "please book" could book such a shipment for real.

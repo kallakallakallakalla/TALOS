@@ -54,6 +54,17 @@ uvicorn app.main:app --port 8000
 
 Every setting is listed with its default in `.env.example` and `app/config.py`.
 
+## Modes
+
+| `router/.env` | Sends and books | LLM calls | Database |
+|---|---|---|---|
+| `TEST_MODE=true` | no | `EVALUATION_KEY`, directly at OpenAI | `data/test.db` |
+| neither set (default) | no (dry run) | team key via the scored gateway | `data/router.db` |
+| `SEND_ENABLED=true` | **yes** | team key via the scored gateway | `data/router.db` |
+
+Before the first start in a mode, and at cutover, run `scripts/backfill_legacy.py`: it marks all
+mail already in the mailbox as handled, so the router starts with the next new mail.
+
 ## Endpoints
 
 - `GET /shipments[?state=QUOTED]`, `GET /shipments/{id}`: shipments with their trucker
