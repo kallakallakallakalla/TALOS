@@ -840,3 +840,13 @@ async def test_trucker_chooser_rule_setting_makes_no_llm_call(tmp_path: Path) ->
     await h.receive(ROUND_4_RFQ)
     await h.truckers_reply()
     assert "TruckerChoice" not in [s for s, _, _ in h.llm.calls] and h.shipment().quote["truck_eur"] == 187.97
+
+
+def test_offer_pdf_is_a_valid_pdf() -> None:
+    from app.offer_pdf import offer_pdf
+
+    pdf = offer_pdf("Angebot CGN -> ORD", "Grüße (all-in) 1.234,00 EUR\n" + "Zeile\n" * 130)
+    assert pdf.startswith(b"%PDF-1.4") and pdf.rstrip().endswith(b"%%EOF")
+    assert b"/Count 3" in pdf  # 132 body lines + title -> 3 pages of 60
+    start = int(pdf.rsplit(b"startxref\n", 1)[1].split()[0])
+    assert pdf[start:].startswith(b"xref")

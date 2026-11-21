@@ -197,7 +197,8 @@ class MailboxClient:
         return (await self._request("GET", path)).content
 
     async def send(
-        self, to: str, subject: str, body: str, in_reply_to: int | None = None
+        self, to: str, subject: str, body: str, in_reply_to: int | None = None,
+        attachments: list[dict[str, str]] | None = None,
     ) -> MailboxMessage:
         """Send a mail from our address and return it as stored (with its new id).
 
@@ -206,5 +207,7 @@ class MailboxClient:
         payload: dict[str, Any] = {"to": to, "subject": subject, "body": body}
         if in_reply_to is not None:
             payload["in_reply_to"] = in_reply_to
+        if attachments:
+            payload["attachments"] = attachments  # [{filename, content_type, content_base64}]
         response = await self._request("POST", "/v1/mailbox/messages", json=payload)
         return parse_mailbox_message(response.json())

@@ -85,6 +85,7 @@ Kind regards
 
 What each kind must contain
 - quote: lead with the all-in price and the answer to their main priority.
+  If FACTS.offer_attached_as_pdf is true, say in one sentence that the offer is attached as PDF.
   FACTS.customer_priority "fastest" or "cheapest" means this is the fastest or the
   cheapest option we have: say so, with airline, route and transit time. Without it, lead
   with price, airline, route and transit time, plus the date they asked about. Then, kept

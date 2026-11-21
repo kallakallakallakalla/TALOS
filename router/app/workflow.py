@@ -11,6 +11,7 @@ what happens and who gets which mail; LLMs only read mail (extractors) and write
 """
 
 import asyncio
+import base64
 import logging
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -23,6 +24,7 @@ from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
 from app.mailbox_client import MailboxClient
+from app.offer_pdf import offer_pdf
 from app.portal_client import BookByEmail, PortalClient, PortalDown, PortalError, RateExpired
 from app.reference import Reference, zone_of
 from app.schemas import (
@@ -748,9 +750,12 @@ class Workflow:
             "valid_until": valid_until,
             "must_appear": [price],
         }
+        if request.wants_pdf:
+            facts["offer_attached_as_pdf"] = True
         out_id = await self._compose_and_send(
-            "quote", facts, shipment, to=shipment.customer, in_reply_to=shipment.id
-        )
+            "quote", facts, shipment, to=shipment.customer, in_reply_to=shipment.id,
+            pdf=request.wants_pdf,
+        )  # fmt: skip
         shipment.quote = {**quote, "valid_until": valid_until}
         shipment.chosen_option = air
         shipment.quote_message_id = out_id
@@ -1194,7 +1199,8 @@ class Workflow:
         return f"Subject: {mail.subject}\n\n{mail.body}"[:_THREAD_MAX_CHARS]
 
     async def _compose_and_send(
-        self, kind: str, facts: dict[str, Any], shipment: Shipment, *, to: str, in_reply_to: int
+        self, kind: str, facts: dict[str, Any], shipment: Shipment, *, to: str, in_reply_to: int,
+        pdf: bool = False,
     ) -> int:
         """Write a mail to the customer in their thread and language, and send it."""
         stored = self._store.get_message(in_reply_to)
@@ -1208,7 +1214,12 @@ class Workflow:
             thread=thread,
             reply_to_subject=shipment.subject,
         )
-        return await self._send(kind, to, mail, shipment.id, in_reply_to, used_template)
+        files = None
+        if pdf:
+            content = base64.b64encode(offer_pdf(mail.subject, mail.body)).decode()
+            files = [{"filename": f"offer-{shipment.id}.pdf", "content_type": "application/pdf",
+                            "content_base64": content}]  # fmt: skip
+        return await self._send(kind, to, mail, shipment.id, in_reply_to, used_template, files)
 
     @observe(name="mail.send")
     async def _send(
@@ -1219,6 +1230,7 @@ class Workflow:
         shipment_id: int | None,
         in_reply_to: int | None,
         used_template: bool,
+        files: list[dict[str, str]] | None = None,
     ) -> int:
         """Record the mail, and send it unless this is a dry run. Returns its mailbox id.
 
@@ -1232,6 +1244,6 @@ class Workflow:
         if not self._settings.send_enabled:
             logger.info("DRY RUN, not sent: %s to %s (shipment %s)", kind, to, shipment_id)
             return -outbound.id
-        sent = await self._mailbox.send(to, mail.subject, mail.body, in_reply_to)
+        sent = await self._mailbox.send(to, mail.subject, mail.body, in_reply_to, files)
         self._store.mark_outbound_sent(outbound.id, sent.id)
         return sent.id

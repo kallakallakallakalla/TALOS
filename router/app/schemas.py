@@ -216,6 +216,7 @@ class ShipmentRequest(BaseModel):
     excluded_carriers: list[str] = Field(default_factory=list)
     goal: Goal | None = None
     extra_questions: list[str] = Field(default_factory=list)
+    wants_pdf: bool = False  # the customer asks for the offer as a PDF attachment
     contact_name: str | None = None
     company: str | None = None
     language: str | None = None

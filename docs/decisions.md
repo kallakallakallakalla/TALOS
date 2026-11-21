@@ -491,3 +491,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Why the LLM loses:** truckers state their lead time "from order to collection"; we order days before the ready date, so the LLM correctly finds that every trucker makes the flight and takes the cheapest. The scorer expects a faster, dearer trucker in many rounds (31, 47, 57, 66). That preference is in none of the facts we get, so no prompt over these facts follows it.
 - **Hence:** `TRUCKER_CHOOSER=rule` by default. Switch to `llm` only after the eval shows it at least as good as the rule.
 
+
+### ADR 56: Offer as PDF only on request
+
+The RFQ extractor sets `wants_pdf` when the customer asks for the offer as a PDF. Only then does the quote mail carry `offer-<id>.pdf` (the composed quote text, built with the stdlib in `app/offer_pdf.py`) as a mailbox attachment, and the mail says so in one sentence. Without the request, no PDF is created or sent.
