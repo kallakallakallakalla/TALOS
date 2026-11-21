@@ -45,6 +45,11 @@ class RateExpired(PortalError):
     """Booking returned 410: the rate_id is older than ~15 minutes. Fetch a fresh rate."""
 
 
+class BookByEmail(PortalError):
+    """Booking returned 503 ("book by email with <airline>"): the booking API is closed for
+    this airline, so the airline is asked by mail with the rate_id."""
+
+
 class PortalClient:
     """Rate portal API. `rate()` is throttled to the shared 10 reads per minute."""
 
@@ -179,6 +184,8 @@ class PortalClient:
         )
         if response.status_code == 410:
             raise RateExpired(rate_id)
+        if response.status_code == 503:
+            raise BookByEmail(f"booking {rate_id}: 503 {response.text[:200]}")
         if response.status_code not in (200, 201):
             raise PortalError(f"booking {rate_id}: {response.status_code} {response.text[:200]}")
         return response.json()

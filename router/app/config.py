@@ -76,6 +76,9 @@ class Settings(BaseSettings):
     # Quote when every asked trucker has answered, or after this many seconds with whatever
     # came back (nothing came back: fallback trucker price).
     trucker_wait_seconds: float = 60.0
+    # A trucker that picks up within this many hours counts as in time for the flight; the
+    # cheapest of those is used (ADR 49). Fitted to the board's accuracy points, not documented.
+    trucker_pickup_cutoff_hours: float = 14.0
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3

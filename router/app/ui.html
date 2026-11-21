@@ -88,7 +88,7 @@ const STEP_OF = { NEW:0, AWAITING_INFO:0, PRICING:1, QUOTED:3, BOOKING:4, BOOKED
 // ponytail: the workflow stores booking_ref 'DRY-RUN' when it only pretended to book (workflow.py DRY_RUN_BOOKING_REF)
 const stateOf = s => s.booking_ref === 'DRY-RUN' ? 'DRY_BOOKED' : s.state;
 let sending = 'off';
-let source = 'live', shipments = [], current = null;
+let source = 'live', shipments = [], tracking = [], current = null;
 const $ = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const el = (tag, cls, ...kids) => { const e = $(tag, cls); e.append(...kids.filter(k => k != null)); return e; };
 const eur = v => v == null ? '–' : new Intl.NumberFormat('en-GB', { style:'currency', currency:'EUR' }).format(v);
@@ -111,23 +111,59 @@ async function load() {
     ? 'Simulation of the recorded mailbox — nothing was really sent or booked'
     : sending === 'on' ? 'Real mailbox · TALOS sends and books for real · refreshes every 15 s'
     : 'Real mailbox · TALOS only drafts: nothing is sent or booked · refreshes every 15 s';
+  try { tracking = await api('/tracking'); } catch { tracking = []; }
   try { shipments = await api('/shipments'); } catch (e) { shipments = []; document.getElementById('main').replaceChildren($('div', 'empty', e.message)); }
   renderList();
-  if (current) showShipment(current); else showOverview();
+  if (typeof current === 'string') showTracking(current); else if (current) showShipment(current); else showOverview();
 }
 
 function renderList() {
   const nav = document.getElementById('list'); nav.replaceChildren();
-  if (!shipments.length) nav.append($('div', 'empty', 'No conversations yet.'));
-  for (const s of shipments) {
-    const d = el('div', 'item' + (s.id === current ? ' on' : ''),
-      el('div', 'top', $('span', null, company(s)), $('span', null, s.quote ? eur(s.quote.all_in_eur) : '')),
-      $('div', 'sub', `${route(s)} · ${s.subject}`),
-      s.quote && $('div', 'sub', `✈ ${s.quote.airline} · 🚚 ${trucker(s.quote)}`),
-      el('div', 'row', badge(stateOf(s)), $('span', 'sub', when(s.updated_at))));
-    d.onclick = () => { current = s.id; renderList(); showShipment(s.id); };
-    nav.append(d);
-  }
+  const items = [
+    ...shipments.map(s => ({ t: s.created_at, node: shipmentItem(s) })),
+    ...tracking.map(r => ({ t: r.question.received_at ?? r.question.processed_at, node: trackingItem(r) })),
+  ].sort((a, b) => b.t.localeCompare(a.t));
+  if (!items.length) nav.append($('div', 'empty', 'No conversations yet.'));
+  nav.append(...items.map(i => i.node));
+}
+
+function shipmentItem(s) {
+  const d = el('div', 'item' + (s.id === current ? ' on' : ''),
+    el('div', 'top', $('span', null, company(s)), $('span', null, s.quote ? eur(s.quote.all_in_eur) : '')),
+    $('div', 'sub', `${route(s)} · ${s.subject}`),
+    s.quote && $('div', 'sub', `✈ ${s.quote.airline} · 🚚 ${trucker(s.quote)}`),
+    el('div', 'row', badge(stateOf(s)), $('span', 'sub', when(s.updated_at))));
+  d.onclick = () => { current = s.id; renderList(); showShipment(s.id); };
+  return d;
+}
+
+// ponytail: tracking items use the key 't<message id>' so they never clash with numeric shipment ids
+function trackingItem(r) {
+  const m = r.question, o = r.answer, key = 't' + m.message_id;
+  const [label, tone] = !o ? ['Not answered', 'bad'] : !o.sent_message_id ? ['Draft · not sent', 'wait']
+    : o.shipment_id ? ['Answered', 'good'] : ['Answered · no match', 'wait'];
+  const d = el('div', 'item' + (current === key ? ' on' : ''),
+    el('div', 'top', $('span', null, '📍 Tracking question'), $('span', null, o?.shipment_id ? '#' + o.shipment_id : '')),
+    $('div', 'sub', (m.body ?? '').replace(/\s+/g, ' ').slice(0, 90)),
+    el('div', 'row', $('span', 'badge ' + tone, label), $('span', 'sub', when(m.received_at))));
+  d.onclick = () => { current = key; renderList(); showTracking(key); };
+  return d;
+}
+
+function showTracking(key) {
+  const r = tracking.find(x => 't' + x.question.message_id === key);
+  const main = document.getElementById('main');
+  const back = $('a', 'back', '← Overview'); back.onclick = () => { current = null; renderList(); showOverview(); };
+  if (!r) { main.replaceChildren(back, $('div', 'empty', 'Tracking question not found.')); return; }
+  const m = r.question, o = r.answer, chat = $('div', 'chat');
+  chat.append(bubble('', m.sender?.split('@')[0], 'Tracking question', null, m.received_at, m.body, []));
+  chat.append(o
+    ? bubble('us', 'TALOS', o.shipment_id ? `Answer · shipment #${o.shipment_id}` : 'Answer · no shipment matched', o.to, o.created_at, o.body,
+        [!o.sent_message_id && $('span', 'badge wait', source === 'replay' ? 'Simulated' : 'Draft · not sent')])
+    : $('div', 'note', 'Not answered'));
+  const link = o?.shipment_id && shipments.some(s => s.id === o.shipment_id) && $('a', 'back', `Open shipment #${o.shipment_id} →`);
+  if (link) link.onclick = () => { current = o.shipment_id; renderList(); showShipment(o.shipment_id); };
+  main.replaceChildren(back, $('h2', null, m.subject || 'Tracking question'), link || null, el('div', 'card', $('h3', null, 'The conversation'), chat));
 }
 
 async function showOverview() {
@@ -210,12 +246,15 @@ async function showShipment(id) {
   if (r.air_options.length) {
     const max = Math.max(...r.air_options.map(o => o.total_eur));
     const chosen = s.chosen_option ?? (q && { airline: q.airline });
-    cards.push(el('div', 'card', $('h3', null, `Flights we compared (${r.air_options.length})`),
-      ...[...r.air_options].sort((a, b) => a.total_eur - b.total_eur).map(o => {
+    cards.push(el('div', 'card', $('h3', null, `Flights we compared (${r.air_options.length}) · click an airline to see what we asked`),
+      ...[...r.air_options].sort((a, b) => a.total_eur - b.total_eur).flatMap(o => {
         const fill = $('div', 'fill'); fill.style.width = (100 * o.total_eur / max) + '%';
-        return el('div', 'opt' + (chosen && o.airline === chosen.airline ? ' chosen' : ''),
+        const row = el('div', 'opt' + (chosen && o.airline === chosen.airline ? ' chosen' : ''),
           $('span', null, (chosen && o.airline === chosen.airline ? '✓ ' : '') + o.airline), el('div', 'track', fill),
           $('span', null, eur(o.total_eur)), $('span', 'sub', `${o.transit_days} d`));
+        const ask = airlineAsk(o, r.outbound); ask.hidden = true;
+        row.style.cursor = 'pointer'; row.onclick = () => { ask.hidden = !ask.hidden; };
+        return [row, ask];
       })));
   }
 
@@ -230,6 +269,28 @@ async function showShipment(id) {
   main.replaceChildren(back, el('h2', null, $('span', null, company(s) + ' · '), $('span', null, s.subject)),
     el('div', null, badge(stateOf(s))), steps, ...cards,
     el('details', null, $('summary', null, 'Technical details'), $('pre', null, JSON.stringify(r, null, 2))));
+}
+
+// What we asked one airline and what came back. The question is rebuilt from the stored answer:
+// the portal answer keeps the exact lane, weight and volume we asked for.
+function airlineAsk(o, outbound) {
+  const box = $('div', 'card'); box.style.margin = '4px 0 10px'; box.style.background = 'var(--bg)';
+  const portal = o.source === 'portal';
+  box.append($('h3', null, portal ? `We asked ${o.airline} on the rate portal` : `We looked up ${o.airline} in its price list`),
+    el('div', 'facts',
+      fact('Route', `${o.origin ?? '?'} → ${o.destination ?? '?'}`),
+      fact('Weight asked', o.weight_kg != null ? `${o.weight_kg} kg` : '–'),
+      fact('Volume asked', o.volume_cbm != null ? `${o.volume_cbm} m³` : '–'),
+      fact('Billed weight', o.billed_kg != null ? `${o.billed_kg} kg` : '–')),
+    $('h3', null, portal ? 'Their answer' : 'Price list says'),
+    el('div', 'facts',
+      fact('Price (airport to airport)', eur(o.total_eur)), fact('Transit', `${o.transit_days} day${o.transit_days === 1 ? '' : 's'}`),
+      fact('Valid until', o.valid_until ? when(o.valid_until) : '–'), portal ? fact('Rate number', o.rate_id) : null));
+  if (portal) box.append($('div', 'sub', `Request: GET /v1/portal/rates?origin=${o.origin}&destination=${o.destination}&airline=${o.airline_code}&weight_kg=${o.weight_kg}&volume_cbm=${o.volume_cbm}`));
+  // Airlines without the portal are booked by mail; show that mail too.
+  for (const m of outbound.filter(m => m.kind === 'booking_request' && m.body.includes(o.airline)))
+    box.append($('h3', null, `Booking mail to ${m.to.split('@')[0]}${m.sent_message_id ? '' : ' (draft, not sent)'}`), $('div', 'msg body', m.body));
+  return box;
 }
 
 const fact = (label, value) => el('div', null, $('span', null, label), $('b', null, value ?? '–'));

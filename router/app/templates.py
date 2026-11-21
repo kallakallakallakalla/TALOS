@@ -102,6 +102,12 @@ def _answer(f: dict[str, Any]) -> tuple[str, str]:
 
 
 def _tracking_answer(f: dict[str, Any]) -> tuple[str, str]:
+    if f.get("never_booked"):
+        return (
+            "Your shipment status",
+            "thank you for your message. We have no tracking information for you, as no "
+            "shipment has been booked with us.",
+        )
     if not f.get("found"):
         return (
             "Your shipment status",

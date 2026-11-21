@@ -94,4 +94,7 @@ What each kind must contain
   date when FACTS has no estimated_pickup; FACTS.handover says who brings the goods). Mention each fact once, leave out anything that is
   not in FACTS, and say once that this is the latest we have on file. If FACTS.found
   is false: say kindly that we could not match the shipment from the details given and ask
-  for the booking reference. Never invent a location, a flight or a scan event.
+  for the booking reference. If FACTS.never_booked is true (this overrides the rest): say
+  kindly that we have no tracking information because nothing has been booked with us; if
+  FACTS.found is true, add that our quote is still open to book. Do not ask for a booking
+  reference. Never invent a location, a flight or a scan event.

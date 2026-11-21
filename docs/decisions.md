@@ -382,3 +382,13 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Phone number:** `+49 89 99998 417` is from the range the Bundesnetzagentur reserves for media productions (089 99998 000 to 999). It reaches nobody. A real number goes into `MAIL_FOOTER`.
 - **Not measured:** the five examples were written by hand, not by `gpt-6-luna`; no `EVALUATION_KEY` was available in the session. `scripts/compose_samples.py` is the check before the prompt gets the production label.
 
+
+### ADR 49: The trucker is the cheapest one that picks up in time, for both goals
+
+**Decided 2026-11-21.** Replaces the trucker part of ADR 08 (cheapest price for "cheapest", shortest pickup for "fastest").
+
+- **Rule:** of the truckers that answered, take the cheapest one whose pickup time is at most `TRUCKER_PICKUP_CUTOFF_HOURS` (default 14). If none is that fast, take the cheapest of all. The goal no longer changes the trucker; it still chooses the airline.
+- **Why:** `GET /v1/board/me` gives accuracy points per round, and 45 × (1 − 10 × deviation) reproduces them. Working backwards, the expected price in the scored pickup rounds is our air price plus one specific trucker offer, to the cent, and that trucker was neither always the cheapest nor always the fastest. Our reading: every trucker that gets the goods to the flight counts the same, and the cheapest of those is expected.
+- **Evidence (16 scored rounds with pickup):** the rule picks the expected trucker in 13, is within 3 EUR in round 51, and is wrong in rounds 13 and 36 (both Kiel → HAM, where a 19 h trucker was expected, so the real cut-off was higher there). The old rules were right in 8.
+- **Not known:** what sets the scorer's cut-off. 14 hours is fitted to past rounds, not documented anywhere. Rejected rounds give no points, so the four `too_low` rejections (14, 46, 49, 50) cannot be checked.
+- **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.

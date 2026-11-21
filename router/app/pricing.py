@@ -55,20 +55,21 @@ def pick_best(
     goal: Goal | None,
     ready_date: date | None = None,
     deliver_by: date | None = None,
+    pickup_cutoff_hours: float = 14.0,
 ) -> tuple[AirOption, TruckerRequest | None]:
     """Choose the air option and the trucker for a goal (ADR 08). No goal means cheapest.
 
-    fastest:  fewest transit days, then shortest pickup time, price breaks ties.
-    cheapest: lowest air total plus lowest trucker price.
+    fastest:  fewest transit days, price breaks ties.
+    cheapest: lowest air total.
+    trucker (ADR 49, both goals): the cheapest one that picks up within the cut-off (it makes
+    the flight, so a faster one adds nothing); if none does, the cheapest of all.
     deliver_by (ADR 44): only options that arrive by then; if none does, the fastest one.
     `trucks` may be empty (customer delivers, or no trucker answered).
     """
     priced = [t for t in trucks if t.price_eur is not None]
     hours = lambda t: math.inf if t.pickup_hours is None else t.pickup_hours  # noqa: E731
-    if goal == "fastest":
-        best_truck = min(priced, key=lambda t: (hours(t), t.price_eur), default=None)
-    else:
-        best_truck = min(priced, key=lambda t: t.price_eur, default=None)
+    in_time = [t for t in priced if hours(t) <= pickup_cutoff_hours]
+    best_truck = min(in_time or priced, key=lambda t: (t.price_eur, hours(t)), default=None)
     fastest = min(air, key=lambda o: (o.transit_days, o.total_eur))
     if deliver_by and ready_date:
         pickup = best_truck.pickup_hours if best_truck else None

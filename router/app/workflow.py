@@ -23,7 +23,7 @@ from app.composer import Composer
 from app.config import Settings
 from app.extractors import Extractors, mail_text, missing_fields
 from app.mailbox_client import MailboxClient
-from app.portal_client import PortalClient, PortalDown, PortalError, RateExpired
+from app.portal_client import BookByEmail, PortalClient, PortalDown, PortalError, RateExpired
 from app.reference import Reference, zone_of
 from app.schemas import (
     AirOption,
@@ -526,8 +526,9 @@ class Workflow:
         air = air or self._store.air_options(shipment.id)  # ponytail: never fail on an exclusion
         trucks = [r for r in requests if not pricing.carrier_in(self._trucker_name(r), excluded)]
         pick = lambda a, t: pricing.pick_best(  # noqa: E731
-            a, t, shipment.goal, request.ready_date, request.deliver_by
-        )
+            a, t, shipment.goal, request.ready_date, request.deliver_by,
+            self._settings.trucker_pickup_cutoff_hours,
+        )  # fmt: skip
         best = self._price_of(shipment, *pick(air, trucks))
 
         notes: list[str] = []
@@ -735,10 +736,18 @@ class Workflow:
         if len(msg.references) // 2 >= self._settings.max_answers:
             return
         query = await self._extractors.extract_tracking(msg)
-        shipment = match_shipment(query, self._store.list_shipments())
+        shipments = self._store.list_shipments()
+        shipment = match_shipment(query, shipments)
+        sender = (msg.sender or "").lower()
+        booked_states = (ShipmentState.BOOKING, ShipmentState.BOOKED, ShipmentState.CONFIRMED)
+        never_booked = not any(
+            s.state in booked_states and (s.customer or "").lower() == sender for s in shipments
+        )
         if shipment is None:
             facts: dict[str, Any] = {
                 "found": False,
+                # Nothing booked with us: no tracking to give, so no reference to ask for.
+                "never_booked": never_booked or None,
                 "asked_about": query.model_dump(mode="json", exclude_none=True),
                 "must_appear": [],
             }
@@ -747,6 +756,7 @@ class Workflow:
             booked = shipment.state in (ShipmentState.BOOKED, ShipmentState.CONFIRMED)
             facts = {
                 "found": True,
+                "never_booked": shipment.state not in booked_states or None,
                 "status": TRACKING_STATUS[shipment.state],
                 "route": f"{shipment.origin_airport} -> {shipment.request.destination_iata}",
                 "airline": option.airline if option else None,
@@ -819,7 +829,15 @@ class Workflow:
                     option.origin, option.destination, option.airline_code,
                     option.weight_kg, option.volume_cbm,
                 )  # fmt: skip
+            except BookByEmail as exc:
+                # The booking API is closed for this airline: book by mail with the rate_id.
+                logger.warning("Shipment %s: portal booking closed, booking by email: %s", shipment.id, exc)
+                shipment.chosen_option = option.model_copy(update={"source": "email"})
+                shipment.booking_attempts = 0
+                await self._request_booking_by_email(shipment)
+                return
             except PortalError as exc:
+                logger.warning("Shipment %s: portal booking failed: %s", shipment.id, exc)
                 shipment.error = str(exc)[:500]
                 self._store.save_shipment(shipment)
                 return  # stays BOOKING; tick() tries again

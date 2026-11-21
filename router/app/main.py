@@ -354,6 +354,14 @@ async def get_shipment(
     )
 
 
+@app.get("/tracking", include_in_schema=False)
+async def tracking(store: MessageStore = Depends(get_view_store)) -> list[dict]:
+    """Every tracking question (newest first) with the answer we composed for it, if any."""
+    questions, _ = store.list_messages(category=EmailCategory.TRACKING_REQUEST, limit=200)
+    answers = {o.in_reply_to: o for o in store.outbound_mails() if o.kind == "tracking_answer"}
+    return [{"question": q, "answer": answers.get(q.message_id)} for q in questions]
+
+
 @app.get("/replay/classification", include_in_schema=False)
 async def replay_classification() -> list[dict]:
     """Per-mail classifier result vs. the hand label from the last replay."""
