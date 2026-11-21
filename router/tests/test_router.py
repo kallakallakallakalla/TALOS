@@ -87,21 +87,14 @@ def test_run_endpoint_with_placeholder_and_mock_llm(test_settings: Settings) -> 
         assert data["input"]["id"] == "sample-1"
         assert data["input"]["source"] == "placeholder"
         assert data["model"] == "gpt-6-luna"
-        assert data["decision"]["category"] == "RFQ"
+        assert data["decision"]["category"] == "rfq"
     finally:
         app.dependency_overrides.clear()
 
 
 @pytest.mark.parametrize(
     "category",
-    [
-        EmailCategory.RFQ,
-        EmailCategory.UPDATE,
-        EmailCategory.BS,
-        EmailCategory.QUESTION,
-        EmailCategory.ANSWER,
-        EmailCategory.TRACKING,
-    ],
+    list(EmailCategory),
 )
 def test_classify_direct_endpoint_all_enums(
     test_settings: Settings, category: EmailCategory
@@ -253,7 +246,7 @@ def test_sqlite_store_persists_across_restarts_and_deduplicates(tmp_path: Path) 
         }
     )
     decision = ClassificationDecision(
-        category=EmailCategory.UPDATE,
+        category=EmailCategory.TARIFF_UPDATE,
         confidence=0.91,
         reasoning="Tariff update.",
     )
@@ -264,10 +257,10 @@ def test_sqlite_store_persists_across_restarts_and_deduplicates(tmp_path: Path) 
     restarted_store = MessageStore(db_path=db_file)
     assert restarted_store.get_since_id() == 10
     assert restarted_store.is_processed(10) is True
-    items, total = restarted_store.list_messages(category=EmailCategory.UPDATE)
+    items, total = restarted_store.list_messages(category=EmailCategory.TARIFF_UPDATE)
     assert total == 1
     assert items[0].message_id == 10
-    assert items[0].decision.category == EmailCategory.UPDATE
+    assert items[0].decision.category == EmailCategory.TARIFF_UPDATE
     assert items[0].trace_id == "tr-1"
 
 
@@ -383,7 +376,7 @@ async def test_poller_does_not_log_on_empty_poll(tmp_path: Path, caplog: pytest.
 
 def test_fastapi_lifespan_background_poller_and_message_endpoints(tmp_path: Path) -> None:
     db_file = str(tmp_path / "api_poller.db")
-    fake_openai = _CountingOpenAIClient(category=EmailCategory.TRACKING)
+    fake_openai = _CountingOpenAIClient(category=EmailCategory.TRACKING_REQUEST)
 
     def handler(request: httpx.Request) -> httpx.Response:
         since_id = int(request.url.params["since_id"])
@@ -434,7 +427,7 @@ def test_fastapi_lifespan_background_poller_and_message_endpoints(tmp_path: Path
             assert list_data["total"] == 1
             assert list_data["last_since_id"] == 101
             assert list_data["items"][0]["message_id"] == 101
-            assert list_data["items"][0]["decision"]["category"] == "Tracking"
+            assert list_data["items"][0]["decision"]["category"] == "tracking_request"
 
             detail_resp = client.get("/messages/101")
             assert detail_resp.status_code == 200
@@ -457,3 +450,34 @@ def test_fastapi_lifespan_background_poller_and_message_endpoints(tmp_path: Path
     finally:
         app.dependency_overrides.clear()
         asyncio.run(http_client.aclose())
+
+
+@pytest.mark.anyio
+async def test_poller_skips_a_mail_after_three_failed_attempts(tmp_path: Path) -> None:
+    """ADR 20: a mail that keeps failing is stored as `other` and no longer blocks later mail."""
+    store = MessageStore(db_path=str(tmp_path / "retry.db"))
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        mails = [
+            {"id": 1, "from": "a@test.com", "subject": "Mail 1", "body": "POISON"},
+            {"id": 2, "from": "b@test.com", "subject": "Mail 2", "body": "fine"},
+        ]
+        since_id = int(request.url.params["since_id"])
+        return httpx.Response(
+            200, json={"messages": [m for m in mails if m["id"] > since_id], "next_since_id": 2}
+        )
+
+    settings = Settings(langfuse_enabled=False, hackloop_api_key="team-key")
+    fake_openai = _CountingOpenAIClient(fail_on_text="POISON")
+    classifier = DecisionClassifier(settings=settings, openai_client=fake_openai)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http_client:
+        poller = MailboxPoller(settings, MailboxClient(settings, http_client), classifier, store)
+        first, second, third = [await poller.poll_once() for _ in range(3)]
+
+    assert (first.processed, second.processed, third.processed) == (0, 0, 1)
+    assert third.last_since_id == 2
+    failed = store.get_message(1)
+    assert failed is not None and failed.decision.category == EmailCategory.OTHER
+    assert failed.decision.reasoning.startswith("processing failed")
+    assert store.get_message(2).decision.category == EmailCategory.RFQ

@@ -72,6 +72,12 @@ class MessageStore:
 
                 CREATE INDEX IF NOT EXISTS idx_processed_messages_category
                     ON processed_messages (category, message_id DESC);
+
+                CREATE TABLE IF NOT EXISTS message_failures (
+                    message_id INTEGER PRIMARY KEY,
+                    attempts INTEGER NOT NULL,
+                    last_error TEXT
+                );
                 """
             )
 
@@ -171,6 +177,20 @@ class MessageStore:
             if advance_cursor:
                 self._upsert_since_id(conn, message.id)
         return inserted
+
+    def record_failure(self, message_id: int, error: str) -> int:
+        """Count one failed processing attempt of a mail and return the new total (ADR 20)."""
+        with self._connect() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO message_failures (message_id, attempts, last_error) VALUES (?, 1, ?)
+                ON CONFLICT(message_id) DO UPDATE SET
+                    attempts = attempts + 1, last_error = excluded.last_error
+                RETURNING attempts
+                """,
+                (message_id, error),
+            ).fetchone()
+        return int(row["attempts"])
 
     def count_messages(self, category: EmailCategory | None = None) -> int:
         """Return total number of stored messages, optionally filtered by category."""

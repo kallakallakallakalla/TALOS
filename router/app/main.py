@@ -85,7 +85,7 @@ app = FastAPI(
     title="TALOS Router MVP",
     version="0.1.0",
     description=(
-        "Polls the Hackloop mailbox every 10s without duplicates, "
+        "Polls the Hackloop mailbox every 2 s without duplicates, "
         "classifies mails via gpt-6-luna, persists results in SQLite, and traces with Langfuse."
     ),
     docs_url="/docs",

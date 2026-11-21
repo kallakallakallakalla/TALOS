@@ -19,12 +19,21 @@ class Settings(BaseSettings):
     langfuse_host: str = "http://localhost:3000"
     langfuse_base_url: str = ""
     langfuse_prompt_name: str = "router-classification"
+    # Langfuse prompt label the running router reads ("staging" for evals).
+    prompt_label: str = "production"
+    prompts_dir: str = "prompts"
 
-    # Decision API (OpenAI-compatible)
+    # LLM gateway (OpenAI-compatible). One model setting per task (ADR 14).
     decision_api_key: str = ""
     decision_api_base_url: str = "https://api.openai.com/v1"
     decision_model: str = "gpt-6-luna"
+    extract_model: str = "gpt-6-luna"
+    compose_model: str = "gpt-6-luna"
     decision_temperature: float | None = None
+    # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).
+    decision_reasoning_effort: str = "none"
+    extract_reasoning_effort: str = "low"
+    compose_reasoning_effort: str = "none"
 
     # Input API (empty = use built-in placeholder)
     input_api_url: str = ""
@@ -36,12 +45,29 @@ class Settings(BaseSettings):
     hackloop_api_key: str = ""
     hackloop_mailbox: str = ""
     mailbox_poll_enabled: bool = True
-    mailbox_poll_interval_seconds: float = 10.0
+    mailbox_poll_interval_seconds: float = 2.0
     mailbox_poll_limit: int = 100
     mailbox_timeout_seconds: float = 10.0
 
     # SQLite persistence for since_id cursor, deduplication, and results
     sqlite_db_path: str = "data/router.db"
+
+    # Quote workflow (docs/workflow.md section 9)
+    send_enabled: bool = False  # dry run: compose and log, never send or book
+    mail_signature: str = "Alex, TALOS Air Freight"
+    margin_eur: float = 0.0
+    trucker_wait_seconds: float = 45.0  # quote once at least one trucker answered
+    trucker_fallback_seconds: float = 90.0  # quote with a fallback trucker price
+    fallback_truck_eur_per_kg: float = 0.28
+    booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
+    max_clarifications: int = 3
+    max_booking_attempts: int = 3
+    max_message_attempts: int = 3
+    max_answers: int = 3
+    start_kit_dir: str = "../data/start-kit"
+    tariffs_path: str = "../data/tariffs.json"
+    portal_rate_limit_per_minute: int = 10
+    portal_timeout_seconds: float = 10.0
 
 
 def get_settings() -> Settings:

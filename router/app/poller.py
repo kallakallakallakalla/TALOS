@@ -1,22 +1,30 @@
 import asyncio
 import logging
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from langfuse import observe
+from langfuse import observe, propagate_attributes
 
 from app.classifier import DecisionClassifier
 from app.config import Settings
 from app.mailbox_client import MailboxClient, mailbox_message_to_payload
-from app.schemas import MailboxMessage, PollSummary
+from app.schemas import ClassificationDecision, EmailCategory, MailboxMessage, PollSummary
 from app.storage import MessageStore
+
+if TYPE_CHECKING:
+    from app.workflow import Workflow
 
 logger = logging.getLogger(__name__)
 
 _MAX_PAGES_PER_TICK = 10
+_LOW_CONFIDENCE = 0.7
 
 
 class MailboxPoller:
-    """Periodically polls the Hackloop mailbox and classifies unseen messages."""
+    """Polls the mailbox and runs every unseen mail through classifier and workflow.
+
+    Without a `workflow` it only classifies and stores (the pre-workflow behaviour).
+    """
 
     def __init__(
         self,
@@ -24,39 +32,76 @@ class MailboxPoller:
         mailbox_client: MailboxClient,
         classifier: DecisionClassifier,
         store: MessageStore,
+        workflow: "Workflow | None" = None,
     ) -> None:
         self._settings = settings
         self._mailbox_client = mailbox_client
         self._classifier = classifier
         self._store = store
+        self._workflow = workflow
         self._poll_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
         self.running: bool = False
         self.last_poll_at: str | None = None
         self.last_error: str | None = None
 
-    @observe(name="mailbox-poll-message")
-    async def _process_message(self, msg: MailboxMessage) -> None:
-        payload = mailbox_message_to_payload(msg)
-        decision, trace_id = await self._classifier.classify(payload)
-        inserted = self._store.save_processed_message(
+    @observe(name="mail")
+    async def process_message(self, msg: MailboxMessage) -> ClassificationDecision:
+        """One trace per mail: context lookup -> classify -> store -> workflow."""
+        context = await self._workflow.context(msg) if self._workflow else None
+        shipment = context.shipment if context else None
+        # A new request starts its own shipment, so its trace opens that shipment's session.
+        session_id = f"shipment-{shipment.id if shipment else msg.id}"
+        role = context.sender_role if context else "unknown"
+
+        with propagate_attributes(
+            session_id=session_id,
+            user_id=msg.sender,
+            tags=[role],
+            metadata={"message_id": str(msg.id)},
+        ):
+            payload = mailbox_message_to_payload(msg)
+            decision, trace_id = await self._classifier.classify(payload, context)
+            tags = [decision.category.value]
+            if shipment:
+                tags.append(shipment.state.value)
+            if decision.confidence < _LOW_CONFIDENCE:
+                tags.append("needs_review")
+            with propagate_attributes(tags=tags):
+                inserted = self._store.save_processed_message(
+                    message=msg,
+                    decision=decision,
+                    model=self._settings.decision_model,
+                    trace_id=trace_id,
+                    advance_cursor=True,
+                )
+                if inserted:
+                    logger.info(
+                        "Classified mailbox message id=%s category=%s confidence=%.2f trace_id=%s",
+                        msg.id,
+                        decision.category.value,
+                        decision.confidence,
+                        trace_id,
+                    )
+                if self._workflow and context:
+                    await self._workflow.handle(msg, decision, context)
+        return decision
+
+    def _give_up(self, msg: MailboxMessage, error: str) -> None:
+        """Store a mail that failed too often as `other`, so the cursor can move on (ADR 20)."""
+        logger.error("Giving up on mailbox message id=%s: %s", msg.id, error)
+        self._store.save_processed_message(
             message=msg,
-            decision=decision,
+            decision=ClassificationDecision(
+                category=EmailCategory.OTHER,
+                confidence=0.0,
+                reasoning=f"processing failed: {error}"[:500],
+            ),
             model=self._settings.decision_model,
-            trace_id=trace_id,
-            advance_cursor=True,
         )
-        if inserted:
-            logger.info(
-                "Classified mailbox message id=%s category=%s confidence=%.2f trace_id=%s",
-                msg.id,
-                decision.category.value,
-                decision.confidence,
-                trace_id,
-            )
 
     async def poll_once(self) -> PollSummary:
-        """Run one guarded poll cycle (fetch -> deduplicate -> classify -> persist)."""
+        """Run one guarded poll cycle (fetch -> deduplicate -> process -> persist)."""
         async with self._poll_lock:
             fetched = 0
             processed = 0
@@ -85,14 +130,20 @@ class MailboxPoller:
                         since_id = self._store.set_since_id(msg.id)
                         continue
                     try:
-                        await self._process_message(msg)
+                        await self.process_message(msg)
                         processed += 1
                         since_id = max(since_id, msg.id)
-                    except Exception as exc:  # noqa: BLE001 - preserve cursor before failed item
+                    except Exception as exc:  # noqa: BLE001 - one bad mail must not stop the rest
                         errors += 1
-                        batch_failed = True
                         self.last_error = f"message_id={msg.id}: {exc}"
                         logger.exception("Failed processing mailbox message id=%s", msg.id)
+                        attempts = self._store.record_failure(msg.id, str(exc))
+                        if attempts >= self._settings.max_message_attempts:
+                            self._give_up(msg, str(exc))
+                            since_id = max(since_id, msg.id)
+                            continue
+                        # Keep the cursor before the failed mail; it is retried on the next tick.
+                        batch_failed = True
                         break
 
                 if batch_failed:
@@ -116,6 +167,17 @@ class MailboxPoller:
                 last_since_id=self._store.get_since_id(),
             )
 
+    async def _cycle(self) -> None:
+        """One poll, then the workflow's timers (trucker deadlines, booking reminders)."""
+        try:
+            await self.poll_once()
+            if self._workflow:
+                await self._workflow.tick()
+        except Exception as exc:  # noqa: BLE001 - keep background poller alive
+            self.last_poll_at = datetime.now(UTC).isoformat()
+            self.last_error = str(exc)
+            logger.exception("Mailbox poll cycle failed")
+
     async def run_forever(self) -> None:
         """Continuously poll every mailbox_poll_interval_seconds until stopped."""
         self.running = True
@@ -124,13 +186,7 @@ class MailboxPoller:
         logger.info("Starting mailbox background poller (interval=%.1fs)", interval)
         try:
             while not self._stop_event.is_set():
-                try:
-                    await self.poll_once()
-                except Exception as exc:  # noqa: BLE001 - keep background poller alive
-                    self.last_poll_at = datetime.now(UTC).isoformat()
-                    self.last_error = str(exc)
-                    logger.exception("Mailbox poll cycle failed")
-
+                await self._cycle()
                 try:
                     await asyncio.wait_for(self._stop_event.wait(), timeout=interval)
                 except TimeoutError:
