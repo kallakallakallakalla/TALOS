@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 CLASSIFY = "router-classification"
 EXTRACT_RFQ = "talos-extract-rfq"
-EXTRACT_TRUCKER_QUOTE = "talos-extract-trucker-quote"
+EXTRACT_TRUCKER_QUOTES = "talos-extract-trucker-quotes"
 EXTRACT_BOOKING = "talos-extract-booking"
 EXTRACT_TRACKING = "talos-extract-tracking"
 COMPOSE_MAIL = "talos-compose-mail"
 ALL_PROMPTS = (
     CLASSIFY,
     EXTRACT_RFQ,
-    EXTRACT_TRUCKER_QUOTE,
+    EXTRACT_TRUCKER_QUOTES,
     EXTRACT_BOOKING,
     EXTRACT_TRACKING,
     COMPOSE_MAIL,

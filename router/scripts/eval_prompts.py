@@ -27,7 +27,7 @@ from app.schemas import MailContext, Shipment  # noqa: E402
 DATASETS = {
     prompts.CLASSIFY: "talos-classify",
     prompts.EXTRACT_RFQ: "talos-rfq",
-    prompts.EXTRACT_TRUCKER_QUOTE: "talos-trucker-quote",
+    prompts.EXTRACT_TRUCKER_QUOTES: "talos-trucker-quotes",
     prompts.EXTRACT_BOOKING: "talos-booking",
 }
 
@@ -44,13 +44,23 @@ def _same(expected, actual) -> bool:
     return expected == actual
 
 
+_TRUCKER_FIELDS = ("price_eur", "pickup_hours", "valid_until", "quote_ref")
+
+
+def _flat(data: dict) -> dict:
+    """`{"1": {"price_eur": 1}}` -> `{"1.price_eur": 1}`; flat dicts stay as they are."""
+    if not all(isinstance(value, dict) for value in data.values()) or not data:
+        return data
+    return {f"{k}.{field}": value.get(field) for k, value in data.items() for field in _TRUCKER_FIELDS}
+
+
 def correct(*, output, expected_output, **_) -> Evaluation:
     """1 if every labelled field matches; the comment lists the fields that do not."""
     output = output or {}
     wrong = {
         field: {"expected": value, "got": output.get(field)}
-        for field, value in expected_output.items()
-        if not _same(value, output.get(field))
+        for field, value in _flat(expected_output).items()
+        if not _same(value, _flat(output).get(field))
     }
     return Evaluation(name="correct", value=0 if wrong else 1, comment=str(wrong) if wrong else None)
 
@@ -63,6 +73,9 @@ def make_task(prompt_name: str, label: str):
     extractors = Extractors(settings, llm)
 
     async def task(*, item, **_) -> dict:
+        if prompt_name == prompts.EXTRACT_TRUCKER_QUOTES:
+            result = await extractors.extract_trucker_quotes(item.input["replies"], prompt_label=label)
+            return {str(q.reply): q.model_dump(mode="json") for q in result.quotes}
         msg = parse_mailbox_message(item.input["mail"])
         context = item.input["context"]
         if prompt_name == prompts.CLASSIFY:
@@ -76,8 +89,6 @@ def make_task(prompt_name: str, label: str):
             )
         elif prompt_name == prompts.EXTRACT_RFQ:
             result = await extractors.extract_rfq(msg, prompt_label=label)
-        elif prompt_name == prompts.EXTRACT_TRUCKER_QUOTE:
-            result = await extractors.extract_trucker_quote(msg, context["our_mail"], prompt_label=label)
         else:
             result = await extractors.extract_booking(msg, prompt_label=label)
         return result.model_dump(mode="json")

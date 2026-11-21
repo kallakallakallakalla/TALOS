@@ -144,6 +144,7 @@ Each of these is recorded as a decision (ADR 31–36 in [decisions.md](decisions
 | – | sender-based trucker matching in dry runs | replies can't thread to mails that were never sent (ADR 36) |
 | Booking in a dry run: not specified | no API call; the shipment is marked BOOKED with `booking_ref = "DRY-RUN"` | so the flow after booking can be tested without booking |
 | Trucker request written by the LLM | fixed template | user decision after the replay (ADR 38); the replay numbers above still include that LLM call |
+| Each trucker reply: classifier + extractor; wait 45 s / 90 s | no call per reply, one batched read per request, wait at most 60 s | user decision after go-live (ADR 41); cuts about 9 LLM calls per request with pickup. The replay numbers above were measured before this change |
 | Prompts as drafted in prompts.md | small additions | found by the eval loop (ADR 35); `router/prompts/*.md` is now the source of truth |
 
 ## Cutover preparation: old mail is marked as handled

@@ -3,7 +3,7 @@ import pytest
 from app.config import Settings
 from app.extractors import Extractors, missing_fields
 from app.llm import StructuredLLM
-from app.schemas import ShipmentRequest, TruckerQuote
+from app.schemas import ShipmentRequest, TruckerQuotes
 from tests.fakes import ScriptedLLM, labels, recorded_mails
 
 SETTINGS = Settings(langfuse_enabled=False, decision_api_key="test-key")
@@ -35,10 +35,11 @@ async def test_extractors_use_their_own_prompt_and_pass_context() -> None:
     assert '"destination_iata":"PVG"' in system  # PREVIOUS is carried into the prompt
     assert "Which postal code?" in user and "349 kg gross" in user
 
-    result = await extractors.extract_trucker_quote(mails[1063], our_request="Pickup 51896 to CGN")
+    result = await extractors.extract_trucker_quotes([mails[1063].body, mails[1056].body])
     schema, system, user = fake.calls[-1]
-    assert isinstance(result, TruckerQuote) and schema == "TruckerQuote"
-    assert "Pickup 51896 to CGN" in system and "115.98 EUR" in user
+    assert isinstance(result, TruckerQuotes) and schema == "TruckerQuotes"
+    assert user.startswith("REPLY 1:\n") and "\n\nREPLY 2:\n" in user
+    assert "115.98 EUR" in user and "192.97 EUR" in user and "From:" not in user  # bodies only
 
     await extractors.extract_booking(mails[1623])
     assert fake.calls[-1][0] == "BookingConfirmation" and "BK-8RCF17DZ" in fake.calls[-1][2]

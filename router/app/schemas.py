@@ -200,13 +200,19 @@ class ShipmentRequest(BaseModel):
 
 
 class TruckerQuote(BaseModel):
-    """A trucker's pickup offer. Output of the `talos-extract-trucker-quote` prompt."""
+    """One trucker's pickup offer, by the number of the reply it was read from."""
 
+    reply: int
     price_eur: float | None = None
     pickup_hours: float | None = None
     valid_until: str | None = None
     quote_ref: str | None = None
-    conditions: str = ""
+
+
+class TruckerQuotes(BaseModel):
+    """All offers for one pickup request. Output of the `talos-extract-trucker-quotes` prompt."""
+
+    quotes: list[TruckerQuote] = Field(default_factory=list)
 
 
 class BookingConfirmation(BaseModel):

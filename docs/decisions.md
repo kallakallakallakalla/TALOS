@@ -1,6 +1,6 @@
 # Architecture & decision records
 
-Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–40 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
+Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:20 CET); 25–41 in the implementation session that followed (17:25 CET onwards). "User" means the decision came from the project owner; "proposed" means Claude proposed it and the user accepted it or didn't object. The full plan these decisions feed into is [workflow.md](workflow.md).
 
 | # | Decision | Decided by |
 |---|---|---|
@@ -44,6 +44,7 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 | 38 | Trucker requests are a fixed template, not LLM-written (amends 13) | User |
 | 39 | Tests, evals and replays call OpenAI directly with `EVALUATION_KEY`, never the gateway (amends 27) | User |
 | 40 | `TEST_MODE=true` runs the live router as a test (amends 30) | User (test mode) + proposed (what it switches) |
+| 41 | Trucker replies: no call per mail, one LLM call for all, wait at most 60 s (amends 10, 15) | User |
 
 ---
 
@@ -305,3 +306,16 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
   - portal rate reads are throttled to 3 per minute (ADR 28)
 - **This is step 9 of the build order** (live dry run), which ADR 30 had postponed.
 - **Cutover from test mode:** set `TEST_MODE=false` and `SEND_ENABLED=true`, run `scripts/backfill_legacy.py`, restart. The backfill now also closes every shipment left over from a dry run (quote never sent, booking "DRY-RUN"); otherwise a later "please book" could book such a shipment for real.
+
+### 41 · Trucker replies are read together in one LLM call
+
+- **Context:** each trucker reply cost two LLM calls (classifier + extractor). With 4–5 truckers that was 8–10 of about 15 calls per request, the largest cost block.
+- **Decision (user):**
+  - Any mail from a trucker we asked, who has not answered yet, **is** that trucker's answer. It gets no classifier call and is stored as `trucker_quote`. Matching is by the mail we sent, or else by sender.
+  - The quote goes out as soon as every asked trucker has answered, or after **60 s** with whatever came back (`TRUCKER_WAIT_SECONDS`). Nothing came back: fallback trucker price. This replaces the 45 s / 90 s rule of ADR 10.
+  - All replies are then read in **one** LLM call (`talos-extract-trucker-quotes`): bodies only, no headers, a short prompt, no reasoning tokens.
+  - The cheapest (or fastest) trucker is still chosen by code, not by the LLM: comparing numbers in code is exact.
+- **Accuracy guard:** a price is only accepted if that exact number stands in that trucker's own mail. One retry; an offer that still fails is dropped. If the call fails altogether, the fallback price is used.
+- **Measured** (evaluation key, all recorded trucker replies): 7 pickup requests with 34 replies (31 quotes, 3 "we need the weight"), every field correct, in three runs, with reasoning effort `none` and `low`. `none` is used.
+- **Effect:** for a request with 5 truckers, 10 LLM calls become 1.
+- **Note on ADR 12:** mail text is still read by an LLM. Code only checks that the extracted price occurs in the mail.

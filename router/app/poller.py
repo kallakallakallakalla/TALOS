@@ -3,7 +3,7 @@ import logging
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from langfuse import observe, propagate_attributes
+from langfuse import get_client, observe, propagate_attributes
 
 from app.classifier import DecisionClassifier
 from app.config import Settings
@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 
 _MAX_PAGES_PER_TICK = 10
 _LOW_CONFIDENCE = 0.7
+_TRUCKER_REPLY = ClassificationDecision(
+    category=EmailCategory.TRUCKER_QUOTE,
+    confidence=1.0,
+    reasoning="Reply from a trucker we asked; read together with the other replies.",
+)
 # Understood and stored, but nothing acts on them yet (docs/workflow.md section 13).
 _UNHANDLED = {
     EmailCategory.OTHER,
@@ -67,7 +72,11 @@ class MailboxPoller:
             metadata={"message_id": str(msg.id)},
         ):
             payload = mailbox_message_to_payload(msg)
-            decision, trace_id = await self._classifier.classify(payload, context)
+            if self._workflow and context and self._workflow.awaited_trucker_reply(context):
+                # A mail from a trucker we asked is their answer: no classifier call (ADR 41).
+                decision, trace_id = _TRUCKER_REPLY, get_client().get_current_trace_id()
+            else:
+                decision, trace_id = await self._classifier.classify(payload, context)
             tags = [decision.category.value]
             if shipment:
                 tags.append(shipment.state.value)

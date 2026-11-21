@@ -3,7 +3,8 @@
     .venv/bin/python scripts/build_datasets.py
 
 Sources: tests/fixtures/mails.json (see export_mails.py) and tests/fixtures/labels.json.
-Datasets: talos-classify, talos-rfq, talos-trucker-quote, talos-booking. Item ids are stable
+Datasets: talos-classify, talos-rfq, talos-trucker-quotes (one item per pickup request, with
+all trucker replies to it), talos-booking. Item ids are stable
 (`<dataset>-<mail id>`), so re-running updates items instead of duplicating them.
 """
 
@@ -30,8 +31,9 @@ def load_items() -> dict[str, list[dict]]:
     ours = {m["id"]: m for m in mails["outbound"]}
     thread_state: dict[int, str] = {}
     datasets: dict[str, list[dict]] = {
-        "talos-classify": [], "talos-rfq": [], "talos-trucker-quote": [], "talos-booking": []
+        "talos-classify": [], "talos-rfq": [], "talos-trucker-quotes": [], "talos-booking": []
     }  # fmt: skip
+    trucker_rounds: dict[str, list[tuple[dict, dict]]] = {}
 
     for mail in sorted(mails["inbound"], key=lambda m: m["id"]):
         label = labels.get(str(mail["id"]))
@@ -49,8 +51,11 @@ def load_items() -> dict[str, list[dict]]:
             {"id": mail["id"], "input": {"mail": mail, "context": context},
              "expected_output": {"category": label["category"]}}
         )  # fmt: skip
-        for key, dataset in (("rfq", "talos-rfq"), ("trucker_quote", "talos-trucker-quote"),
-                             ("booking", "talos-booking")):  # fmt: skip
+        if role == "trucker" and parent and parent["subject"].startswith("Pickup quote"):
+            # Replies to the same request share its subject and arrive within the same minute.
+            round_key = f"{parent['subject']}|{mail['received_at'][:15]}"
+            trucker_rounds.setdefault(round_key, []).append((mail, label.get("trucker_quote", {})))
+        for key, dataset in (("rfq", "talos-rfq"), ("booking", "talos-booking")):
             if key in label:
                 datasets[dataset].append(
                     {"id": mail["id"], "input": {"mail": mail, "context": context},
@@ -58,6 +63,11 @@ def load_items() -> dict[str, list[dict]]:
                 )  # fmt: skip
         if label["category"] in _STATE_AFTER and role == "customer":
             thread_state[root] = _STATE_AFTER[label["category"]]
+    for replies in trucker_rounds.values():
+        datasets["talos-trucker-quotes"].append(
+            {"id": replies[0][0]["id"], "input": {"replies": [mail["body"] for mail, _ in replies]},
+             "expected_output": {str(n): quote for n, (_, quote) in enumerate(replies, start=1)}}
+        )  # fmt: skip
     return datasets
 
 

@@ -19,6 +19,8 @@ poller.py        every 2 s: fetch new mail, one Langfuse trace per mail
   classifier.py           LLM #1: mail type (12 categories)
   workflow.handle()       state machine; calls, depending on the type:
     extractors.py         LLM #2: fields of that one mail type
+                          (trucker replies: no classifier call; all replies of a request
+                          are read together in ONE call just before quoting)
     reference.py          postal zone -> airport + truckers
     portal_client.py      portal rates (10 reads/min) and bookings
     tariffs.py            local tariffs of the 10 non-portal airlines
@@ -26,7 +28,7 @@ poller.py        every 2 s: fetch new mail, one Langfuse trace per mail
     composer.py           LLM #3: writes mails to customers and airlines; code checks the facts
     templates.py          trucker requests (always) and the fallback texts
                           (also answers tracking questions from the shipment record)
-  workflow.tick()         timers: trucker wait 45 s / 90 s, booking reminders
+  workflow.tick()         timers: trucker wait (max 60 s), booking reminders
 storage.py       SQLite: mails, shipments, trucker requests, air options, outbound mails
 ```
 

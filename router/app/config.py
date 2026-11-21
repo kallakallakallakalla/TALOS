@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).
     decision_reasoning_effort: str = "none"
     extract_reasoning_effort: str = "low"
+    trucker_reasoning_effort: str = "none"  # one batch call per shipment; plain copying
     compose_reasoning_effort: str = "none"
 
     # Tests, evals and replays call OpenAI directly with this key (ADR 39). It must never be
@@ -68,8 +69,9 @@ class Settings(BaseSettings):
     send_enabled: bool = False  # dry run: compose and log, never send or book
     mail_signature: str = "Alex, TALOS Air Freight"
     margin_eur: float = 0.0
-    trucker_wait_seconds: float = 45.0  # quote once at least one trucker answered
-    trucker_fallback_seconds: float = 90.0  # quote with a fallback trucker price
+    # Quote when every asked trucker has answered, or after this many seconds with whatever
+    # came back (nothing came back: fallback trucker price).
+    trucker_wait_seconds: float = 60.0
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3

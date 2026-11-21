@@ -14,7 +14,7 @@ from app.schemas import (
     MailboxMessage,
     ShipmentRequest,
     TrackingQuery,
-    TruckerQuote,
+    TruckerQuotes,
 )
 
 
@@ -85,15 +85,26 @@ class Extractors:
             previous_json=previous.model_dump_json(exclude_defaults=True) if previous else "",
         )
 
-    @observe(name="extract.trucker_quote")
-    async def extract_trucker_quote(
-        self, msg: MailboxMessage, our_request: str = "", prompt_label: str | None = None
-    ) -> TruckerQuote:
-        """Read a trucker's pickup offer."""
-        return await self._parse(
-            prompts.EXTRACT_TRUCKER_QUOTE, TruckerQuote, mail_text(msg), prompt_label,
-            our_request=our_request,
-        )  # fmt: skip
+    @observe(name="extract.trucker_quotes")
+    async def extract_trucker_quotes(
+        self, replies: list[str], prompt_label: str | None = None
+    ) -> TruckerQuotes:
+        """Read all trucker replies to one pickup request in a single call.
+
+        `replies` are the mail bodies; reply n in the result refers to `replies[n - 1]`.
+        Only the bodies are sent (no headers, no copy of our request) to keep the call small.
+        """
+        content = "\n\n".join(
+            f"REPLY {number}:\n{body.strip()}" for number, body in enumerate(replies, start=1)
+        )
+        return await self._llm.parse(
+            prompts.EXTRACT_TRUCKER_QUOTES,
+            TruckerQuotes,
+            content,
+            model=self._settings.extract_model,
+            reasoning_effort=self._settings.trucker_reasoning_effort,
+            prompt_label=prompt_label,
+        )
 
     @observe(name="extract.booking")
     async def extract_booking(

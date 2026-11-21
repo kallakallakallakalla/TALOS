@@ -34,6 +34,7 @@ from app.schemas import (
     Shipment,
     ShipmentState,
     TrackingQuery,
+    TruckerQuote,
     TruckerRequest,
 )
 from app.storage import MessageStore
@@ -100,6 +101,14 @@ def match_shipment(query: TrackingQuery, shipments: list[Shipment]) -> Shipment 
     return max(candidates, key=closeness, default=None)
 
 
+def _price_in_text(price: float | None, text: str) -> bool:
+    """Grounding check: an extracted price must stand in the mail as written (no price: fine)."""
+    if price is None:
+        return True
+    forms = {f"{price:.2f}", f"{price:g}"}
+    return any(form in text or form.replace(".", ",") in text for form in forms)
+
+
 def needs_pickup(shipment: Shipment) -> bool:
     """We collect unless the customer brings the goods to a named airport themselves."""
     request = shipment.request
@@ -135,8 +144,8 @@ class Workflow:
         self._handlers = {
             EmailCategory.RFQ: self._on_rfq,
             EmailCategory.CUSTOMER_INFO: self._on_customer_info,
-            EmailCategory.TRUCKER_QUOTE: self._on_trucker_quote,
-            EmailCategory.TRUCKER_DECLINE: self._on_trucker_decline,
+            EmailCategory.TRUCKER_QUOTE: self._on_trucker_reply,
+            EmailCategory.TRUCKER_DECLINE: self._on_trucker_reply,
             EmailCategory.BOOKING_CONFIRMATION: self._on_booking_confirmation,
             EmailCategory.CUSTOMER_ACCEPT: self._on_customer_accept,
             EmailCategory.CUSTOMER_REJECT: self._on_customer_reject,
@@ -156,8 +165,8 @@ class Workflow:
             trucker_request = self._store.find_trucker_request(
                 msg.in_reply_to,
                 (msg.sender or "").lower(),
-                # In a dry run our requests were never sent, so replies cannot thread to them.
-                match_by_sender=not self._settings.send_enabled,
+                # Anything from a trucker we asked counts as their answer (ADR 41).
+                match_by_sender=True,
             )
             if trucker_request:
                 shipment = self._store.get_shipment(trucker_request.shipment_id)
@@ -347,21 +356,49 @@ class Workflow:
         return options
 
     async def _maybe_quote(self, shipment: Shipment) -> None:
-        """PRICING -> QUOTED once all truckers answered, at 45 s with a price, or at 90 s."""
+        """PRICING -> QUOTED once every asked trucker answered, or after the wait (60 s)."""
         requests = self._store.trucker_requests(shipment.id)
         if shipment.zone:
             elapsed = (
                 self._now() - datetime.fromisoformat(shipment.pricing_started_at)
             ).total_seconds()
-            has_price = any(r.price_eur is not None for r in requests)
-            ready = (
-                all(r.answered for r in requests)
-                or (has_price and elapsed >= self._settings.trucker_wait_seconds)
-                or elapsed >= self._settings.trucker_fallback_seconds
-            )
-            if not ready:
+            if not all(r.answered for r in requests) and elapsed < self._settings.trucker_wait_seconds:
                 return
+            requests = await self._read_trucker_replies(requests)
         await self._quote(shipment, requests)
+
+    async def _read_trucker_replies(self, requests: list[TruckerRequest]) -> list[TruckerRequest]:
+        """Read every reply that came back in ONE LLM call and store the offers (ADR 41).
+
+        A price is only accepted if that exact number stands in that trucker's mail; one
+        retry, then the offer is dropped. If the call fails, no offer is used and the quote
+        falls back to the estimated trucker price, so the customer still gets an answer.
+        """
+        unread = [r for r in requests if r.reply_message_id and r.price_eur is None]
+        bodies = [(m.body if (m := self._store.get_message(r.reply_message_id)) else "") for r in unread]
+        if not unread:
+            return requests
+        offers: dict[int, TruckerQuote] = {}
+        for _attempt in range(2):
+            try:
+                result = await self._extractors.extract_trucker_quotes(bodies)
+            except Exception as exc:  # noqa: BLE001 - quote with the fallback price instead
+                logger.warning("Reading trucker replies failed: %s", exc)
+                continue
+            read = {q.reply: q for q in result.quotes if 1 <= q.reply <= len(unread)}
+            ungrounded = [n for n, q in read.items() if not _price_in_text(q.price_eur, bodies[n - 1])]
+            offers = {n: q for n, q in read.items() if n not in ungrounded}
+            if not ungrounded:
+                break
+            logger.warning("Trucker prices not found in their mails (replies %s)", ungrounded)
+        for number, request in enumerate(unread, start=1):
+            if offer := offers.get(number):
+                request.price_eur = offer.price_eur
+                request.pickup_hours = offer.pickup_hours
+                request.valid_until = offer.valid_until
+                request.ref = offer.quote_ref
+                self._store.save_trucker_request(request)
+        return requests
 
     @observe(name="pricing.pick_best")
     def _price(self, shipment: Shipment, requests: list[TruckerRequest]) -> dict[str, Any]:
@@ -457,32 +494,25 @@ class Workflow:
 
     # --- Trucker replies ------------------------------------------------------------------
 
-    async def _on_trucker_quote(self, msg: MailboxMessage, ctx: MailContext) -> None:
+    def awaited_trucker_reply(self, ctx: MailContext) -> bool:
+        """True for a mail from a trucker we asked and who has not answered yet.
+
+        Such a mail needs no classifier call: it is their answer, whatever it says. What it
+        says is read later, together with the other replies.
+        """
+        return ctx.trucker_request is not None and not ctx.trucker_request.answered
+
+    async def _on_trucker_reply(self, msg: MailboxMessage, ctx: MailContext) -> None:
+        """Note that this trucker answered; quote at once if they were the last one.
+
+        No LLM call here, and no mail ever goes back to a carrier because of a carrier's
+        reply (ADR 19).
+        """
         request = ctx.trucker_request
         if request is None or request.answered:
             return  # not an answer to one of our requests, or this trucker already answered
-        quote = await self._extractors.extract_trucker_quote(msg, ctx.our_mail)
-        request.answered = True
-        request.price_eur = quote.price_eur
-        request.pickup_hours = quote.pickup_hours
-        request.valid_until = quote.valid_until
-        request.ref = quote.quote_ref
-        request.reply_message_id = msg.id
-        await self._trucker_answered(request)
-
-    async def _on_trucker_decline(self, msg: MailboxMessage, ctx: MailContext) -> None:
-        request = ctx.trucker_request
-        if request is None or request.answered:
-            return
         request.answered = True
         request.reply_message_id = msg.id
-        await self._trucker_answered(request)
-
-    async def _trucker_answered(self, request: TruckerRequest) -> None:
-        """Store the answer; quote at once if that was the last trucker we waited for.
-
-        No mail ever goes back to a carrier because of a carrier's reply (ADR 19).
-        """
         self._store.save_trucker_request(request)
         shipment = self._store.get_shipment(request.shipment_id)
         if shipment and shipment.state == ShipmentState.PRICING:

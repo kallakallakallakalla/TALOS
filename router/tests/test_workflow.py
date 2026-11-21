@@ -31,6 +31,7 @@ from app.schemas import (
     TariffLane,
     TrackingQuery,
     TruckerQuote,
+    TruckerQuotes,
 )
 from app.storage import MessageStore
 from app.tariffs import Tariffs
@@ -106,8 +107,12 @@ def recorded_llm(overrides: dict | None = None) -> ScriptedLLM:
         if schema is ShipmentRequest:
             label = LABELS[mail_id_in(user)]["rfq"]
             return ShipmentRequest(**label, contact_name="Deniz", language="en", pickup_city="Bergisch Gladbach")
-        if schema is TruckerQuote:
-            return TruckerQuote(**LABELS[mail_id_in(user)]["trucker_quote"])
+        if schema is TruckerQuotes:  # "REPLY 1:\n<body>\n\nREPLY 2:\n<body>..."
+            bodies = [part.split(":\n", 1)[1] for part in user.split("REPLY ")[1:]]
+            return TruckerQuotes(quotes=[
+                TruckerQuote(reply=n, **LABELS[mail_id_in(body)].get("trucker_quote", {}))
+                for n, body in enumerate(bodies, start=1)
+            ])  # fmt: skip
         if schema is TrackingQuery:
             return overrides.get("tracking") or TrackingQuery(
                 company="Rheintal Elektronik GmbH", contact_name="Deniz", origin="51896",
@@ -192,6 +197,10 @@ async def test_round_4_replay_quotes_1599_41_and_books_with_reference_947(tmp_pa
 
     await h.truckers_reply()  # the 4th answer triggers the quote, no timer needed
     shipment = h.shipment()
+    # 4 trucker replies cost ONE LLM call: no classifier call each, one batched read
+    schemas = [schema for schema, _, _ in h.llm.calls]
+    assert schemas.count("ClassificationDecision") == 1 and schemas.count("TruckerQuotes") == 1
+    assert [m.decision.category.value for m in map(h.store.get_message, ROUND_4_TRUCKER_REPLIES)] == ["trucker_quote"] * 4
     assert shipment.state == ShipmentState.QUOTED
     assert shipment.quote["all_in_eur"] == 1599.41
     assert (shipment.quote["air_eur"], shipment.quote["truck_eur"]) == (1483.43, 115.98)
@@ -238,27 +247,59 @@ async def test_dry_run_composes_everything_but_never_sends_or_books(tmp_path: Pa
 
 
 @pytest.mark.anyio
-async def test_trucker_wait_45_seconds_with_a_price_and_fallback_at_90(tmp_path: Path) -> None:
+async def test_after_60_seconds_the_quote_uses_whatever_truckers_came_back(tmp_path: Path) -> None:
     h = Harness(tmp_path)
     await h.receive(ROUND_4_RFQ)
     await h.receive(1056)  # Maintal 192.97; the other three stay silent
-    await h.wait(44)
+    await h.wait(59)
     assert h.shipment().state == ShipmentState.PRICING
+    assert not any(schema == "TruckerQuotes" for schema, _, _ in h.llm.calls)  # not read yet
     await h.wait(2)
     assert h.shipment().state == ShipmentState.QUOTED
     assert h.shipment().quote["all_in_eur"] == round(1483.43 + 192.97, 2)
-    await h.receive(1063)  # a cheaper trucker arrives late: stored, but no second quote
+    await h.receive(1063)  # a cheaper trucker arrives late: noted, but no second quote
     assert len(h.outbound("quote")) == 1
 
     silent = Harness(tmp_path / "silent")
     await silent.receive(ROUND_4_RFQ)
-    await silent.wait(89)
+    await silent.wait(59)
     assert silent.shipment().state == ShipmentState.PRICING
     await silent.wait(2)
     quote = silent.shipment().quote
     assert quote["truck_fallback"] is True
     assert quote["truck_eur"] == round(679 * 0.28, 2)  # no stored quotes yet -> 0.28 EUR/kg
     assert quote["all_in_eur"] == round(1483.43 + 190.12, 2)
+
+
+@pytest.mark.anyio
+async def test_a_trucker_price_that_is_not_in_the_mail_is_never_used(tmp_path: Path) -> None:
+    """Accuracy guard: an extracted price must stand in that trucker's own mail."""
+    answers = recorded_llm()._answer  # noqa: SLF001
+
+    def swapped(schema, system, user):
+        result = answers(schema, system, user)
+        if schema is TruckerQuotes:  # the model mixes up the replies / invents a price
+            for quote in result.quotes:
+                quote.price_eur = 99.99
+        return result
+
+    h = Harness(tmp_path, llm=ScriptedLLM(swapped))
+    await h.receive(ROUND_4_RFQ)
+    for reply_id in ROUND_4_TRUCKER_REPLIES:
+        await h.receive(reply_id)
+    quote = h.shipment().quote
+    assert [s for s, _, _ in h.llm.calls].count("TruckerQuotes") == 2  # one retry
+    assert quote["truck_fallback"] is True and quote["trucker"] is None  # 99.99 was not used
+
+
+@pytest.mark.anyio
+async def test_a_trucker_who_asks_back_counts_as_answered_without_a_price(tmp_path: Path) -> None:
+    h = Harness(tmp_path)
+    await h.receive(1977)  # Fulda -> LOS; the recorded truckers answered "we need the weight"
+    for reply_id in (2062, 2063, 2068):
+        await h.receive(reply_id)
+    assert h.shipment(1977).state != ShipmentState.PRICING  # all three answered: no 60 s wait
+    assert all(r.answered and r.price_eur is None for r in h.store.trucker_requests(1977))
 
 
 @pytest.mark.anyio
