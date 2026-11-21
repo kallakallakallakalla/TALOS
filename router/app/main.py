@@ -6,7 +6,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager, suppress
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from langfuse import get_client, observe
 
@@ -131,6 +131,18 @@ app = FastAPI(
 
 
 app.include_router(crm_api.router)
+
+
+@app.exception_handler(Exception)
+async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
+    """Any unhandled error: name it in the response, so the CRM page can show the cause.
+
+    The traceback still goes to the server log; Starlette re-raises after this response.
+    """
+    logging.getLogger("app").exception("Unhandled error on %s", request.url.path)
+    return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
+
+
 app.mount("/crm/assets", StaticFiles(directory=crm_api.UI_DIR), name="crm-assets")
 
 

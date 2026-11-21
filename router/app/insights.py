@@ -519,13 +519,14 @@ def lanes(deals: list[dict], data: Dataset, today: date, live: bool) -> list[dic
 
 
 def attention(deals: list[dict], data: Dataset, settings: Settings, *, live: bool, now: datetime) -> list[dict[str, Any]]:
-    """What a person should look at, most urgent first. Time-based checks need live data."""
+    """Open actions, most urgent first. `kind` names the rule; time-based rules need live data."""
     items: list[dict[str, Any]] = []
 
-    def add(level: str, d: dict | None, title: str, detail: str, **extra: Any) -> None:
+    def add(level: str, kind: str, d: dict | None, title: str, detail: str, **extra: Any) -> None:
         items.append(
             {
                 "level": level,
+                "kind": kind,
                 "shipment_id": d["id"] if d else None,
                 "company": d["company"] if d else None,
                 "lane": d["lane"] if d else None,
@@ -539,29 +540,31 @@ def attention(deals: list[dict], data: Dataset, settings: Settings, *, live: boo
         state = d["state"]
         idle = _minutes(d["updated_at"], now.isoformat()) if live else None
         if state == S.FAILED:
-            add("critical", d, "Failed", d["error"] or "No error text stored.")
+            add("critical", "failed", d, "Processing failed", d["error"] or "No error text stored.")
         elif state == S.BOOKING:
-            add("warning", d, "Booking not confirmed yet",
+            add("warning", "booking_open", d, "Booking in progress",
                 f"Attempt {d['booking_attempts']} of {settings.max_booking_attempts} with {d['airline']}.")  # fmt: skip
         elif state == S.AWAITING_INFO:
-            add("warning", d, "Waiting for the customer",
-                f"Asked {d['clarifications']} of {settings.max_clarifications} times. Missing: "
-                + ("; ".join(d["missing"]) or "nothing we can name") + ".")  # fmt: skip
+            add("warning", "awaiting_information", d, "Awaiting customer information",
+                f"Clarification {d['clarifications']} of {settings.max_clarifications} sent. Missing: "
+                + ("; ".join(d["missing"]) or "not determined") + ".")  # fmt: skip
         elif state in (S.NEW, S.PRICING) and idle is not None and idle > STUCK_AFTER_MINUTES:
-            add("warning", d, "Pricing is stuck", f"No change for {idle:.0f} minutes; pricing normally ends within {settings.trucker_wait_seconds:.0f} s.")
+            add("warning", "pricing_delayed", d, "Pricing delayed",
+                f"No change for {idle:.0f} minutes. Pricing normally completes within {settings.trucker_wait_seconds:.0f} s.")  # fmt: skip
         elif state == S.QUOTED:
             expires = _parse_time(d["valid_until"])
             if d["truck_mode"] == "estimate":
-                add("warning", d, "Quoted with an estimated trucker price",
-                    f"No trucker answered in time, so {_eur(d['truck_eur'])} of the {_eur(d['all_in_eur'])} are an estimate.")  # fmt: skip
+                add("warning", "estimated_trucking", d, "Quote contains estimated trucking cost",
+                    f"No trucker offer was received in time. {_eur(d['truck_eur'])} of {_eur(d['all_in_eur'])} is an estimate.")  # fmt: skip
             elif live and expires and expires < now:
-                add("warning", d, "Quote expired without an answer", f"Valid until {d['valid_until']}.")
+                add("warning", "quote_expired", d, "Quote expired without response", f"Valid until {d['valid_until']}.")
             else:
-                add("info", d, "Waiting for the customer's decision", f"{_eur(d['all_in_eur'])} with {d['airline']}, valid until {d['valid_until']}.")
+                add("info", "awaiting_decision", d, "Awaiting customer decision",
+                    f"{_eur(d['all_in_eur'])} with {d['airline']}, valid until {d['valid_until']}.")  # fmt: skip
         elif state == S.BOOKED and not d["dry_run_booking"]:
-            add("info", d, "Booked, airline confirmation pending", f"Booking reference {d['booking_ref']}.")
+            add("info", "confirmation_pending", d, "Airline confirmation pending", f"Booking reference {d['booking_ref']}.")
     for failure in data.failures:
-        add("warning", None, f"Mail {failure['message_id']} failed processing",
+        add("warning", "mail_failed", None, f"Mail {failure['message_id']} could not be processed",
             f"{failure['attempts']} of {settings.max_message_attempts} attempts. {failure['last_error'] or ''}".strip(),
             mail_id=failure["message_id"])  # fmt: skip
     order = {"critical": 0, "warning": 1, "info": 2}
@@ -572,9 +575,10 @@ def attention(deals: list[dict], data: Dataset, settings: Settings, *, live: boo
 
 
 def findings(deals: list[dict], settings: Settings, *, live: bool) -> list[dict[str, Any]]:
-    """Statements about pricing and demand, each with the number of cases behind it.
+    """Pricing and demand metrics, each with the number of cases behind it.
 
-    A finding without cases is left out. `value` and `unit` are the headline figure.
+    A metric without cases is left out. `value` and `unit` are the figure, `title` its name,
+    `text` one sentence on how to read it.
     """
     out: list[dict[str, Any]] = []
 
@@ -585,90 +589,89 @@ def findings(deals: list[dict], settings: Settings, *, live: bool) -> list[dict[
     quoted = [d for d in deals if d["all_in_eur"] is not None]
     compared = [d for d in quoted if d["air"] and d["air"]["n"] > 1]
 
+    with_pickup = [d for d in quoted if d["truck_mode"] in ("quoted", "estimate")]
+    estimated = [d for d in with_pickup if d["truck_mode"] == "estimate"]
+    if with_pickup:
+        add("truck_estimates", "Quotes with estimated trucking", len(estimated), "count",
+            f"{len(estimated)} of {_n(len(with_pickup), 'quote')} with pickup were issued without a trucker offer "
+            f"(none received within {settings.trucker_wait_seconds:.0f} s). Estimated amount: "
+            f"{_eur(sum(d['truck_eur'] for d in estimated))}.", len(with_pickup))  # fmt: skip
+
     spreads = [d["air"]["spread_pct"] for d in compared]
     if spreads:
         widest = max(compared, key=lambda d: d["air"]["spread_pct"])
-        add("air_spread", "Gap between the cheapest and the dearest airline", _median(spreads), "pct",
-            f"On {_n(len(compared), 'request')} with at least two airlines priced, the dearest flight cost a median "
-            f"{_median(spreads):.0f}% more than the cheapest. Widest gap: {widest['air']['spread_pct']:.0f}% on "
-            f"{widest['lane']} (shipment {widest['id']}).", len(compared))  # fmt: skip
+        add("air_spread", "Air rate spread", _median(spreads), "pct",
+            f"Median difference between the lowest and the highest air freight price per shipment. "
+            f"Maximum: {widest['air']['spread_pct']:.0f}% on {widest['lane']} (shipment {widest['id']}).", len(compared))  # fmt: skip
 
     speed = [d for d in compared if d["air"]["speed_days"] > 0]
     if speed:
         days = _median([d["air"]["speed_days"] for d in speed])
         extra = _median([d["air"]["speed_eur"] for d in speed])
         share = _median([100 * d["air"]["speed_eur"] / d["air"]["cheapest_eur"] for d in speed])
-        add("speed_cost", "What arriving sooner costs", extra, "eur",
-            f"On {len(speed)} of {_n(len(compared), 'compared request')} the fastest flight is not the cheapest. "
-            f"Arriving a median {days:g} {'day' if days == 1 else 'days'} sooner costs a median {_eur(extra)} more on the air freight (+{share:.0f}%).",
+        add("speed_cost", "Cost of faster transit", extra, "eur",
+            f"Median surcharge of the fastest air option over the lowest-priced one (+{share:.0f}%), for a median "
+            f"{days:g} {'day' if days == 1 else 'days'} less transit. Applies to {len(speed)} of {_n(len(compared), 'shipment')}.",
             len(speed))  # fmt: skip
 
     fast_goal = [d for d in compared if d["goal"] == "fastest" and d["air"].get("premium_pct") is not None]
     if fast_goal:
         premium = _median([d["air"]["premium_pct"] for d in fast_goal])
-        add("fastest_premium", "Premium paid by customers who asked for the fastest option", premium, "pct",
-            f"{_n(len(fast_goal), 'request')} asked for the fastest option. The flight quoted was a median "
-            f"{premium:.0f}% above the cheapest flight available for the same shipment.", len(fast_goal))  # fmt: skip
+        add("fastest_premium", "Premium on fastest-priority requests", premium, "pct",
+            "Median amount by which the quoted flight exceeds the lowest-priced option where the customer "
+            "requested the fastest transit.", len(fast_goal))  # fmt: skip
 
     trucked = [d for d in quoted if d["truck_eur"]]
     if trucked:
         share = _median([100 * d["truck_eur"] / d["all_in_eur"] for d in trucked])
-        add("truck_share", "Share of the pickup in the all-in price", share, "pct",
-            f"On {_n(len(trucked), 'quote')} with pickup, trucking makes up a median {share:.1f}% of the all-in price "
-            f"(median {_eur(_median([d['truck_eur'] for d in trucked]))}).", len(trucked))  # fmt: skip
+        add("truck_share", "Trucking share of all-in price", share, "pct",
+            f"Median share of the pickup in the all-in price (median amount "
+            f"{_eur(_median([d['truck_eur'] for d in trucked]))}).", len(trucked))  # fmt: skip
 
     haggled = [d for d in quoted if d["truck"] and d["truck"].get("spread_pct") is not None]
     if haggled:
         gap = _median([d["truck"]["spread_pct"] for d in haggled])
-        add("trucker_spread", "Gap between trucker offers for the same pickup", gap, "pct",
-            f"On {_n(len(haggled), 'pickup')} with at least two offers, the dearest trucker asked a median {gap:.0f}% "
-            f"more than the cheapest.", len(haggled))  # fmt: skip
-
-    with_pickup = [d for d in quoted if d["truck_mode"] in ("quoted", "estimate")]
-    estimated = [d for d in with_pickup if d["truck_mode"] == "estimate"]
-    if with_pickup:
-        add("truck_estimates", "Quotes that went out with an estimated trucker price", len(estimated), "count",
-            f"{len(estimated)} of {_n(len(with_pickup), 'quote')} with pickup went out with an estimate, because no "
-            f"trucker answered within {settings.trucker_wait_seconds:.0f} s. Estimated amount in those quotes: "
-            f"{_eur(sum(d['truck_eur'] for d in estimated))}.", len(with_pickup))  # fmt: skip
+        add("trucker_spread", "Trucking offer spread", gap, "pct",
+            "Median difference between the lowest and the highest trucker offer for the same pickup.", len(haggled))
 
     sized = [d for d in deals if d["chargeable_kg"]]
     if sized:
         bulky = [d for d in sized if d["volumetric"]]
-        add("volumetric", "Shipments billed on volume, not on weight", len(bulky), "count",
-            f"On {len(bulky)} of {_n(len(sized), 'shipment')} the volume weight (1 cbm = 167 kg) is above the gross "
-            f"weight, so the airline bills the volume.", len(sized))  # fmt: skip
+        add("volumetric", "Volumetric shipments", len(bulky), "count",
+            f"{len(bulky)} of {_n(len(sized), 'shipment')} are billed on volume weight (1 cbm = 167 kg) because it "
+            f"exceeds the gross weight.", len(sized))  # fmt: skip
 
     if quoted:
         breaks = [d for d in quoted if d["weight_break"]]
-        add("weight_breaks", "Quotes billed at the next weight break", len(breaks), "count",
-            f"On {len(breaks)} of {_n(len(quoted), 'quote')}, declaring the next higher weight break was cheaper than the "
-            f"chargeable weight, and the quote uses it.", len(quoted))  # fmt: skip
+        add("weight_breaks", "Weight-break optimisation applied", len(breaks), "count",
+            f"{len(breaks)} of {_n(len(quoted), 'quote')} are billed at the next higher weight break because the "
+            f"total is lower than at the chargeable weight.", len(quoted))  # fmt: skip
         tariff = [d for d in quoted if d["air_source"] == "tariff"]
-        add("tariff_quotes", "Quotes that use an airline priced from its tariff file", len(tariff), "count",
+        add("tariff_quotes", "Quotes on tariff airlines", len(tariff), "count",
             f"{len(tariff)} of {_n(len(quoted), 'quote')} use an airline priced from its tariff file; "
-            f"{len(quoted) - len(tariff)} use a live portal rate.", len(quoted))  # fmt: skip
+            f"{len(quoted) - len(tariff)} use a portal rate.", len(quoted))  # fmt: skip
 
     if deals:
         asked = [d for d in deals if d["clarifications"] or d["state"] == S.AWAITING_INFO]
-        add("clarifications", "Requests that could not be priced as sent", len(asked), "count",
-            f"{len(asked)} of {_n(len(deals), 'request')} needed a question back to the customer before pricing.", len(deals))  # fmt: skip
+        add("clarifications", "Requests requiring clarification", len(asked), "count",
+            f"{len(asked)} of {_n(len(deals), 'request')} could not be priced without further information from the "
+            f"customer.", len(deals))  # fmt: skip
         pickups = [d for d in deals if d["pickup"]]
-        add("pickup_share", "Requests that need a pickup", _pct(len(pickups), len(deals)), "pct",
-            f"{len(pickups)} of {_n(len(deals), 'request')} ask us to collect the goods; the rest is delivered to the "
-            f"airport by the customer.", len(deals))  # fmt: skip
+        add("pickup_share", "Requests with pickup", _pct(len(pickups), len(deals)), "pct",
+            f"{len(pickups)} of {_n(len(deals), 'request')} include collection at the customer's site; the remainder "
+            f"is delivered to the airport by the customer.", len(deals))  # fmt: skip
 
     if live:
         decided = _outcome(deals, live)
         n = decided["accepted"] + decided["rejected"]
-        add("win_rate", "Quotes the customer accepted", decided["win_rate_pct"], "pct",
-            f"{decided['accepted']} of {_n(n, 'decided quote')} were accepted.", n)
+        add("win_rate", "Acceptance rate", decided["win_rate_pct"], "pct",
+            f"{decided['accepted']} of {_n(n, 'decided quote')} accepted.", n)
         minutes = [d["minutes_to_quote"] for d in deals if d["minutes_to_quote"] is not None]
         if minutes:
             on_time = sum(m <= ROUND_WINDOW_MINUTES for m in minutes)
-            add("time_to_quote", "Time from request to quote", _median(minutes), "min",
-                f"Median over {_n(len(minutes), 'quote')}. {on_time} left within the {ROUND_WINDOW_MINUTES:.0f}-minute "
-                f"window after which a round is closed.", len(minutes))  # fmt: skip
+            add("time_to_quote", "Time to quote", _median(minutes), "min",
+                f"Median from receipt of the request to the quote. {on_time} of {_n(len(minutes), 'quote')} issued "
+                f"within the {ROUND_WINDOW_MINUTES:.0f}-minute round window.", len(minutes))  # fmt: skip
     return out
 
 
@@ -716,12 +719,12 @@ def outbound_stats(data: Dataset) -> dict[str, Any]:
 
 
 def limits(source: str) -> list[str]:
-    """What the current data cannot tell, in plain words."""
+    """What the current data does not support."""
     if source == "live":
         return []
     return [
-        "Timings are not shown: a dry run mixes the recorded mail times with the clock of the replay.",
-        "Win rates are not shown: the recorded customer verdicts answered the old process's quotes, not these prices.",
+        "Timings are not reported: the replay clock and the recorded mail times differ.",
+        "Acceptance rates are not reported: the recorded customer decisions refer to the previous process's quotes.",
         "Bookings are simulated: nothing was sent or booked.",
     ]
 

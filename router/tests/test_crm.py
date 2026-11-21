@@ -97,8 +97,8 @@ def test_findings_name_their_cases(replay: MessageStore) -> None:
 
 def test_attention_lists_what_a_person_has_to_do(replay: MessageStore) -> None:
     items = _snapshot(replay, "replay")["attention"]
-    assert [(i["shipment_id"], i["level"]) for i in items if i["title"] == "Quoted with an estimated trucker price"] == [(1977, "warning")]
-    waiting = [i for i in items if i["title"] == "Waiting for the customer"]
+    assert [(i["shipment_id"], i["level"]) for i in items if i["kind"] == "estimated_trucking"] == [(1977, "warning")]
+    waiting = [i for i in items if i["kind"] == "awaiting_information"]
     assert {i["shipment_id"] for i in waiting} == {3637, 3940} and "pickup address" in waiting[0]["detail"]
 
 
@@ -194,3 +194,13 @@ def test_system_page_shows_no_secret(client: TestClient) -> None:
     real = Settings()  # whatever keys the local .env holds must never reach the page
     secrets = [str(v) for k, v in real.model_dump().items() if any(w in k for w in ("key", "token", "secret")) and v]
     assert not [s for s in secrets if s in system.text]
+
+
+
+def test_an_unexpected_error_names_its_cause(client: TestClient, monkeypatch) -> None:
+    def broken(*args, **kwargs):
+        raise RuntimeError("disk on fire")
+
+    monkeypatch.setattr(insights, "snapshot", broken)
+    response = TestClient(app, raise_server_exceptions=False).get("/crm/api/snapshot")
+    assert response.status_code == 500 and response.json() == {"detail": "RuntimeError: disk on fire"}

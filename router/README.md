@@ -76,13 +76,16 @@ router stores. It is read-only: it never sends, books or calls an LLM.
 
 | Page | Shows |
 |---|---|
-| Desk | key figures, the route globe, what needs a person, findings on prices, incoming mail |
-| Pipeline | every shipment with its state, price split, airline; opens the shipment with the compared flights, trucker offers and the whole conversation |
-| Accounts | one row per customer: requests, values, what they ask for, their mail |
+| Desk | key figures, open actions, pipeline status, the route globe, the main pricing metrics |
+| Pipeline | every shipment with status, price split and airline, filterable by status, priority and trucking; opens the shipment with its air options, trucking offers and correspondence |
+| Accounts | one row per customer: requests, values, priorities, destinations, correspondence |
 | Network | the globe with great-circle routes, demand per destination, a table of lanes |
 | Carriers | airlines, truckers, pickup zones, tariff lanes |
 | Inbox | every stored mail with its classification, searchable in full text |
-| System | mode, poller, configuration without keys, data held, classifier accuracy, prompts |
+| Analysis | pricing and demand metrics with their case counts, a quote comparison per shipment, inbound mail volume |
+| System | operating mode, poller, configuration without credentials, data inventory, classifier accuracy, prompts |
+
+Every table can be downloaded as CSV. `/` jumps to the search box.
 
 - **Live** reads the router's database and follows it: the page asks for a change token every
   3 s and reloads the figures when it moves. **Dry run** reads the last replay; on a fresh
@@ -95,7 +98,9 @@ router stores. It is read-only: it never sends, books or calls an LLM.
 
 To look at it without touching the mailbox (no polling, so no LLM calls), `./crm.sh` (or
 `crm.bat` on Windows) installs on the first run, starts the app on port 8010 and opens the
-page. By hand:
+page. To follow a running router, give it that router's database file:
+`./crm.sh 8010 /path/to/router/data/router.db`. SQLite lets this second process read while the
+router writes, so the router itself is not touched. By hand:
 
 ```bash
 MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000

@@ -44,7 +44,8 @@ export const fmt = {
   clock: v => clockFmt.format(v),
   when: v => (v ? `${dayFmt.format(new Date(v))}, ${timeFmt.format(new Date(v))}` : '–'),
   duration: s => (s == null ? '–' : s < 90 ? `${int.format(s)} s` : `${one.format(s / 60)} min`),
-  figure(value, unit) {
+  figure(value, unit, n) {
+    if (unit === 'count') return n == null ? fmt.int(value) : `${fmt.int(value)} of ${fmt.int(n)}`;
     if (unit === 'pct') return fmt.pct(value);
     if (unit === 'eur') return fmt.eur(value);
     if (unit === 'min') return `${one.format(value)} min`;
@@ -77,6 +78,8 @@ const ICONS = {
   back: '<path d="M9.500 3.500 5 8l4.500 4.500"/>',
   plane: '<path d="M14 2 9.200 14l-2-5.200L2 6.800z"/>',
   truck: '<path d="M1.500 4h7.500v6.500H1.500zM9 6.500h2.800l2.200 2.200v1.800H9"/><circle cx="4.500" cy="11.500" r="1.300"/><circle cx="11.500" cy="11.500" r="1.300"/>',
+  analysis: '<path d="M2.500 13.500h11M4.500 11V7.500M8 11V3.500M11.500 11V6"/>',
+  download: '<path d="M8 2.500v7.500M5 7.200 8 10.200l3-3M3 13h10"/>',
 };
 
 export function icon(name) {
@@ -91,10 +94,10 @@ export function icon(name) {
 
 export const STATES = {
   NEW: ['New', 'neutral', 'dot'],
-  AWAITING_INFO: ['Waiting for customer', 'warning', 'clock'],
+  AWAITING_INFO: ['Awaiting information', 'warning', 'clock'],
   PRICING: ['Pricing', 'accent', 'spin'],
   QUOTED: ['Quoted', 'accent', 'dot'],
-  BOOKING: ['Booking', 'warning', 'spin'],
+  BOOKING: ['Booking in progress', 'warning', 'spin'],
   BOOKED: ['Booked', 'good', 'check'],
   CONFIRMED: ['Confirmed', 'good', 'check'],
   REJECTED: ['Declined', 'neutral', 'cross'],
@@ -108,15 +111,15 @@ export function stateBadge(deal) {
 }
 
 export const CATEGORIES = {
-  rfq: 'Quote request', customer_info: 'Customer details', customer_accept: 'Acceptance',
-  customer_reject: 'Decline', customer_question: 'Customer question', trucker_quote: 'Trucker offer',
+  rfq: 'Quote request', customer_info: 'Customer information', customer_accept: 'Acceptance',
+  customer_reject: 'Decline', customer_question: 'Customer enquiry', trucker_quote: 'Trucker offer',
   trucker_decline: 'Trucker decline', booking_confirmation: 'Booking confirmation', rate_offer: 'Rate offer',
-  tariff_update: 'Tariff update', tracking_request: 'Tracking question', other: 'Other',
+  tariff_update: 'Tariff update', tracking_request: 'Tracking enquiry', other: 'Other',
 };
-export const category = key => CATEGORIES[key] || `${key} (old label)`;
+export const category = key => CATEGORIES[key] || `${key} (legacy label)`;
 export const KINDS = {
-  quote: 'Quote', clarification: 'Question to customer', booking_note: 'Booking note', answer: 'Answer',
-  tracking_answer: 'Tracking answer', trucker_request: 'Pickup request', booking_request: 'Booking request',
+  quote: 'Quote', clarification: 'Clarification request', booking_note: 'Booking confirmation', answer: 'Reply',
+  tracking_answer: 'Tracking reply', trucker_request: 'Trucking request', booking_request: 'Booking request',
 };
 export const ROLES = { customer: 'Customer', trucker: 'Trucker', airline: 'Airline', ratedesk: 'Rate desk', tracking: 'Tracking desk' };
 
@@ -235,6 +238,24 @@ export function table(rows, cols, { state, onRow, empty = 'Nothing to show.' } =
     cols.map(col => h('td', { class: `${col.right ? 'r' : ''} ${col.cls || ''}` }, col.render ? col.render(row) : (value(row, col) ?? '–')))));
   return h('div', { class: 'tablewrap' }, h('table', null, h('thead', null, head), h('tbody', null, body)));
 }
+
+// Download the rows of a table as CSV. A column is exported by its `csv` function, else by
+// the value it sorts on; `csv: false` leaves it out.
+export function exportCsv(filename, rows, cols) {
+  const cell = value => {
+    const text = value == null ? '' : Array.isArray(value) ? value.join(' ') : String(value);
+    return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  };
+  const used = cols.filter(col => col.csv !== false);
+  const lines = [used.map(col => cell(col.label)), ...rows.map(row => used.map(col => cell(col.csv ? col.csv(row) : col.get ? col.get(row) : row[col.key])))];
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob(['\ufeff' + lines.map(line => line.join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+export const exportButton = (filename, rows, cols) =>
+  h('button', { class: 'pill small', title: 'Download this table as CSV', onclick: () => exportCsv(filename, rows, cols) }, icon('download'), 'CSV');
 
 export const card = (span, title, note, ...body) =>
   h('section', { class: `card glass ${span}` }, title && h('header', null, h('h3', null, title), note && h('span', { class: 'note' }, note)), body);

@@ -3,10 +3,20 @@
 # Read-only: the mailbox poller stays off, so nothing is fetched, sent or booked and no LLM
 # is called. The first run creates .venv and installs the dependencies.
 #
-#   ./crm.sh [port] [both]      default port 8010; "both" also opens the joke version
+#   ./crm.sh [port] [database]
+#     port      default 8010
+#     database  the SQLite file of a running router, to follow its live data, e.g.
+#               ./crm.sh 8010 /path/to/TALOS/router/data/router.db
+#               Without it the copy in this folder is shown (a snapshot plus the dry run).
 set -euo pipefail
-cd "$(dirname "$0")"
 PORT="${1:-8010}"
+if [ -n "${2:-}" ]; then
+  if [ ! -f "$2" ]; then echo "Database file not found: $2"; exit 1; fi
+  SQLITE_DB_PATH="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
+  export SQLITE_DB_PATH
+  echo "Live data from $SQLITE_DB_PATH"
+fi
+cd "$(dirname "$0")"
 
 # A Python of 3.12 or newer, by name. On a Mac without developer tools the plain `python3`
 # is only a stub that asks to install Xcode, so the versioned names are tried first.
@@ -52,7 +62,6 @@ URL="http://localhost:$PORT"
 (
   sleep 3
   open_page "$URL/crm"
-  if [ "${2:-}" = "both" ]; then open_page "$URL/crm/slop"; fi
 ) &
-echo "TALOS CRM: $URL/crm    joke version: $URL/crm/slop    Ctrl+C stops it."
+echo "TALOS CRM: $URL/crm    Ctrl+C stops it."
 MAILBOX_POLL_ENABLED=false LANGFUSE_ENABLED=false exec .venv/bin/uvicorn app.main:app --port "$PORT"

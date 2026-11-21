@@ -7,7 +7,7 @@ import { fmt, h, icon } from './lib.js';
 import * as views from './views.js';
 
 const POLL_MS = 3000;
-const NAV = [['desk', 'Desk'], ['pipeline', 'Pipeline'], ['accounts', 'Accounts'], ['network', 'Network'], ['carriers', 'Carriers'], ['inbox', 'Inbox'], ['system', 'System']];
+const NAV = [['desk', 'Desk'], ['pipeline', 'Pipeline'], ['accounts', 'Accounts'], ['network', 'Network'], ['carriers', 'Carriers'], ['inbox', 'Inbox'], ['analysis', 'Analysis'], ['system', 'System']];
 const PARENT = { shipment: 'pipeline', account: 'accounts' };
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
@@ -16,7 +16,7 @@ const state = {
   source: null, sources: null, snap: null, version: null, health: null, q: '', updatedAt: null, online: true,
   renders: 0, lastRoute: '', globes: [], cache: {},
   ui: {
-    sort: {}, pipeline: { state: null, lane: null, account: null }, inbox: { category: '', role: '', limit: 100 },
+    sort: {}, pipeline: { state: null, lane: null, account: null, goal: '', truck: '' }, inbox: { category: '', role: '', limit: 100 },
     tariffs: { origin: '', destination: '', airline: '' }, openMails: new Set(), globe: { ...DEFAULT_VIEW }, coverage: false,
   },
 };
@@ -67,17 +67,22 @@ function frame(active) {
     h('button', { class: state.source === 'live' ? 'on' : '', onclick: () => pick('live') }, 'Live'),
     h('button', { class: state.source === 'replay' ? 'on' : '', disabled: !state.sources.replay.available || null, onclick: () => pick('replay'),
       title: state.sources.replay.available ? 'The recorded mailbox, replayed through the pipeline' : 'No dry run recorded' }, 'Dry run'));
-  const sending = state.health?.sending === 'on';
-  $('mode').replaceChildren(h('span', { class: `dot ${sending ? 'warning' : ''}` }), sending ? 'Sending and booking' : 'Drafts only, nothing is sent');
   status();
   $('source-line').textContent = state.source === 'live' ? 'Live database' : 'Recorded dry run';
+  $('mode-line').textContent = state.health?.sending === 'on' ? 'Mode: sending and booking' : 'Mode: drafts only';
 }
 
 function status() {
   const live = state.source === 'live';
   $('live').replaceChildren(
     h('span', { class: `dot ${!state.online ? 'critical' : live ? 'live' : ''}` }),
-    !state.online ? 'Server not reachable, retrying' : live ? `Live · updated ${fmt.clock(state.updatedAt)}` : `Recorded · loaded ${fmt.clock(state.updatedAt)}`);
+    !state.online ? 'Server not reachable' : live ? `Live · updated ${fmt.clock(state.updatedAt)}` : 'Dry run data');
+  // say what to do, not only that something is wrong
+  const view = $('view'), note = document.getElementById('offline');
+  if (state.online) note?.remove();
+  else if (!note) view.prepend(h('div', { class: 'notice glass offline', id: 'offline' }, icon('alert'), h('div', null,
+    'The application on this computer is not running, so the figures below are no longer updated. Start it again in a terminal: ',
+    h('code', null, 'bash router/crm.sh'), '. This page reconnects by itself.')));
 }
 
 async function load() {
@@ -114,6 +119,12 @@ async function start() {
   paintTheme();
   let typing;
   $('search').addEventListener('input', e => { state.q = e.target.value; clearTimeout(typing); typing = setTimeout(render, 180); });
+  // "/" jumps to the search box, Escape clears it
+  addEventListener('keydown', e => {
+    const typingElsewhere = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName || '');
+    if (e.key === '/' && !typingElsewhere) { e.preventDefault(); $('search').focus(); }
+    else if (e.key === 'Escape' && document.activeElement === $('search')) { $('search').value = state.q = ''; $('search').blur(); render(); }
+  });
   setInterval(() => { $('clock').textContent = `${fmt.clock(new Date())} UTC`; }, 1000);
   $('clock').textContent = `${fmt.clock(new Date())} UTC`;
 

@@ -246,7 +246,7 @@ h1, h2, h3, p { margin: 0; }
 .bars .row[role="link"]:hover .name { color: var(--ink); }
 
 /* thin segmented bar: one whole split in parts, figures sit beside it */
-.split { display: flex; gap: 2px; height: 8px; min-width: 60px; }
+.split { display: flex; gap: 2px; height: 8px; min-width: 56px; }
 .split i { display: block; height: 8px; min-width: 2px; }
 .split i:first-child { border-radius: 4px 0 0 4px; } .split i:last-child { border-radius: 0 4px 4px 0; }
 .split i:only-child { border-radius: 4px; }
@@ -285,7 +285,7 @@ th.sortable { cursor: pointer; user-select: none; } th.sortable:hover { color: v
 th .arrow { display: inline-block; width: 10px; margin-left: 2px; }
 td { padding: 9px 10px; border-bottom: 1px solid var(--hairline); vertical-align: middle; white-space: nowrap; }
 td.free { white-space: normal; overflow-wrap: anywhere; }
-td.clip { max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
+td.clip { max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
 td.clip .sub { overflow: hidden; text-overflow: ellipsis; }
 tr:last-child td { border-bottom: 0; }
 th:first-child, td:first-child { padding-left: 18px; } th:last-child, td:last-child { padding-right: 18px; }
@@ -389,3 +389,18 @@ details.prompt pre { margin: 10px 0 0; white-space: pre-wrap; font: 12.5px/1.5 u
   .mail .line { grid-template-columns: 80px minmax(0, 1fr) 110px; } .mail .line > :nth-child(3), .mail .line > :nth-child(5), .mail .line > :nth-child(6) { display: none; }
   .mail .body { padding-left: 18px; }
 }
+
+/* --- compact figure list, small buttons, offline note ------------------------------------ */
+.figures .figure { display: flex; gap: 14px; padding: 9px 0; border-top: 1px solid var(--hairline); align-items: baseline; font-size: 13px; }
+.figures .figure:first-child { border-top: 0; padding-top: 2px; }
+.figures .figure span { color: var(--ink-2); flex: 1; min-width: 0; }
+.figures .figure b { font-size: 14.5px; font-weight: 650; font-variant-numeric: tabular-nums; text-align: right; }
+.figures .figure small { color: var(--ink-3); font-size: 12px; min-width: 44px; text-align: right; }
+.pill.small { height: 26px; padding: 0 10px; font-size: 12.5px; gap: 5px; }
+.pill.small .icon, .pill.small .icon svg { width: 13px; height: 13px; }
+.card > header .right a { color: var(--ink-2); font-size: 12.5px; }
+.offline { margin-bottom: 14px; max-width: 1560px; }
+.offline code { font: 12.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--wash-strong); padding: 2px 6px; border-radius: 6px; }
+td.desc { white-space: normal; min-width: 320px; color: var(--ink-2); }
+button.tile { text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.tile.link:hover { background: var(--glass-strong); }

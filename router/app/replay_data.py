@@ -44,7 +44,7 @@ def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURE
     result = json.loads(result_path.read_text())
     building = replay_dir / "replay.db.building"
     for leftover in replay_dir.glob("replay.db.building*"):
-        leftover.unlink()
+        leftover.unlink(missing_ok=True)
     store = MessageStore(str(building))
 
     for entry in result["shipments"]:
@@ -67,10 +67,13 @@ def ensure_replay_db(replay_dir: Path = REPLAY_DIR, fixtures_dir: Path = FIXTURE
             )
             store.save_processed_message(mails[row["id"]], decision, model="replay")
 
-    # Fold the write-ahead log into the one file before it gets its final name.
-    with store._connect() as conn:  # noqa: SLF001 - same package, one-off maintenance call
+    # Fold the write-ahead log into the one file and close it before it gets its final name.
+    conn = store._connect()  # noqa: SLF001 - same package, one-off maintenance call
+    try:
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    finally:
+        conn.close()
     building.rename(db_path)
     for leftover in replay_dir.glob("replay.db.building*"):
-        leftover.unlink()
+        leftover.unlink(missing_ok=True)
     return db_path
