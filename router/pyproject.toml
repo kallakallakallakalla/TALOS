@@ -20,3 +20,8 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+# Only `app` is the package; without this, setuptools finds several top-level folders
+# (app, data, prompts, scripts, tests) and refuses to install.
+[tool.setuptools]
+packages = ["app"]
