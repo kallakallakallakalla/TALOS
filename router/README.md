@@ -93,7 +93,9 @@ router stores. It is read-only: it never sends, books or calls an LLM.
   system has no aircraft positions.
 - No build step and no external requests: plain HTML, CSS and JavaScript in `app/crm_ui/`.
 
-To look at it without touching the mailbox (no polling, so no LLM calls):
+To look at it without touching the mailbox (no polling, so no LLM calls), `./crm.sh` (or
+`crm.bat` on Windows) installs on the first run, starts the app on port 8010 and opens the
+page. By hand:
 
 ```bash
 MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000
