@@ -100,6 +100,7 @@ Takes `{"rate_id":"R-…","team_reference":"<our CRM id>"}`.
 - Afterwards the airline sends a "Booking <ref> confirmed" mail.
 - There is no status endpoint, so we keep track of bookings ourselves.
 - Example: `team_reference` "1470" was booked as `BK-8RCF17DZ`.
+- Current OpenAPI also defines `DELETE /v1/portal/bookings/{booking_reference}` to cancel a booking. It returns the booking reference, team reference and `status: "cancelled"`; repeated cancellation is idempotent.
 
 ## LLM gateway (OpenAI-compatible)
 
