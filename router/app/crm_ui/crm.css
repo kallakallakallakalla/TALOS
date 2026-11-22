@@ -457,3 +457,58 @@ td.reason { max-width: 420px; white-space: normal; color: var(--ink-2); }
 .foldbody h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
 .foldbody.stack { display: grid; gap: 22px; }
 #mode-line.hot { color: var(--critical); font-weight: 600; }
+
+/* --- a harder finish: square corners, solid panels, ruled tables, tighter type ------------- */
+:root {
+  --plane: #dfddd7; --field-1: transparent; --field-2: transparent; --field-3: transparent;
+  --glass: #f7f6f2; --glass-strong: #ffffff; --glass-edge: rgba(15, 17, 19, 0.2); --glass-hi: transparent;
+  --hairline: rgba(15, 17, 19, 0.12); --wash: rgba(15, 17, 19, 0.05); --wash-strong: rgba(15, 17, 19, 0.1); --shadow: transparent;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --plane: #0b0d0f; --field-1: transparent; --field-2: transparent; --field-3: transparent;
+    --glass: #15181b; --glass-strong: #20252a; --glass-edge: rgba(255, 255, 255, 0.16); --glass-hi: transparent;
+    --hairline: rgba(255, 255, 255, 0.1); --wash: rgba(255, 255, 255, 0.05); --wash-strong: rgba(255, 255, 255, 0.1); --shadow: transparent;
+  }
+}
+:root[data-theme="dark"] {
+  --plane: #0b0d0f; --field-1: transparent; --field-2: transparent; --field-3: transparent;
+  --glass: #15181b; --glass-strong: #20252a; --glass-edge: rgba(255, 255, 255, 0.16); --glass-hi: transparent;
+  --hairline: rgba(255, 255, 255, 0.1); --wash: rgba(255, 255, 255, 0.05); --wash-strong: rgba(255, 255, 255, 0.1); --shadow: transparent;
+}
+body::after { display: none; }
+.glass { border-radius: 2px; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.bar, .notice, .nav a, .seg, .seg button, .search input, .iconbtn, .chip, .tag, .flag, .pill, .msg, .filters select, .filters input[type="text"],
+#toast, #tip, .lever code, .card > header code, .offline code, .bars .row[role="link"], :focus-visible { border-radius: 2px; }
+.bars .fill, .split i:first-child, .split i:last-child, .split i:only-child, .meter .track, .meter .track i, .legend i { border-radius: 0; }
+.app { gap: 10px; padding: 10px; } .stage { gap: 10px; } .grid { gap: 10px; }
+.brand b { letter-spacing: 0.14em; }
+.nav { gap: 0; }
+.nav a { padding: 7px 10px; border: 0; border-left: 2px solid transparent; }
+.nav a.on { background: var(--wash-strong); border-left-color: var(--ink); box-shadow: none; font-weight: 600; }
+.nav a.rule { margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--hairline); }
+.nav a.setup { color: var(--ink-3); }
+.nav a .count { background: var(--ink); color: var(--glass); padding: 0 6px; font-weight: 600; }
+.bar h1 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; }
+.seg { padding: 0; gap: 0; overflow: hidden; }
+.seg button { padding: 6px 12px; border-radius: 0; }
+.seg button.on { background: var(--ink); color: var(--glass); box-shadow: none; }
+.pill.on { background: var(--ink); color: var(--glass); border-color: var(--ink); } .pill.on b { color: inherit; }
+.pill.quiet { text-decoration: underline; text-underline-offset: 3px; }
+.card h3, .card > header h3 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; }
+th { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--glass-edge); }
+td { padding: 7px 10px; }
+.status h2 { font-size: 21px; letter-spacing: 0; }
+.hero { font-size: 30px; } .lever .hero { font-size: 24px; }
+.msg { max-width: 88%; }
+.flag { background: none; border: 1px solid var(--warning); } .flag.ok { background: none; border-color: var(--good); }
+#mode-line { text-transform: uppercase; letter-spacing: 0.05em; font-size: 10.5px; font-weight: 600; }
+
+/* figures in one ruled strip */
+.statstrip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding: 0; }
+.stat { padding: 14px 16px 16px; border-left: 1px solid var(--hairline); display: grid; gap: 5px; align-content: start; min-width: 0; }
+.stat:first-child { border-left: 0; }
+.stat span { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
+.stat b { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat small { font-size: 12px; color: var(--ink-3); line-height: 1.35; }
+@media (max-width: 1180px) { .statstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat { border-left: 0; border-top: 1px solid var(--hairline); } }

@@ -14,6 +14,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.airports import AIRPORTS, distance_km
 from app.config import Settings
@@ -1062,6 +1063,104 @@ def mails(
         )
     return {"total": len(rows), "offset": offset, "items": rows[offset : offset + limit]}
 
+
+
+# --- scorecard: what the router did, as the figures a comparison with a forwarder's desk needs ---
+
+_INSURANCE = re.compile(r"insur|versicher", re.IGNORECASE)  # insurance, insured, Transportversicherung, versichert
+OFFICE = ZoneInfo("Europe/Berlin")  # a forwarder's desk here is staffed Monday to Friday, 08:00 to 18:00
+
+
+def _office_hours(moment: str | None) -> bool | None:
+    """Whether a mail arrived while a desk would be staffed; None if the time is unknown."""
+    at = _parse_time(moment)
+    if at is None:
+        return None
+    local = at.astimezone(OFFICE)
+    return local.weekday() < 5 and 8 <= local.hour < 18
+
+
+def scorecard(store: MessageStore, reference: Reference, settings: Settings, *, source: str, tariff_airlines: set[str] | None = None) -> dict[str, Any]:
+    """The case for the router in its own numbers: how fast, how much of the market, how few people.
+
+    Only what is stored is counted. The speed is live data only (a replay mixes two clocks).
+    Which carriers were used is counted per quote that went out; what customers asked for is
+    read from the extracted request, except insurance, which the router does not extract and
+    which is therefore a word search in the request mail.
+    """
+    live = source == "live"
+    data = Dataset.load(store)
+    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
+    deals = [deal(s, data, live=live, received=received) for s in data.shipments if not is_legacy(s)]
+    quoted = [d for d in deals if d["all_in_eur"] is not None]
+    compared = [d["air"] for d in quoted if d["air"]]
+    seconds = [d["minutes_to_quote"] * 60 for d in quoted if d["minutes_to_quote"] is not None]
+    ids = {d["id"] for d in deals}
+    pickups = [reqs for sid, reqs in data.truckers.items() if sid in ids]
+    air = [row for row in airlines(deals, data, reference, tariff_airlines or set()) if row["compared"] or row["chosen"]]
+    trucks = [row for row in truckers(deals, data, reference, live=live, received=received) if row["asked"]]
+    spreads = [a["spread_pct"] for a in compared if a["spread_pct"] is not None]
+    bodies = {d["id"]: (message.body if (message := store.get_message(d["id"])) else "") for d in deals}
+
+    def asked(label: str, count: int) -> dict[str, Any]:
+        return {"name": label, "count": count}
+
+    outbound = [m for group in data.outbound.values() for m in group]
+    top = max((row["chosen"] for row in air), default=0)
+    after_hours = [d for d in deals if _office_hours(d["received_at"]) is False]
+    return {
+        "source": source,
+        "requests": len(deals),
+        "quoted": len(quoted),
+        "asked_back": sum(d["state"] == S.AWAITING_INFO or d["clarifications"] > 0 for d in deals),
+        # requests that arrived while a desk would be closed, and how many of those were quoted all the same
+        "after_hours": len(after_hours),
+        "after_hours_quoted": sum(d["all_in_eur"] is not None for d in after_hours),
+        "booked": sum(d["state"] in (S.BOOKED, S.CONFIRMED) and not d["dry_run_booking"] for d in deals),
+        "booked_simulated": sum(bool(d["dry_run_booking"]) for d in deals),
+        "tracking_questions": sum(m["category"] == "tracking_request" for m in data.mails),
+        "tracking_answers": sum(m.kind == "tracking_answer" for m in outbound),
+        "accepted": sum(d["state"] in ACCEPTED for d in deals),
+        "declined": sum(d["state"] == S.REJECTED for d in deals),
+        "mails_read": len(data.mails),
+        "mails_written": len(outbound),
+        "template_fallbacks": sum(m.used_template for m in outbound),
+        "languages": [{"language": language, "count": count} for language, count in Counter(d["language"] or "not stated" for d in deals).most_common()],
+        "speed": {
+            "n": len(seconds), "median_s": round(_median(seconds)), "slowest_s": round(max(seconds)),
+            "within_minute": sum(sec <= 60 for sec in seconds), "within_window": sum(sec <= ROUND_WINDOW_MINUTES * 60 for sec in seconds),
+        } if seconds else None,  # fmt: skip
+        "trucker_wait_s": settings.trucker_wait_seconds,
+        "airlines_per_quote": _median([a["n"] for a in compared]),
+        "airlines_priced": sum(bool(row["compared"]) for row in air),
+        "truckers_per_pickup": _median([len(reqs) for reqs in pickups]),
+        "truckers_asked": len(trucks),
+        "pickups": len(pickups),
+        "spread_pct": _median(spreads),
+        "spread_max_pct": max(spreads, default=None),
+        "spread_eur": _median([a["dearest_eur"] - a["cheapest_eur"] for a in compared if a["n"] > 1]),
+        "airlines": [{"name": row["name"], "quoted": row["chosen"], "accepted": row["accepted"], "priced": row["compared"]}
+                     for row in sorted(air, key=lambda row: (-row["chosen"], -row["accepted"], -row["compared"], row["name"]))],  # fmt: skip
+        "truckers": [{"name": row["name"], "selected": row["chosen"], "asked": row["asked"], "answered": row["answered"]}
+                     for row in sorted(trucks, key=lambda row: (-row["chosen"], -row["answered"], -row["asked"], row["name"]))],  # fmt: skip
+        "top_airline_share_pct": _pct(top, len(quoted)) if quoted else None,
+        "asks": [
+            asked("Pickup at the customer's site", sum(bool(d["pickup"]) for d in deals)),
+            asked("Fastest option", sum(d["goal"] == "fastest" for d in deals)),
+            asked("Cheapest option", sum(d["goal"] == "cheapest" for d in deals)),
+            asked("Further questions in the request", sum(bool(d["extra_questions"]) for d in deals)),
+            asked("Delivery deadline", sum(bool(d["deliver_by"]) for d in deals)),
+            asked("Dangerous goods", sum(bool(d["dangerous_goods"]) for d in deals)),
+            asked("Special cargo", sum(bool(d["special_cargo"]) for d in deals)),
+            asked("Named or excluded carrier", sum(bool(d["preferred_airline"] or d["preferred_trucker"] or d["excluded_carriers"]) for d in deals)),
+            asked("Insurance", sum(bool(_INSURANCE.search(bodies[d["id"]])) for d in deals)),
+        ],
+        "explained": {
+            "assumptions": sum(bool(d["assumptions"]) for d in deals),
+            "weight_break": sum(bool(d["weight_break"]) for d in quoted),
+            "estimated": sum(d["truck_mode"] == "estimate" for d in quoted),
+        },
+    }
 
 
 # --- the compose prompt's style rules, checked on the mail that went out -----------------------

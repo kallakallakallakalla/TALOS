@@ -94,8 +94,7 @@ function queue(ctx, items) {
 export async function now(ctx) {
   const { snap } = ctx, k = snap.kpis, live = snap.source === 'live', p = snap.poller;
   const cases = snap.attention.filter(a => a.needs_person), notes = snap.attention.filter(a => !a.needs_person), n = cases.length;
-  const levers = await ctx.api('/crm/api/levers').catch(() => []);
-  const changes = levers.filter(l => l.verdict.tone === 'change').length, decided = k.accepted + k.rejected;
+  const decided = k.accepted + k.rejected;
   // one line on whether the router itself is alive, so an empty queue can be trusted
   const router = !live ? 'Recorded dry run: timings and acceptance rates are not reported, bookings are simulated, and only Dismiss works here.'
     : !p?.enabled ? 'Read-only view: this process does not read the mailbox, so only Dismiss works here.'
@@ -112,13 +111,75 @@ export async function now(ctx) {
       h('p', null, router),
       h('p', { class: 'next' },
         h('a', { href: '#/rounds' }, decided ? `${k.rejected} of ${decided} decided quotes declined` : `${k.requests} ${k.requests === 1 ? 'request' : 'requests'}, none decided yet`),
-        h('a', { href: '#/tuning' }, changes ? `${changes} ${changes === 1 ? 'thing' : 'things'} should change in the setup` : 'Nothing to change in the setup'))),
+        h('a', { href: '#/performance' }, `${k.quoted} of ${k.requests} requests quoted`))),
     listed ? h('section', { class: 'card glass c6 flush' },
       cases.length ? queue(ctx, cases) : h('div', { class: 'empty' }, 'Nothing needs a decision.'),
       notes.length ? [h('div', { class: 'subhead' }, 'For information: nothing to do here'), queue(ctx, notes)] : null,
       snap.dismissed ? h('div', { class: 'subhead' }, `${snap.dismissed} dismissed · `, h('button', { class: 'linkbtn', onclick: () => ctx.act('restore', {}) }, 'restore')) : null) : null,
     globeCard(ctx, listed ? 'c6' : 'c12', { height: 400 }));
   return { title: 'Now', sub: '', node };
+}
+
+// --- performance: what the router did, and with whom ---------------------------------------------
+
+export async function performance(ctx) {
+  const c = await ctx.api('/crm/api/scorecard');
+  const stat = (label, value, note) => h('div', { class: 'stat' }, h('span', null, label), h('b', null, value), h('small', null, note));
+  const share = (part, whole) => (whole ? fmt.pct(100 * part / whole) : '–');
+  const used = c.airlines.filter(a => a.quoted), unused = c.airlines.length - used.length;
+  const chosen = c.truckers.filter(t => t.selected);
+  const top = Math.max(...c.airlines.map(a => a.quoted), 1), topTruck = Math.max(...c.truckers.map(t => t.asked), 1);
+  const airlineCols = [
+    { key: 'name', label: 'Airline' },
+    { key: 'quoted', label: 'Quoted', right: true, render: a => meter(100 * a.quoted / top, fmt.int(a.quoted)) },
+    { key: 'share', label: 'Share of quotes', right: true, get: a => a.quoted, render: a => share(a.quoted, c.quoted), csv: a => (c.quoted ? Math.round(1000 * a.quoted / c.quoted) / 10 : '') },
+    { key: 'accepted', label: 'Accepted', right: true }, { key: 'priced', label: 'Priced', right: true },
+  ];
+  const truckerCols = [
+    { key: 'name', label: 'Trucker' },
+    { key: 'selected', label: 'Used in a quote', right: true },
+    { key: 'asked', label: 'Asked', right: true, render: t => meter(100 * t.asked / topTruck, fmt.int(t.asked)) },
+    { key: 'answered', label: 'Offers', right: true },
+    { key: 'rate', label: 'Answered', right: true, get: t => (t.asked ? t.answered / t.asked : 0), render: t => share(t.answered, t.asked), csv: t => (t.asked ? Math.round(100 * t.answered / t.asked) : '') },
+  ];
+  const askCols = [
+    { key: 'name', label: 'In the request' }, { key: 'count', label: 'Requests', right: true, render: a => meter(c.requests ? 100 * a.count / c.requests : 0, fmt.int(a.count)) },
+    { key: 'share', label: 'Share', right: true, get: a => a.count, render: a => share(a.count, c.requests), csv: a => (c.requests ? Math.round(100 * a.count / c.requests) : '') },
+  ];
+  const s = c.speed, e = c.explained;
+  const node = h('div', { class: 'grid' },
+    h('section', { class: 'card glass c12 statstrip' },
+      stat('Requests', fmt.int(c.requests), `${c.quoted} quoted · ${c.asked_back} asked for missing details`),
+      stat('Outside office hours', `${fmt.int(c.after_hours)} of ${fmt.int(c.requests)}`, `${c.after_hours_quoted} of them quoted · office hours: Mon to Fri, 08 to 18, Berlin`),
+      stat('Time to quote', s ? fmt.duration(s.median_s) : '–', s ? `median of ${s.n} · ${s.within_window} within 6 min · slowest ${fmt.duration(s.slowest_s)}` : 'not measured in a recorded run'),
+      stat('Airlines compared', c.airlines_per_quote == null ? '–' : fmt.one(c.airlines_per_quote), `per quote, median · ${c.airlines_priced} airlines priced in all`),
+      stat('Truckers asked', c.truckers_per_pickup == null ? '–' : fmt.one(c.truckers_per_pickup), `per pickup, median · ${c.truckers_asked} truckers in all`),
+      stat('Price range', c.spread_pct == null ? '–' : fmt.pct(c.spread_pct), c.spread_pct == null ? 'no request with two priced airlines' : `cheapest to dearest airline per request, median ${fmt.eur(c.spread_eur)} · up to ${fmt.pct(c.spread_max_pct)}`)),
+    h('section', { class: 'card glass c7 flush' },
+      head('Airlines used', used.length ? `${used.length} airlines in ${c.quoted} quotes · most used ${fmt.pct(c.top_airline_share_pct)}` : 'no quote yet', exportButton('talos-airlines-used.csv', c.airlines, airlineCols)),
+      table(used, airlineCols, { state: sortState(ctx, 'used', 'quoted'), empty: 'No quote has gone out.' }),
+      unused ? h('div', { class: 'subhead' }, `${unused} more were priced and not chosen · `, h('a', { href: '#/lookup/airlines' }, 'all airlines')) : null),
+    h('section', { class: 'card glass c5 flush' },
+      head('In the requests', `${c.requests} requests`, exportButton('talos-requests-content.csv', c.asks, askCols)),
+      table(c.asks, askCols, { empty: 'No request yet.' }),
+      h('div', { class: 'subhead' }, 'Insurance is counted by a word search in the request mail; the other rows come from the extracted request.')),
+    h('section', { class: 'card glass c7 flush' },
+      head('Truckers used', c.pickups ? `${chosen.length} used in a quote · ${c.truckers.length} asked for ${c.pickups} pickups` : 'no pickup yet', exportButton('talos-truckers-used.csv', c.truckers, truckerCols)),
+      table(c.truckers.slice(0, 8), truckerCols, { state: sortState(ctx, 'trucks', 'selected'), empty: 'No trucker has been asked.' }),
+      c.truckers.length > 8 ? h('div', { class: 'subhead' }, `${c.truckers.length - 8} more asked · `, h('a', { href: '#/lookup/truckers' }, 'all truckers')) : null),
+    h('section', { class: 'card glass c5 flush' }, head('Quote, book, track', `${c.requests} requests`),
+      h('div', { class: 'tablewrap' }, h('table', null, h('tbody', null, [
+        ['Quotes sent', c.quoted],
+        ['· billed at the next weight break because the total is lower', e.weight_break],
+        ['· trucking estimated because no offer arrived in time', e.estimated],
+        ['· assumption made and stated (weight or volume computed)', e.assumptions],
+        ['Accepted by the customer', c.accepted], ['Declined by the customer', c.declined],
+        [c.source === 'live' ? 'Booked' : 'Booked (simulated in a dry run)', c.source === 'live' ? c.booked : c.booked_simulated],
+        ['Tracking questions answered', `${fmt.int(c.tracking_answers)} of ${fmt.int(c.tracking_questions)}`],
+        ['Mails read', c.mails_read], ['Mails written', c.mails_written],
+      ].map(([label, count]) => h('tr', null, h('td', { class: 'free' }, label), h('td', { class: 'r' }, typeof count === 'number' ? fmt.int(count) : count)))))),
+      h('div', { class: 'subhead' }, c.languages.map(l => `${l.language}: ${l.count}`).join(' · '), ' · language of the request')));
+  return { title: 'Performance', sub: '', node };
 }
 
 // --- rounds: one request, one outcome ----------------------------------------------------------

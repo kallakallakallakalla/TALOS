@@ -125,6 +125,14 @@ async def rounds(request: Request, source: Source = "live", settings: Settings =
     return ledger
 
 
+@router.get("/api/scorecard")
+async def scorecard(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    return insights.scorecard(
+        _store(request, settings, source), _reference(settings, source), settings,
+        source=source, tariff_airlines=_tariffs(settings, source).airlines,
+    )  # fmt: skip
+
+
 @router.get("/api/levers")
 async def levers(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> list[dict[str, Any]]:
     return insights.levers(_store(request, settings, source), _reference(settings, source), settings, source=source)

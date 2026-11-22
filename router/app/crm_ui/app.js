@@ -7,7 +7,8 @@ import { fmt, h, icon } from './lib.js';
 import * as views from './views.js';
 
 const POLL_MS = 3000;
-const NAV = [['now', 'Now'], ['rounds', 'Rounds'], ['tuning', 'Tuning'], ['lookup', 'Lookup'], ['system', 'System']];
+const NAV = [['now', 'Now'], ['performance', 'Performance'], ['rounds', 'Rounds'], ['lookup', 'Lookup'], ['tuning', 'Tuning'], ['system', 'System']];
+const SETUP = new Set(['tuning', 'system']);  // the router's own setup: below a rule in the navigation
 const PARENT = { shipment: 'rounds', account: 'lookup' };
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
@@ -64,7 +65,7 @@ function frame(active) {
   const counts = { now: urgent || '' };
   document.title = `${urgent ? `(${urgent}) ` : ''}${document.title.replace(/^\(\d+\) /, '')}`;
   $('nav').replaceChildren(...NAV.map(([key, label]) => h('a', {
-    href: `#/${key}`, class: (PARENT[active] || active) === key ? 'on' : '', 'aria-current': (PARENT[active] || active) === key ? 'page' : null,
+    href: `#/${key}`, class: `${(PARENT[active] || active) === key ? 'on' : ''}${key === 'tuning' ? ' rule' : ''}${SETUP.has(key) ? ' setup' : ''}`, 'aria-current': (PARENT[active] || active) === key ? 'page' : null,
   }, icon(key), label, counts[key] !== undefined && h('span', { class: 'count', title: 'cases that need a decision' }, counts[key]))));
   $('source').replaceChildren(
     h('button', { class: state.source === 'live' ? 'on' : '', onclick: () => pick('live') }, 'Live'),

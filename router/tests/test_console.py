@@ -253,6 +253,35 @@ def test_llm_use_is_summed_by_step_and_flags_tokens_spent_on_mails_without_answe
     assert lever(replay, "llm_usage")["verdict"]["tone"] == "change"  # 500 of 1400 tokens on mails that needed no answer
 
 
+# --- performance ------------------------------------------------------------------------------
+
+
+def test_the_scorecard_counts_coverage_carriers_and_what_customers_asked_for(replay: MessageStore) -> None:
+    card = insights.scorecard(replay, REFERENCE, SETTINGS, source="replay")
+    assert (card["requests"], card["quoted"], card["asked_back"], card["mails_read"], card["mails_written"]) == (16, 14, 2, 151, 59)
+    assert (card["airlines_per_quote"], card["airlines_priced"], card["truckers_per_pickup"], card["truckers_asked"]) == (3, 20, 4.5, 16)
+    assert (card["spread_pct"], card["spread_max_pct"], card["top_airline_share_pct"]) == (23.8, 75.9, 28.6)
+    assert card["airlines"][0] == {"name": "Fjordline Air Cargo", "quoted": 4, "accepted": 4, "priced": 4}
+    assert sum(a["quoted"] for a in card["airlines"]) == 14 and sum(a["accepted"] for a in card["airlines"]) == 8
+    assert sum(t["selected"] for t in card["truckers"]) == 5  # 8 pickups, 3 of them quoted with an estimate
+    asks = {a["name"]: a["count"] for a in card["asks"]}
+    assert asks["Pickup at the customer's site"] == 8 and asks["Fastest option"] + asks["Cheapest option"] == 16
+    assert card["explained"] == {"assumptions": 3, "weight_break": 4, "estimated": 3}
+    assert (card["after_hours"], card["after_hours_quoted"]) == (16, 14)  # the recorded requests arrived on a Saturday
+    assert (card["booked"], card["booked_simulated"], card["tracking_questions"], card["tracking_answers"]) == (1, 7, 3, 0)
+    assert insights._office_hours("2026-11-23T09:30:00+00:00") is True and insights._office_hours("2026-11-23T01:00:00+00:00") is False  # noqa: SLF001
+    assert card["speed"] is None  # a replay mixes two clocks
+    assert insights.scorecard(replay, REFERENCE, SETTINGS, source="live")["speed"]["n"] == 14
+
+
+def test_insurance_is_found_by_a_word_search_in_the_request_mail(replay: MessageStore) -> None:
+    count = lambda: {a["name"]: a["count"] for a in insights.scorecard(replay, REFERENCE, SETTINGS, source="replay")["asks"]}["Insurance"]  # noqa: E731
+    assert count() == 0  # nobody asked for it in the recorded run
+    sql(replay, "UPDATE processed_messages SET body = body || ' Please include cargo insurance.' WHERE message_id = 947")
+    sql(replay, "UPDATE processed_messages SET body = body || ' Bitte mit Transportversicherung anbieten.' WHERE message_id = 275")
+    assert count() == 2
+
+
 # --- the decision trace ---------------------------------------------------------------------
 
 
@@ -465,6 +494,9 @@ def test_ledger_and_levers_are_served_for_both_sources(client: TestClient) -> No
     assert client.get("/crm/api/rounds", params={"source": "replay"}).json()["total"] == 16
     assert [x["key"] for x in client.get("/crm/api/levers", params={"source": "replay"}).json()][0] == "llm_usage"
     assert client.get("/crm/api/rounds").json()["total"] == 0  # the live database of this test is empty
+    assert client.get("/crm/api/scorecard", params={"source": "replay"}).json()["airlines"][0]["name"] == "Fjordline Air Cargo"
+    empty = client.get("/crm/api/scorecard").json()
+    assert (empty["requests"], empty["airlines"], empty["speed"], empty["spread_pct"]) == (0, [], None, None)
     assert {x["verdict"] and x["verdict"]["tone"] for x in client.get("/crm/api/levers").json()} <= {"open", "keep", None}
     snap = client.get("/crm/api/snapshot", params={"source": "replay"}).json()
     assert snap["can_act"] is False and snap["sending"] is False and snap["poller"] is None and snap["dismissed"] == 0

@@ -60,6 +60,7 @@ export const words = text => (text ?? '').replaceAll('_', ' ').replace(/^./, c =
 const ICONS = {
   now: '<circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/>',
   rounds: '<path d="M2.5 4h11M2.5 8h11M2.5 12h7"/>',
+  performance: '<path d="M2.5 13.5h11M4.5 11V7.5M8 11V3.5M11.5 11V6"/>',
   tuning: '<path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/>',
   lookup: '<path d="M2.5 3h11v10h-11zM2.5 6.5h11M6.5 6.5V13"/>',
   system: '<rect x="2.5" y="3" width="11" height="7.5" rx="1.2"/><path d="M6 13.5h4M8 10.5v3"/>',
