@@ -74,19 +74,24 @@ router works on its own; the console is for the three things a person still does
 
 | Page | Question it answers | What you do there |
 |---|---|---|
-| Now | Does anything need a person? | The queue of cases the router could not finish: retry a booking, send a reminder, close a shipment, process a failed mail again, or dismiss. Empty when all is well. The route globe sits beside it. |
-| Rounds | How did each request end, and what did a loss cost? | One row per request: quote, time to answer, outcome, booked, the platform board's verdict where it can be read, and the cause of a loss. The "Quote mails" tab shows every quote as the jury reads it and marks the rules of the compose prompt it breaks. |
-| Tuning | Is a setting wrong? | One card per setting with a verdict from the data: change, keep, or too little data. Covers the trucker wait, truckers who rarely answer, the trucking estimate, LLM use and clarifications. |
-| Lookup | Where is that shipment, account, carrier, mail? | Tabs for shipments, accounts, airlines, truckers, pickup zones, tariffs and the mail stream; the search box filters the open tab. |
-| System | How is the router running? | Operating mode, poller, mail volume, classifier accuracy; configuration without credentials, data inventory and prompts fold out. |
+| Now | Does anything need a person? | One line on whether the router is reading the mailbox, then the queue of cases it could not finish: retry a booking, send a reminder, close a shipment, process a failed mail again, or dismiss. Only cases a person can act on are counted; in live data a question or booking is listed once it has waited 2 minutes. A stopped poller is the first case. The route globe sits beside it. |
+| Rounds | How did each request end, and why was it lost? | One row per request: airline, quote, time to answer, outcome, the platform board's verdict and points where it can be read, and the reason of a loss in the customer's own words. Filter by outcome; a click on a route of the globe filters by lane. The "Quote mails" tab shows the quotes as the jury reads them and marks the rules of the compose prompt each one breaks. |
+| Tuning | Should something in the setup change? | The headline names the change. One card per setting the data can judge (change or keep); settings with too little data are listed in one line each. Covers time to quote, the trucker wait, truckers who rarely answer, the trucking estimate and LLM use. |
+| Lookup | Where is that account, carrier, tariff, mail? | Tabs for accounts, airlines, truckers, tariffs and the mail stream; the search box filters the open tab. |
+| System | How is this process set up? | Mode and poller, classifier accuracy (dry run); configuration without credentials, data inventory and prompts fold out. |
 
 A shipment's page opens with "What happened": the steps that led to its state, each with the
-reason (which airline was chosen and why, what was estimated, what a later offer showed).
+reason (which airline was chosen and why, what was estimated, what a later offer showed). The
+actions of its open case are on the page; request, offer and correspondence fold out.
 
 - **Actions** go through the workflow's own operations and only work in the process that
   runs the mailbox poller, under the lock the poll cycle holds, so they never run between two
   steps of a shipment. A second process that only reads the database (see below) can dismiss
   items and nothing else. `SEND_ENABLED` still decides whether mail really leaves.
+- **No login.** An action is therefore only accepted from the CRM page itself: the request
+  must be JSON, come from the same origin, and be addressed to `localhost` or to a host name
+  listed in `CRM_ACTION_HOSTS`. Another website open in the same browser cannot trigger one.
+  Anyone who can open the page can act, so keep the port on localhost or behind your own access control.
 - **Notifications:** the bell asks the browser for permission; after that a new case in the
   queue is announced, so nobody has to watch the page. The tab title carries the count.
 - **LLM use** is counted from the router's next start on: every call writes its token use to

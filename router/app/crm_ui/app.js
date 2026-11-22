@@ -16,7 +16,7 @@ const state = {
   source: null, sources: null, snap: null, version: null, health: null, q: '', updatedAt: null, online: true,
   renders: 0, lastRoute: '', globes: [], cache: {},
   ui: {
-    sort: {}, pipeline: { state: null, lane: null, account: null, goal: '', truck: '' }, inbox: { category: '', role: '', limit: 100 },
+    sort: {}, rounds: { outcome: null, lane: null, all: false }, inbox: { category: '', role: '', limit: 100 },
     tariffs: { origin: '', destination: '', airline: '' }, openMails: new Set(), globe: { ...DEFAULT_VIEW }, coverage: false,
   },
 };
@@ -53,12 +53,14 @@ async function render() {
   view.scrollTop = scroll;
   view.classList.remove('stale');
   $('title').textContent = page.title; $('sub').textContent = page.sub;
+  // the search box only exists where it filters something
+  $('search').closest('label').hidden = !(now.name === 'lookup' || (now.name === 'rounds' && now.arg !== 'mails'));
   document.title = `${page.title} · TALOS`;
   frame(now.name);
 }
 
 function frame(active) {
-  const snap = state.snap, urgent = snap.attention.length;
+  const snap = state.snap, urgent = snap.attention.filter(a => a.needs_person).length;
   const counts = { now: urgent || '' };
   document.title = `${urgent ? `(${urgent}) ` : ''}${document.title.replace(/^\(\d+\) /, '')}`;
   $('nav').replaceChildren(...NAV.map(([key, label]) => h('a', {
@@ -69,12 +71,13 @@ function frame(active) {
     h('button', { class: state.source === 'replay' ? 'on' : '', disabled: !state.sources.replay.available || null, onclick: () => pick('replay'),
       title: state.sources.replay.available ? 'The recorded mailbox, replayed through the pipeline' : 'No dry run recorded' }, 'Dry run'));
   status();
-  $('source-line').textContent = state.source === 'live' ? 'Live database' : 'Recorded dry run';
-  $('mode-line').textContent = state.health?.sending === 'on' ? 'Mode: sending and booking' : 'Mode: drafts only';
+  $('mode-line').textContent = snap.sending ? 'Sending ON: actions are real' : 'Sending off: drafts only';
+  $('mode-line').className = snap.sending ? 'hot' : '';
 }
 
 function status() {
   const live = state.source === 'live';
+  $('live').hidden = state.online && !live;  // the switch beside it already says "Dry run"
   $('live').replaceChildren(
     h('span', { class: `dot ${!state.online ? 'critical' : live ? 'live' : ''}` }),
     !state.online ? 'Server not reachable' : live ? `Live · updated ${fmt.clock(state.updatedAt)}` : 'Dry run data');
@@ -95,12 +98,13 @@ async function load() {
 
 // A new case in the queue is announced, so nobody has to watch the page.
 function announce(snap) {
-  const known = state.seen, keys = new Set(snap.attention.map(a => a.key));
+  const cases = snap.attention.filter(a => a.needs_person);
+  const known = state.seen, keys = new Set(cases.map(a => a.key));
   state.seen = keys;
   if (!known || snap.source !== 'live' || !('Notification' in window) || Notification.permission !== 'granted') return;
-  const fresh = snap.attention.filter(a => !known.has(a.key));
+  const fresh = cases.filter(a => !known.has(a.key));
   if (fresh.length) new Notification(fresh.length === 1 ? fresh[0].title : `${fresh.length} new cases need a decision`,
-    { body: fresh.length === 1 ? `${fresh[0].company || ''} ${fresh[0].detail}`.trim() : fresh.map(a => a.title).join('\n'), tag: 'talos-queue' });
+    { body: fresh.length === 1 ? fresh[0].detail : fresh.map(a => a.title).join('\n'), tag: 'talos-queue' });
 }
 
 function toast(text, bad = false) {
@@ -113,7 +117,7 @@ function toast(text, bad = false) {
 async function act(name, params, question) {
   if (question && !confirm(question)) return;
   try {
-    const response = await fetch(`/crm/api/actions/${name}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
+    const response = await fetch(`/crm/api/actions/${name}?source=${state.source}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(params) });
     const answer = await response.json();
     if (!response.ok) throw new Error(answer.detail || response.statusText);
     toast(answer.message);

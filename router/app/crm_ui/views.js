@@ -30,7 +30,7 @@ function globeCard(ctx, span, { height, title = 'Routes', lanes = ctx.snap.lanes
   const globe = createGlobe(host, {
     airports: snap.airports, lanes, deals: snap.deals, airlines: snap.airlines, height, compact,
     view: compact ? ctx.focusView : ui.globe, coverage: ui.coverage,
-    onLane: lane => { ui.pipeline.lane = lane.lane; ui.pipeline.state = null; go('#/lookup/shipments'); },
+    onLane: lane => { ui.rounds.lane = lane.lane; ui.rounds.outcome = null; go('#/rounds'); },
   });
   ctx.globes.push(globe);
   const controls = compact ? null : [
@@ -65,103 +65,133 @@ const ACTIONS = {
   dismiss: { label: 'Dismiss' },
 };
 
+function actionButtons(ctx, item) {
+  return item.actions.map(name => {
+    const spec = ACTIONS[name], blocked = name !== 'dismiss' && !ctx.snap.can_act;
+    return h('button', {
+      class: `pill small${name === 'dismiss' ? ' quiet' : ''}`, disabled: blocked || null,
+      title: blocked ? 'Works on the router that reads the mailbox, not in this view' : null,
+      onclick: e => {
+        e.stopPropagation();
+        ctx.act(name, { shipment_id: item.shipment_id, mail_id: item.mail_id, key: item.key }, spec.confirm?.(item, ctx.snap.sending));
+      },
+    }, spec.label);
+  });
+}
+
 function queue(ctx, items) {
-  if (!items.length) return h('div', { class: 'empty' }, 'Nothing needs a decision.');
   return h('div', { class: 'list' }, items.map(item => {
     const open = item.shipment_id ? `#/shipment/${item.shipment_id}` : item.mail_id ? '#/lookup/mail' : null;
-    const buttons = item.actions.map(name => {
-      const spec = ACTIONS[name], blocked = name !== 'dismiss' && !ctx.snap.can_act;
-      return h('button', {
-        class: `pill small${name === 'dismiss' ? ' quiet' : ''}`, disabled: blocked || null,
-        title: blocked ? 'Available on the router that processes the mailbox, not in this read-only view' : null,
-        onclick: e => {
-          e.stopPropagation();
-          ctx.act(name, { shipment_id: item.shipment_id, mail_id: item.mail_id, key: item.key }, spec.confirm?.(item, ctx.snap.sending));
-        },
-      }, spec.label);
-    });
     return h('div', { class: `item ${item.level}${open ? ' link' : ''}`, onclick: open ? () => go(open) : null },
       icon('alert'),
-      h('div', null, h('b', null, item.title), h('p', null, item.detail), h('div', { class: 'acts' }, buttons)),
-      h('div', { class: 'meta' }, item.company, item.lane && h('div', null, item.lane.replace('-', ' → '))));
+      h('div', null, h('b', null, item.title), h('p', null, item.detail), h('div', { class: 'acts' }, actionButtons(ctx, item))),
+      h('div', { class: 'meta' }, item.waiting_minutes != null && `waiting ${fmt.duration(item.waiting_minutes * 60)}`, item.lane && h('div', null, item.lane.replace('-', ' → '))));
   }));
 }
 
 // --- now: does anything need a person? ---------------------------------------------------------
 
-export function now(ctx) {
-  const { snap } = ctx, k = snap.kpis, live = snap.source === 'live', n = snap.attention.length;
-  const line = [`${k.requests} requests`, `${k.quoted} quoted`, `${k.accepted} accepted`, k.rejected ? `${k.rejected} declined` : null,
-    live && k.quotes_timed ? `${k.quotes_in_window} of ${k.quotes_timed} answered within 6 min` : null].filter(Boolean).join(' · ');
+export async function now(ctx) {
+  const { snap } = ctx, k = snap.kpis, live = snap.source === 'live', p = snap.poller;
+  const cases = snap.attention.filter(a => a.needs_person), notes = snap.attention.filter(a => !a.needs_person), n = cases.length;
+  const levers = await ctx.api('/crm/api/levers').catch(() => []);
+  const changes = levers.filter(l => l.verdict.tone === 'change').length, decided = k.accepted + k.rejected;
+  // one line on whether the router itself is alive, so an empty queue can be trusted
+  const router = !live ? 'Recorded dry run: timings and acceptance rates are not reported, bookings are simulated, and only Dismiss works here.'
+    : !p?.enabled ? 'Read-only view: this process does not read the mailbox, so only Dismiss works here.'
+    : !p.running ? 'The router is not reading the mailbox.'
+    : `Router running · last poll ${p.last_poll_at ? `${fmt.time(p.last_poll_at)} UTC` : 'pending'} · ${snap.sending ? 'sending on: actions are real' : 'sending off: drafts only'}`;
   const noLive = live && !snap.deals.length ? h('div', { class: 'notice glass c12' }, icon('info'), h('div', null,
     `The live database contains no priced shipments${snap.legacy.length ? ` (${snap.legacy.length} requests predate this router)` : ''}. `,
     ctx.sources.replay.available ? [`The recorded dry run contains ${ctx.sources.replay.shipments}. `, h('button', { class: 'linkbtn', onclick: () => ctx.pick('replay') }, 'Show dry run')] : null)) : null;
+  const listed = cases.length || notes.length || snap.dismissed;
   const node = h('div', { class: 'grid' },
     noLive,
     h('section', { class: 'card glass c12 status' },
       h('h2', null, n ? `${n} ${n === 1 ? 'case needs' : 'cases need'} a decision` : 'Nothing needs you'),
-      h('p', null, line, ' · ', h('a', { href: '#/rounds' }, 'see the rounds')),
-      snap.can_act ? null : h('p', { class: 'muted' }, live
-        ? 'Read-only view: the mailbox poller is not running in this process, so only Dismiss is available.'
-        : 'Recorded dry run: timings and acceptance rates are not reported, bookings are simulated, and only Dismiss is available here.')),
-    h('section', { class: 'card glass c6 flush' }, head('Action required', `${n} open`), queue(ctx, snap.attention)),
-    globeCard(ctx, 'c6', { height: 400 }));
-  return { title: 'Now', sub: n ? `${n} open` : 'all clear', node };
+      h('p', null, router),
+      h('p', { class: 'next' },
+        h('a', { href: '#/rounds' }, decided ? `${k.rejected} of ${decided} decided quotes declined` : `${k.requests} ${k.requests === 1 ? 'request' : 'requests'}, none decided yet`),
+        h('a', { href: '#/tuning' }, changes ? `${changes} ${changes === 1 ? 'thing' : 'things'} should change in the setup` : 'Nothing to change in the setup'))),
+    listed ? h('section', { class: 'card glass c6 flush' },
+      cases.length ? queue(ctx, cases) : h('div', { class: 'empty' }, 'Nothing needs a decision.'),
+      notes.length ? [h('div', { class: 'subhead' }, 'For information: nothing to do here'), queue(ctx, notes)] : null,
+      snap.dismissed ? h('div', { class: 'subhead' }, `${snap.dismissed} dismissed · `, h('button', { class: 'linkbtn', onclick: () => ctx.act('restore', {}) }, 'restore')) : null) : null,
+    globeCard(ctx, listed ? 'c6' : 'c12', { height: 400 }));
+  return { title: 'Now', sub: '', node };
 }
 
 // --- rounds: one request, one outcome ----------------------------------------------------------
 
-const OUTCOME = { accepted: ['good', 'check'], declined: ['neutral', 'cross'], 'awaiting decision': ['accent', 'dot'], 'in progress': ['accent', 'spin'], 'no quote': ['critical', 'alert'] };
-const outcome = r => { const [tone, glyph] = OUTCOME[r.outcome] || ['neutral', 'dot']; return h('span', { class: `state ${tone}` }, icon(glyph), words(r.outcome)); };
+const OUTCOME = { accepted: ['good', 'check'], declined: ['neutral', 'cross'], 'awaiting decision': ['accent', 'dot'], 'in progress': ['accent', 'spin'],
+  'waiting for customer': ['warning', 'clock'], 'no quote': ['critical', 'alert'] };
+const outcome = (r, live) => {
+  const unbooked = live && r.outcome === 'accepted' && !r.booked;  // the exception worth a word
+  const [tone, glyph] = unbooked ? ['warning', 'alert'] : OUTCOME[r.outcome] || ['neutral', 'dot'];
+  return h('span', { class: `state ${tone}` }, icon(glyph), unbooked ? 'Accepted, not booked' : words(r.outcome));
+};
 
 export async function rounds(ctx, tab = 'ledger') {
-  const data = await ctx.api('/crm/api/rounds'), live = data.source === 'live';
+  const data = await ctx.api('/crm/api/rounds'), live = data.source === 'live', f = ctx.ui.rounds;
+  const pill = (label, count, on, set) => h('button', { class: `pill${on ? ' on' : ''}`, onclick: () => { set(); ctx.rerender(); } }, label, count != null && h('b', null, count));
   const tabs = h('div', { class: 'tabs' }, h('div', { class: 'seg' },
     [['ledger', 'Ledger'], ['mails', 'Quote mails']].map(([key, label]) => h('button', { class: key === tab ? 'on' : '', onclick: () => go(`#/rounds/${key}`) }, label))));
   if (tab === 'mails') {
-    // the jury reads the accepted mails, so they come first
-    const sent = data.rounds.filter(r => r.quote_mail).sort((a, b) => (b.outcome === 'accepted') - (a.outcome === 'accepted') || b.id - a.id);
-    const broken = data.quote_mails - data.mails_clean;
-    return { title: 'Rounds', sub: `${sent.length} quote mails`, node: h('div', { class: 'grid' }, tabs,
+    // the jury reads the accepted mails: they are the default
+    const sent = data.rounds.filter(r => r.quote_mail), accepted = sent.filter(r => r.outcome === 'accepted');
+    const shown = f.all || !accepted.length ? sent : accepted, broken = data.quote_mails - data.mails_clean;
+    return { title: 'Rounds', sub: '', node: h('div', { class: 'grid' }, tabs,
       h('section', { class: 'card glass c7 status' },
         h('h2', null, !sent.length ? 'No quote mail yet' : broken ? `${broken} of ${data.quote_mails} quote mails break a style rule` : `All ${data.quote_mails} quote mails keep the style rules`),
-        h('p', null, 'Each mail is checked against the rules of the compose prompt (talos-compose-mail). The jury reads the accepted mails without team names and picks up to three per round.'),
-        h('p', { class: 'muted' }, live ? 'A breach here means the model ignored its prompt, or the prompt in Langfuse is not the one in the repository.'
+        h('p', null, 'Checked against the rules of the compose prompt. The jury reads the accepted mails without team names and picks up to three per round.'),
+        h('p', null, live ? 'A breach means the model ignored its prompt, or the prompt in Langfuse is not router/prompts/talos-compose-mail.md.'
           : 'A recorded run shows the prompt that was in use when it was recorded, not the current one.')),
       card('c5', 'Rules broken', 'mails per rule', data.mail_checks.length
         ? barList(data.mail_checks.map(c => ({ name: words(c.check), value: c.count })), { label: 190, solid: true })
         : h('div', { class: 'empty' }, 'None.')),
-      sent.map(r => h('section', { class: 'card glass c6' },
-        head(`Round ${r.id}`, r.company, outcome(r)),
-        h('div', { class: 'flags' }, r.mail_flags.length ? r.mail_flags.map(f => h('span', { class: 'flag' }, f)) : h('span', { class: 'flag ok' }, 'keeps the style rules')),
+      sent.length ? h('div', { class: 'filters' },
+        pill('Accepted', accepted.length, !f.all, () => { f.all = false; }), pill('All', sent.length, f.all, () => { f.all = true; })) : null,
+      shown.map(r => h('section', { class: 'card glass c6' },
+        head(`Round ${r.id}`, r.company, outcome(r, live)),
+        h('div', { class: 'flags' }, r.mail_flags.length ? r.mail_flags.map(flag => h('span', { class: 'flag' }, flag)) : h('span', { class: 'flag ok' }, 'keeps the style rules')),
         h('details', { class: 'ask' }, h('summary', null, 'Their request'), h('pre', null, r.request_mail || 'not stored')),
         h('pre', { class: 'letter' }, r.quote_mail)))) };
   }
-  const q = ctx.q, rows = data.rounds.filter(r => matches(q, r.id, r.company, r.lane, r.outcome, r.cause, r.airline));
+  const outcomes = Object.keys(OUTCOME).map(name => [name, data.rounds.filter(r => r.outcome === name).length]).filter(([, count]) => count);
+  const rows = data.rounds.filter(r => (!f.outcome || r.outcome === f.outcome) && (!f.lane || r.lane === f.lane)
+    && matches(ctx.q, r.id, r.company, r.lane, r.outcome, r.cause, r.airline));
   const cols = [
     { key: 'id', label: 'Round', render: r => [h('span', { class: 'num' }, r.id), h('span', { class: 'sub' }, `${fmt.day(r.received_at)} ${fmt.time(r.received_at)}`)] },
     { key: 'company', label: 'Account', cls: 'clip' },
     { key: 'lane', label: 'Lane', render: r => (r.lane || '–').replace('-', ' → ') },
+    { key: 'airline', label: 'Airline', cls: 'clip', render: r => r.airline || h('span', { class: 'muted' }, '–') },
     { key: 'all_in_eur', label: 'Quote EUR', right: true, render: r => (r.all_in_eur == null ? '–' : fmt.eurExact(r.all_in_eur)) },
     live ? { key: 'minutes_to_quote', label: 'Answered after', right: true, render: r => (r.minutes_to_quote == null ? '–' : `${fmt.one(r.minutes_to_quote)} min`) } : null,
-    { key: 'outcome', label: 'Outcome', render: outcome, csv: r => r.outcome },
-    { key: 'booked', label: 'Booked', get: r => (r.booked ? 1 : 0), render: r => (r.booked ? 'yes' : r.dry_run_booking ? 'simulated' : '–'), csv: r => (r.booked ? 'yes' : 'no') },
+    { key: 'outcome', label: 'Outcome', render: r => outcome(r, live), csv: r => r.outcome },
+    { key: 'booked', label: 'Booked', hidden: true, csv: r => (r.booked ? 'yes' : 'no') },
     data.board_available ? { key: 'board', label: 'Board', get: r => r.board?.verdict, render: r => (r.board ? [r.board.verdict, r.board.reason && h('span', { class: 'sub' }, r.board.reason)] : '–'), csv: r => [r.board?.verdict, r.board?.reason].filter(Boolean).join(' / ') } : null,
-    { key: 'cause', label: 'Loss', render: r => r.cause || h('span', { class: 'muted' }, '–') },
-    { key: 'customer_said', label: 'Customer said', cls: 'clip wide', render: r => (r.customer_said ? h('span', { title: r.customer_said, class: 'soft' }, r.customer_said.split('\n')[0]) : h('span', { class: 'muted' }, '–')) },
+    data.board_available ? { key: 'points', label: 'Points', right: true, get: r => r.board?.points, csv: r => r.board?.points ?? '',
+      render: r => (typeof r.board?.points === 'number' ? h('span', { title: Object.entries(r.board.kinds || {}).map(([kind, value]) => `${kind} ${value}`).join(' · ') || null }, fmt.one(r.board.points)) : '–') } : null,
+    { key: 'cause', label: 'Why it was lost', cls: 'wrap reason', render: r => r.cause || h('span', { class: 'muted' }, '–') },
+    { key: 'customer_said', label: 'Customer said', hidden: true },
   ].filter(Boolean);
+  const top = data.causes[0];
   const node = h('div', { class: 'grid' }, tabs,
     h('section', { class: 'card glass c7 status' },
-      h('h2', null, !live ? `${data.total} recorded rounds` : data.decided ? `${data.clean} of ${data.decided} decided rounds without a loss` : 'No decided rounds yet'),
-      h('p', null, [`${data.total} requests`, `${data.quoted} quoted`, `${data.accepted} accepted`, `${data.declined} declined`, `${data.no_quote} without a quote`,
-        live ? `${data.booked} booked` : null, data.timed ? `${data.in_window} of ${data.timed} within 6 min` : null].filter(Boolean).join(' · ')),
-      h('p', { class: 'muted' }, data.board_available ? 'Verdicts and reasons include the platform board.' : live ? 'The platform board could not be read; outcomes come from our own records.' : 'Dry run: outcomes come from the recorded replies, which answered the previous process.')),
-    card('c5', 'What the losses were', null, data.causes.length
-      ? barList(data.causes.map(c => ({ name: c.cause, value: c.count })), { label: 230, solid: true })
+      h('h2', null, !data.total ? 'No request yet' : !live ? `${data.total} recorded rounds, ${data.lost} lost`
+        : data.decided ? `${data.lost} of ${data.decided} decided rounds lost` : 'No decided rounds yet'),
+      top ? h('p', null, `Most often (${top.count} of ${data.lost}): “${top.cause}”`) : data.decided ? h('p', null, 'No round was lost.') : null,
+      h('p', { class: 'muted' }, data.board_note || (data.board_available ? 'Verdicts, reasons and points come from the platform board.' : live ? 'The platform board could not be read; outcomes come from our own records.' : 'Dry run: the recorded replies answered the earlier process\'s quotes, not the ones shown here.'))),
+    card('c5', 'Why rounds were lost', null, data.causes.length
+      ? h('div', { class: 'reasons' }, data.causes.map(c => h('div', null, h('b', null, `${c.count} ×`), h('span', null, c.cause))))
       : h('div', { class: 'empty' }, 'No losses recorded.')),
-    h('section', { class: 'card glass c12 flush' }, head('Ledger', `${rows.length} rounds`, exportButton('talos-rounds.csv', rows, cols)),
-      table(rows, cols, { state: sortState(ctx, 'rounds', 'id'), onRow: r => go(`#/shipment/${r.id}`), empty: 'No round matches.' })));
-  return { title: 'Rounds', sub: `${data.total} requests · ${data.accepted} accepted`, node };
+    h('div', { class: 'filters' },
+      pill('All', data.total, !f.outcome, () => { f.outcome = null; }),
+      outcomes.map(([name, count]) => pill(words(name), count, f.outcome === name, () => { f.outcome = f.outcome === name ? null : name; })),
+      f.lane ? pill(`${f.lane.replace('-', ' → ')} ×`, null, true, () => { f.lane = null; }) : null),
+    h('section', { class: 'card glass c12 flush' }, head('Ledger', `${rows.length} of ${data.total} rounds`, exportButton('talos-rounds.csv', rows, cols)),
+      table(rows, cols.filter(c => !c.hidden), { state: sortState(ctx, 'rounds', 'id'), onRow: r => go(`#/shipment/${r.id}`), empty: 'No round matches.' })));
+  return { title: 'Rounds', sub: '', node };
 }
 
 // --- tuning: settings and the evidence for their value ------------------------------------------
@@ -175,85 +205,44 @@ export async function tuning(ctx) {
     { key: 'value', label: 'Value', right: true, sort: false, render: f => fmt.figure(f.value, f.unit, f.n), csv: f => f.value },
     { key: 'n', label: 'Cases', right: true }, { key: 'text', label: 'Definition', sort: false, cls: 'desc' },
   ];
-  const changes = list.filter(l => l.verdict?.tone === 'change').length;
+  const judged = list.filter(l => l.verdict.tone !== 'open'), open = list.filter(l => l.verdict.tone === 'open');
+  const changes = judged.filter(l => l.verdict.tone === 'change'), named = changes.filter(l => l.suggest);
   const lever = l => {
-    const [tone, glyph, label] = VERDICT[l.verdict?.tone] || [];
-    return h('section', { class: 'card glass c6 lever' },
-      head(l.title, `n = ${l.n}`, label && h('span', { class: `state ${tone}` }, icon(glyph), label)),
+    const [tone, glyph, label] = VERDICT[l.verdict.tone];
+    return h('section', { class: `card glass ${judged.length === 1 ? 'c12' : 'c6'} lever` },
+      head(l.title, `n = ${l.n}`, h('span', { class: `state ${tone}` }, icon(glyph), label)),
       h('div', { class: 'hero' }, l.figure, h('small', null, l.figure_label)),
-      l.verdict && h('p', { class: 'verdict' }, l.verdict.text),
+      h('p', { class: 'verdict' }, l.verdict.text),
       h('p', null, l.text),
-      l.key === 'llm_usage' && l.rows.length ? barList(l.rows.map(r => ({ name: words(r.name), value: r.tokens, note: `${r.calls} calls` })), { label: 190, solid: true }) : null,
-      h('p', { class: 'setting' }, h('code', null, `${l.setting} = ${l.value}`)));
+      l.rows?.length && l.key === 'llm_usage' ? barList(l.rows.map(r => ({ name: words(r.name), value: r.tokens, note: `${r.calls} calls` })), { label: 190, solid: true }) : null,
+      h('p', { class: 'setting' }, h('code', null, l.suggest ? `${l.suggest.name}: ${l.suggest.now} → ${l.suggest.to}` : `${l.setting} = ${l.value}`)));
   };
   const node = h('div', { class: 'grid' },
     h('section', { class: 'card glass c12 status' },
-      h('h2', null, changes ? `${changes} ${changes === 1 ? 'setting' : 'settings'} should change` : 'No setting needs to change'),
-      h('p', null, 'One card per setting, with what the data says about its current value. Settings live in router/.env and take effect after a restart; this page does not change them.')),
-    list.map(lever),
+      h('h2', null, changes.length === 1 && named.length === 1 ? `Set ${named[0].suggest.name} to ${named[0].suggest.to} (now ${named[0].suggest.now})`
+        : changes.length ? `${changes.length} ${changes.length === 1 ? 'thing' : 'things'} should change` : 'No setting needs to change'),
+      changes.length > 1 || (changes.length && !named.length) ? changes.map(l => h('p', null, h('b', null, `${l.title}: `), l.suggest ? `${l.suggest.name} ${l.suggest.now} → ${l.suggest.to}` : l.verdict.text)) : null,
+      h('p', { class: 'muted' }, 'Settings live in router/.env and take effect after a restart of the router. This page does not change them.')),
+    judged.map(lever),
+    open.length ? h('section', { class: 'card glass c12' }, head('Not judged yet', 'too little data'),
+      h('div', { class: 'reasons' }, open.map(l => h('div', null, h('b', null, l.title), h('span', null, `${l.verdict.text} `, h('span', { class: 'muted' }, l.text)))))) : null,
     h('section', { class: 'card glass c12 flush' },
       h('details', { class: 'prompt fold' }, h('summary', null, `Reference figures (${snap.findings.length})`),
         h('div', { class: 'foldbar' }, exportButton('talos-metrics.csv', snap.findings, metrics)),
         table(snap.findings, metrics, { empty: 'No priced shipments to analyse.' }))));
-  return { title: 'Tuning', sub: changes ? `${changes} suggested` : 'nothing to change', node };
+  return { title: 'Tuning', sub: '', node };
 }
 
 // --- lookup: everything else, behind tabs and the search box -------------------------------------
 
-const LOOKUP = [['shipments', 'Shipments'], ['accounts', 'Accounts'], ['airlines', 'Airlines'], ['truckers', 'Truckers'], ['zones', 'Pickup zones'], ['tariffs', 'Tariffs'], ['mail', 'Mail']];
+const LOOKUP = [['accounts', 'Accounts'], ['airlines', 'Airlines'], ['truckers', 'Truckers'], ['tariffs', 'Tariffs'], ['mail', 'Mail']];
 
-export async function lookup(ctx, tab = 'shipments') {
-  const inner = tab === 'shipments' ? pipeline(ctx) : tab === 'accounts' ? accounts(ctx) : tab === 'mail' ? await inbox(ctx) : await carriers(ctx, tab);
+export async function lookup(ctx, tab = 'accounts') {
+  const inner = tab === 'mail' ? await inbox(ctx) : ['airlines', 'truckers', 'tariffs'].includes(tab) ? await carriers(ctx, tab) : accounts(ctx);
   inner.node.prepend(h('div', { class: 'tabs' }, h('div', { class: 'seg' },
-    LOOKUP.map(([key, label]) => h('button', { class: key === tab ? 'on' : '', onclick: () => go(`#/lookup/${key}`) }, label)))));
+    LOOKUP.map(([key, label]) => h('button', { class: key === tab || (key === 'accounts' && !LOOKUP.some(([k]) => k === tab)) ? 'on' : '', onclick: () => go(`#/lookup/${key}`) }, label)))));
   return { title: 'Lookup', sub: inner.sub, node: inner.node };
 }
-
-// --- shipments -----------------------------------------------------------------------------
-
-function pipeline(ctx) {
-  const { snap, ui, q } = ctx, f = ui.pipeline;
-  const rows = snap.deals.filter(d => (!f.state || d.state === f.state) && (!f.lane || d.lane === f.lane || `?-${d.destination}` === f.lane)
-    && (!f.account || d.account === f.account) && (!f.goal || (d.goal || 'none') === f.goal) && (!f.truck || d.truck_mode === f.truck)
-    && matches(q, d.id, d.company, d.contact, d.lane, d.subject, d.airline, d.commodity, state(d), d.pickup_city));
-  const pill = (label, count, on, choose) => h('button', { class: `pill${on ? ' on' : ''}`, onclick: () => { choose(); ctx.rerender(); } }, label, count != null && h('b', null, count));
-  const pick = (key, label, options) => h('select', { 'aria-label': label, onchange: e => { f[key] = e.target.value; ctx.rerender(); } },
-    h('option', { value: '' }, `${label}: all`), options.map(([value, text]) => h('option', { value, selected: f[key] === value || null }, text)));
-  const filters = h('div', { class: 'filters' },
-    pill('All', snap.deals.length, !f.state, () => { f.state = null; }),
-    snap.pipeline.filter(p => p.count).map(p => pill(STATES[p.state][0], p.count, f.state === p.state, () => { f.state = f.state === p.state ? null : p.state; })),
-    f.lane && pill(`Lane ${f.lane.replace('-', ' → ')} ×`, null, true, () => { f.lane = null; }),
-    f.account && pill(`${snap.accounts.find(a => a.email === f.account)?.company || f.account} ×`, null, true, () => { f.account = null; }),
-    pick('goal', 'Priority', [['fastest', 'Fastest'], ['cheapest', 'Cheapest'], ['none', 'Not stated']]),
-    pick('truck', 'Trucking', [['quoted', 'Offer received'], ['estimate', 'Estimated'], ['none', 'Not required']]));
-  const cols = [
-    { key: 'id', label: 'No.', render: d => h('span', { class: 'num soft' }, d.id) },
-    { key: 'company', label: 'Account', cls: 'clip', render: d => [d.company, h('span', { class: 'sub' }, d.contact || d.account)] },
-    { key: 'lane', label: 'Route', get: d => d.lane || `?-${d.destination}`, render: d => [laneText(d),
-      h('span', { class: 'sub' }, d.pickup ? `pickup ${d.pickup_city || d.pickup_postal_code || ''}`.trim() : 'airport delivery')] },
-    { key: 'distance_km', label: 'Distance km', hidden: true },
-    { key: 'gross_kg', label: 'Gross kg', right: true, render: d => [fmt.kg(d.gross_kg), h('span', { class: 'sub', title: d.volumetric ? 'Billed on volume weight' : null }, `${fmt.cbm(d.volume_cbm)}${d.volumetric ? ' · vol.' : ''}`)] },
-    { key: 'volume_cbm', label: 'Volume cbm', csv: d => d.volume_cbm, render: () => null, hidden: true },
-    { key: 'goal', label: 'Priority', render: d => d.goal || h('span', { class: 'muted' }, 'not stated'), csv: d => d.goal || '' },
-    { key: 'all_in_eur', label: 'All-in EUR', right: true, render: d => (d.all_in_eur == null ? '–' : fmt.eurExact(d.all_in_eur)) },
-    { key: 'air_eur', label: 'Air EUR', hidden: true }, { key: 'truck_eur', label: 'Trucking EUR', hidden: true },
-    { key: 'split', label: 'Split', sort: false, csv: false, render: d => priceSplit(d) || h('span', { class: 'muted' }, '–') },
-    { key: 'airline', label: 'Airline', cls: 'clip', render: d => (d.airline ? [d.airline, h('span', { class: 'sub' }, `${fmt.days(d.transit_days)}${d.truck_mode === 'estimate' ? ' · est. trucking' : ''}`)] : '–') },
-    { key: 'transit_days', label: 'Transit days', hidden: true },
-    { key: 'state', label: 'Status', get: d => Object.keys(STATES).indexOf(d.state), csv: state, render: stateBadge },
-    { key: 'ready_date', label: 'Ready', render: d => fmt.day(d.ready_date), csv: d => d.ready_date },
-  ];
-  const shown = cols.filter(c => !c.hidden);
-  const node = h('div', { class: 'grid' }, filters,
-    h('section', { class: 'card glass c12 flush' },
-      head('Shipments', `${rows.length} of ${snap.deals.length}`, [
-        h('span', { class: 'legend' }, h('span', null, h('i', { class: 's1' }), 'Air freight'), h('span', null, h('i', { class: 's2' }), 'Trucking')),
-        exportButton('talos-shipments.csv', rows, cols)]),
-      table(rows, shown, { state: sortState(ctx, 'pipeline', 'id'), onRow: d => go(`#/shipment/${d.id}`), empty: 'No shipment matches the filters.' })));
-  return { title: 'Pipeline', sub: `${snap.deals.length} shipments · ${fmt.eur(snap.kpis.quoted_eur)} quoted`, node };
-}
-
-// --- one shipment -------------------------------------------------------------------------
 
 function correspondence(detail) {
   if (!detail.timeline.length) return h('div', { class: 'empty' }, 'No mail on record for this shipment.');
@@ -284,7 +273,7 @@ export async function shipment(ctx, id) {
     h('div', null, h('b', null, t.label), t.at && h('span', { class: 'muted' }, ` · ${fmt.when(t.at)} UTC`), h('p', null, t.detail)))));
   const account = ctx.snap.accounts.find(a => a.email === d.account);
 
-  const request = card('', 'Request', d.subject, h('div', { class: 'facts' },
+  const request = h('div', null, h('h4', null, 'Request'), h('div', { class: 'facts' },
     fact('Origin', d.pickup ? `${d.pickup_postal_code || ''} ${d.pickup_city || ''}`.trim() || '–' : `delivered to ${d.origin || 'the airport'}`),
     fact('Departure airport', d.origin ? `${d.origin}${d.zone ? ` (zone ${d.zone})` : ''}` : '–'),
     fact('Destination', d.destination ? `${d.destination} · ${ctx.snap.airports[d.destination]?.city || ''}` : '–'),
@@ -300,7 +289,7 @@ export async function shipment(ctx, id) {
     d.assumptions.length ? fact('Assumptions', d.assumptions.join('; ')) : null,
     d.missing.length ? fact('Missing', d.missing.join('; ')) : null));
 
-  const offer = d.all_in_eur == null ? null : card('', 'Offer', d.valid_until ? `valid until ${d.valid_until}` : null,
+  const offer = d.all_in_eur == null ? null : h('div', null, h('h4', null, 'Offer', d.valid_until && h('span', { class: 'muted' }, ` · valid until ${d.valid_until}`)),
     h('div', { style: { display: 'grid', gap: '14px' } },
       h('div', { class: 'hero' }, fmt.eurExact(d.all_in_eur), h('small', null, 'all-in')),
       h('div', { style: { display: 'grid', gap: '8px', maxWidth: '520px' } }, priceSplit(d),
@@ -322,7 +311,7 @@ export async function shipment(ctx, id) {
     })), { label: 190, max: top })) : null;
 
   const answered = detail.truckers.filter(t => t.price_eur != null).length;
-  const trucks = detail.truckers.length ? card('', 'Trucking offers', `${answered} of ${detail.truckers.length} received`,
+  const trucks = detail.truckers.length ? card('', 'Trucking offers', `${answered} of ${detail.truckers.length} received${d.truck_mode === 'estimate' && answered ? ', after the quote had gone out' : ''}`,
     barList(detail.truckers.map(t => ({
       name: t.name, value: t.price_eur || 0, em: t.chosen, text: t.price_eur == null ? 'no offer' : fmt.eurExact(t.price_eur),
       note: t.price_eur == null ? null : `${t.pickup_hours != null ? `pickup within ${fmt.one(t.pickup_hours)} h` : ''}${t.cheapest ? ' · lowest' : ''}`,
@@ -330,34 +319,20 @@ export async function shipment(ctx, id) {
         t.ref && ['Reference', t.ref], t.response_s != null && ['Response time', fmt.duration(t.response_s)], t.chosen && ['Selected', 'yes']]),
     })), { label: 190 })) : null;
 
-  const a = d.air, readings = [];
-  if (a) {
-    if (a.premium_eur > 0) readings.push(['Selected flight vs lowest price', `+${fmt.eur(a.premium_eur)} (${fmt.pct(a.premium_pct)})`]);
-    else if (a.premium_eur === 0) readings.push(['Selected flight', 'lowest price']);
-    if (a.speed_days > 0) readings.push([`Faster transit (${fmt.days(a.speed_days)} less)`, `+${fmt.eur(a.speed_eur)}`]);
-    if (a.spread_pct != null) readings.push(['Air rate spread', fmt.pct(a.spread_pct)]);
-  }
-  if (d.truck?.spread_pct != null) readings.push(['Trucking offer spread', fmt.pct(d.truck.spread_pct)]);
-  if (d.truck_eur && d.all_in_eur) readings.push(['Trucking share of price', fmt.pct(100 * d.truck_eur / d.all_in_eur)]);
-  if (d.all_in_eur && d.chargeable_kg) readings.push(['All-in per chargeable kg', `${fmt.two(d.all_in_eur / d.chargeable_kg)} €`]);
-  if (d.minutes_to_quote != null) readings.push(['Time to quote', `${fmt.one(d.minutes_to_quote)} min`]);
-
   const lane = ctx.snap.lanes.filter(l => l.shipments.includes(d.id));
   const here = ctx.snap.airports[d.destination], from = ctx.snap.airports[d.origin];
   ctx.focusView = here && from ? routeView(from, here) : { lon: 12, lat: 30, zoom: 1 };
   const side = h('div', { class: 'stack c4' },
     lane.some(l => l.origin) ? globeCard(ctx, '', { height: 260, title: `${laneText(d)}${d.distance_km ? ` · ${fmt.km(d.distance_km)}` : ''}`, lanes: lane, compact: true }) : null,
-    readings.length ? card('', 'Offer analysis', null, h('div', { class: 'figures' }, readings.map(([k, v]) => h('div', { class: 'figure' }, h('span', null, k), h('b', null, v))))) : null,
-    account ? h('section', { class: 'card glass', style: { cursor: 'pointer' }, onclick: () => go(`#/account/${encodeURIComponent(account.email)}`) },
-      head(account.company, 'account'),
-      h('div', { class: 'facts' }, fact('Requests', fmt.int(account.requests)), fact('Accepted', fmt.int(account.accepted)), fact('Quoted value', fmt.eur(account.quoted_eur)), fact('Mails', fmt.int(account.mails_in)))) : null,
     d.error ? card('', 'Error', null, h('p', { class: 'soft' }, d.error)) : null);
 
   const node = h('div', { class: 'grid' },
     h('div', { class: 'crumbs' }, h('a', { href: '#/rounds' }, 'Rounds'), '/', h('span', null, `Shipment ${d.id}`)),
-    h('div', { class: 'title' }, h('h2', null, d.company), stateBadge(d), h('span', { class: 'muted' }, laneText(d))),
-    h('div', { class: 'stack c8' }, card('', 'What happened', `${detail.trace.length} steps`, trace), request, offer, flights, trucks, h('section', { class: 'card glass flush' }, h('details', { class: 'prompt fold' }, h('summary', null, `Correspondence (${detail.timeline.length} mails)`), h('div', { class: 'foldbody' }, correspondence(detail))))),
-    side);
+    h('div', { class: 'title' }, h('h2', null, account ? h('a', { href: `#/account/${encodeURIComponent(account.email)}` }, d.company) : d.company), stateBadge(d), h('span', { class: 'muted' }, laneText(d)),
+      h('span', { class: 'acts right' }, ctx.snap.attention.filter(item => item.shipment_id === d.id).flatMap(item => actionButtons(ctx, item)))),
+    h('div', { class: `stack ${side.childElementCount ? 'c8' : 'c12'}` }, card('', 'What happened', `${detail.trace.length} steps`, trace), flights, trucks,
+      h('section', { class: 'card glass flush' }, h('details', { class: 'prompt fold' }, h('summary', null, 'Request and offer in full'), h('div', { class: 'foldbody stack' }, request, offer))), h('section', { class: 'card glass flush' }, h('details', { class: 'prompt fold' }, h('summary', null, `Correspondence (${detail.timeline.length} mails)`), h('div', { class: 'foldbody' }, correspondence(detail))))),
+    side.childElementCount ? side : null);
   return { title: `Shipment ${d.id}`, sub: `${d.company} · ${laneText(d)}`, node };
 }
 
@@ -373,14 +348,14 @@ function accounts(ctx) {
     { key: 'company', label: 'Account', cls: 'clip', render: a => [a.company, h('span', { class: 'sub' }, a.contacts.join(', ') || a.email)] },
     { key: 'email', label: 'Email', hidden: true },
     { key: 'requests', label: 'Requests', right: true, render: a => [meter(100 * a.requests / top, fmt.int(a.requests)), a.legacy_requests ? h('span', { class: 'sub' }, `+${a.legacy_requests} legacy`) : null] },
-    { key: 'quoted', label: 'Quoted', right: true }, { key: 'accepted', label: 'Accepted', right: true },
+    { key: 'quoted', label: 'Quoted', right: true, hidden: true }, { key: 'accepted', label: 'Accepted', right: true },
     { key: 'rejected', label: 'Declined', right: true }, { key: 'open', label: 'Open', right: true },
-    { key: 'quoted_eur', label: 'Quoted EUR', right: true, render: a => fmt.eur(a.quoted_eur) },
+    { key: 'quoted_eur', label: 'Quoted EUR', right: true, hidden: true },
     { key: 'accepted_eur', label: 'Accepted EUR', right: true, render: a => fmt.eur(a.accepted_eur) },
-    { key: 'avg_gross_kg', label: 'Avg. kg', right: true, render: a => fmt.int(a.avg_gross_kg) },
-    { key: 'goals', label: 'Priority', sort: false, render: a => priorities(a.goals) || '–', csv: a => priorities(a.goals) },
+    { key: 'avg_gross_kg', label: 'Avg. kg', right: true, hidden: true },
+    { key: 'goals', label: 'Priority', hidden: true, csv: a => priorities(a.goals) },
     { key: 'destinations', label: 'Destinations', sort: false, render: a => codes(a.destinations), csv: a => a.destinations.join(' ') },
-    { key: 'mails_in', label: 'Mails', right: true },
+    { key: 'mails_in', label: 'Mails', right: true, hidden: true },
     { key: 'last_mail_at', label: 'Last mail (UTC)', render: a => fmt.when(a.last_mail_at) },
   ];
   const node = h('div', { class: 'grid' }, h('section', { class: 'card glass c12 flush' },
@@ -436,29 +411,19 @@ async function carriers(ctx, tab = 'airlines') {
     const rows = snap.truckers.filter(t => matches(q, t.name, t.email, t.zones.join(' '), t.airports.join(' ')));
     const cols = [
       { key: 'name', label: 'Trucker', render: t => [t.name, h('span', { class: 'sub' }, t.email)] }, { key: 'email', label: 'Email', hidden: true },
-      { key: 'airports', label: 'Airports', sort: false, render: t => h('span', { class: 'num' }, t.airports.join(' ')), csv: t => t.airports.join(' ') },
+      { key: 'airports', label: 'Airports', hidden: true, csv: t => t.airports.join(' ') },
       { key: 'zones', label: 'Postal zones', sort: false, render: t => h('span', { class: 'soft num' }, t.zones.join(' ')), cls: 'wrap', csv: t => t.zones.join(' ') },
       { key: 'asked', label: 'Requests', right: true }, { key: 'answered', label: 'Offers', right: true },
       { key: 'answer_rate_pct', label: 'Response rate %', right: true, render: t => (t.answer_rate_pct == null ? '–' : meter(t.answer_rate_pct, fmt.pct(t.answer_rate_pct))) },
-      { key: 'cheapest_in', label: 'Lowest offer', right: true }, { key: 'chosen', label: 'Selected', right: true },
+      { key: 'cheapest_in', label: 'Lowest offer', right: true, hidden: true }, { key: 'chosen', label: 'Selected', right: true },
       { key: 'avg_price_eur', label: 'Avg. offer EUR', right: true, render: t => fmt.eur(t.avg_price_eur) },
-      { key: 'avg_eur_per_100kg', label: '€ per 100 kg', right: true, render: t => fmt.two(t.avg_eur_per_100kg) },
+      { key: 'avg_eur_per_100kg', label: '€ per 100 kg', right: true, hidden: true },
       { key: 'median_pickup_hours', label: 'Pickup within h', right: true, render: t => fmt.one(t.median_pickup_hours) },
       live ? { key: 'median_response_s', label: 'Response time', right: true, render: t => fmt.duration(t.median_response_s) } : null,
     ].filter(Boolean);
     sub = `${snap.truckers.length} truckers`;
     body = h('section', { class: 'card glass c12 flush' }, head('Truckers', `${rows.filter(t => t.asked).length} contacted`, exportButton('talos-truckers.csv', rows, cols)),
       table(rows, cols.filter(c => !c.hidden), { state: sortState(ctx, 'truckers', 'asked') }));
-  } else if (tab === 'zones') {
-    const rows = snap.zones.filter(z => matches(q, z.zone, z.area, z.airport, z.truckers.join(' ')));
-    const cols = [
-      { key: 'zone', label: 'Zone', render: z => h('span', { class: 'num' }, z.zone) }, { key: 'area', label: 'Area' }, { key: 'airport', label: 'Airport' },
-      { key: 'requests', label: 'Requests', right: true },
-      { key: 'truckers', label: 'Truckers', get: z => z.truckers.length, render: z => h('span', { class: 'soft' }, z.truckers.join(', ')), cls: 'wrap', csv: z => z.truckers.join('; ') },
-    ];
-    sub = `${snap.zones.length} pickup zones`;
-    body = h('section', { class: 'card glass c12 flush' }, head('Pickup zones', 'postal code prefix determines airport and truckers', exportButton('talos-zones.csv', rows, cols)),
-      table(rows, cols, { state: sortState(ctx, 'zones', 'zone', 'asc') }));
   } else if (tab === 'tariffs') {
     ctx.cache.tariffs ||= await ctx.api('/crm/api/tariffs', false);
     const all = ctx.cache.tariffs, f = ui.tariffs;
@@ -544,25 +509,16 @@ export async function system(ctx) {
   const p = sys.poller, c = snap.mail.classification;
   const kv = rows => h('div', { class: 'tablewrap' }, h('table', null, h('tbody', null, rows.map(([k, v]) => h('tr', null, h('td', { class: 'soft' }, k), h('td', { class: 'free' }, v))))));
   const node = h('div', { class: 'grid' },
-    card('c4', 'Operating mode', null, h('div', { style: { display: 'grid', gap: '8px' } },
-      h('div', { class: 'hero', style: { fontSize: '24px' } }, modeName), h('p', { class: 'soft' }, modeText))),
-    card('c4', 'Mailbox poller', null, h('div', { class: 'facts' },
-      fact('Status', p.running ? 'running' : p.enabled ? 'enabled, not running' : 'disabled'), fact('Interval', `${p.interval_seconds} s`),
+    card('c6', 'Router', modeName, h('div', { style: { display: 'grid', gap: '12px' } }, h('p', { class: 'soft' }, modeText), h('div', { class: 'facts' },
+      fact('Mailbox poller', p.running ? 'running' : p.enabled ? 'enabled, not running' : 'off in this process'), fact('Interval', `${p.interval_seconds} s`),
       fact('Last poll', p.last_poll_at ? `${fmt.when(p.last_poll_at)} UTC` : 'none in this process'), fact('Last mail id read', fmt.int(p.cursor)),
-      p.last_error ? fact('Last error', p.last_error) : null)),
-    card('c4', 'Outbound mail', snap.source === 'replay' ? 'dry run' : 'live', snap.outbound.total
-      ? h('div', { style: { display: 'grid', gap: '12px' } },
-          barList(snap.outbound.by_kind.map(k => ({ name: KINDS[k.kind] || words(k.kind), value: k.count })), { label: 150, solid: true }),
-          h('p', { class: 'muted', style: { fontSize: '12.5px' } }, `${snap.outbound.sent} of ${snap.outbound.total} sent · ${snap.outbound.templates_used} template fallbacks`))
-      : h('div', { class: 'empty' }, 'No mail composed.')),
-    card('c6', 'Inbound mail by category', `${fmt.int(snap.mail.total)} mails`,
-      snap.mail.total ? barList(snap.mail.by_category.map(k => ({ name: category(k.category), value: k.count })), { label: 170, solid: true }) : h('div', { class: 'empty' }, 'No mail on record.')),
+      p.last_error ? fact('Last error', p.last_error) : null))),
     c ? card('c6', 'Classifier accuracy', 'against hand labels, dry run',
           h('div', { style: { display: 'grid', gap: '10px' } }, h('div', { class: 'hero', style: { fontSize: '24px' } }, `${c.correct} of ${c.labelled}`, h('small', null, 'classified as labelled')),
             c.wrong.length ? table(c.wrong, [{ key: 'id', label: 'Mail' }, { key: 'from', label: 'Sender' }, { key: 'category', label: 'Classified as', render: r => category(r.category) }, { key: 'expected', label: 'Label', render: r => category(r.expected) }])
               : h('p', { class: 'soft' }, 'No deviations.')))
       : card('c6', 'Classifier accuracy', null, h('div', { class: 'empty' }, 'Hand labels exist for the recorded dry run only.')),
-    h('section', { class: 'card glass c12 flush' }, head('Details', 'credentials are not displayed', h('button', { class: 'pill small', onclick: () => ctx.act('restore', {}) }, 'Restore dismissed items')),
+    h('section', { class: 'card glass c12 flush' }, head('Details', 'credentials are not displayed'),
       h('details', { class: 'prompt' }, h('summary', null, 'Configuration'), kv(sys.settings.map(x => [x.name, x.value]))),
       h('details', { class: 'prompt' }, h('summary', null, 'Data inventory'), kv(sys.inventory.map(x => [x.name, [h('span', { class: 'num' }, fmt.int(x.rows)), h('span', { class: 'sub' }, x.where)]]))),
       sys.prompts.map(pr => h('details', { class: 'prompt' }, h('summary', null, `Prompt: ${pr.name}`), h('pre', null, pr.text)))));

@@ -81,6 +81,9 @@ class Settings(BaseSettings):
     max_clarifications: int = 3
     max_booking_attempts: int = 3
     max_message_attempts: int = 3
+    # Host names under which the CRM accepts operator actions, besides localhost. The CRM
+    # has no login, so an action is only taken from a page served under a known name.
+    crm_action_hosts: str = ""
     max_answers: int = 3
     start_kit_dir: str = "../data/start-kit"
     tariffs_path: str = "../data/tariffs.json"

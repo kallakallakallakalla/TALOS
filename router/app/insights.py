@@ -34,6 +34,7 @@ VOLUME_KG_PER_CBM = 167.0  # chargeable weight rule of every tariff (docs/data.m
 ROUND_WINDOW_MINUTES = 6.0  # a round closes 6 minutes after it is sent (docs/scoring.md)
 LOW_CONFIDENCE = 0.7  # same threshold as the poller
 STUCK_AFTER_MINUTES = 5.0  # pricing normally ends within the trucker wait (60 s)
+WAIT_BEFORE_LISTING_MINUTES = 2.0  # a question or booking younger than this is work in progress, not a case
 _LEGACY = "legacy:"  # error text written by scripts/backfill_legacy.py
 
 
@@ -529,6 +530,7 @@ def lanes(deals: list[dict], data: Dataset, today: date, live: bool) -> list[dic
 
 
 CLOSED_BY_OPERATOR = "closed by operator"  # same text as app/actions.py writes
+GAVE_UP = "processing failed"  # start of the reasoning the poller stores when it gives up on a mail
 
 
 def attention(
@@ -540,16 +542,19 @@ def attention(
     now: datetime,
     held_changes: list[dict] | None = None,
     dismissed: set[str] | None = None,
+    poller: dict | None = None,
 ) -> list[dict[str, Any]]:
     """The queue of cases that need a person, most urgent first.
 
-    Only cases the agent cannot finish alone are listed; a quote waiting for its answer is
-    normal and is not. Each item has a stable `key` (so it can be dismissed), the `kind` of
-    rule behind it and the `actions` that apply. Time-based rules need live data.
+    Only cases the agent cannot finish alone are listed. A quote waiting for its answer is
+    normal and is not; neither is a question or a booking that has only just gone out
+    (`WAIT_BEFORE_LISTING_MINUTES`, live data only). Each item has a stable `key` (so it can
+    be dismissed), the `kind` of rule behind it, the `actions` that apply, and
+    `needs_person`: false for the few items that are listed for information only.
     """
     items: list[dict[str, Any]] = []
 
-    def add(level: str, kind: str, d: dict | None, title: str, detail: str, actions: list[str], qualifier: Any = "", **extra: Any) -> None:
+    def add(level: str, kind: str, d: dict | None, title: str, detail: str, actions: list[str], qualifier: Any = "", waiting: float | None = None, **extra: Any) -> None:
         subject = d["id"] if d else extra.get("mail_id") or extra.get("change_id") or ""
         items.append(
             {
@@ -562,40 +567,50 @@ def attention(
                 "title": title,
                 "detail": detail,
                 "actions": [*actions, "dismiss"],
+                "needs_person": bool(actions) or kind == "poller_stopped",
+                "waiting_minutes": None if waiting is None else round(waiting),
                 **extra,
             }
         )
 
+    if live and poller and poller["enabled"] and (not poller["running"] or poller["last_error"]):
+        stopped = not poller["running"]
+        add("critical", "poller_stopped", None, "The mailbox poller has stopped" if stopped else "The last mailbox poll failed",
+            (poller["last_error"] or "No mail is being read.") + (" Restart the router." if stopped else " It is retried on the next cycle."),
+            [], "stopped" if stopped else "error")  # fmt: skip
     for d in deals:
-        state = d["state"]
+        state, who = d["state"], d["company"]
         idle = _minutes(d["updated_at"], now.isoformat()) if live else None
+        young = idle is not None and idle < WAIT_BEFORE_LISTING_MINUTES
         if state == S.FAILED:
             if d["error"] == CLOSED_BY_OPERATOR:
                 continue
             gave_up_booking = (d["error"] or "").startswith("not booked")
-            add("critical", "failed", d, "Booking failed" if gave_up_booking else "Processing failed",
-                d["error"] or "No error text stored.", ["retry_booking"] if gave_up_booking else [])  # fmt: skip
-        elif state == S.BOOKING:
-            add("warning", "booking_open", d, "Booking in progress",
+            add("critical", "failed", d, f"Booking for {who} failed" if gave_up_booking else f"The request from {who} could not be processed",
+                d["error"] or "No error text stored.", ["retry_booking"] if gave_up_booking else [], waiting=idle)  # fmt: skip
+        elif state == S.BOOKING and not young:
+            add("warning", "booking_open", d, f"Booking for {who} is still open",
                 f"Attempt {d['booking_attempts']} of {settings.max_booking_attempts} with {d['airline']}.",
-                ["retry_booking"], d["booking_attempts"])  # fmt: skip
-        elif state == S.AWAITING_INFO:
-            add("warning", "awaiting_information", d, "Awaiting customer information",
-                f"Clarification {d['clarifications']} of {settings.max_clarifications} sent. Missing: "
+                ["retry_booking"], d["booking_attempts"], waiting=idle)  # fmt: skip
+        elif state == S.AWAITING_INFO and not young:
+            can_ask = d["clarifications"] < settings.max_clarifications and d["missing"]
+            add("warning", "awaiting_information", d, f"{who} has not answered our question",
+                f"Asked {d['clarifications']} of {settings.max_clarifications} times. Missing: "
                 + ("; ".join(d["missing"]) or "not determined") + ".",
-                ["remind_customer", "close_shipment"], d["clarifications"])  # fmt: skip
+                ["remind_customer", "close_shipment"] if can_ask else ["close_shipment"], d["clarifications"], waiting=idle)  # fmt: skip
         elif state in (S.NEW, S.PRICING) and idle is not None and idle > STUCK_AFTER_MINUTES:
-            add("warning", "pricing_delayed", d, "Pricing delayed",
+            add("warning", "pricing_delayed", d, f"Pricing for {who} is stuck",
                 f"No change for {idle:.0f} minutes. Pricing normally completes within {settings.trucker_wait_seconds:.0f} s.",
-                ["close_shipment"])  # fmt: skip
+                ["close_shipment"], waiting=idle)  # fmt: skip
         elif state == S.QUOTED:
             expires = _parse_time(d["valid_until"])
-            if d["truck_mode"] == "estimate":
-                add("warning", "estimated_trucking", d, "Quote contains estimated trucking cost",
-                    f"No trucker offer was received in time. {_eur(d['truck_eur'])} of {_eur(d['all_in_eur'])} is an estimate.", [])  # fmt: skip
-            elif live and expires and expires < now:
-                add("warning", "quote_expired", d, "Quote expired without response", f"Valid until {d['valid_until']}.", ["close_shipment"])
-    for failure in data.failures:
+            if live and expires and expires < now:
+                add("warning", "quote_expired", d, f"The quote to {who} expired unanswered", f"Valid until {d['valid_until']}.", ["close_shipment"])
+    stored = {m["id"]: m for m in data.mails}
+    # A mail that failed once and went through on a later attempt needs nobody.
+    open_failures = [f for f in data.failures
+                     if f["message_id"] not in stored or (stored[f["message_id"]]["reasoning"] or "").startswith(GAVE_UP)]  # fmt: skip
+    for failure in open_failures:
         add("warning", "mail_failed", None, f"Mail {failure['message_id']} could not be processed",
             f"{failure['attempts']} of {settings.max_message_attempts} attempts. {failure['last_error'] or ''}".strip(),
             ["retry_mail"], failure["attempts"], mail_id=failure["message_id"])  # fmt: skip
@@ -603,14 +618,9 @@ def attention(
         add("warning", "data_change_held", None, "Reference data change held for review",
             f"{change['record_key']}: {change['reason'] or 'failed a check'}. From {change['sender'] or 'unknown'}: {change['subject']}",
             [], change_id=change["id"], mail_id=change["message_id"], company=_pretty(change["sender"]))  # fmt: skip
-    unsure = [m for m in data.mails if m["confidence"] < LOW_CONFIDENCE][:10]
-    for mail in unsure:
-        add("warning", "unsure_classification", None, "Mail classified with low confidence",
-            f"\"{mail['subject']}\" was read as {mail['category']} with {100 * mail['confidence']:.0f}% confidence.",
-            [], mail_id=mail["id"], company=_pretty(mail["sender"]))  # fmt: skip
     hidden = dismissed or set()
     order = {"critical": 0, "warning": 1}
-    return sorted((item for item in items if item["key"] not in hidden), key=lambda item: order[item["level"]])
+    return sorted((item for item in items if item["key"] not in hidden), key=lambda item: (not item["needs_person"], order[item["level"]]))
 
 
 # --- findings --------------------------------------------------------------------------------
@@ -780,6 +790,7 @@ def snapshot(
     tariff_airlines: set[str] | None = None,
     labels: list[dict] | None = None,
     now: datetime | None = None,
+    poller: dict | None = None,
 ) -> dict[str, Any]:
     """Everything the CRM lists and charts, in one read of the database."""
     live, now = source == "live", now or datetime.now(UTC)
@@ -823,14 +834,16 @@ def snapshot(
             code: {"city": city, "lat": lat, "lon": lon, "origin": code in origins, "used": code in used}
             for code, (city, lat, lon) in AIRPORTS.items()
         },
-        "attention": attention(deals, data, settings, live=live, now=now, held_changes=held_changes, dismissed=store.dismissed()),
+        "attention": attention(deals, data, settings, live=live, now=now, held_changes=held_changes, dismissed=(hidden := store.dismissed()), poller=poller),
+        "dismissed": len(hidden),
+        "poller": poller if live else None,
         "findings": findings(deals, settings, live=live),
         "mail": mail_stats(data, reference, labels),
         "outbound": outbound_stats(data),
     }
 
 
-def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOption], requests: list[TruckerRequest], reference: Reference) -> list[dict[str, Any]]:
+def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOption], requests: list[TruckerRequest], reference: Reference, *, live: bool = True) -> list[dict[str, Any]]:
     """Why this shipment stands where it stands, as the steps that led there, in order.
 
     `tone` marks a step that went well ("ok"), one to look at ("warn") or one that failed
@@ -854,7 +867,7 @@ def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOp
          at=d["received_at"])  # fmt: skip
     if d["clarifications"] or d["missing"]:
         step("Details incomplete",
-             f"Asked the customer {d['clarifications']} time(s)." + (f" Still missing: {'; '.join(d['missing'])}." if d["missing"] else " The answer completed the request."),
+             f"Asked the customer {('once', 'twice').__getitem__(d['clarifications'] - 1) if 1 <= d['clarifications'] <= 2 else _n(d['clarifications'], 'time')}." + (f" Still missing: {'; '.join(d['missing'])}." if d["missing"] else " The answer completed the request."),
              "warn" if d["missing"] else "ok")  # fmt: skip
     if d["assumptions"]:
         step("Assumptions made", "; ".join(d["assumptions"]).capitalize() + ".", "warn")
@@ -866,7 +879,9 @@ def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOp
     if requests:
         lowest = min(offers, key=lambda r: r.price_eur) if offers else None
         if d["truck_mode"] == "estimate":
-            text = f"Asked {len(requests)} truckers; none had answered when the quote went out, so {_eur(d['truck_eur'])} was estimated."
+            asked_back = sum(r.answered and r.price_eur is None for r in requests)
+            text = (f"Asked {_n(len(requests), 'trucker')}; no offer had arrived when the quote went out"
+                    + (f" ({asked_back} answered without a price)" if asked_back else "") + f", so {_eur(d['truck_eur'])} was estimated.")  # fmt: skip
             if lowest:  # an offer that came in afterwards shows how far the estimate was off
                 text += f" A later offer from {name(lowest.trucker)} was {_eur(lowest.price_eur)}: the estimate was {_eur(abs(d['truck_eur'] - lowest.price_eur))} {'higher' if d['truck_eur'] > lowest.price_eur else 'lower'}."
             step("Trucking estimated", text, "warn")
@@ -900,10 +915,12 @@ def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOp
     quote = shipment.quote or {}
     verdict_id = quote.get("accept_message_id") or quote.get("reject_message_id")
     verdict = store.get_message(verdict_id) if verdict_id else None
+    # In a replay the customer's reply is the recorded one: it answered the earlier process's quote.
+    recorded = "" if live else "\nRecorded reply: it answered the earlier process's quote, not this one."
     if d["state"] == S.REJECTED or quote.get("reject_message_id"):
-        step("Declined by the customer", (verdict.body.strip()[:300] if verdict else "No reply text stored."), "bad", verdict.received_at if verdict else None)
+        step("Declined by the customer", (verdict.body.strip()[:300] if verdict else "No reply text stored.") + recorded, "bad", verdict.received_at if verdict else None)
     elif quote.get("accept_message_id"):
-        step("Accepted by the customer", (verdict.body.strip()[:300] if verdict else ""), "ok", verdict.received_at if verdict else None)
+        step("Accepted by the customer", (verdict.body.strip()[:300] if verdict else "") + recorded, "ok", verdict.received_at if verdict else None)
     elif d["state"] == S.QUOTED:
         step("Awaiting the customer's decision", "No reply to the quote yet.", "warn")
 
@@ -980,7 +997,7 @@ def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int,
     return {
         "source": source,
         "deal": row,
-        "trace": _trace(store, shipment, row, options, requests, reference),
+        "trace": _trace(store, shipment, row, options, requests, reference, live=source == "live"),
         "options": [
             {
                 "airline": o.airline, "code": o.airline_code, "source": o.source,
@@ -1093,6 +1110,17 @@ def mail_checks(text: str) -> list[str]:
 
 # --- rounds: one request, one outcome ---------------------------------------------------------
 
+_OPENER = re.compile(r"^(thanks|thank you)( very much)? for (your|the) (offer|quote|quotation)[.,!]?\s*(but\s+)?", re.IGNORECASE)
+
+
+def _reason(reply: str) -> str:
+    """Why the customer declined, in their words: the first paragraph of the reply without its opening thanks."""
+    first = next((part.strip() for part in reply.strip().split("\n\n") if part.strip()), "")
+    if first.endswith(",") and "\n" not in first:  # a greeting line on its own
+        first = next((part.strip() for part in reply.strip().split("\n\n")[1:] if part.strip()), first)
+    text = " ".join(_OPENER.sub("", first).split())
+    return (text[:1].upper() + text[1:])[:220] if text else "Declined by the customer"
+
 
 def rounds(store: MessageStore, reference: Reference, settings: Settings, *, source: str, board: dict[int, dict] | None = None) -> dict[str, Any]:
     """Every request with how it ended and, if it did not end well, what it cost us.
@@ -1127,6 +1155,8 @@ def rounds(store: MessageStore, reference: Reference, settings: Settings, *, sou
             outcome = "awaiting decision"
         elif state in (S.NEW, S.PRICING):
             outcome = "in progress"
+        elif state == S.AWAITING_INFO:
+            outcome = "waiting for customer"
         else:
             outcome = "no quote"
         # what, if anything, this round cost us; one cause per round, the first that applies
@@ -1137,7 +1167,7 @@ def rounds(store: MessageStore, reference: Reference, settings: Settings, *, sou
         elif late:
             cause = "Answered after the 6-minute window"
         elif outcome == "declined":
-            cause = "Declined by the customer"
+            cause = _reason(verdict_mail.body) if verdict_mail else "Declined by the customer"
         elif outcome == "accepted" and live and not booked:
             cause = "Accepted but not booked"
         else:
@@ -1171,7 +1201,7 @@ def rounds(store: MessageStore, reference: Reference, settings: Settings, *, sou
         )
     rows.sort(key=lambda r: r["id"], reverse=True)
     flags = Counter(flag for r in rows for flag in r["mail_flags"] or [])
-    decided = [r for r in rows if r["outcome"] not in ("in progress", "awaiting decision")]
+    decided = [r for r in rows if r["outcome"] not in ("in progress", "awaiting decision", "waiting for customer")]
     causes = Counter(r["cause"] for r in rows if r["cause"])
     return {
         "source": source,
@@ -1185,6 +1215,7 @@ def rounds(store: MessageStore, reference: Reference, settings: Settings, *, sou
         "in_window": sum(r["in_window"] is True for r in rows),
         "timed": sum(r["in_window"] is not None for r in rows),
         "clean": sum(r["cause"] is None for r in decided),
+        "lost": sum(r["cause"] is not None for r in decided),
         "decided": len(decided),
         "causes": [{"cause": cause, "count": count} for cause, count in causes.most_common()],
         "quote_mails": sum(r["quote_mail"] is not None for r in rows),
@@ -1211,7 +1242,8 @@ _STEPS = {
 MIN_OFFERS_FOR_WAIT = 5  # fewer offer timings than this say nothing about the wait
 MIN_ASKS_TO_JUDGE = 4  # a trucker asked fewer times is not judged yet
 ESTIMATE_TOLERANCE = 0.15  # an estimate this close to the later offer is good enough
-NO_ANSWER_SHARE = 0.15  # tokens on mails that need no answer, from here on worth a look
+NO_ANSWER_SHARE = 0.15  # tokens (or mails) that need no answer, from here on worth a look
+MIN_LATER_OFFERS = 3  # an estimate is judged from this many later offers on
 
 
 def _verdict(tone: str, text: str) -> dict[str, str]:
@@ -1219,19 +1251,31 @@ def _verdict(tone: str, text: str) -> dict[str, str]:
     return {"tone": tone, "text": text}
 
 
-def _llm_lever(store: MessageStore, settings: Settings, deals: list[dict]) -> dict[str, Any]:
+def _llm_lever(store: MessageStore, settings: Settings, deals: list[dict], data: Dataset) -> dict[str, Any]:
+    """What the models cost: tokens by step once calls are recorded; before that, the one
+    thing the stored mails already show, namely how many of them needed no answer."""
     usage = store.llm_usage()
     models = sorted({settings.decision_model, settings.extract_model, settings.compose_model})
-    lever = {"key": "llm_usage", "title": "LLM use", "setting": "DECISION_MODEL, EXTRACT_MODEL, COMPOSE_MODEL", "value": " / ".join(models), "rows": []}
+    lever = {"key": "llm_usage", "title": "LLM use", "setting": "DECISION_MODEL, EXTRACT_MODEL, COMPOSE_MODEL", "value": " / ".join(models), "rows": [], "suggest": None}
     calls = sum(row["calls"] for row in usage["by_prompt"])
     tokens = sum(row["input_tokens"] + row["output_tokens"] for row in usage["by_prompt"])
+    # Every stored mail except an awaited trucker reply went through the classifier (poller).
+    classified = [m for m in data.mails if not (m["reasoning"] or "").startswith(GAVE_UP)]
+    idle_mails = [m for m in classified if m["category"] == "other"]
+    linked, states = data.mail_shipments(), {s.id: s.state for s in data.shipments}
+    after_the_deal = sum(states.get(linked.get(m["id"])) in (S.BOOKED, S.CONFIRMED, S.REJECTED, S.FAILED) for m in idle_mails)
+    mails = (
+        f"{len(idle_mails)} of {_n(len(classified), 'mail')} needed no answer (category Other), and each went through the classifier."
+        + (f" {after_the_deal} of them arrived on a shipment that was already booked or closed." if after_the_deal else "")
+    ) if classified else ""
     if not tokens:  # nothing recorded, or a gateway that reports no usage
-        return lever | {
-            "n": calls, "figure": "–", "figure_label": "tokens per accepted quote",
-            "text": (f"{_n(calls, 'call')} recorded, but the model endpoint reported no token counts." if calls else
-                     "No call has been recorded in this data. The router counts every call from its next start on: tokens by step, and how many go to mails that need no answer."),
-            "verdict": _verdict("open", "Not measured yet."),
-        }  # fmt: skip
+        counted = (f"{_n(calls, 'call')} recorded, but the model endpoint reported no token counts." if calls
+                   else "Token counts are recorded from the router's next start on.")  # fmt: skip
+        share = len(idle_mails) / len(classified) if classified else 0.0
+        verdict = (_verdict("change", f"{share:.0%} of all mails needed no answer. Recognising them without a model call saves one call each.") if share >= NO_ANSWER_SHARE and len(classified) >= 20
+                   else _verdict("open", "Not measured yet."))  # fmt: skip
+        return lever | {"n": len(classified), "figure": f"{len(idle_mails)} of {len(classified)}" if classified else "–", "figure_label": "mails that needed no answer",
+                        "text": f"{mails} {counted}".strip(), "verdict": verdict}  # fmt: skip
     reasoning = sum(row["reasoning_tokens"] for row in usage["by_prompt"])
     cached = sum(row["cached_tokens"] for row in usage["by_prompt"])
     accepted = sum(d["state"] in ACCEPTED for d in deals)
@@ -1242,8 +1286,8 @@ def _llm_lever(store: MessageStore, settings: Settings, deals: list[dict]) -> di
     text = (
         f"{_n(calls, 'call')} since {since:%-d %b %H:%M} UTC used {tokens:,} tokens"
         + (f" ({reasoning:,} of them for reasoning, {cached:,} input tokens from the cache)" if reasoning or cached else "")
-        + ". By step: " + "; ".join(f"{row['name']} {row['share']:.0f}% ({_n(row['calls'], 'call')})" for row in rows[:4]) + "."
-    )  # fmt: skip
+        + ". By step: " + "; ".join(f"{row['name']} {row['share']:.0f}% ({_n(row['calls'], 'call')})" for row in rows[:4]) + ". " + mails
+    ).strip()  # fmt: skip
     if idle / tokens >= NO_ANSWER_SHARE:
         verdict = _verdict("change", f"{idle / tokens:.0%} of all tokens went to mails that needed no answer (category Other). Recognising them without a model call saves that share.")
     else:
@@ -1279,7 +1323,7 @@ def levers(store: MessageStore, reference: Reference, settings: Settings, *, sou
     minutes = [d["minutes_to_quote"] for d in deals if d["minutes_to_quote"] is not None]
     if minutes:
         late = sum(m > ROUND_WINDOW_MINUTES for m in minutes)
-        out.append({"key": "time_to_quote", "title": "Time to quote", "setting": "TRUCKER_WAIT_SECONDS, AIRLINE_WAIT_SECONDS", "value": f"{wait:.0f} s / {settings.airline_wait_seconds:.0f} s",
+        out.append({"key": "time_to_quote", "suggest": None, "title": "Time to quote", "setting": "TRUCKER_WAIT_SECONDS, AIRLINE_WAIT_SECONDS", "value": f"{wait:.0f} s / {settings.airline_wait_seconds:.0f} s",
                     "text": f"{len(minutes) - late} of {_n(len(minutes), 'quote')} went out within the {ROUND_WINDOW_MINUTES:.0f}-minute window; median {_median(minutes):.1f} min, slowest {max(minutes):.1f} min.",
                     "n": len(minutes), "figure": f"{_median(minutes):.1f} min", "figure_label": "median from request to quote",
                     "verdict": _verdict("change", f"{_n(late, 'quote')} went out after the round had closed.") if late
@@ -1288,6 +1332,7 @@ def levers(store: MessageStore, reference: Reference, settings: Settings, *, sou
     # 2. How long we wait for truckers
     pickups = {sid: reqs for sid, reqs in data.truckers.items() if sid in by_id}
     silent_runs = {sid: [r.trucker for r in reqs if r not in priced(reqs)] for sid, reqs in pickups.items() if len(priced(reqs)) < len(reqs)}
+    wait_suggest = None
     seconds = [
         took * 60
         for reqs in pickups.values()
@@ -1309,12 +1354,13 @@ def levers(store: MessageStore, reference: Reference, settings: Settings, *, sou
             verdict = _verdict("open", f"{len(seconds) - in_time} of {len(seconds)} offers arrived after the wait. Waiting longer makes more quotes exact and every waiting quote slower.")
         elif enough < wait:
             verdict = _verdict("change", f"The slowest offer took {slowest:.0f} s. {enough} s would have caught all {len(seconds)} and sent each waiting quote {wait - enough:.0f} s earlier.")
+            wait_suggest = {"name": "TRUCKER_WAIT_SECONDS", "now": f"{wait:.0f}", "to": str(enough)}
         else:
             verdict = _verdict("keep", f"Offers arrive up to {slowest:.0f} s after the request, so the wait is needed.")
     else:
         text += " Offer arrival times are not measured in a dry run." if not live else ""
         verdict = _verdict("open", f"Needs the arrival times of at least {MIN_OFFERS_FOR_WAIT} offers from a live run.")
-    out.append({"key": "trucker_wait", "title": "Trucker wait", "setting": "TRUCKER_WAIT_SECONDS", "value": f"{wait:.0f} s", "text": text, "verdict": verdict,
+    out.append({"key": "trucker_wait", "title": "Trucker wait", "setting": "TRUCKER_WAIT_SECONDS", "value": f"{wait:.0f} s", "text": text, "verdict": verdict, "suggest": wait_suggest,
                 "n": len(pickups), "figure": f"{len(waited)} of {len(pickups)}", "figure_label": "pickups waited the full time"})  # fmt: skip
 
     # 3. Truckers who rarely answer: they are what makes a quote wait
@@ -1336,11 +1382,11 @@ def levers(store: MessageStore, reference: Reference, settings: Settings, *, sou
             verdict = _verdict("open", f"Each was asked fewer than {MIN_ASKS_TO_JUDGE} times so far: too few to drop anyone.")
         else:
             verdict = _verdict("change", f"Without them, {freed} of {_n(len(silent_runs), 'quote')} that waited for a silent trucker would have gone out as soon as the others had answered.")
-    out.append({"key": "silent_truckers", "title": "Truckers who rarely answer", "setting": "active flag in the carrier list", "value": f"{len(asked)} asked",
+    out.append({"key": "silent_truckers", "suggest": None, "title": "Truckers who rarely answer", "setting": "active flag in the carrier list", "value": f"{len(asked)} asked",
                 "text": text, "verdict": verdict, "n": sum(asked.values()), "figure": str(len(quiet)), "figure_label": "of " + _n(len(asked), "trucker"), "rows": rows})  # fmt: skip
 
     # 4. The price used when no trucker answers, against the offer that arrived afterwards
-    fallback = settings.fallback_truck_eur_per_kg
+    fallback, suggest = settings.fallback_truck_eur_per_kg, None
     later = [(d, min(r.price_eur for r in priced(pickups[d["id"]]))) for d in estimated if priced(pickups.get(d["id"], []))]
     per_kg = [min(r.price_eur for r in priced(reqs)) / by_id[sid]["gross_kg"] for sid, reqs in pickups.items() if by_id[sid]["gross_kg"] and priced(reqs)]
     text = f"When no trucker has answered in time the quote uses earlier offers for the zone, or {fallback:.2f} EUR per kg where there are none."
@@ -1354,24 +1400,22 @@ def levers(store: MessageStore, reference: Reference, settings: Settings, *, sou
         match = _median([real / d["gross_kg"] for d, real in later])
         figure, label = f"{off:+.0%}", "estimate against the offer that came later"
         said = f"For {_n(len(later), 'estimated quote')} an offer arrived afterwards: the estimate was a median {abs(off):.0%} ({_eur(abs(gap))}) {'above' if off > 0 else 'below'} it."
-        verdict = (_verdict("change", said + f" {match:.2f} EUR per kg would have matched those offers.") if abs(off) > ESTIMATE_TOLERANCE
-                   else _verdict("keep", said))  # fmt: skip
+        if len(later) < MIN_LATER_OFFERS:
+            verdict = _verdict("open", said + f" Too few to change the rate: it is judged from {MIN_LATER_OFFERS} such quotes on.")
+        elif abs(off) > ESTIMATE_TOLERANCE:
+            verdict = _verdict("change", said + f" {match:.2f} EUR per kg would have matched those offers.")
+            suggest = f"{match:.2f}"
+        else:
+            verdict = _verdict("keep", said)
     else:
         figure, label = (f"{_median(per_kg):.2f}", "EUR/kg, median lowest offer") if per_kg else ("–", "no offers yet")
         verdict = _verdict("open", "No estimated quote has a later offer to compare with.")
     out.append({"key": "fallback_trucking", "title": "Trucking estimate when nobody answers", "setting": "FALLBACK_TRUCK_EUR_PER_KG", "value": f"{fallback:.2f} EUR/kg",
-                "text": text, "verdict": verdict, "n": len(later) or len(per_kg), "figure": figure, "figure_label": label})  # fmt: skip
+                "text": text, "verdict": verdict, "n": len(later) or len(per_kg), "figure": figure, "figure_label": label,
+                "suggest": suggest and {"name": "FALLBACK_TRUCK_EUR_PER_KG", "now": f"{fallback:.2f}", "to": suggest}})  # fmt: skip
 
     # 5. What the models cost
-    out.append(_llm_lever(store, settings, deals))
-
-    # 6. Requests that need a question back
-    asked_back = [d for d in deals if d["clarifications"] or d["state"] == S.AWAITING_INFO]
-    missing = Counter(item for d in deals for item in d["missing"])
-    out.append({"key": "clarifications", "title": "Requests that need a question back", "setting": "MAX_CLARIFICATIONS", "value": str(settings.max_clarifications),
-                "text": f"{len(asked_back)} of {_n(len(deals), 'request')} could not be priced as sent."
-                + (" Still missing now: " + "; ".join(f"{item} ({count})" for item, count in missing.most_common(3)) + "." if missing else ""),
-                "n": len(deals), "figure": f"{len(asked_back)} of {len(deals)}", "figure_label": "requests", "verdict": None})  # fmt: skip
+    out.append(_llm_lever(store, settings, deals, data))
 
     order = {"change": 0, "keep": 1, "open": 2}
-    return sorted(out, key=lambda lever: order[lever["verdict"]["tone"]] if lever["verdict"] else 3)
+    return sorted(out, key=lambda lever: order[lever["verdict"]["tone"]])

@@ -749,6 +749,11 @@ class MessageStore:
             since = conn.execute("SELECT MIN(at) FROM llm_calls").fetchone()[0]
         return {"since": since, "by_prompt": [dict(row) for row in by_prompt], "by_category": [dict(row) for row in by_category]}
 
+    def forget_message(self, message_id: int) -> None:
+        """Remove a stored mail, so that processing it again stores the new reading."""
+        with self._connect() as conn:
+            conn.execute("DELETE FROM processed_messages WHERE message_id = ?", (message_id,))
+
     def clear_failure(self, message_id: int) -> None:
         """Forget the failed attempts of a mail, so it is processed again from the start."""
         with self._connect() as conn:

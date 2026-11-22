@@ -1,13 +1,15 @@
-"""The CRM: a read-only web interface over everything the router stores.
+"""The CRM: the supervisor console over everything the router stores.
 
 `GET /crm` serves the interface (plain HTML, CSS and JavaScript from `app/crm_ui/`, no build
 step, no external requests). The `/crm/api/*` endpoints return the figures of
-`app/insights.py`. Nothing here sends mail, books, or calls an LLM.
+`app/insights.py`; they only read. The one exception is `POST /crm/api/actions/{name}`,
+which carries out an operator action (`app/actions.py`) and is guarded below.
 """
 
 import json
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse, HTMLResponse
@@ -86,6 +88,13 @@ async def version(request: Request, source: Source = "live", settings: Settings 
 @router.get("/api/snapshot")
 async def snapshot(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
     store = _store(request, settings, source)
+    poller = getattr(request.app.state, "poller", None)
+    running = {
+        "enabled": settings.mailbox_poll_enabled and bool(settings.hackloop_api_key),
+        "running": bool(poller and poller.running),
+        "last_poll_at": poller.last_poll_at if poller else None,
+        "last_error": poller.last_error if poller else None,
+    }
     return {
         "version": store.change_token(),
         # buttons that change something are only offered where they are allowed (app/actions.py)
@@ -98,6 +107,7 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
             source=source,
             tariff_airlines=_tariffs(settings, source).airlines,
             labels=replay_labels() if source == "replay" else None,
+            poller=running,
         ),
     }
 
@@ -105,10 +115,14 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
 @router.get("/api/rounds")
 async def rounds(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
     """The round ledger; with the platform's verdicts where the board can be read (live only)."""
-    return insights.rounds(
-        _store(request, settings, source), _reference(settings, source), settings,
-        source=source, board=await board.my_board(settings) if source == "live" else None,
-    )  # fmt: skip
+    entries = await board.my_board(settings) if source == "live" else None
+    ledger = insights.rounds(_store(request, settings, source), _reference(settings, source), settings, source=source, board=entries)
+    matched = sum(row["board"] is not None for row in ledger["rounds"])
+    if entries is not None and ledger["total"] and not matched:
+        # the board answered, but under names this code does not know: say which, so they can be added
+        ledger["board_note"] = (f"The board listed {board.seen['entries']} entries, none of which could be matched to our requests. "
+                                f"Fields of an entry: {', '.join(board.seen['fields']) or 'none'}.")  # fmt: skip
+    return ledger
 
 
 @router.get("/api/levers")
@@ -116,13 +130,50 @@ async def levers(request: Request, source: Source = "live", settings: Settings =
     return insights.levers(_store(request, settings, source), _reference(settings, source), settings, source=source)
 
 
+_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
+
+
+def _only_from_this_page(request: Request, settings: Settings) -> None:
+    """Refuse an action that does not come from the CRM page itself.
+
+    There is no login, and an action can book and send. Without these checks any web page
+    open in the same browser could post one to localhost:
+    - the body must be JSON, which a foreign page cannot send without a preflight this app
+      never answers;
+    - a stated origin must be the host the request was sent to;
+    - that host must be localhost or one named in CRM_ACTION_HOSTS, so a foreign domain
+      pointed at this machine is refused too.
+    """
+    if request.headers.get("content-type", "").split(";")[0].strip().lower() != "application/json":
+        raise HTTPException(status_code=415, detail="Actions are sent as application/json.")
+    host = request.headers.get("host", "")
+    origin = request.headers.get("origin")
+    if (origin and urlsplit(origin).netloc != host) or request.headers.get("sec-fetch-site", "same-origin") not in ("same-origin", "none"):
+        raise HTTPException(status_code=403, detail="Actions are only accepted from the CRM page itself.")
+    allowed = _LOCAL_HOSTS | {name.strip().lower() for name in settings.crm_action_hosts.split(",") if name.strip()}
+    if (urlsplit(f"//{host}").hostname or "") not in allowed:
+        raise HTTPException(status_code=403, detail=f"Actions are not enabled for the address {host}. Open the CRM on localhost, or add the host name to CRM_ACTION_HOSTS.")
+
+
 @router.post("/api/actions/{name}")
-async def act(name: str, request: Request, settings: Settings = Depends(get_settings)) -> dict[str, Any]:
-    """Carry out an operator action on the live system (app/actions.py)."""
-    params = await request.json() if await request.body() else {}
+async def act(name: str, request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    """Carry out an operator action (app/actions.py).
+
+    Dismissing and restoring apply to the data set that is shown; everything else changes
+    the live system and is refused for the dry run.
+    """
+    _only_from_this_page(request, settings)
     try:
+        params = await request.json() if await request.body() else {}
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail="The request body is not valid JSON.") from error
+    if not isinstance(params, dict):
+        raise HTTPException(status_code=400, detail="The request body must be a JSON object.")
+    try:
+        if source != "live" and name not in actions.ANYWHERE:
+            raise actions.ActionError("The dry run is a recording: this action only exists on the live router.")
         message = await actions.run(
-            name, store=_live_store(request, settings), poller=getattr(request.app.state, "poller", None), params=params
+            name, store=_store(request, settings, source), poller=getattr(request.app.state, "poller", None), params=params
         )
     except actions.ActionError as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
