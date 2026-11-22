@@ -215,7 +215,6 @@ export async function performance(ctx) {
     { key: 'name', label: 'Airline' },
     { key: 'quoted', label: 'Quoted', right: true, render: a => meter(100 * a.quoted / top, fmt.int(a.quoted)) },
     { key: 'share', label: 'Share of quotes', right: true, get: a => a.quoted, render: a => share(a.quoted, c.quoted), csv: a => (c.quoted ? Math.round(1000 * a.quoted / c.quoted) / 10 : '') },
-    { key: 'accepted', label: 'Accepted', right: true }, { key: 'priced', label: 'Priced', right: true },
   ];
   const truckerCols = [
     { key: 'name', label: 'Trucker' },
@@ -299,16 +298,15 @@ export async function rounds(ctx, tab = 'ledger') {
     { key: 'cause', label: 'Why it was lost', cls: 'wrap reason', render: r => r.cause || h('span', { class: 'muted' }, '–') },
     { key: 'customer_said', label: 'Customer said', hidden: true },
   ].filter(Boolean);
-  const top = data.causes[0];
+  const note = data.board_note || (data.board_available ? 'Verdicts, reasons and points come from the platform board.'
+    : live ? 'The platform board could not be read; outcomes come from our own records.'
+    : 'Dry run: the recorded replies answered the earlier process\'s quotes, not the ones shown here.');
   const node = h('div', { class: 'grid' }, tabs,
-    h('section', { class: 'card glass c7 status' },
-      h('h2', null, !data.total ? 'No request yet' : !live ? `${data.total} recorded rounds, ${data.lost} lost`
-        : data.decided ? `${data.lost} of ${data.decided} decided rounds lost` : 'No decided rounds yet'),
-      top ? h('p', null, `Most often (${top.count} of ${data.lost}): “${top.cause}”`) : data.decided ? h('p', null, 'No round was lost.') : null,
-      h('p', { class: 'muted' }, data.board_note || (data.board_available ? 'Verdicts, reasons and points come from the platform board.' : live ? 'The platform board could not be read; outcomes come from our own records.' : 'Dry run: the recorded replies answered the earlier process\'s quotes, not the ones shown here.'))),
-    card('c5', 'Why rounds were lost', null, data.causes.length
-      ? h('div', { class: 'reasons' }, data.causes.map(c => h('div', null, h('b', null, `${c.count} ×`), h('span', null, c.cause))))
-      : h('div', { class: 'empty' }, 'No losses recorded.')),
+    h('section', { class: 'card glass c12' }, head('Why rounds were lost', `${data.lost} of ${data.decided} decided`),
+      data.causes.length
+        ? h('div', { class: 'reasons' }, data.causes.map(c => h('div', null, h('b', null, `${c.count} ×`), h('span', null, c.cause))))
+        : h('div', { class: 'muted' }, data.decided ? 'No round was lost.' : 'No round has been decided yet.'),
+      h('p', { class: 'muted cardnote' }, note)),
     h('div', { class: 'filters' },
       pill('All', data.total, !f.outcome, () => { f.outcome = null; }),
       outcomes.map(([name, count]) => pill(words(name), count, f.outcome === name, () => { f.outcome = f.outcome === name ? null : name; })),

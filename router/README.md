@@ -99,7 +99,7 @@ actions of its open case are on the page; request, offer and correspondence fold
   read the database, so a second process follows a running router the same way.
 - **Notifications:** the bell asks the browser for permission; after that a new case in the
   queue is announced, so nobody has to watch the page. The tab title carries the count.
-- **Status bar:** under the header on every page, like a status page: the overall state
+- **Status bar:** under the header on Now and System, like a status page: the overall state
   (operational, degraded, down, or read-only view) with the uptime, then one strip of ticks
   per part: the mailbox (one tick per minute of polling, red where a poll failed), the latest
   requests, bookings and mails (one tick each, coloured by how it went; a request's tick opens

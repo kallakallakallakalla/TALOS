@@ -54,6 +54,7 @@ async function render() {
   view.scrollTop = scroll;
   view.classList.remove('stale');
   $('title').textContent = page.title; $('sub').textContent = page.sub;
+  $('health').hidden = !['now', 'system'].includes(now.name);  // the status bar belongs to the two pages about the system
   // the search box only exists where it filters something
   $('search').closest('label').hidden = !(now.name === 'lookup' || (now.name === 'rounds' && now.arg !== 'mails'));
   document.title = `${page.title} · TALOS`;
