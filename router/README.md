@@ -94,9 +94,11 @@ actions of its open case are on the page; request, offer and correspondence fold
   Anyone who can open the page can act, so keep the port on localhost or behind your own access control.
 - **Notifications:** the bell asks the browser for permission; after that a new case in the
   queue is announced, so nobody has to watch the page. The tab title carries the count.
-- **Status bar:** under the header on every page: how long the router has been up, whether
-  the mailbox is being read and when it was last polled, how much the database holds and when
-  the last mail arrived, and whether sending is on. It rides on the 3-second version poll.
+- **Status bar:** under the header on every page, like a status page: the overall state
+  (operational, degraded, down, or read-only view) with the uptime, then one strip of ticks
+  per part: the mailbox (one tick per minute of polling, red where a poll failed), the latest
+  requests, bookings and mails (one tick each, coloured by how it went; a request's tick opens
+  it). It rides on the 3-second version poll.
 - **Live** reads the router's database and follows it: the page asks for a change token every
   3 s and reloads the figures when it moves. **Dry run** reads the last replay; on a fresh
   checkout that database is rebuilt from `data/replay/recorded-run.json` and the recorded mails.

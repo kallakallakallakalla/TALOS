@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from collections import deque
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
@@ -59,6 +60,8 @@ class MailboxPoller:
         self.running: bool = False
         self.last_poll_at: str | None = None
         self.last_error: str | None = None
+        # (time, went well) of the latest polls: an hour at the default interval. Read by the CRM's status bar.
+        self.polls: deque[tuple[str, bool]] = deque(maxlen=900)
         self._backoff = 0.0
 
     @observe(name="mail")
@@ -197,14 +200,17 @@ class MailboxPoller:
         """
         self._backoff = 0.0
         async with self.work_lock:
+            polled = False
             try:
                 await self.poll_once()
+                polled = True
             except httpx.HTTPStatusError as exc:
                 self._note_error(exc)
                 if exc.response.status_code == 429:
                     self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
             except Exception as exc:  # noqa: BLE001 - keep background poller alive
                 self._note_error(exc)
+            self.polls.append((datetime.now(UTC).isoformat(), polled))
             try:
                 if self._workflow:
                     await self._workflow.tick()

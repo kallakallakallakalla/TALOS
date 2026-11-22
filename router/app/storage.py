@@ -705,17 +705,21 @@ class MessageStore:
         with self._connect() as conn:
             return conn.execute("DELETE FROM crm_dismissed").rowcount
 
-    def totals(self) -> dict[str, Any]:
-        """How much is stored and when the last mail arrived (the CRM's status bar)."""
+    def recent(self, *, shipments: int, mails: int) -> dict[str, list[dict[str, Any]]]:
+        """The latest requests and mails as light rows, oldest first (the CRM's status bar)."""
         with self._connect() as conn:
-            row = conn.execute(
+            requests = conn.execute(
                 """
-                SELECT (SELECT COUNT(*) FROM processed_messages) AS mails,
-                       (SELECT COUNT(*) FROM shipments) AS shipments,
-                       (SELECT MAX(COALESCE(received_at, processed_at)) FROM processed_messages) AS last_mail_at
-                """
-            ).fetchone()
-        return dict(row)
+                SELECT id, state, error, booking_ref FROM shipments
+                WHERE COALESCE(error, '') NOT LIKE 'legacy:%' ORDER BY id DESC LIMIT ?
+                """,
+                (shipments,),
+            ).fetchall()
+            inbound = conn.execute(
+                "SELECT message_id AS id, category, confidence, reasoning FROM processed_messages ORDER BY message_id DESC LIMIT ?",
+                (mails,),
+            ).fetchall()
+        return {"shipments": [dict(row) for row in reversed(requests)], "mails": [dict(row) for row in reversed(inbound)]}
 
     def forget_message(self, message_id: int) -> None:
         """Remove a stored mail, so that processing it again stores the new reading."""

@@ -91,19 +91,28 @@ def _poller_state(request: Request, settings: Settings) -> dict[str, Any]:
     }
 
 
-def _health(request: Request, settings: Settings) -> dict[str, Any]:
-    """The state of this process and what it depends on, for the status bar. Always the live system."""
-    try:
-        database = {"ok": True, **_live_store(request, settings).totals()}
-    except Exception as error:  # noqa: BLE001 - a broken database is exactly what the bar has to show
-        database = {"ok": False, "error": f"{type(error).__name__}: {error}"}
-    return {
+def _health(request: Request, settings: Settings, source: Source) -> dict[str, Any]:
+    """The status bar: this process (uptime, mailbox polling) and the data set shown (requests, bookings, mail)."""
+    poller, state = getattr(request.app.state, "poller", None), _poller_state(request, settings)
+    base = {
         "started_at": _STARTED_AT.isoformat(),
         "uptime_s": round((datetime.now(UTC) - _STARTED_AT).total_seconds()),
         "mode": "test" if settings.test_mode else "sending" if settings.send_enabled else "dry_run",
-        "poller": _poller_state(request, settings),
-        "database": database,
     }
+    try:
+        recent = _store(request, settings, source).recent(shipments=insights.HEALTH_REQUESTS, mails=insights.HEALTH_MAILS)
+    except Exception as error:  # noqa: BLE001 - a broken database is exactly what the bar has to show
+        return base | {"state": "down", "label": f"Database not readable: {type(error).__name__}", "strips": []}
+    strips = insights.health(recent, list(poller.polls) if poller else [], state, now=datetime.now(UTC))
+    if not state["enabled"]:
+        overall = ("viewer", "Read-only view")  # this process does not read the mailbox
+    elif not state["running"]:
+        overall = ("down", "Mailbox poller stopped")
+    elif state["last_error"]:
+        overall = ("degraded", "Last mailbox poll failed")
+    else:
+        overall = ("operational", "Operational")
+    return base | {"state": overall[0], "label": overall[1], "detail": state["last_error"], "strips": strips}
 
 
 @router.get("/api/version")
@@ -112,7 +121,7 @@ async def version(request: Request, source: Source = "live", settings: Settings 
 
     The same answer carries the health of this process, so the status bar costs no request of its own.
     """
-    return {"version": _store(request, settings, source).change_token(), "health": _health(request, settings)}
+    return {"version": _store(request, settings, source).change_token(), "health": _health(request, settings, source)}
 
 
 @router.get("/api/snapshot")

@@ -513,9 +513,18 @@ td { padding: 7px 10px; }
 .stat small { font-size: 12px; color: var(--ink-3); line-height: 1.35; }
 @media (max-width: 1180px) { .statstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat { border-left: 0; border-top: 1px solid var(--hairline); } }
 
-/* --- status bar: this process and what it depends on ----------------------------------- */
-.health { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding: 7px 14px 7px 18px; font-size: 12.5px; color: var(--ink-2); }
-.hitem { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
-.hitem b { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink); }
-.hitem .dot { width: 7px; height: 7px; }
-.hclock { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+/* --- status bar: an overall state and one strip of ticks per part of the system ------------ */
+.health { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; padding: 9px 14px 9px 18px; font-size: 12.5px; color: var(--ink-2); }
+.hstate { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
+.hstate small { font-weight: 400; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.hstrip { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
+.hstrip b { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
+.hstrip.bad b, .hstrip.warn b { color: var(--ink); }
+.hstrip small { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.ticks { display: inline-flex; gap: 2px; }
+.tick { width: 3px; height: 18px; background: var(--track); display: block; }
+.tick.ok { background: var(--good); } .tick.warn { background: var(--warning); } .tick.bad { background: var(--critical); }
+.tick.link { cursor: pointer; } .tick:not(.none):hover { transform: scaleY(1.25); }
+.hmode { margin-left: auto; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); white-space: nowrap; }
+.hmode.hot { color: var(--critical); }
+.hclock { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); font-size: 12.5px; white-space: nowrap; }

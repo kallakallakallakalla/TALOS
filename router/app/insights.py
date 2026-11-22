@@ -1063,6 +1063,76 @@ def mails(
 
 
 
+# --- status bar: one tick per minute of polling, per request, per booking, per mail ----------------
+
+HEALTH_MINUTES, HEALTH_REQUESTS, HEALTH_BOOKINGS, HEALTH_MAILS = 30, 30, 12, 30
+_REQUEST_TICK = {
+    S.NEW: ("warn", "received"), S.AWAITING_INFO: ("warn", "waiting for the customer"), S.PRICING: ("warn", "being priced"),
+    S.QUOTED: ("ok", "quoted"), S.BOOKING: ("ok", "accepted"), S.BOOKED: ("ok", "booked"), S.CONFIRMED: ("ok", "booked and confirmed"),
+    S.REJECTED: ("ok", "quoted, declined by the customer"),
+}  # fmt: skip
+
+
+def health(recent: dict[str, list[dict]], polls: list[tuple[str, bool]], poller: dict[str, Any], *, now: datetime) -> list[dict[str, Any]]:
+    """The strips of the status bar, each a row of ticks, oldest on the left.
+
+    A tick is `ok`, `warn`, `bad` or `none` (nothing to say) and carries a `tip`; a tick
+    about a request also carries the page it opens. The mailbox strip exists only in the
+    process that reads the mailbox.
+    """
+
+    def tick(tone: str, tip: str, href: str | None = None) -> dict[str, Any]:
+        return {"tone": tone, "tip": tip, "href": href}
+
+    def padded(ticks: list[dict], width: int) -> list[dict]:
+        return [tick("none", "")] * (width - len(ticks)) + ticks[-width:]
+
+    strips: list[dict[str, Any]] = []
+    if poller["enabled"]:
+        per_minute: dict[str, list[bool]] = defaultdict(list)
+        for at, went_well in polls:
+            per_minute[at[:16]].append(went_well)
+        ticks = []
+        for back in range(HEALTH_MINUTES - 1, -1, -1):
+            minute = now - timedelta(minutes=back)
+            results = per_minute.get(minute.isoformat()[:16], [])
+            failed = results.count(False)
+            ticks.append(tick("none" if not results else "bad" if failed else "ok",
+                              f"{minute:%H:%M} UTC · " + ("no poll" if not results else f"{failed} of {_n(len(results), 'poll')} failed" if failed else _n(len(results), "poll"))))  # fmt: skip
+        state = "bad" if not poller["running"] else "warn" if poller["last_error"] else "ok"
+        strips.append({"key": "mailbox", "name": "Mailbox", "state": state, "ticks": ticks,
+                       "text": {"bad": "stopped", "warn": "last poll failed", "ok": ""}[state]})  # fmt: skip
+
+    requests, bookings = [], []
+    for row in recent["shipments"]:
+        state, error, link = S(row["state"]), row["error"] or "", f"#/shipment/{row['id']}"
+        if state == S.FAILED:
+            closed = error == CLOSED_BY_OPERATOR
+            requests.append(tick("none" if closed else "bad", f"Request {row['id']}: " + ("closed by an operator" if closed else f"failed, {error}"), link))
+        else:
+            tone, words = _REQUEST_TICK[state]
+            requests.append(tick(tone, f"Request {row['id']}: {words}", link))
+        if state in (S.BOOKED, S.CONFIRMED):
+            simulated = row["booking_ref"] == DRY_RUN_BOOKING_REF
+            bookings.append(tick("ok", f"Request {row['id']}: " + ("booking simulated in a dry run" if simulated else f"booked as {row['booking_ref']}"), link))
+        elif state == S.BOOKING:
+            bookings.append(tick("warn", f"Request {row['id']}: booking open", link))
+        elif state == S.FAILED and error.startswith("not booked"):
+            bookings.append(tick("bad", f"Request {row['id']}: {error}", link))
+    done = sum(t["tone"] == "ok" for t in requests)
+    strips.append({"key": "requests", "name": "Requests", "state": "bad" if requests and requests[-1]["tone"] == "bad" else "ok",
+                   "ticks": padded(requests, HEALTH_REQUESTS), "text": f"{done}/{len(requests)}" if requests else ""})  # fmt: skip
+    strips.append({"key": "bookings", "name": "Bookings", "state": "bad" if bookings and bookings[-1]["tone"] == "bad" else "ok",
+                   "ticks": padded(bookings, HEALTH_BOOKINGS), "text": ""})  # fmt: skip
+    mails = [
+        tick("bad", f"Mail {m['id']}: given up after repeated failures") if (m["reasoning"] or "").startswith(GAVE_UP)
+        else tick("warn" if m["confidence"] < LOW_CONFIDENCE else "ok", f"Mail {m['id']}: read as {m['category'].replace('_', ' ')}" + (f", {100 * m['confidence']:.0f}% sure" if m["confidence"] < LOW_CONFIDENCE else ""))
+        for m in recent["mails"]
+    ]  # fmt: skip
+    strips.append({"key": "mail", "name": "Mail", "state": "bad" if mails and mails[-1]["tone"] == "bad" else "ok", "ticks": padded(mails, HEALTH_MAILS), "text": ""})
+    return strips
+
+
 # --- performance: which carriers were used, and what the requests contained ----------------------
 
 _INSURANCE = re.compile(r"insur|versicher", re.IGNORECASE)  # insurance, insured, Transportversicherung, versichert

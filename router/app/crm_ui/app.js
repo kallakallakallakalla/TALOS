@@ -76,22 +76,26 @@ function frame(active) {
 // The status bar: this process and what it depends on. One glance says whether the system is up.
 const uptime = s => (s < 90 ? `${s} s` : s < 5400 ? `${Math.round(s / 60)} min` : s < 172800 ? `${Math.floor(s / 3600)} h ${Math.round((s % 3600) / 60)} min` : `${Math.floor(s / 86400)} d ${Math.floor((s % 86400) / 3600)} h`);
 
+// The status bar: an overall state, then one strip of ticks per part of the system. It is
+// rebuilt only when something changed, so a tick under the pointer stays put.
 function paintHealth() {
-  const x = state.health, items = [];
-  const item = (tone, label, text, title) => items.push(h('span', { class: 'hitem', title: title || null }, h('span', { class: `dot ${tone}` }), h('b', null, label), text));
-  if (!state.online || !x) item('critical', 'Router', 'not reachable');
-  else {
-    const p = x.poller, d = x.database;
-    item('good', 'Router', `up ${uptime(x.uptime_s)}`, `Started ${fmt.when(x.started_at)} UTC`);
-    if (!p.enabled) item('', 'Mailbox', 'not read by this process');
-    else if (!p.running) item('critical', 'Mailbox', 'poller stopped', p.last_error);
-    else if (p.last_error) item('warning', 'Mailbox', 'last poll failed', p.last_error);
-    else item('good', 'Mailbox', p.last_poll_at ? `last poll ${fmt.time(p.last_poll_at)}` : 'first poll pending');
-    if (d.ok) item('good', 'Live database', `${fmt.int(d.mails)} mails · ${fmt.int(d.shipments)} requests${d.last_mail_at ? ` · last mail ${fmt.when(d.last_mail_at)}` : ''}`);
-    else item('critical', 'Live database', 'not readable', d.error);
-    item(x.mode === 'sending' ? 'accent' : '', 'Sending', x.mode === 'sending' ? 'on: quotes and bookings are real' : x.mode === 'test' ? 'off: test mode' : 'off: drafts only');
+  const x = state.online ? state.health : null, bar = $('health');
+  const signature = JSON.stringify(x ? [x.state, x.label, x.mode, x.strips] : 'offline');
+  if (signature !== bar.dataset.signature) {
+    bar.dataset.signature = signature;
+    const tone = { operational: 'good', degraded: 'warning', down: 'critical', viewer: '' }[x?.state] ?? 'critical';
+    const strips = (x?.strips || []).map(strip => h('span', { class: `hstrip ${strip.state}` }, h('b', null, strip.name),
+      h('span', { class: 'ticks' }, strip.ticks.map(t => h('i', {
+        class: `tick ${t.tone}${t.href ? ' link' : ''}`, title: t.tip || null, onclick: t.href ? () => { location.hash = t.href; } : null,
+      }))),
+      strip.text && h('small', null, strip.text)));
+    bar.replaceChildren(
+      h('span', { class: 'hstate', title: x?.detail || null }, h('span', { class: `dot ${tone}${x?.state === 'operational' ? ' live' : ''}` }), x ? x.label : 'Router not reachable', h('small', { id: 'uptime' })),
+      ...strips,
+      h('span', { class: `hmode${x?.mode === 'sending' ? ' hot' : ''}` }, !x ? '' : x.mode === 'sending' ? 'Sending on' : x.mode === 'test' ? 'Test mode' : 'Drafts only'),
+      h('b', { id: 'clock', class: 'hclock' }, `${fmt.clock(new Date())} UTC`));
   }
-  $('health').replaceChildren(...items, h('b', { id: 'clock', class: 'hclock' }, `${fmt.clock(new Date())} UTC`));
+  if (x) $('uptime').textContent = `up ${uptime(x.uptime_s)}`;
 }
 
 function status() {

@@ -3,7 +3,7 @@ used, the decision trace, the status bar and the guard on the action endpoint.""
 
 import shutil
 import sqlite3
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -357,19 +357,42 @@ def test_ledger_and_carriers_are_served_for_both_sources(client: TestClient) -> 
     assert client.get("/crm/api/snapshot").json()["poller"] == {"enabled": False, "running": False, "last_poll_at": None, "last_error": None}
 
 
-def test_the_version_poll_carries_the_health_of_the_process(client: TestClient) -> None:
+def test_the_version_poll_carries_the_status_bar(client: TestClient) -> None:
     live = client.get("/crm/api/version").json()
-    replay_view = client.get("/crm/api/version", params={"source": "replay"}).json()
-    assert live["version"] != replay_view["version"]
-    health = replay_view["health"]  # always about the running process, whichever data set is shown
-    assert health["mode"] == "dry_run" and health["uptime_s"] >= 0 and health["started_at"].endswith("+00:00")
-    assert health["poller"] == {"enabled": False, "running": False, "last_poll_at": None, "last_error": None}
-    assert health["database"] == {"ok": True, "mails": 0, "shipments": 0, "last_mail_at": None}
-    app.state.store.dismiss("x")  # the database is read on every poll
+    shown = client.get("/crm/api/version", params={"source": "replay"}).json()
+    assert live["version"] != shown["version"]
+    health = shown["health"]
+    assert (health["state"], health["label"], health["mode"]) == ("viewer", "Read-only view", "dry_run")  # this process reads no mailbox
+    assert health["uptime_s"] >= 0 and health["started_at"].endswith("+00:00")
+    strips = {strip["key"]: strip for strip in health["strips"]}
+    assert list(strips) == ["requests", "bookings", "mail"]  # no mailbox strip where the mailbox is not read
+    assert strips["requests"]["text"] == "14/16" and [t["tone"] for t in strips["requests"]["ticks"]][-3:] == ["ok", "warn", "warn"]
+    assert strips["requests"]["ticks"][-1] == {"tone": "warn", "tip": "Request 3940: waiting for the customer", "href": "#/shipment/3940"}
+    assert all(t["tone"] == "none" for t in {s["key"]: s for s in live["health"]["strips"]}["requests"]["ticks"])  # the live database is empty
+
     app.state.store = None
     broken = Settings(langfuse_enabled=False, mailbox_poll_enabled=False, sqlite_db_path="/proc/nope/live.db")
     app.dependency_overrides[get_settings] = lambda: broken
-    assert client.get("/crm/api/version", params={"source": "replay"}).json()["health"]["database"]["ok"] is False
+    assert client.get("/crm/api/version", params={"source": "replay"}).json()["health"]["state"] == "viewer"  # the dry run is still readable
+
+
+def test_the_status_strips_show_failed_polls_bookings_and_mails(replay: MessageStore) -> None:
+    now = datetime(2026, 11, 21, 18, 0, tzinfo=UTC)
+    polls = [((now - timedelta(seconds=5 * i)).isoformat(), i not in (40, 41)) for i in range(200)]  # two failures, 3 minutes ago
+    sql(replay, "UPDATE shipments SET state = 'FAILED', error = 'not booked after 3 attempts' WHERE id = 947")
+    sql(replay, "UPDATE shipments SET state = 'FAILED', error = ? WHERE id = ?", actions.CLOSED_BY_OPERATOR, INCOMPLETE)
+    sql(replay, "UPDATE processed_messages SET reasoning = 'processing failed: timeout', confidence = 0 WHERE message_id = 3940")
+    running = {"enabled": True, "running": True, "last_error": None}
+    strips = {s["key"]: s for s in insights.health(replay.recent(shipments=30, mails=200), polls, running, now=now)}
+    mailbox = strips["mailbox"]["ticks"]
+    assert len(mailbox) == insights.HEALTH_MINUTES and [t["tone"] for t in mailbox].count("bad") == 1
+    assert next(t["tip"] for t in mailbox if t["tone"] == "bad") == "17:56 UTC · 2 of 12 polls failed" and mailbox[0]["tone"] == "none"
+    tips = {t["tip"]: t["tone"] for strip in strips.values() for t in strip["ticks"]}
+    assert tips["Request 947: failed, not booked after 3 attempts"] == "bad" and tips["Request 947: not booked after 3 attempts"] == "bad"
+    assert tips[f"Request {INCOMPLETE}: closed by an operator"] == "none" and tips["Mail 3940: given up after repeated failures"] == "bad"
+    assert strips["mailbox"]["state"] == "ok" and strips["requests"]["state"] == "ok"  # the newest request is not the failed one
+    stopped = insights.health(replay.recent(shipments=5, mails=5), [], {"enabled": True, "running": False, "last_error": "401"}, now=now)[0]
+    assert (stopped["state"], stopped["text"]) == ("bad", "stopped")
 
 
 def test_dismissing_applies_to_the_data_set_that_is_shown(client: TestClient, replay: MessageStore) -> None:
