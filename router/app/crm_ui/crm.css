@@ -514,17 +514,40 @@ td { padding: 7px 10px; }
 @media (max-width: 1180px) { .statstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stat { border-left: 0; border-top: 1px solid var(--hairline); } }
 
 /* --- status bar: an overall state and one strip of ticks per part of the system ------------ */
-.health { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; padding: 9px 14px 9px 18px; font-size: 12.5px; color: var(--ink-2); }
-.hstate { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
+/* Every piece is a box of the ticks' height with its text centred in it, so words and ticks share one middle line. */
+.health { display: flex; align-items: center; gap: 22px; padding: 9px 14px 9px 18px; font-size: 12.5px; line-height: 18px; color: var(--ink-2); }
+.health > *, .hstrip, .hstrip > * { height: 18px; line-height: 18px; display: inline-flex; align-items: center; white-space: nowrap; }
+.hstate { gap: 9px; font-weight: 600; font-size: 13px; color: var(--ink); flex: none; }
+.hstate.warning { color: var(--warning); } .hstate.critical { color: var(--critical); }
 .hstate small { font-weight: 400; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.hstrip { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
-.hstrip b { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
+.hstrips { flex: 1 1 0; min-width: 0; gap: 0 22px; flex-wrap: wrap; overflow: hidden; }
+.hstrip { gap: 9px; }
+.hstrip b, .hmode { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); }
 .hstrip.bad b, .hstrip.warn b { color: var(--ink); }
 .hstrip small { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.ticks { display: inline-flex; gap: 2px; }
-.tick { width: 3px; height: 18px; background: var(--track); display: block; }
+.ticks { gap: 2px; }
+.tick { width: 3px; height: 18px; background: var(--track); display: block; flex: none; }
 .tick.ok { background: var(--good); } .tick.warn { background: var(--warning); } .tick.bad { background: var(--critical); }
 .tick.link { cursor: pointer; } .tick:not(.none):hover { transform: scaleY(1.25); }
-.hmode { margin-left: auto; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); white-space: nowrap; }
-.hmode.hot { color: var(--critical); }
-.hclock { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); font-size: 12.5px; white-space: nowrap; }
+.hmode { flex: none; } .hmode.hot { color: var(--critical); }
+.hclock { flex: none; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); font-size: 12.5px; }
+
+/* --- sessions: the list of requests and one of them as a stream of events ------------------ */
+.slist { display: grid; max-height: calc(100vh - 230px); overflow: auto; scrollbar-width: thin; }
+.srow { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 18px 9px 16px;
+  border-top: 1px solid var(--hairline); border-left: 2px solid transparent; text-decoration: none; color: inherit; }
+.srow:hover { background: var(--wash); } .srow.on { background: var(--wash-strong); border-left-color: var(--ink); }
+.sname { min-width: 0; } .sname b { display: block; font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sname small, .stime small { display: block; font-size: 12px; color: var(--ink-3); }
+.stime { text-align: right; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.stream { display: grid; }
+.sevent { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 14px; padding: 10px 0 10px 10px; border-top: 1px solid var(--hairline); border-left: 2px solid transparent; }
+.sevent:first-child { border-top: 0; }
+.sevent.warn { border-left-color: var(--warning); } .sevent.bad { border-left-color: var(--critical); } .sevent.ok { border-left-color: var(--good); }
+.swho { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); padding-top: 3px; }
+.sevent.own .swho { color: var(--series-1); }
+.sevent b { font-weight: 600; font-size: 13.5px; } .sevent p { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.sevent details.ask { margin: 6px 0 0; }
+.sevent.fresh, .srow.pulse { animation: arrive 1.4s ease-out; }
+@keyframes arrive { from { background: color-mix(in srgb, var(--series-1) 22%, transparent); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .sevent.fresh, .srow.pulse { animation: none; } }

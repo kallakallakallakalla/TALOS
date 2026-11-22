@@ -6,14 +6,16 @@ step, no external requests). The `/crm/api/*` endpoints return the figures of
 which carries out an operator action (`app/actions.py`) and is guarded below.
 """
 
+import asyncio
 import json
+from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 
 from app import actions, board, insights, prompts
 from app.config import Settings, get_settings
@@ -155,6 +157,78 @@ async def rounds(request: Request, source: Source = "live", settings: Settings =
         ledger["board_note"] = (f"The board listed {board.seen['entries']} entries, none of which could be matched to our requests. "
                                 f"Fields of an entry: {', '.join(board.seen['fields']) or 'none'}.")  # fmt: skip
     return ledger
+
+
+@router.get("/api/sessions")
+async def sessions(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> list[dict[str, Any]]:
+    """Every request as a session, latest activity first."""
+    return insights.sessions(_store(request, settings, source), _reference(settings, source), source=source)
+
+
+@router.get("/api/sessions/{session_id}")
+async def session(request: Request, session_id: int, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    events = insights.session_events(_store(request, settings, source), _reference(settings, source), session_id, source=source)
+    if events is None:
+        raise HTTPException(status_code=404, detail="No such session")
+    return {"id": session_id, "events": events}
+
+
+def _sse(kind: str, payload: Any) -> str:
+    return f"event: {kind}\ndata: {json.dumps(payload)}\n\n"
+
+
+@router.get("/api/stream")
+async def stream(
+    request: Request,
+    source: Source = "live",
+    session_id: int | None = Query(default=None, alias="session"),
+    replay: bool = False,
+    pause: float = Query(default=0.6, ge=0, le=3),
+    settings: Settings = Depends(get_settings),
+) -> StreamingResponse:
+    """Session events pushed to the page as server-sent events (`event: step`).
+
+    Without `replay` the stream follows the data set: whenever something is stored, the events
+    that are new since the connection opened are sent. This works in any process that can read
+    the database, so a second process follows a running router the same way. With `replay` and
+    a session, that session's events are sent one by one, `pause` seconds apart, then `done`.
+    """
+    store, reference = _store(request, settings, source), _reference(settings, source)
+
+    async def replayed() -> AsyncIterator[str]:
+        events = insights.session_events(store, reference, session_id, source=source) or []
+        for position, event in enumerate(events):
+            if position:
+                await asyncio.sleep(pause)
+            if await request.is_disconnected():
+                return
+            yield _sse("step", event)
+        yield _sse("done", {"events": len(events)})
+
+    async def followed() -> AsyncIterator[str]:
+        seen = {event["id"]: event["title"] for event in insights.recent_events(store, reference, source=source)}
+        token, quiet = store.change_token(), 0
+        yield _sse("ready", {"watching": len(seen)})
+        while not await request.is_disconnected():
+            await asyncio.sleep(1.0)
+            current = store.change_token()
+            if current == token:
+                quiet += 1
+                if quiet % 15 == 0:
+                    yield ": keep-alive\n\n"  # a comment line, so proxies keep the connection open
+                continue
+            token = current
+            for event in insights.recent_events(store, reference, source=source):
+                # new, or known and now saying more (an offer whose price has been read since it arrived)
+                if seen.get(event["id"]) != event["title"]:
+                    seen[event["id"]] = event["title"]
+                    yield _sse("step", event)
+
+    return StreamingResponse(
+        replayed() if replay and session_id is not None else followed(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.get("/api/scorecard")

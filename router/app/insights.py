@@ -934,13 +934,13 @@ def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOp
     return steps
 
 
-def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int, *, source: str) -> dict[str, Any] | None:
+def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int, *, source: str, data: Dataset | None = None) -> dict[str, Any] | None:
     """One shipment with its compared flights, trucker offers and the whole conversation."""
     shipment = store.get_shipment(shipment_id)
     if shipment is None:
         return None
     live = source == "live"
-    data = Dataset.load(store)
+    data = data or Dataset.load(store)
     received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
     row = deal(shipment, data, live=live, received=received)
     options, requests = data.options.get(shipment_id, []), data.truckers.get(shipment_id, [])
@@ -1061,6 +1061,128 @@ def mails(
         )
     return {"total": len(rows), "offset": offset, "items": rows[offset : offset + limit]}
 
+
+
+# --- sessions: one request as the sequence of things that happened, for the live stream ----------
+
+_INBOUND_TITLE = {
+    "rfq": "Request from {who}", "customer_info": "{who} sent the missing details", "customer_accept": "{who} accepted the quote",
+    "customer_reject": "{who} declined the quote", "customer_question": "{who} asked a question", "trucker_quote": "Offer from {who}",
+    "trucker_decline": "{who} declined the pickup", "booking_confirmation": "{who} confirmed the booking",
+    "tracking_request": "Tracking question for this shipment", "rate_offer": "Rate offer from {who}", "data_update": "Data change from {who}",
+}  # fmt: skip
+_OUTBOUND_TITLE = {
+    "quote": "Quote written to {who}", "clarification": "Asked {who} for the missing details", "booking_note": "Booking confirmed to {who}",
+    "booking_request": "Booking requested from {who}", "no_price": "Told {who} that no price is available",
+    "answer": "Answered the question of {who}", "tracking_answer": "Tracking answer written", "airline_request": "Asked {who} for a rate",
+}  # fmt: skip
+_INBOUND_TONE = {"customer_accept": "ok", "customer_reject": "bad", "trucker_decline": "warn", "booking_confirmation": "ok"}
+_CATEGORY_WORDS = {"rfq": "a quote request", "customer_accept": "an acceptance", "customer_reject": "a decline", "customer_info": "missing details",
+                   "customer_question": "a question", "trucker_quote": "a trucker offer", "trucker_decline": "a trucker's decline",
+                   "booking_confirmation": "a booking confirmation", "tracking_request": "a tracking question", "other": "needing no answer"}  # fmt: skip
+
+
+def session_events(store: MessageStore, reference: Reference, shipment_id: int, *, source: str, data: Dataset | None = None) -> list[dict[str, Any]] | None:
+    """What happened on one request, in order: every mail in and out, and between them what the
+    router concluded (what it understood, which airlines it compared, how it priced the pickup).
+
+    Each event has a stable `id`, so a listener can tell a new one from one it has shown. The
+    router's conclusions are the steps of the decision trace, placed where they were reached.
+    """
+    detail = shipment_detail(store, reference, shipment_id, source=source, data=data)
+    if detail is None:
+        return None
+    d, steps = detail["deal"], {step["label"]: step for step in detail["trace"]}
+    offers = {t["email"]: t for t in detail["truckers"]}
+    events: list[dict[str, Any]] = []
+
+    def add(key: str, actor: str, title: str, detail_text: str | None = None, *, at: str | None = None, tone: str = "info", body: str | None = None) -> None:
+        events.append({"id": f"{shipment_id}:{key}", "session": shipment_id, "at": at, "actor": actor, "title": title,
+                       "detail": detail_text, "tone": tone, "body": body})  # fmt: skip
+
+    def conclusion(key: str, label: str, title: str, at: str | None) -> None:
+        if step := steps.get(label):
+            add(key, "talos", title, step["detail"], at=at, tone=step["tone"] if step["tone"] != "ok" else "info")
+
+    priced = False
+
+    def pricing(at: str | None) -> None:  # reached once, just before the first quote (or at the end, if none went out)
+        nonlocal priced
+        if priced:
+            return
+        priced = True
+        conclusion("air", "Air freight priced", "Compared the airlines", at)
+        for label, title in (("Trucking priced", "Chose the pickup"), ("Trucking estimated", "Estimated the pickup")):
+            conclusion("truck", label, title, at)
+
+    asked: list[str] = []
+    for index, item in enumerate(detail["timeline"]):
+        who, at = item["who"], item["at"]
+        if item["direction"] == "in":
+            category = item["category"]
+            title = _INBOUND_TITLE.get(category, "Mail from {who}").format(who=who)
+            offer = offers.get(item["address"]) if category == "trucker_quote" else None
+            if offer and offer["price_eur"] is not None:
+                title += f": {offer['price_eur']:,.2f} EUR" + (f", pickup within {offer['pickup_hours']:g} h" if offer["pickup_hours"] is not None else "")
+            add(f"in:{item['id']}", item["role"], title, f"Read as {_CATEGORY_WORDS.get(category, category.replace('_', ' '))}, {100 * item['confidence']:.0f}% sure · {item['subject']}",
+                at=at, tone=_INBOUND_TONE.get(category, "info"), body=item["body"])  # fmt: skip
+            if index == 0:
+                conclusion("understood", "Request received", "Understood the request", at)
+                conclusion("assumed", "Assumptions made", "Made assumptions", at)
+                conclusion("incomplete", "Details incomplete", "Details are missing", at)
+            if category == "customer_accept":
+                for label in ("Booked", "Booked and confirmed by the airline", "Booking in progress"):
+                    conclusion("booked", label, label, at)
+        elif item["kind"] == "trucker_request":
+            asked.append(who)
+            following = detail["timeline"][index + 1] if index + 1 < len(detail["timeline"]) else None
+            if not (following and following["direction"] == "out" and following["kind"] == "trucker_request"):
+                add("asked", "talos", f"Asked {_n(len(asked), 'trucker')} for a pickup offer", ", ".join(asked), at=at, body=item["body"])
+        else:
+            if item["kind"] == "quote":
+                pricing(at)
+            title = _OUTBOUND_TITLE.get(item["kind"], "Mail written to {who}").format(who=who)
+            if item["kind"] == "quote" and d["all_in_eur"] is not None:
+                title += f": {d['all_in_eur']:,.2f} EUR all-in"
+            add(f"out:{item['id']}", "talos", title, item["subject"] + ("" if item["sent"] else " · draft, not sent"),
+                at=at, tone="ok" if item["kind"] in ("quote", "booking_note", "tracking_answer") else "info", body=item["body"])  # fmt: skip
+    if detail["options"]:
+        pricing(None)
+    conclusion("failed", "Failed", "Processing failed", None)
+    conclusion("closed", "Closed by an operator", "Closed by an operator", None)
+    return events
+
+
+def sessions(store: MessageStore, reference: Reference, *, source: str, data: Dataset | None = None) -> list[dict[str, Any]]:
+    """Every request as a session, the one with the latest activity first."""
+    live = source == "live"
+    data = data or Dataset.load(store)
+    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
+    inbound: dict[int, list[str]] = defaultdict(list)
+    for mail_id, shipment_id in data.mail_shipments().items():
+        inbound[shipment_id].append(received.get(mail_id) or "")
+    rows = []
+    for shipment in data.shipments:
+        if is_legacy(shipment):
+            continue
+        d = deal(shipment, data, live=live, received=received)
+        outbound = data.outbound.get(shipment.id, [])
+        last = max([*inbound[shipment.id], d["received_at"] or "", *([d["updated_at"] or ""] if live else [])])
+        rows.append({
+            "id": shipment.id, "company": d["company"], "lane": d["lane"] or (f"?-{d['destination']}" if d["destination"] else None),
+            "state": shipment.state.value, "all_in_eur": d["all_in_eur"], "started_at": d["received_at"], "last_at": last or None,
+            "mails": len(inbound[shipment.id]) + len(outbound), "open": shipment.state in OPEN or shipment.state == S.BOOKING,
+        })  # fmt: skip
+    return sorted(rows, key=lambda row: (row["last_at"] or "", row["id"]), reverse=True)
+
+
+def recent_events(store: MessageStore, reference: Reference, *, source: str, limit: int = 12) -> list[dict[str, Any]]:
+    """The events of the sessions with the latest activity: what the live stream watches for news."""
+    data = Dataset.load(store)
+    events: list[dict[str, Any]] = []
+    for row in sessions(store, reference, source=source, data=data)[:limit]:
+        events.extend(session_events(store, reference, row["id"], source=source, data=data) or [])
+    return events
 
 
 # --- status bar: one tick per minute of polling, per request, per booking, per mail ----------------

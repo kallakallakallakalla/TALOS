@@ -61,6 +61,7 @@ const ICONS = {
   now: '<circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/>',
   rounds: '<path d="M2.5 4h11M2.5 8h11M2.5 12h7"/>',
   performance: '<path d="M2.5 13.5h11M4.5 11V7.5M8 11V3.5M11.5 11V6"/>',
+  sessions: '<path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z"/>',
   lookup: '<path d="M2.5 3h11v10h-11zM2.5 6.5h11M6.5 6.5V13"/>',
   system: '<rect x="2.5" y="3" width="11" height="7.5" rx="1.2"/><path d="M6 13.5h4M8 10.5v3"/>',
   bell: '<path d="M4 11V7.5a4 4 0 0 1 8 0V11l1.2 1.5H2.8zM6.5 14h3"/>',

@@ -1,6 +1,7 @@
 """The supervisor console: the action queue and its actions, the round ledger, the carriers
 used, the decision trace, the status bar and the guard on the action endpoint."""
 
+import json
 import shutil
 import sqlite3
 from datetime import UTC, datetime, timedelta
@@ -311,6 +312,50 @@ async def test_a_given_up_mail_is_processed_again_and_never_lost(tmp_path: Path)
         await act(h, "retry_mail", mail_id=mail.id)
 
 
+# --- sessions -------------------------------------------------------------------------------
+
+
+def test_a_session_is_the_request_as_it_happened(replay: MessageStore) -> None:
+    events = insights.session_events(replay, REFERENCE, 947, source="replay")
+    assert [(e["actor"], e["title"]) for e in events][:10] == [
+        ("customer", "Request from Rheintal Elektronik GmbH"), ("talos", "Understood the request"),
+        ("talos", "Asked 4 truckers for a pickup offer"),
+        ("trucker", "Offer from Maintal Transport Logistik: 192.97 EUR, pickup within 13 h"),
+        ("trucker", "Offer from Elbkante Logistik: 115.98 EUR, pickup within 29 h"),
+        ("trucker", "Offer from Westfalenroute: 187.97 EUR, pickup within 11 h"),
+        ("trucker", "Offer from Bodenseefracht: 226.96 EUR, pickup within 12 h"),
+        ("talos", "Compared the airlines"), ("talos", "Chose the pickup"),
+        ("talos", "Quote written to Rheintal Elektronik GmbH: 1,599.41 EUR all-in"),
+    ]  # fmt: skip
+    assert len({e["id"] for e in events}) == len(events) and all(e["session"] == 947 for e in events)
+    assert events[0]["detail"].startswith("Read as a quote request, 99% sure") and "679 kg" in events[0]["body"]
+    assert [e["title"] for e in events if e["id"] in ("947:in:1156", "947:booked")] == ["Rheintal Elektronik GmbH accepted the quote", "Booked"]
+    waiting = insights.session_events(replay, REFERENCE, INCOMPLETE, source="replay")
+    assert [(e["title"], e["tone"]) for e in waiting][2:] == [("Details are missing", "warn"), ("Asked Nordlicht Audio for the missing details", "info")]
+    assert insights.session_events(replay, REFERENCE, 1, source="replay") is None
+
+
+def test_sessions_are_listed_by_latest_activity_and_new_events_are_found(replay: MessageStore) -> None:
+    listed = insights.sessions(replay, REFERENCE, source="replay")
+    assert len(listed) == 16 and listed[0]["id"] == INCOMPLETE and listed[0]["open"] and not listed[-1]["open"]
+    before = {e["id"] for e in insights.recent_events(replay, REFERENCE, source="replay")}
+    replay.add_outbound(kind="clarification", to="mira@nordlicht-audio.example", subject="Re: Air freight quote to PVG", body="Which airport?", shipment_id=INCOMPLETE)
+    new = [e for e in insights.recent_events(replay, REFERENCE, source="replay") if e["id"] not in before]
+    assert [e["title"] for e in new] == ["Asked Mira for the missing details"]  # what the live stream would push
+
+
+@pytest.mark.anyio
+async def test_the_live_stream_carries_what_the_router_does_as_it_does_it(tmp_path: Path) -> None:
+    h = Harness(tmp_path, send_enabled=True)
+    reference = Reference(h.settings.start_kit_dir, h.settings.sqlite_db_path)
+    titles = lambda: [e["title"] for e in insights.session_events(h.store, reference, ROUND_4_RFQ, source="live") or []]  # noqa: E731
+    await h.receive(ROUND_4_RFQ)
+    assert titles() == ["Request from Rheintal Elektronik", "Understood the request", "Asked 4 truckers for a pickup offer", "Compared the airlines"]
+    await h.truckers_reply()
+    assert titles()[-2:] == ["Chose the pickup", "Quote written to Rheintal Elektronik: 1,671.40 EUR all-in"]
+    assert "Offer from Westfalenroute: 187.97 EUR, pickup within 11 h" in titles()  # the price once the offer has been read
+
+
 # --- the board ------------------------------------------------------------------------------
 
 
@@ -355,6 +400,19 @@ def test_ledger_and_carriers_are_served_for_both_sources(client: TestClient) -> 
     snap = client.get("/crm/api/snapshot", params={"source": "replay"}).json()
     assert snap["can_act"] is False and snap["sending"] is False and snap["poller"] is None and snap["dismissed"] == 0
     assert client.get("/crm/api/snapshot").json()["poller"] == {"enabled": False, "running": False, "last_poll_at": None, "last_error": None}
+
+
+def test_sessions_are_served_and_a_replay_is_streamed_event_by_event(client: TestClient) -> None:
+    listed = client.get("/crm/api/sessions", params={"source": "replay"}).json()
+    assert len(listed) == 16 and client.get("/crm/api/sessions").json() == []
+    stored = client.get("/crm/api/sessions/947", params={"source": "replay"}).json()["events"]
+    assert client.get("/crm/api/sessions/1", params={"source": "replay"}).status_code == 404
+    with client.stream("GET", "/crm/api/stream", params={"source": "replay", "session": 947, "replay": "true", "pause": 0}) as response:
+        assert response.headers["content-type"].startswith("text/event-stream")
+        lines = [line for line in response.iter_lines() if line]
+    kinds = [line.removeprefix("event: ") for line in lines if line.startswith("event: ")]
+    sent = [json.loads(line.removeprefix("data: ")) for line in lines if line.startswith("data: ")]
+    assert kinds == ["step"] * len(stored) + ["done"] and sent[:-1] == stored and sent[-1] == {"events": len(stored)}
 
 
 def test_the_version_poll_carries_the_status_bar(client: TestClient) -> None:

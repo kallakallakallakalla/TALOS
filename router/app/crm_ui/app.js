@@ -7,14 +7,14 @@ import { fmt, h, icon } from './lib.js';
 import * as views from './views.js';
 
 const POLL_MS = 3000;
-const NAV = [['now', 'Now'], ['performance', 'Performance'], ['rounds', 'Rounds'], ['lookup', 'Lookup'], ['system', 'System']];
+const NAV = [['now', 'Now'], ['sessions', 'Sessions'], ['performance', 'Performance'], ['rounds', 'Rounds'], ['lookup', 'Lookup'], ['system', 'System']];
 const PARENT = { shipment: 'rounds', account: 'lookup' };
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 
 const state = {
   source: null, sources: null, snap: null, version: null, health: null, q: '', updatedAt: null, online: true,
-  renders: 0, lastRoute: '', globes: [], cache: {},
+  renders: 0, lastRoute: '', globes: [], leave: [], cache: {},
   ui: {
     sort: {}, rounds: { outcome: null, lane: null, all: false }, inbox: { category: '', role: '', limit: 100 },
     tariffs: { origin: '', destination: '', airline: '' }, openMails: new Set(), globe: { ...DEFAULT_VIEW }, coverage: false,
@@ -40,15 +40,16 @@ function route() {
 async function render() {
   const turn = ++state.renders, view = $('view'), now = route();
   view.classList.add('stale');  // hold the old frame while the new one is prepared
-  const ctx = { snap: state.snap, sources: state.sources, ui: state.ui, q: state.q.trim().toLowerCase(), api, act, pick, rerender: render, cache: state.cache, globes: [], focusView: null };
+  const ctx = { snap: state.snap, sources: state.sources, ui: state.ui, q: state.q.trim().toLowerCase(), api, act, pick, rerender: render, cache: state.cache, globes: [], focusView: null, leave: [] };
+  ctx.onLeave = undo => ctx.leave.push(undo);  // a page that opens a stream closes it when the page goes
   let page;
   try { page = await views[now.name](ctx, now.arg); } catch (error) {
     page = { title: 'Something went wrong', sub: '', node: h('div', { class: 'grid' }, h('div', { class: 'empty glass c12' }, error.message)) };
   }
-  if (turn !== state.renders) { ctx.globes.forEach(g => g.destroy()); return; }
+  if (turn !== state.renders) { ctx.globes.forEach(g => g.destroy()); ctx.leave.forEach(undo => undo()); return; }
   const key = `${now.name}/${now.arg ?? ''}`, scroll = key === state.lastRoute ? view.scrollTop : 0;
-  state.globes.forEach(g => g.destroy());
-  state.globes = ctx.globes; state.lastRoute = key;
+  state.globes.forEach(g => g.destroy()); state.leave.forEach(undo => undo());
+  state.globes = ctx.globes; state.leave = ctx.leave; state.lastRoute = key;
   view.replaceChildren(page.node);
   view.scrollTop = scroll;
   view.classList.remove('stale');
@@ -83,15 +84,15 @@ function paintHealth() {
   const signature = JSON.stringify(x ? [x.state, x.label, x.mode, x.strips] : 'offline');
   if (signature !== bar.dataset.signature) {
     bar.dataset.signature = signature;
-    const tone = { operational: 'good', degraded: 'warning', down: 'critical', viewer: '' }[x?.state] ?? 'critical';
+    const tone = { operational: '', degraded: 'warning', down: 'critical', viewer: '' }[x?.state] ?? 'critical';
     const strips = (x?.strips || []).map(strip => h('span', { class: `hstrip ${strip.state}` }, h('b', null, strip.name),
       h('span', { class: 'ticks' }, strip.ticks.map(t => h('i', {
         class: `tick ${t.tone}${t.href ? ' link' : ''}`, title: t.tip || null, onclick: t.href ? () => { location.hash = t.href; } : null,
       }))),
       strip.text && h('small', null, strip.text)));
     bar.replaceChildren(
-      h('span', { class: 'hstate', title: x?.detail || null }, h('span', { class: `dot ${tone}${x?.state === 'operational' ? ' live' : ''}` }), x ? x.label : 'Router not reachable', h('small', { id: 'uptime' })),
-      ...strips,
+      h('span', { class: `hstate ${tone}`, title: x?.detail || null }, x ? x.label : 'Router not reachable', h('small', { id: 'uptime' })),
+      h('span', { class: 'hstrips' }, strips),  // strips that do not fit are left out, never wrapped
       h('span', { class: `hmode${x?.mode === 'sending' ? ' hot' : ''}` }, !x ? '' : x.mode === 'sending' ? 'Sending on' : x.mode === 'test' ? 'Test mode' : 'Drafts only'),
       h('b', { id: 'clock', class: 'hclock' }, `${fmt.clock(new Date())} UTC`));
   }
@@ -113,10 +114,12 @@ function status() {
     h('code', null, 'bash router/crm.sh'), '. This page reconnects by itself.')));
 }
 
-async function load() {
+async function load(quiet = false) {
   const [snap, health] = await Promise.all([api('/crm/api/snapshot'), api('/crm/api/version').then(v => v.health).catch(() => null)]);
   announce(snap);
   Object.assign(state, { snap, version: snap.version, health, updatedAt: new Date(), online: true });
+  // The Sessions page is fed by its own stream; rebuilding it on every change would cut that off.
+  if (quiet && route().name === 'sessions') { frame('sessions'); return; }
   await render();
 }
 
@@ -162,7 +165,7 @@ async function poll() {
     const { version, health } = await api('/crm/api/version');
     state.health = health; paintHealth();
     if (!state.online) { state.online = true; status(); }
-    if (version !== state.version) await load();
+    if (version !== state.version) await load(true);
   } catch { state.online = false; status(); }
 }
 

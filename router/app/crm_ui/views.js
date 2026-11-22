@@ -118,6 +118,91 @@ export async function now(ctx) {
   return { title: 'Now', sub: '', node };
 }
 
+// --- sessions: one request as it happens -------------------------------------------------------
+
+const ACTOR = { talos: 'TALOS', customer: 'Customer', trucker: 'Trucker', airline: 'Airline' };
+const laneArrow = lane => (lane || '–').replace('-', ' → ');
+
+function eventNode(e) {
+  return h('div', { class: `sevent ${e.actor === 'talos' ? 'own' : 'theirs'} ${e.tone}` },
+    h('span', { class: 'swho' }, ACTOR[e.actor] || 'Mail'),
+    h('div', null,
+      h('b', null, e.title), e.at && h('span', { class: 'muted' }, ` · ${fmt.time(e.at)} UTC`),
+      e.detail && h('p', null, e.detail),
+      e.body && h('details', { class: 'ask' }, h('summary', null, 'Mail text'), h('pre', null, e.body))));
+}
+
+// The list of requests on the left, the chosen one on the right as a stream of events. On live
+// data the server pushes each new event as the router stores it (server-sent events); "Replay"
+// has the server send a session's events again, one by one.
+export async function sessions(ctx, id) {
+  const list = await ctx.api('/crm/api/sessions'), live = ctx.snap.source === 'live';
+  const current = list.find(s => String(s.id) === String(id)) || list[0];
+  if (!current) {
+    if (live) {  // wait for the first request and show it the moment it arrives
+      const first = new EventSource('/crm/api/stream?source=live');
+      first.addEventListener('step', () => ctx.rerender());
+      ctx.onLeave(() => first.close());
+    }
+    return { title: 'Sessions', sub: '', node: h('div', { class: 'grid' }, h('div', { class: 'empty glass c12' }, 'No request yet. A session opens with the first mail of a request.')) };
+  }
+  const { events } = await ctx.api(`/crm/api/sessions/${current.id}`);
+  const shown = new Map(), stream = h('div', { class: 'stream', 'aria-live': 'polite' });
+  const add = (e, fresh) => {
+    const node = eventNode(e), known = shown.get(e.id);
+    shown.set(e.id, node);
+    if (known) { known.replaceWith(node); return; }  // the same event, now saying more
+    stream.append(node);
+    if (fresh) { node.classList.add('fresh'); node.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  };
+  events.forEach(e => add(e, false));
+  const rows = new Map(list.map(s => [s.id, h('a', { class: `srow${s.id === current.id ? ' on' : ''}`, href: `#/sessions/${s.id}` },
+    h('span', { class: `dot ${s.open ? 'accent' : ''}`, title: s.open ? 'open' : 'closed' }),
+    h('span', { class: 'sname' }, h('b', null, s.company), h('small', null, `${laneArrow(s.lane)} · ${STATES[s.state]?.[0] || s.state}`)),
+    h('span', { class: 'stime' }, s.last_at ? fmt.time(s.last_at) : '–', h('small', null, `${s.mails} mails`)))]));
+
+  const state = h('span', { class: 'chip' });
+  const say = (tone, text) => state.replaceChildren(h('span', { class: `dot ${tone}` }), text);
+  const idle = () => (live ? say('live', 'Live') : say('', 'Recorded run'));
+  let playing = null, connected = false;
+  if (live) {
+    const feed = new EventSource('/crm/api/stream?source=live');
+    feed.addEventListener('ready', async () => {
+      if (connected) (await ctx.api(`/crm/api/sessions/${current.id}`)).events.forEach(e => add(e, true));  // after a reconnect: what was missed
+      connected = true;
+      if (!playing) idle();
+    });
+    feed.addEventListener('step', m => {
+      const e = JSON.parse(m.data), row = rows.get(e.session);
+      if (!row) { ctx.rerender(); return; }  // a new request: the list has to grow
+      row.classList.remove('pulse'); void row.offsetWidth; row.classList.add('pulse');
+      if (e.session === current.id && !playing) add(e, true);
+    });
+    feed.onerror = () => { if (!playing) say('warning', 'Reconnecting'); };
+    ctx.onLeave(() => feed.close());
+  }
+  const replay = () => {
+    playing?.close();
+    shown.clear(); stream.replaceChildren();
+    say('accent', 'Replaying');
+    playing = new EventSource(`/crm/api/stream?source=${ctx.snap.source}&session=${current.id}&replay=1`);
+    playing.addEventListener('step', m => add(JSON.parse(m.data), true));
+    const end = () => { playing?.close(); playing = null; idle(); };
+    playing.addEventListener('done', end);
+    playing.onerror = end;
+  };
+  ctx.onLeave(() => playing?.close());
+  idle();
+  const node = h('div', { class: 'grid' },
+    h('section', { class: 'card glass c4 flush' }, head('Sessions', `${list.length} ${list.length === 1 ? 'request' : 'requests'}`), h('div', { class: 'slist' }, [...rows.values()])),
+    h('section', { class: 'card glass c8' },
+      head(current.company, `${laneArrow(current.lane)} · session ${current.id}`, [state,
+        h('button', { class: 'pill small', onclick: replay }, 'Replay'),
+        h('a', { class: 'pill small', href: `#/shipment/${current.id}` }, 'Open shipment')]),
+      stream));
+  return { title: 'Sessions', sub: '', node };
+}
+
 // --- performance: what the router did, and with whom ---------------------------------------------
 
 export async function performance(ctx) {
