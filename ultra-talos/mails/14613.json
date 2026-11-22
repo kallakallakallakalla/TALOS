@@ -1,0 +1,18 @@
+{
+ "id": 14613,
+ "from": "odenwald-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 41007 Moenchengladbach to DUS on 2026-11-25",
+ "body": "Dear Alex,\n\nThank you for your inquiry. Our all-in price for pickup in Mönchengladbach and delivery to the air export warehouse at DUS airport is 215.36 EUR.\n\nPickup time: 26 hours\nQuote valid until: 21 Nov 2026 20:35 UTC\nOffer reference: TRK-4831\n\nNo booking is required.\n\nKind regards,\nOdenwald Cargo",
+ "in_reply_to": 14608,
+ "references": [
+  14608
+ ],
+ "received_at": "2026-11-21T20:20:52.684010+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14608"
+}

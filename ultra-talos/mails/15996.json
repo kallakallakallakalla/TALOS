@@ -1,0 +1,16 @@
+{
+ "id": 15996,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-KUB26INS confirmed",
+ "body": "Hello,\n\nyour booking BK-KUB26INS is confirmed.\n\nBooking reference: BK-KUB26INS\nYour reference: 15702\nAirline: Ibisair Cargo (IB)\nLane: MUC-SIN\nPrice: 4798.56 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T20:48:53.273673+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "15996"
+}

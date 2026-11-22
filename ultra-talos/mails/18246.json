@@ -1,0 +1,16 @@
+{
+ "id": 18246,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-4A3RJR7Q confirmed",
+ "body": "Hello,\n\nyour booking BK-4A3RJR7Q is confirmed.\n\nBooking reference: BK-4A3RJR7Q\nYour reference: HACK-1\nAirline: Juniper Cargo Lines (JP)\nLane: CGN-DEL\nPrice: 1605.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:32:30.968451+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "18246"
+}

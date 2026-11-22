@@ -1,0 +1,21 @@
+{
+ "id": 29970,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to RUH",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 29950,
+ "references": [
+  29660,
+  29950
+ ],
+ "received_at": "2026-11-22T01:10:03.925275+00:00",
+ "attachments": [],
+ "shipment": "29660",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the quoted offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

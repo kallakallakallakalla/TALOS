@@ -1,0 +1,18 @@
+{
+ "id": 3477,
+ "from": "westfalenroute@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 42401 Wuppertal to DUS on 2026-11-27",
+ "body": "Dear Air Freight Desk,\n\nOur all-in price for the requested pickup in Wuppertal and delivery to the air export warehouse at Düsseldorf Airport is 321.74 EUR. The pickup time is 4 hours.\n\nThis offer is valid until 21 Nov 2026 16:35 UTC. Our offer reference is TRK-1103. No booking is required.\n\nKind regards,\nWestfalenroute",
+ "in_reply_to": 3386,
+ "references": [
+  3386
+ ],
+ "received_at": "2026-11-21T16:20:35.918588+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "3386"
+}

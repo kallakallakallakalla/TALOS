@@ -1,0 +1,27 @@
+{
+ "id": 2250,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight to ORD",
+ "body": "Thanks for confirming the booking. Please keep me posted on pickup.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 2244,
+ "references": [
+  275,
+  377,
+  379,
+  2191,
+  2199,
+  2206,
+  2215,
+  2221,
+  2234,
+  2244
+ ],
+ "received_at": "2026-11-21T15:55:34.253664+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "275"
+}

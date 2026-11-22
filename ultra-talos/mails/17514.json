@@ -1,0 +1,16 @@
+{
+ "id": 17514,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 51149 to SGN, 765 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Nordlicht Audio GmbH, 51149 to SGN, 765 kg, ready on 2026-11-24? Where is it now?\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:22:01.285352+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "17514"
+}

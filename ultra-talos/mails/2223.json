@@ -1,0 +1,18 @@
+{
+ "id": 2223,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup order 51896 Bergisch Gladbach to CGN",
+ "body": "Hello,\n\nthank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.\n\nBest regards\nElbkante Logistik\nelbkante-logistik@hackloop.mail",
+ "in_reply_to": 2194,
+ "references": [
+  2194
+ ],
+ "received_at": "2026-11-21T15:55:03.023945+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "2194"
+}

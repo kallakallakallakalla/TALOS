@@ -1,0 +1,18 @@
+{
+ "id": 2794,
+ "from": "odenwald-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup order 21663 Lueneburg to HAM",
+ "body": "Hello,\n\nthank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.\n\nBest regards\nOdenwald Cargo\nodenwald-cargo@hackloop.mail",
+ "in_reply_to": 2766,
+ "references": [
+  2766
+ ],
+ "received_at": "2026-11-21T16:03:11.794979+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "2766"
+}

@@ -1,0 +1,23 @@
+{
+ "id": 18360,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Request for quotation from Rheintal Elektronik GmbH",
+ "body": "Hello,\n\nplease find our request for an air freight quotation attached, as a text file (quotation-request.txt). It has all details of the shipment.\n\nPlease reply by mail with your all-in price in EUR.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:35:39.011545+00:00",
+ "attachments": [
+  {
+   "id": 369,
+   "filename": "quotation-request.txt",
+   "content_type": "text/plain",
+   "size": 594
+  }
+ ],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "18360"
+}

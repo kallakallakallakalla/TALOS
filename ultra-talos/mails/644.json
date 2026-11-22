@@ -1,0 +1,19 @@
+{
+ "id": 644,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to JFK",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 643,
+ "references": [
+  431,
+  643
+ ],
+ "received_at": "2026-11-21T15:09:52.663220+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "431"
+}

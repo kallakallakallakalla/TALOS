@@ -1,0 +1,18 @@
+{
+ "id": 25865,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 22554 to DFW, 611 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Hofmann Textilwerk KG, 22554 to DFW, 611 kg, ready on 2026-11-26? Where is it now?\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:55:38.611400+00:00",
+ "attachments": [],
+ "shipment": "25865",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the current location and status of a shipment.",
+  "sender_role": "tracking"
+ }
+}

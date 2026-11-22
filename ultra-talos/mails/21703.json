@@ -1,0 +1,19 @@
+{
+ "id": 21703,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to DFW – fastest option",
+ "body": "Thank you, but I asked for the offer as a PDF and did not get one with your price in it, so we will not go ahead with it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 21702,
+ "references": [
+  21460,
+  21702
+ ],
+ "received_at": "2026-11-21T22:40:04.134727+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "21460"
+}

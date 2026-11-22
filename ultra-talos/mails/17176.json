@@ -1,0 +1,19 @@
+{
+ "id": 17176,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to DEL",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 14901,
+ "references": [
+  14669,
+  14901
+ ],
+ "received_at": "2026-11-21T21:14:09.865843+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "14669"
+}

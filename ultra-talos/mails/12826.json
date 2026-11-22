@@ -1,0 +1,18 @@
+{
+ "id": 12826,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Booking request STR-EZE | 12470",
+ "body": "Hello,\n\nthank you for your booking.\n\nBooking reference: BK-658KV8HI\nRate reference: R-lf8h35otEOkbwmoF\nLane: STR-EZE, 485.0 kg\nPrice: 1833.66 EUR\nStatus: booked\n\nThe confirmation follows by mail.\n\nBest regards\nNova Atlas Cargo\nnova-atlas-cargo@hackloop.mail",
+ "in_reply_to": 12805,
+ "references": [
+  12805
+ ],
+ "received_at": "2026-11-21T19:42:08.512112+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "12805"
+}

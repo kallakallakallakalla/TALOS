@@ -1,0 +1,18 @@
+{
+ "id": 2689,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for the pickup in Lueneburg and delivery to the air export warehouse at HAM is 220.60 EUR.\n\nPickup time: 14 hours\nPrice valid until: 21 Nov 2026 16:16 UTC\nOffer reference: TRK-843\n\nNo booking is required for the pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 2573,
+ "references": [
+  2573
+ ],
+ "received_at": "2026-11-21T16:02:21.198224+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "2573"
+}

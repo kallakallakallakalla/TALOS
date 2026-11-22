@@ -1,0 +1,18 @@
+{
+ "id": 6479,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70498 Stuttgart to STR on 2026-11-28",
+ "body": "Hi Air Freight Desk,\n\nThanks for reaching out! We can collect your shipment in Stuttgart and deliver it to the air export warehouse at STR for an all-in price of 203.04 EUR.\n\nPickup time: 14 hours. This quote is valid until 21 Nov 2026 17:41 UTC.\n\nYour offer reference is TRK-2044. No booking is needed.\n\nBest regards,\nNordlicht Haulage",
+ "in_reply_to": 6368,
+ "references": [
+  6368
+ ],
+ "received_at": "2026-11-21T17:27:17.725186+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6368"
+}

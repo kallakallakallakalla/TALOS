@@ -1,0 +1,16 @@
+{
+ "id": 17110,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-Z8P1V0T7 confirmed",
+ "body": "Hello,\n\nyour booking BK-Z8P1V0T7 is confirmed.\n\nBooking reference: BK-Z8P1V0T7\nYour reference: 14957\nAirline: Juniper Cargo Lines (JP)\nLane: CGN-SGN\nPrice: 3180.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:12:36.995336+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "17110"
+}

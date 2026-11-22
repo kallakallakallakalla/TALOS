@@ -1,0 +1,18 @@
+{
+ "id": 30346,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 40737 to RUH, 990 kg",
+ "body": "Hi,\n\nCould you let me know where this shipment is now and what its current status is?\n\nLindqvist Medtech GmbH | 40737 to RUH | 990 kg gross | Ready date: 2026-11-25\n\nThanks\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T01:20:18.006921+00:00",
+ "attachments": [],
+ "shipment": "30346",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks where the shipment is and for its current status.",
+  "sender_role": "tracking"
+ }
+}

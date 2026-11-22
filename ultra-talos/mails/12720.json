@@ -1,0 +1,18 @@
+{
+ "id": 12720,
+ "from": "aurelia-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request STR-EZE on 2026-11-26, our reference 12470",
+ "body": "Dear Alex,\n\nThank you for your request. Our all-in airport-to-airport rate for STR–EZE is 2408.21 EUR, including freight, fuel and security charges.\n\nTransit time: 6 days\nRate valid until: 21 Nov 2026 19:55 UTC\n\nPlease quote reference R-lZDFAqOA72-yaYOi when booking.\n\nKind regards,\nAurelia Air Cargo",
+ "in_reply_to": 12561,
+ "references": [
+  12561
+ ],
+ "received_at": "2026-11-21T19:40:56.950685+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12561"
+}

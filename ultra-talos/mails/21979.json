@@ -1,0 +1,19 @@
+{
+ "id": 21979,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to MIA",
+ "body": "Thank you, but I asked for the offer as a PDF and did not get one with your price in it, so we will not go ahead with it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 21970,
+ "references": [
+  21740,
+  21970
+ ],
+ "received_at": "2026-11-21T22:43:30.442323+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "21740"
+}

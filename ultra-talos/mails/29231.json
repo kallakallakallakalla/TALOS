@@ -1,0 +1,18 @@
+{
+ "id": 29231,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to YYZ",
+ "body": "Hi,\n\nCould you quote your fastest air freight option to YYZ (Toronto, CA), with an all-in price in EUR? Please arrange truck pickup from our site in 20462 (Hamburg), Germany, to the airport. The shipment is ready for pickup on 2026-11-28.\n\nIt’s 4 pieces of precision instruments, 81 kg gross and 0.67 cbm.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T01:02:11.586168+00:00",
+ "attachments": [],
+ "shipment": "29231",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests an all-in air freight quote for a specific shipment to YYZ.",
+  "sender_role": "customer"
+ }
+}

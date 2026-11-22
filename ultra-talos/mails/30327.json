@@ -1,0 +1,20 @@
+{
+ "id": 30327,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Booking confirmed – STR to MEL",
+ "body": "Dear Alex,\n\nThank you for confirming the booking and providing the shipment schedule.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 30326,
+ "references": [
+  30326
+ ],
+ "received_at": "2026-11-22T01:18:13.657223+00:00",
+ "attachments": [],
+ "shipment": "30326",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and sharing the schedule.",
+  "sender_role": "customer"
+ }
+}

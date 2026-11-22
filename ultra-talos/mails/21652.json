@@ -1,0 +1,18 @@
+{
+ "id": 21652,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61018 Bad Homburg to FRA on 2026-11-25",
+ "body": "Dear Alex,\n\nOur all-in price for the requested pickup in Bad Homburg and delivery to the air export warehouse at Frankfurt Airport is 245.02 EUR.\n\nPickup time: 23 hours\nPrice valid until: 21 Nov 2026 22:51 UTC\nOffer reference: TRK-7137\n\nNo separate booking is required.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 21547,
+ "references": [
+  21547
+ ],
+ "received_at": "2026-11-21T22:37:17.807650+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21547"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 10991,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 65797 Wiesbaden to FRA on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for the pickup and delivery to the Frankfurt Airport export warehouse is 118.66 EUR.\n\nPickup time: 31 hours\nQuote valid until: 21 Nov 2026 19:25 UTC\nOffer reference: TRK-3549\n\nNo booking is required.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 10895,
+ "references": [
+  10895
+ ],
+ "received_at": "2026-11-21T19:10:34.112576+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "10895"
+}

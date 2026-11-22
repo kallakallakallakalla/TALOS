@@ -1,0 +1,16 @@
+{
+ "id": 9800,
+ "from": "aurelia-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-O7FEXR1X confirmed",
+ "body": "Hello,\n\nyour booking BK-O7FEXR1X is confirmed.\n\nBooking reference: BK-O7FEXR1X\nYour reference: 9515\nAirline: Aurelia Air Cargo (AU)\nLane: STR-MEL\nPrice: 7493.60 EUR\nStatus: booked and ready to ship\n\nKind regards,\nAurelia Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T18:41:25.246232+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "9800"
+}

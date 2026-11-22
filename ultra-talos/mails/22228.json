@@ -1,0 +1,18 @@
+{
+ "id": 22228,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51154 Bergisch Gladbach to CGN on 2026-11-24",
+ "body": "Dear Alex,\n\nThank you for your enquiry. Our all-in price for the requested pickup and delivery to the air export warehouse at Cologne Bonn Airport is 176.06 EUR.\n\nPickup time: 29 hours\nOffer valid until: 21 Nov 2026 23:03 UTC\nOffer reference: TRK-7324\n\nNo booking is required for the pickup.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 22095,
+ "references": [
+  22095
+ ],
+ "received_at": "2026-11-21T22:49:13.485424+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "22095"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 3480,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 42401 Wuppertal to DUS on 2026-11-27",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for the pickup from Wuppertal to the air export warehouse at DUS is 113.05 EUR.\n\nPickup time: 32 hours\nPrice valid until: 21 Nov 2026 16:35 UTC\nOffer reference: TRK-1114\n\nNo booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 3389,
+ "references": [
+  3389
+ ],
+ "received_at": "2026-11-21T16:20:35.951268+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3389"
+}

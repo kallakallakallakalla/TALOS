@@ -1,0 +1,20 @@
+{
+ "id": 28775,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24311 Kiel to HAM on 2026-11-25",
+ "body": "Hi there,\n\nThanks for reaching out! We’d be happy to collect your freight in Kiel and deliver it to the air export warehouse at HAM.\n\nAll-in price: 361.76 EUR\nPickup time: 19 hours\nQuote valid until: 22 Nov 2026 01:05 UTC\nOffer reference: TRK-9642\n\nNo booking is needed for the pickup.\n\nBest wishes,\nFlinkwagen Logistik",
+ "in_reply_to": 28661,
+ "references": [
+  28661
+ ],
+ "received_at": "2026-11-22T00:51:08.047711+00:00",
+ "attachments": [],
+ "shipment": "28661",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

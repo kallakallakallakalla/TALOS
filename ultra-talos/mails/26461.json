@@ -1,0 +1,21 @@
+{
+ "id": 26461,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – RUH and GRU",
+ "body": "Thank you for your offer. Both prices work for us. Please go ahead and book the first shipment now; we will confirm the second shipment later.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 26431,
+ "references": [
+  26222,
+  26431
+ ],
+ "received_at": "2026-11-22T00:03:02.891030+00:00",
+ "attachments": [],
+ "shipment": "26222",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted price for the first shipment and asks us to book it now.",
+  "sender_role": "customer"
+ }
+}

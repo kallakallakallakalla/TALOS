@@ -1,0 +1,16 @@
+{
+ "id": 23454,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 35110 to JFK, 1483 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Weidner Spielwaren GmbH, 35110 to JFK, 1483 kg, ready on 2026-11-27? Where is it now?\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:18:12.899411+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "23454"
+}

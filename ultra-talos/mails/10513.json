@@ -1,0 +1,18 @@
+{
+ "id": 10513,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 81862 Munich South to MUC on 2026-11-27",
+ "body": "Hi Alex,\n\nOur all-in price for pickup in Munich South and delivery to the air export warehouse at MUC is 236.85 EUR.\n\nPickup time: 15 hours\nQuote valid until: 21 Nov 2026 19:12 UTC\nOffer reference: TRK-3364\n\nNo booking is required.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 10453,
+ "references": [
+  10453
+ ],
+ "received_at": "2026-11-21T18:58:25.371339+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "10453"
+}

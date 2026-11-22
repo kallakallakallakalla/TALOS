@@ -1,0 +1,18 @@
+{
+ "id": 3461,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 42401 Wuppertal to DUS on 2026-11-27",
+ "body": "Dear Air Freight Desk,\n\nOur fixed all-in price for the requested pickup is 379.38 EUR. The pickup time is 7 hours.\n\nThis quote is valid until 21 Nov 2026 16:35 UTC. Our offer reference is TRK-1104. No booking is required.\n\nKind regards,\nRheinufer Spedition",
+ "in_reply_to": 3371,
+ "references": [
+  3371
+ ],
+ "received_at": "2026-11-21T16:20:34.836457+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "3371"
+}

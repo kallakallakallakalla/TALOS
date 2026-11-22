@@ -1,0 +1,18 @@
+{
+ "id": 15882,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 80075 Munich to MUC on 2026-11-26",
+ "body": "All-in price for pickup in Munich and delivery to the MUC air export warehouse: 204.66 EUR\nPickup time: 21 hours\nQuote valid until: 21 Nov 2026 21:02 UTC\nOffer reference: TRK-5305\nNo booking required.\n\nBodenseefracht",
+ "in_reply_to": 15770,
+ "references": [
+  15770
+ ],
+ "received_at": "2026-11-21T20:47:41.648055+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "15770"
+}

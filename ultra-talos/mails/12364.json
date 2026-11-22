@@ -1,0 +1,18 @@
+{
+ "id": 12364,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request DUS-NRT on 2026-11-27, our reference 12086",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: DUS-NRT.\nWe fly DUS-ATL, FRA-DEL, FRA-JFK, FRA-MIA, FRA-SYD, FRA-TPE, HAM-BOG, MUC-GRU, MUC-MEX, MUC-NRT, STR-MEL, STR-MIA, STR-TLV.\n\nBest regards\nSolace Air Cargo\nsolace-air-cargo@hackloop.mail",
+ "in_reply_to": 12222,
+ "references": [
+  12222
+ ],
+ "received_at": "2026-11-21T19:34:56.321408+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12222"
+}

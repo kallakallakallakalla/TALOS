@@ -1,0 +1,18 @@
+{
+ "id": 8031,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 72379 Tuebingen to STR on 2026-11-24",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for the pickup to STR airport is 135.70 EUR.\n\nPickup time: 9 hours\nOffer valid until: 21 Nov 2026 18:18 UTC\nOffer reference: TRK-2549\n\nNo booking is required.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 7954,
+ "references": [
+  7954
+ ],
+ "received_at": "2026-11-21T18:03:46.054443+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "7954"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 4076,
+ "from": "isarwelle-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 84236 Landshut to MUC on 2026-12-02",
+ "body": "Hi Air Freight Desk,\n\nThanks for reaching out! Our all-in price for pickup in Landshut and delivery to the air export warehouse at Munich Airport is 58.04 EUR.\n\nPickup takes 29 hours, and the price is valid until 21 Nov 2026 16:50 UTC. Your quote reference is TRK-1328. No booking is needed for the pickup.\n\nBest regards,\nIsarwelle Spedition",
+ "in_reply_to": 4072,
+ "references": [
+  4072
+ ],
+ "received_at": "2026-11-21T16:35:46.139989+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4072"
+}

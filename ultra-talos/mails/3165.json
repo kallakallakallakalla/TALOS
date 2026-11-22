@@ -1,0 +1,18 @@
+{
+ "id": 3165,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24983 Kiel to HAM on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nOur all-in price for the requested pickup and delivery to HAM airport is 190.33 EUR. Pickup time: 26 hours.\n\nThis quote is valid until 21 Nov 2026 16:29 UTC. Offer reference: TRK-1010. No booking is required.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 3050,
+ "references": [
+  3050
+ ],
+ "received_at": "2026-11-21T16:14:30.593883+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3050"
+}

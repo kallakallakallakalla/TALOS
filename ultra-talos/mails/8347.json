@@ -1,0 +1,18 @@
+{
+ "id": 8347,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 73523 Esslingen to STR on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Esslingen and delivery to the air export warehouse at STR is 186.80 EUR.\n\nPickup time: 8 hours\nQuote valid until: 21 Nov 2026 18:24 UTC\nOffer reference: TRK-2661\n\nNo booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 8260,
+ "references": [
+  8260
+ ],
+ "received_at": "2026-11-21T18:09:51.477043+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "8260"
+}

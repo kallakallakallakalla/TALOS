@@ -1,0 +1,16 @@
+{
+ "id": 16841,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-6YX3UE82 confirmed",
+ "body": "Hello,\n\nyour booking BK-6YX3UE82 is confirmed.\n\nBooking reference: BK-6YX3UE82\nYour reference: 15239\nAirline: Tamarind Airways (TM)\nLane: FRA-LOS\nPrice: 4739.46 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:10:36.920080+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "16841"
+}

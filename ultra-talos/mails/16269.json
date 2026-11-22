@@ -1,0 +1,16 @@
+{
+ "id": 16269,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 80075 to SIN, 1001 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Auer Maschinenbau GmbH, 80075 to SIN, 1001 kg, ready on 2026-11-26? Where is it now?\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T20:58:23.990539+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "16269"
+}

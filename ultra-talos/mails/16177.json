@@ -1,0 +1,21 @@
+{
+ "id": 16177,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: ZURICH AIRPORT - SCL / 206 CRATES 203 KGS",
+ "body": "Thank you for confirming the booking under reference BK-GXQORMTR. We will deliver the shipment to DUS ourselves, so no pickup is needed.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 16169,
+ "references": [
+  16050,
+  16089,
+  16144,
+  16169
+ ],
+ "received_at": "2026-11-21T20:54:02.400112+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "16050"
+}

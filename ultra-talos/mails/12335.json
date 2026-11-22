@@ -1,0 +1,18 @@
+{
+ "id": 12335,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45715 Essen to DUS on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Essen and delivery to the DUS air export warehouse is 92.42 EUR.\n\nPickup time: 33 hours\nOffer valid until: 21 Nov 2026 19:49 UTC\nOffer reference: TRK-4045\n\nNo booking is needed for the pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 12191,
+ "references": [
+  12191
+ ],
+ "received_at": "2026-11-21T19:34:53.049053+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12191"
+}

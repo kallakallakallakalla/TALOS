@@ -1,0 +1,25 @@
+{
+ "id": 18523,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45299 Essen to DUS on 2026-11-25",
+ "body": "Good day,\n\nthank you for your request. You find our price offer in the attachment, as a PDF file (price-offer-TRK-6142.pdf).\n\nThe offer number is TRK-6142. No booking is necessary: give this number when you use the price.\n\nBodenseefracht\nbodenseefracht@hackloop.mail",
+ "in_reply_to": 18424,
+ "references": [
+  18424
+ ],
+ "received_at": "2026-11-21T21:36:19.922573+00:00",
+ "attachments": [
+  {
+   "id": 405,
+   "filename": "price-offer-TRK-6142.pdf",
+   "content_type": "application/pdf",
+   "size": 2308
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18424"
+}

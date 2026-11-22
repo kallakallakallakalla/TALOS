@@ -1,0 +1,20 @@
+{
+ "id": 30323,
+ "from": "kranich-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote request – case 30066",
+ "body": "Hi,\n\nThanks for your request. Our fixed, all-in price for pickup in Böblingen and delivery to STR is 397.67 EUR.\n\nPickup time: 12 hours\nQuote valid until: 22 Nov 2026 01:32 UTC\nOffer reference: TRK-10312\n\nNo booking is needed for pickup.\n\nBest regards,\nKranich Kurier",
+ "in_reply_to": 30313,
+ "references": [
+  30313
+ ],
+ "received_at": "2026-11-22T01:17:36.168998+00:00",
+ "attachments": [],
+ "shipment": "30313",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

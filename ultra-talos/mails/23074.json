@@ -1,0 +1,18 @@
+{
+ "id": 23074,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 35110 Giessen to FRA on 2026-11-27",
+ "body": "All-in price for pickup in Giessen and delivery to the FRA air export warehouse: 168.06 EUR\nPickup time: 29 hours\nOffer valid until: 21 Nov 2026 23:21 UTC\nOffer reference: TRK-7611\nNo booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 22990,
+ "references": [
+  22990
+ ],
+ "received_at": "2026-11-21T23:07:25.957801+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "22990"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 12729,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request STR-EZE on 2026-11-26, our reference 12470",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: STR-EZE.\nWe fly CGN-DEL, CGN-SGN, DUS-SYD, DUS-YYZ, FRA-EZE, FRA-GRU, FRA-MEL, FRA-NBO, FRA-TPE, HAM-SGN, HAM-YYZ, MUC-RUH, STR-SCL.\n\nBest regards\nJuniper Cargo Lines\njuniper-cargo-lines@hackloop.mail",
+ "in_reply_to": 12575,
+ "references": [
+  12575
+ ],
+ "received_at": "2026-11-21T19:40:58.042968+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12575"
+}

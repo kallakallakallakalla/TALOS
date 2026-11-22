@@ -1,0 +1,16 @@
+{
+ "id": 6248,
+ "from": "riverbend-airlines-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-CDTW98AN confirmed",
+ "body": "Hello,\n\nyour booking BK-CDTW98AN is confirmed.\n\nBooking reference: BK-CDTW98AN\nYour reference: TALOS-6065-1\nAirline: Riverbend Airlines Cargo (RV)\nLane: DUS-ATL\nPrice: 4160.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nRiverbend Airlines Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:22:15.424558+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "6248"
+}

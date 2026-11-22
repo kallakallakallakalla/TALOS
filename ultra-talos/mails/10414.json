@@ -1,0 +1,23 @@
+{
+ "id": 10414,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: Munich South to Bangkok",
+ "body": "Hello,\n\nplease quote air freight for this shipment:\n\n- Pickup: from our site at 81862 Munich South, Germany (please arrange the truck)\n- Destination airport: Bangkok (BKK), TH\n- Commodity: handheld measuring devices, 2 pieces\n- Gross weight: 959 kg\n- Volume: 2.71 cbm\n- Ready date: 2026-11-27\n- Service: the fastest option\n- Our shipper's letter of instruction is attached to this email\n\nPlease reply with your all-in price in EUR.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T18:57:47.787398+00:00",
+ "attachments": [
+  {
+   "id": 101,
+   "filename": "SLI_52616.xlsx",
+   "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "size": 2031
+  }
+ ],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "10414"
+}

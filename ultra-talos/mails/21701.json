@@ -1,0 +1,18 @@
+{
+ "id": 21701,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 53345 Bonn to CGN on 2026-11-28",
+ "body": "All-in price: 129.05 EUR\nPickup time: 11 hours\nPrice valid until: 21 Nov 2026 22:54 UTC\nOffer reference: TRK-7154\nNo booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 21698,
+ "references": [
+  21698
+ ],
+ "received_at": "2026-11-21T22:39:43.979006+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21698"
+}

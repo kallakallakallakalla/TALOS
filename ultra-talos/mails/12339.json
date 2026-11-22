@@ -1,0 +1,18 @@
+{
+ "id": 12339,
+ "from": "taunusfracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45715 Essen to DUS on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Essen and delivery to the air export warehouse at DUS is 146.45 EUR.\n\nPickup time: 15 hours\nQuote valid until: 21 Nov 2026 19:49 UTC\nOffer reference: TRK-4053\n\nNo booking is needed for the pickup.\n\nBest regards,\nTaunusfracht",
+ "in_reply_to": 12197,
+ "references": [
+  12197
+ ],
+ "received_at": "2026-11-21T19:34:54.092349+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12197"
+}

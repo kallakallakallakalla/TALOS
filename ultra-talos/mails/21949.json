@@ -1,0 +1,18 @@
+{
+ "id": 21949,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 35622 Giessen to FRA on 2026-11-25",
+ "body": "Dear Alex,\n\nOur all-in price for the requested pickup and delivery to the air export warehouse at Frankfurt Airport is 106.94 EUR.\n\nPickup time: 32 hours\nOffer valid until: 21 Nov 2026 22:57 UTC\nOffer reference: TRK-7238\n\nNo booking is required for the pickup.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 21831,
+ "references": [
+  21831
+ ],
+ "received_at": "2026-11-21T22:43:13.263561+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21831"
+}

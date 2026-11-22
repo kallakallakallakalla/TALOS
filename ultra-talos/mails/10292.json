@@ -1,0 +1,18 @@
+{
+ "id": 10292,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 71184 Boeblingen to STR on 2026-11-26",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can pick up your freight in Boeblingen and deliver it to the air export warehouse at Stuttgart Airport for an all-in price of 157.48 EUR.\n\nPickup time: 16 hours\nQuote valid until: 21 Nov 2026 19:06 UTC\nOffer reference: TRK-3293\n\nNo booking is needed for the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 10205,
+ "references": [
+  10205
+ ],
+ "received_at": "2026-11-21T18:52:20.155026+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "10205"
+}

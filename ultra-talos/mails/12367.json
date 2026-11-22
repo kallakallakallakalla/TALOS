@@ -1,0 +1,18 @@
+{
+ "id": 12367,
+ "from": "xenon-cargo-airlines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request DUS-NRT on 2026-11-27, our reference 12086",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: DUS-NRT.\nWe fly CGN-LIM, CGN-ORD, DUS-BOM, DUS-MEX, DUS-MIA, MUC-BOG, MUC-NRT, MUC-ORD, MUC-PVG, STR-BOM, STR-SCL.\n\nBest regards\nXenon Cargo Airlines\nxenon-cargo-airlines@hackloop.mail",
+ "in_reply_to": 12225,
+ "references": [
+  12225
+ ],
+ "received_at": "2026-11-21T19:34:57.360755+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12225"
+}

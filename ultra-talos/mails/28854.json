@@ -1,0 +1,21 @@
+{
+ "id": 28854,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to MEX",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 28832,
+ "references": [
+  28497,
+  28832
+ ],
+ "received_at": "2026-11-22T00:52:46.039067+00:00",
+ "attachments": [],
+ "shipment": "28497",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the quoted offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

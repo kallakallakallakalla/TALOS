@@ -1,0 +1,23 @@
+{
+ "id": 26737,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight option: DUS to MEX",
+ "body": "Hi Alex,\n\nThanks for confirming the booking. We’ll deliver the shipment to DUS on 29 November.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 26733,
+ "references": [
+  26576,
+  26724,
+  26727,
+  26733
+ ],
+ "received_at": "2026-11-22T00:11:14.300262+00:00",
+ "attachments": [],
+ "shipment": "26576",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer acknowledges the confirmed booking and states the delivery plan, without accepting a quote or asking a question.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 9320,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24646 Kiel to HAM on 2026-11-23",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for the pickup to HAM airport is 101.28 EUR.\n\nPickup time: 30 hours\nQuote valid until: 21 Nov 2026 18:48 UTC\nOffer reference: TRK-2955\n\nNo booking is required.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 9208,
+ "references": [
+  9208
+ ],
+ "received_at": "2026-11-21T18:34:07.448351+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9208"
+}

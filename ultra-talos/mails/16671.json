@@ -1,0 +1,19 @@
+{
+ "id": 16671,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to LIM",
+ "body": "Thank you for asking. We’ll send you the dangerous goods documents (the shipper’s declaration and safety data sheet) shortly.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 16628,
+ "references": [
+  16572,
+  16628
+ ],
+ "received_at": "2026-11-21T21:05:33.505214+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_info",
+  "source": "old router"
+ },
+ "shipment": "16572"
+}

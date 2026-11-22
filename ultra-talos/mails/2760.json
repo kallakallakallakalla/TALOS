@@ -1,0 +1,19 @@
+{
+ "id": 2760,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Lueneburg to Toronto",
+ "body": "Thank you for your offer, but these goods are dangerous goods and you quoted without asking us for the dangerous goods documents, so we will not go ahead with it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 2741,
+ "references": [
+  2540,
+  2741
+ ],
+ "received_at": "2026-11-21T16:02:35.543446+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2540"
+}

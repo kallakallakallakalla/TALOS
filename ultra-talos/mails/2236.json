@@ -1,0 +1,16 @@
+{
+ "id": 2236,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-WWP8NOYB confirmed",
+ "body": "Hello,\n\nyour booking BK-WWP8NOYB is confirmed.\n\nBooking reference: BK-WWP8NOYB\nYour reference: TALOS-1844-1\nAirline: Borealis Freight Airways (BX)\nLane: MUC-CAI\nPrice: 1475.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:55:13.993617+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2236"
+}

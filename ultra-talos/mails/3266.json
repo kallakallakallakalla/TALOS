@@ -1,0 +1,16 @@
+{
+ "id": 3266,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-7YASKL1Q confirmed",
+ "body": "Hello,\n\nyour booking BK-7YASKL1Q is confirmed.\n\nBooking reference: BK-7YASKL1Q\nYour reference: TALOS-2977-1\nAirline: Borealis Freight Airways (BX)\nLane: HAM-DEL\nPrice: 2752.30 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:15:41.679363+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "3266"
+}

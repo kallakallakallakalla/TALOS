@@ -1,0 +1,16 @@
+{
+ "id": 23948,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-88VRKS5T confirmed",
+ "body": "Hello,\n\nyour booking BK-88VRKS5T is confirmed.\n\nBooking reference: BK-88VRKS5T\nYour reference: 23688\nAirline: Solace Air Cargo (SL)\nLane: DUS-ATL\nPrice: 2334.30 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:26:49.861544+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "23948"
+}

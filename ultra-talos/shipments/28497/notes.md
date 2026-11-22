@@ -1,0 +1,11 @@
+# Shipment 28497: Hofmann Textilwerk KG, HAM -> MEX
+- request: 3 pieces, gross 1720 kg, 14.11 cbm, chargeable 2356.37 kg, ready 2026-11-25, pickup 24311 Kiel, goal fastest
+- 2026-11-22T00:50Z: postal zone 24 maps to HAM. Air quote tool returned only tariff options at 3 d; portal Riverbend rate lookup returned 503, so obtaining the portal-page rate for HAM-MEX before choosing the fastest option.
+- 2026-11-22T00:52Z trucker offers: Alpenblick 152.25 EUR, 30 h, TRK-9638 (28659/28772); Flinkwagen 361.76 EUR, 19 h, TRK-9642 (28661/28775); Hansekogge 260.51 EUR, 19 h, TRK-9644 (28669/28778); Maintal 241.95 EUR, 26 h, TRK-9646 (28675/28779); Neckarstrom 459.46 EUR, 11 h, TRK-9645 (28676/28780), all valid 2026-11-22 01:05Z. Chosen Neckarstrom: only offer within about 14 h, per desk experience.
+- 2026-11-22T00:52Z air: Riverbend Airlines Cargo 9260.53 EUR, 1 d, rate_id R-PaDfoPNVdZftRJ1Q, billed 2356.37 kg, valid 2026-11-22T01:06:42.520641Z (source portal page); fastest among options (tariff options Yellowtail and Elbflug are 3 d).
+- 2026-11-22T00:52Z QUOTE SENT mail id 28832: 9719.99 EUR all-in = air 9260.53 + truck 459.46; pickup offer validity controls, until 2026-11-22 01:05Z; ETA 27 Nov.
+- 2026-11-22T00:53Z acceptance mail 28854: Petra accepted quote 28832 and requested booking.
+- 2026-11-22T00:54Z: refreshed Riverbend rate on portal page at same price 9260.53 EUR / 2356.37 kg / 1 d, rate_id R-j9zhMIE1pY7C5Ymi valid until 01:09:10Z; all-in still 9719.99 EUR incl. quoted pickup. Booked: BK-T590QYLQ, team_reference 28497.
+- 2026-11-22T00:54Z confirmation sent mail 28865 to Petra: air freight booked with Riverbend; all-in unchanged, estimated arrival 27 Nov.
+- 2026-11-22T00:55Z: Riverbend confirmation mail 28869 confirms BK-T590QYLQ on HAM-MEX, status “booked and ready to ship.” No collection or departure scan is recorded; the 11 h pickup offer is not itself a truck booking.
+- 2026-11-22T01:03Z tracking request 29488: replied in mail 29507 that collection/transit is not confirmed, cargo is due ready in Kiel 25 Nov, airline booking is confirmed and estimated MEX arrival is 27 Nov.

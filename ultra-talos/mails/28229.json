@@ -1,0 +1,21 @@
+{
+ "id": 28229,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight option to GRU",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 28224,
+ "references": [
+  27905,
+  28224
+ ],
+ "received_at": "2026-11-22T00:40:54.332773+00:00",
+ "attachments": [],
+ "shipment": "27905",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the quoted option and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

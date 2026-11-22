@@ -1,0 +1,25 @@
+{
+ "id": 18525,
+ "from": "grautal-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45299 Essen to DUS on 2026-11-25",
+ "body": "Hello,\n\nthank you for your request. Please find our quotation attached as a PDF file (quotation-TRK-6141.pdf).\n\nYour offer reference is TRK-6141, and no booking is needed.\n\nBest regards\nGrautal Trucking\ngrautal-trucking@hackloop.mail",
+ "in_reply_to": 18426,
+ "references": [
+  18426
+ ],
+ "received_at": "2026-11-21T21:36:20.951830+00:00",
+ "attachments": [
+  {
+   "id": 406,
+   "filename": "quotation-TRK-6141.pdf",
+   "content_type": "application/pdf",
+   "size": 2093
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18426"
+}

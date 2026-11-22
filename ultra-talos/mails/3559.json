@@ -1,0 +1,18 @@
+{
+ "id": 3559,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup order 42401 Wuppertal to DUS",
+ "body": "Hello,\n\nthank you. There is nothing to book with us: our price stands until its validity date, and we collect once your air freight booking is confirmed.\n\nBest regards\nSpessart Spedition\nspessart-spedition@hackloop.mail",
+ "in_reply_to": 3520,
+ "references": [
+  3520
+ ],
+ "received_at": "2026-11-21T16:21:24.475293+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3520"
+}

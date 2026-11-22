@@ -1,0 +1,16 @@
+{
+ "id": 24011,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to YYZ",
+ "body": "Hello,\n\nCould you please quote an all-in price in EUR for air freight to YYZ (Toronto, CA), including collection by truck from our site in 86483 (Augsburg), Germany, and transport to the departure airport?\n\nThe shipment will be ready for pickup on 2026-11-27. It consists of 6 pieces of sports equipment, with a gross weight of 1240 kg and a total volume of 5.94 cbm.\n\nThe goods must arrive at YYZ no later than 2026-12-01. Please confirm that your proposed routing meets this deadline. Among the options that arrive in time, we will decide based on the all-in price.\n\nThank you in advance.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:31:03.123290+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "24011"
+}

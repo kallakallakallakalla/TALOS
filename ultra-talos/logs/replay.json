@@ -1,0 +1,70 @@
+[
+ {
+  "rfq": 24812,
+  "subject": "Air freight quote to DFW",
+  "seconds": 93,
+  "ours": [
+   "Hi Petra,\n\nThanks for the clear cargo details. The all-in price for collection from Hamburg North on 26 Nov and air freight from HAM to DFW is 1689.52 EUR. Based on the 10-hour pickup lead time and four transit days, the estimated departure is 27 Nov and arrival is 1 Dec. The latest collection offer I have was valid until 23:59 UTC on 21 Nov, so I would need to refresh that part before booking.\n\nHave a lovely day too,\nAlex\nTALOS Air Freight"
+  ],
+  "theirs": "Hi Petra,\n\n1651.10 EUR all-in is our cheapest option to DFW on the HAM -> DFW route with Meridian Freightways, with 4 days in transit; I compared 3 airlines. The price includes pickup at your site in 22554 Hamburg North and trucking to the airport, along with air freight, fuel and security surcharges. We can pick up your textile samples on 26 Nov, with estimated departure on 27 Nov and arrival on 1 Dec. The offer is valid today until 23:58 UTC. Shall I book it?\n\nHave a lovely day too!\nAlex\nTALOS Air Freight\n",
+  "customer_verdict": "Hi there,\n\nHope your day’s going well! Sorry for the change—the final packing list has come in, and the shipment details have changed to:\n\n13 pieces, 611 kg gross weight, 5.71 cbm\n\nEverything else stays the same. Could you update your offer with these figures, please?\n\nThanks for your help!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG"
+ },
+ {
+  "rfq": 25270,
+  "subject": "Air freight quote to TLV",
+  "seconds": 104,
+  "ours": [
+   "Please quote the following pickup:\nFrom / To: 41603 Moenchengladbach / DUS airport (air export warehouse)\nReady date: 2026-11-24\nPieces: 12\nGross weight: 646 kg\nVolume: 3.71 cbm\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 41603 Moenchengladbach / DUS airport (air export warehouse)\nReady date: 2026-11-24\nPieces: 12\nGross weight: 646 kg\nVolume: 3.71 cbm\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 41603 Moenchengladbach / DUS airport (air export warehouse)\nReady date: 2026-11-24\nPieces: 12\nGross weight: 646 kg\nVolume: 3.71 cbm\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please refresh your pickup quote for: From / To: 41603 Moenchengladbach / DUS airport (air export warehouse)\nReady date: 2026-11-24\nPieces: 12\nGross weight: 646 kg\nVolume: 3.71 cbm\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Hi Petra,\n\nThanks for the shipment details. The cheapest air option is Ultraviolet Air Freight from DUS to TLV. With Ruhrpott Express pickup, the total is 1565.50 EUR all-in (air freight 1369.52 EUR plus pickup 195.98 EUR).\n\nThe pickup is scheduled for 24 Nov; with the 11-hour pickup time, estimated departure is 25 Nov and arrival is 27 Nov. One important caveat: the carrier’s pickup offer TRK-8345 expired at 00:04 UTC, so I’ll need to reconfirm that pickup price before I can firm the booking. The air rate is available until 00:31 UTC today.\n\nHave a lovely day too,\nAlex\nTALOS Air Freight"
+  ],
+  "theirs": "Hi Petra,\n\n1565.50 EUR all-in is the cheapest option, with Ultraviolet Air Freight from DUS to TLV in 2 days; I compared 4 airlines. The price includes pickup at your site in 41603 Moenchengladbach and trucking to the airport, as well as air freight, fuel and security surcharges. Pickup is estimated for 24 Nov, departure for 25 Nov and arrival for 27 Nov. The offer is valid until tomorrow until 00:04 UTC. Shall I book it?\n\nHave a lovely day too,\nAlex\nTALOS Air Freight\n",
+  "customer_verdict": "Thank you for your offer. That works for us, please go ahead and book it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG"
+ },
+ {
+  "rfq": 25798,
+  "subject": "Air freight quote request: GRU and TLV",
+  "seconds": 157,
+  "ours": [
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 4\nGross weight: 1281 kg\nVolume: 3.76 cbm\nDestination shipment: GRU\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Please quote the following pickup:\nFrom / To: 65996 Wiesbaden, Germany / FRA airport (air export warehouse)\nReady date: 2026-11-23\nPieces: 1\nGross weight: 1812 kg\nVolume: 5.75 cbm\nDestination shipment: TLV\nPlease reply with your all-in price in EUR, the pickup time and the validity.",
+   "Hi Petra,\n\nLovely day to you too. I have priced each shipment separately with collection in Wiesbaden and the fastest air service available.\n\nFor GRU, Riverbend Airlines Cargo is the fastest at 4 transit days: 4591.69 EUR all-in, including pickup. Planned departure is 24 Nov and arrival is 28 Nov.\n\nFor TLV, Fjordline Air Cargo is the fastest at 2 transit days: 5594.68 EUR all-in, including pickup. Planned departure is 24 Nov and arrival is 26 Nov.\n\nOne note: the trucker offers used for these totals expired at 00:11 UTC, so the pickup portions need refreshing before you accept; the air rates remain valid until 00:33 UTC.\n\nHave a lovely day too,\nAlex\nTALOS Air Freight"
+  ],
+  "theirs": "Hi Petra,\n\n4591.69 EUR all-in is the fastest option for your automotive sensors to GRU, via FRA with Riverbend Airlines Cargo in 4 days; I compared 2 airlines. Pickup is estimated for 23 Nov, departure for 24 Nov and arrival for 28 Nov.\n\n5594.68 EUR all-in is the fastest option for your machine parts to TLV, via FRA with Fjordline Air Cargo in 2 days; I compared 3 airlines. Pickup is estimated for 23 Nov, departure for 24 Nov and arrival for 26 Nov.\n\nPickup at your site in 65996 Wiesbaden and trucking to the airport are included in both prices. Both offers are valid until tomorrow, 00:11 UTC. Shall I book both?\n\nHave a lovely day too!\n\nBest regards\nAlex\nTALOS Air Freight\n",
+  "customer_verdict": "Thanks for your offer. We’re happy to go ahead with both shipments. Please book only the first shipment for now. We’ll confirm the second shipment later.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG"
+ },
+ {
+  "rfq": 26222,
+  "subject": "Air freight quote request – RUH and GRU",
+  "seconds": 170,
+  "ours": [],
+  "theirs": "Hello Deniz,\n\n2076.39 EUR all-in is the fastest option for your sports equipment to RUH, with Tamarind Airways via HAM -> RUH and 1 day in transit; I compared 3 airlines. Pickup from your site in 20674 Hamburg is included in both prices. Pickup is estimated for 28 Nov, departure for 29 Nov and arrival for 30 Nov.\n\n5578.28 EUR all-in is the fastest option for your machine parts to GRU, with Ibisair Cargo via HAM -> GRU and 3 days in transit; I compared 4 airlines. Pickup is estimated for 28 Nov, departure for 29 Nov and arrival for 2 Dec. Both offers are valid today until 00:16 UTC. Shall I book both?\n\nMany greetings back\nAlex\nTALOS Air Freight\n",
+  "customer_verdict": "Thank you for your offer. Both prices work for us. Please go ahead and book the first shipment now; we will confirm the second shipment later.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH"
+ },
+ {
+  "rfq": 26576,
+  "subject": "Fastest air freight option: DUS to MEX",
+  "seconds": 129,
+  "ours": [
+   "Hi Sara,\n\nThe fastest option for your 1 piece of printed marketing material is with Xenon Cargo Airlines: 2 days in transit, with departure from DUS on 29 Nov and arrival in MEX on 1 Dec. The all-in price is 1024.75 EUR, including 927.95 EUR air freight and 96.80 EUR cargo insurance on your frame-agreement terms (22000 EUR value, insured at 110%, 0.40% premium). As you’ll deliver to DUS, pickup is not included.\n\nThe offer is valid today until 00:24 UTC.\n\nKind regards\nAlex\nTALOS Air Freight\n"
+  ],
+  "theirs": "Hi Sara,\n\n1024.75 EUR all-in is the fastest option we have from DUS to MEX with Xenon Cargo Airlines, taking 2 days; I compared 4 airlines. The 1 piece of printed marketing material is expected to depart DUS on 29 Nov and arrive at MEX on 1 Dec, with pickup not included as you’ll deliver it to the airport. The all-in price includes 96.80 EUR for cargo insurance on your frame agreement terms, based on goods value 22000 EUR, insured at 110 % = 24200 EUR, at a premium rate of 0.40 %.\nThe transit time is 2 days: departure from DUS on 2026-11-29, arrival at MEX on 2026-12-01. The offer is valid today until 00:24 UTC. Shall I book it?\n\nKind regards\nAlex\nTALOS Air Freight\n",
+  "customer_verdict": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech"
+ }
+]

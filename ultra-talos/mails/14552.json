@@ -1,0 +1,19 @@
+{
+ "id": 14552,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to ORD",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 14547,
+ "references": [
+  14305,
+  14547
+ ],
+ "received_at": "2026-11-21T20:17:44.439500+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "14305"
+}

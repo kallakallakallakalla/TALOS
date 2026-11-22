@@ -1,0 +1,18 @@
+{
+ "id": 14618,
+ "from": "vogelsberg-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 41007 Moenchengladbach to DUS on 2026-11-25",
+ "body": "Hi Alex,\n\nOur all-in price for the pickup from Moenchengladbach to DUS airport is 438.48 EUR.\n\nPickup time: 13 hours\nQuote valid until: 21 Nov 2026 20:35 UTC\nOffer reference: TRK-4834\n\nNo booking is required.\n\nBest regards,\nVogelsberg Haulage",
+ "in_reply_to": 14612,
+ "references": [
+  14612
+ ],
+ "received_at": "2026-11-21T20:20:54.723126+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14612"
+}

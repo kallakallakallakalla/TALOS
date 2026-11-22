@@ -1,0 +1,16 @@
+{
+ "id": 14120,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: FRA to LOS",
+ "body": "Hi there,\n\nHope your week’s going well! Could you send me an all-in price in EUR for the fastest air freight option from Frankfurt Airport (FRA) to LOS (Lagos, NG)?\n\nWe’ll deliver the shipment to FRA ourselves, and it’ll be ready on 2026-11-27. It’s 8 pieces of machine parts, with a gross weight of 1075 kg and a total volume of 5.92 cbm.\n\nCould you also let me know the earliest arrival you can offer? Thanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T20:10:38.901037+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "14120"
+}

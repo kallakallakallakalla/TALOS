@@ -1,0 +1,25 @@
+{
+ "id": 2243,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight quote: STR to EZE",
+ "body": "Thanks for getting the shipment booked and sending over the confirmation. Hope you’re having a good week!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 2233,
+ "references": [
+  1233,
+  1275,
+  1304,
+  2195,
+  2207,
+  2214,
+  2222,
+  2233
+ ],
+ "received_at": "2026-11-21T15:55:23.183186+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "1233"
+}

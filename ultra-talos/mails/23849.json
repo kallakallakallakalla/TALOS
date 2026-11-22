@@ -1,0 +1,18 @@
+{
+ "id": 23849,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 40043 Duesseldorf to DUS on 2026-11-23",
+ "body": "Dear Alex,\n\nOur fixed all-in price for collection in Düsseldorf and delivery to the air export warehouse at DUS Airport is 148.93 EUR.\n\nPickup time: 24 hours\nQuote valid until: 21 Nov 2026 23:40 UTC\nOffer reference: TRK-7821\n\nNo booking is required.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 23757,
+ "references": [
+  23757
+ ],
+ "received_at": "2026-11-21T23:25:37.876816+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "23757"
+}

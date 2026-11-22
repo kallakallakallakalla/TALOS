@@ -1,0 +1,21 @@
+{
+ "id": 4080,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to PVG",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 4079,
+ "references": [
+  3940,
+  4068,
+  4069,
+  4079
+ ],
+ "received_at": "2026-11-21T16:35:58.199145+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3940"
+}

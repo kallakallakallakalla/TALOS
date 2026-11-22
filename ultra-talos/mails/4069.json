@@ -1,0 +1,19 @@
+{
+ "id": 4069,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to PVG",
+ "body": "Sorry I left out the pickup location. It’s 84236 Landshut, Germany.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 4068,
+ "references": [
+  3940,
+  4068
+ ],
+ "received_at": "2026-11-21T16:35:11.972504+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3940"
+}

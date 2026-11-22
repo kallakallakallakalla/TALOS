@@ -1,0 +1,18 @@
+{
+ "id": 26127,
+ "from": "riverbend-airlines-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-78OKTPZN confirmed",
+ "body": "Hello,\n\nyour booking BK-78OKTPZN is confirmed.\n\nBooking reference: BK-78OKTPZN\nYour reference: 257981\nAirline: Riverbend Airlines Cargo (RV)\nLane: FRA-GRU\nPrice: 4291.35 EUR\nStatus: booked and ready to ship\n\nKind regards,\nRiverbend Airlines Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:58:24.032941+00:00",
+ "attachments": [],
+ "shipment": "26127",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-78OKTPZN.",
+  "sender_role": "airline"
+ }
+}

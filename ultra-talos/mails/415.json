@@ -1,0 +1,18 @@
+{
+ "id": 415,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25",
+ "body": "All-in price for pickup in Bergisch Gladbach and delivery to Cologne Airport: 269.71 EUR.\nPickup time: 12 hours.\nOffer valid until 21 Nov 2026 15:20 UTC.\nOffer reference: TRK-184. No booking required.\n\nBodenseefracht",
+ "in_reply_to": 408,
+ "references": [
+  408
+ ],
+ "received_at": "2026-11-21T15:05:48.854414+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "408"
+}

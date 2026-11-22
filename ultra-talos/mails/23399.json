@@ -1,0 +1,16 @@
+{
+ "id": 23399,
+ "from": "polaris-air-logistics@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-PUSGBEJN confirmed",
+ "body": "Hello,\n\nyour booking BK-PUSGBEJN is confirmed.\n\nBooking reference: BK-PUSGBEJN\nYour reference: 23197\nAirline: Polaris Air Logistics (PL)\nLane: HAM-SGN\nPrice: 2051.24 EUR\nStatus: booked and ready to ship\n\nKind regards,\nPolaris Air Logistics bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:14:05.086763+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "23399"
+}

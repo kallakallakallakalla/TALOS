@@ -1,0 +1,6 @@
+# Shipment 26576: Lindqvist Medtech, DUS -> MEX
+- request: 1 piece printed marketing material, 176 kg gross, 1.26 cbm, chargeable 210.42 kg, ready 2026-11-29, pickup customer delivers to DUS, goal fastest; insurance value 22000 EUR, insured at 110%, premium 0.40%.
+- 2026-11-22 00:10:09Z first quote mail 26724 (other TALOS session): Xenon Cargo Airlines 927.95 EUR air + 96.80 EUR insurance = 1024.75 EUR all-in, no truck; fastest of 4 compared, 2 transit days, DUS departure 29 Nov, MEX arrival 1 Dec; offer valid to 00:24 UTC.
+- 2026-11-22 00:10:33Z accepted in mail 26727.
+- 2026-11-22 00:11:01Z booking confirmed in platform board: BK-TCYIM0YY, Xenon, DUS-MEX, booked weight shown as 176 kg gross; ETA 2026-12-01. Customer confirmation mail 26733; customer acknowledged in 26737.
+- This session: direct current Xenon rate lookup returned HTTP 503. Independent quote recorded dry-run only at outbox/20261122T002442324854-POST-v1_mailbox_messages.json (not sent); its 00:24 UTC validity reflects the task's 00:23:20 clock. Independent booking POST recorded dry-run only at outbox/20261122T002451561454-POST-v1_portal_bookings.json as BK-DRYRUN using still-valid rate R-d2AS0Khw7jFRhEwZ (927.95 EUR, 210.42 kg billed, valid to 00:27:02Z); it did not make another booking. Existing confirmed BK-TCYIM0YY is the live booking.

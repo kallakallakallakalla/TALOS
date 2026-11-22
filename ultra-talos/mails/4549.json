@@ -1,0 +1,23 @@
+{
+ "id": 4549,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to SGN",
+ "body": "Thanks for confirming the booking.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 4538,
+ "references": [
+  4373,
+  4401,
+  4412,
+  4514,
+  4535,
+  4538
+ ],
+ "received_at": "2026-11-21T16:45:49.913214+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "bs",
+  "source": "old router"
+ },
+ "shipment": "4373"
+}

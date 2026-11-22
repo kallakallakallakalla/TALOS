@@ -86,6 +86,10 @@ Start every run by reading `knowledge/learnings.md`, the shipment's `notes.md` (
     please quote the following pickup: From / To: <AIRPORT> airport (air export warehouse) /
     Ready date / Pieces / Gross weight / Volume. Please reply with your all-in price in EUR,
     the pickup time and the validity.
+- `mails/` holds EVERY mail we ever received, back to the first day (one JSON file per id).
+  A customer who refers to an earlier request, a booking from yesterday, an old tracking
+  case: `grep -l` in `mails/` finds it in a second. Never page through the mailbox API to
+  search for old mail; that costs minutes and blocks the poller.
 - Every mail that reaches us is saved to `mails/<id>.json` within seconds. Read replies
   there (`sleep 30`, then look at mails newer than the customer's); do not list the mailbox
   through the API to wait for replies, it is limited to one poll per 5 seconds.
@@ -156,6 +160,14 @@ Start every run by reading `knowledge/learnings.md`, the shipment's `notes.md` (
 - The airline confirms by mail, unthreaded ("Booking BK-... confirmed. Your reference: ...").
 - Tell the customer only what is true: a reference you got from the API, "requested" when
   it is only requested.
+- The pickup needs no booking and no confirmation: every trucker writes "No booking is
+  needed for the pickup", their offer IS the arrangement. So after booking the air freight
+  the shipment is complete: tell the customer we collect on the ready date. Never write
+  that the pickup is "only an offer", "not confirmed" or "still open"; that is wrong and
+  it unsettles a customer who just booked (mail 30317 did this). Customers do not need the
+  trucker's name.
+- One confirmation mail per booking. If you forgot something, it was not important enough
+  for a second mail. Amounts are written `6008.30 EUR`, without a thousands separator.
 
 ## What we know about our data files
 

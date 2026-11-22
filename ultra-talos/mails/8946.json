@@ -1,0 +1,19 @@
+{
+ "id": 8946,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to SGN",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 8925,
+ "references": [
+  8869,
+  8925
+ ],
+ "received_at": "2026-11-21T18:27:46.530135+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "8869"
+}

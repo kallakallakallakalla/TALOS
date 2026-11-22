@@ -1,0 +1,18 @@
+{
+ "id": 25595,
+ "from": "ultraviolet-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-T9S2IFBS confirmed",
+ "body": "Hello,\n\nyour booking BK-T9S2IFBS is confirmed.\n\nBooking reference: BK-T9S2IFBS\nYour reference: 25270\nAirline: Ultraviolet Air Freight (UV)\nLane: DUS-TLV\nPrice: 1369.52 EUR\nStatus: booked and ready to ship\n\nKind regards,\nUltraviolet Air Freight bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:51:27.902154+00:00",
+ "attachments": [],
+ "shipment": "25595",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-T9S2IFBS.",
+  "sender_role": "airline"
+ }
+}

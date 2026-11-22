@@ -1,0 +1,18 @@
+{
+ "id": 3168,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24983 Kiel to HAM on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nThanks for your request. Our all-in price for the pickup from Kiel to Hamburg Airport is 122.76 EUR.\n\nPickup time: 30 hours\nPrice valid until: 21 Nov 2026 16:29 UTC\nOffer reference: TRK-1017\n\nNo booking is required.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 3052,
+ "references": [
+  3052
+ ],
+ "received_at": "2026-11-21T16:14:30.594196+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3052"
+}

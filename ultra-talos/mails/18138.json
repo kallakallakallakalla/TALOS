@@ -1,0 +1,25 @@
+{
+ "id": 18138,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51943 to CGN on 2026-11-24",
+ "body": "Dear customer,\n\nthank you for your enquiry. I tried to call you about your pickup, but I could not reach you. So I recorded our offer as a voice message for you. The recording is attached (voice-message.mp3).\n\nOur offer number is TRK-6055. You do not need to book.\n\nKind regards\nDispatch, Maintal Transport Logistik\nmaintal-transport-logistik@hackloop.mail",
+ "in_reply_to": 18078,
+ "references": [
+  18078
+ ],
+ "received_at": "2026-11-21T21:30:39.707538+00:00",
+ "attachments": [
+  {
+   "id": 337,
+   "filename": "voice-message.mp3",
+   "content_type": "audio/mpeg",
+   "size": 161872
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18078"
+}

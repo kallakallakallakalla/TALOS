@@ -1,0 +1,16 @@
+{
+ "id": 5491,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-8Q49D0LR confirmed",
+ "body": "Hello,\n\nyour booking BK-8Q49D0LR is confirmed.\n\nBooking reference: BK-8Q49D0LR\nYour reference: TALOS-5253-1\nAirline: Meridian Freightways (MD)\nLane: HAM-EZE\nPrice: 2264.60 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:04:02.723344+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "5491"
+}

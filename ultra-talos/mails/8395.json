@@ -1,0 +1,19 @@
+{
+ "id": 8395,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to MNL – fastest option",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 8366,
+ "references": [
+  8185,
+  8366
+ ],
+ "received_at": "2026-11-21T18:10:23.737000+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "8185"
+}

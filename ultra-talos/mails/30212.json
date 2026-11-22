@@ -1,0 +1,21 @@
+{
+ "id": 30212,
+ "from": "kranich-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 71279 Boeblingen to STR on 2026-11-24",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for pickup and delivery to STR airport is 397.67 EUR.\n\nPickup time: 12 hours\nOffer valid until: 22 Nov 2026 01:29 UTC\nOffer reference: TRK-10306\n\nNo booking is needed.\n\nBest regards,\nKranich Kurier",
+ "in_reply_to": 30136,
+ "references": [
+  30066,
+  30136
+ ],
+ "received_at": "2026-11-22T01:15:04.405831+00:00",
+ "attachments": [],
+ "shipment": "30066",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

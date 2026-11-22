@@ -1,0 +1,19 @@
+{
+ "id": 11523,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to PEK",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 11497,
+ "references": [
+  11306,
+  11497
+ ],
+ "received_at": "2026-11-21T19:23:15.126650+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "11306"
+}

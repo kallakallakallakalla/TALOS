@@ -1,0 +1,19 @@
+{
+ "id": 4170,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to EZE",
+ "body": "Sorry I left out the pickup address: 72146 Tuebingen, Germany.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 4145,
+ "references": [
+  4137,
+  4145
+ ],
+ "received_at": "2026-11-21T16:38:26.962605+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4137"
+}

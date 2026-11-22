@@ -1,0 +1,16 @@
+{
+ "id": 23179,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 36563 to DEL, 356 kg",
+ "body": "Hi,\n\nCould you confirm the current location and status of this shipment?\n\nLindqvist Medtech GmbH | 36563 to DEL | 356 kg gross | Ready date: 2026-11-28\n\nThanks.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:12:15.319965+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "23179"
+}

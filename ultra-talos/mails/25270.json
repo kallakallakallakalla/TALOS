@@ -1,0 +1,18 @@
+{
+ "id": 25270,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to TLV",
+ "body": "Hi there,\n\nHope your week’s going well! Could you send me an all-in price in EUR for the cheapest air freight option to TLV (Tel Aviv, IL), including the truck you’d arrange from our site in 41603 (Moenchengladbach), Germany, to the departure airport?\n\nThe shipment is 12 pieces of automotive sensors, with a gross weight of 646 kg and a total volume of 3.71 cbm. It’ll be ready for pickup on 2026-11-24.\n\nThanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:49:20.698299+00:00",
+ "attachments": [],
+ "shipment": "25270",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is making a new request for an all-in air freight quote for a specified shipment.",
+  "sender_role": "customer"
+ }
+}

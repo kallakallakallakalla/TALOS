@@ -1,0 +1,19 @@
+{
+ "id": 6543,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to EZE",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 6492,
+ "references": [
+  6332,
+  6492
+ ],
+ "received_at": "2026-11-21T17:27:30.595706+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "6332"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 26576,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight option: DUS to MEX",
+ "body": "Hi,\n\nCould you quote the fastest air freight option from DUS to MEX (Mexico City, MX) and confirm the transit time? Please include the all-in price in EUR.\n\nWe’ll deliver to DUS ourselves. The shipment is ready on 2026-11-29: 1 piece of printed marketing material, 176 kg gross, 1.26 cbm.\n\nPlease include cargo insurance in the all-in price, on the terms of our frame agreement: goods value 22000 EUR, insured at 110 % of that value, premium rate 0.40 %.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:07:32.727528+00:00",
+ "attachments": [],
+ "shipment": "26576",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a specific shipment, including transit time and an all-in price.",
+  "sender_role": "customer"
+ }
+}

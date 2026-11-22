@@ -1,0 +1,18 @@
+{
+ "id": 14852,
+ "from": "ruhrpott-express@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 22842 Hamburg North to HAM on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can collect your freight in Hamburg North and deliver it to the air export warehouse at HAM.\n\nAll-in price: 306.54 EUR\nPickup time: 10 hours\nQuote valid until: 21 Nov 2026 20:38 UTC\nOffer reference: TRK-4902\n\nNo booking is needed for the pickup.\n\nBest regards,\nRuhrpott Express",
+ "in_reply_to": 14736,
+ "references": [
+  14736
+ ],
+ "received_at": "2026-11-21T20:23:33.730714+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14736"
+}

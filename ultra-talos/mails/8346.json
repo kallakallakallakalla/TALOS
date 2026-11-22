@@ -1,0 +1,18 @@
+{
+ "id": 8346,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 73523 Esslingen to STR on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Esslingen and delivery to the STR air export warehouse is 118.20 EUR.\n\nPickup time: 27 hours\nQuote valid until: 21 Nov 2026 18:24 UTC\nOffer reference: TRK-2660\n\nNo booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 8259,
+ "references": [
+  8259
+ ],
+ "received_at": "2026-11-21T18:09:51.476947+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "8259"
+}

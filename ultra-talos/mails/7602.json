@@ -1,0 +1,18 @@
+{
+ "id": 7602,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 63198 Offenbach to FRA on 2026-11-25",
+ "body": "Hi Alex,\n\nHappy to help with the pickup from Offenbach to the FRA air export warehouse. Our all-in price is 202.75 EUR.\n\nPickup time: 28 hours\nQuote valid until: 21 Nov 2026 18:06 UTC\nOffer reference: TRK-2438\n\nNo booking needed.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 7524,
+ "references": [
+  7524
+ ],
+ "received_at": "2026-11-21T17:51:39.793686+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "7524"
+}

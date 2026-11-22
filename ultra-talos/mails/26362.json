@@ -1,0 +1,20 @@
+{
+ "id": 26362,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20674 Hamburg to HAM on 2026-11-28",
+ "body": "Dear Alex,\n\nThank you for your enquiry. Our all-in price for pickup in Hamburg and delivery to the air export warehouse at HAM airport is 90.46 EUR.\n\nPickup time: 28 hours\nQuote valid until: 22 Nov 2026 00:16 UTC\nOffer reference: TRK-8569\n\nNo booking is required for pickup.\n\nBest regards,\nRheinufer Spedition",
+ "in_reply_to": 26267,
+ "references": [
+  26267
+ ],
+ "received_at": "2026-11-22T00:02:10.222495+00:00",
+ "attachments": [],
+ "shipment": "26267",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

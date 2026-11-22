@@ -1,0 +1,19 @@
+{
+ "id": 13717,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to ORD",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 13704,
+ "references": [
+  13478,
+  13704
+ ],
+ "received_at": "2026-11-21T19:59:24.352631+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "13478"
+}

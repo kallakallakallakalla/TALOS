@@ -1,0 +1,21 @@
+{
+ "id": 9777,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote – MEL",
+ "body": "Thanks, Alex, for confirming the booking and pickup.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 9770,
+ "references": [
+  9515,
+  9732,
+  9762,
+  9770
+ ],
+ "received_at": "2026-11-21T18:41:03.904228+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "9515"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 7434,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25",
+ "body": "Dear TALOS Team,\n\nThank you for your inquiry. Our fixed price for pickup in Bad Homburg and delivery to Frankfurt Airport is 147.35 EUR.\n\nPickup time: 23 hours\nPrice valid until: 21 Nov 2026 18:04 UTC\nOffer reference: TRK-2372\n\nNo booking is required for pickup.\n\nBest regards,\nHansekogge Trucking",
+ "in_reply_to": 7412,
+ "references": [
+  7412
+ ],
+ "received_at": "2026-11-21T17:50:24.088345+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "7412"
+}

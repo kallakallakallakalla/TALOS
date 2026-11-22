@@ -1,0 +1,18 @@
+{
+ "id": 14534,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 93938 Regensburg to MUC on 2026-11-25",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Regensburg to Munich Airport is 372.37 EUR.\n\nPickup time: 6 hours\nOffer valid until: 21 Nov 2026 20:31 UTC\nOffer reference: TRK-4815\n\nNo booking is needed.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 14414,
+ "references": [
+  14414
+ ],
+ "received_at": "2026-11-21T20:17:26.241573+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14414"
+}

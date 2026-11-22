@@ -1,0 +1,25 @@
+{
+ "id": 18519,
+ "from": "taunusfracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45299 Essen to DUS on 2026-11-25",
+ "body": "Dear customer,\n\nthank you for your enquiry. Our offer letter is attached to this mail as a PDF file (offer-letter-TRK-6138.pdf).\n\nOur offer number is TRK-6138. You do not need to book.\n\nKind regards\nDispatch, Taunusfracht\ntaunusfracht@hackloop.mail",
+ "in_reply_to": 18422,
+ "references": [
+  18422
+ ],
+ "received_at": "2026-11-21T21:36:17.886531+00:00",
+ "attachments": [
+  {
+   "id": 403,
+   "filename": "offer-letter-TRK-6138.pdf",
+   "content_type": "application/pdf",
+   "size": 1870
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18422"
+}

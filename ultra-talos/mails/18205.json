@@ -1,0 +1,16 @@
+{
+ "id": 18205,
+ "from": "xenon-cargo-airlines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-ZN2STBC2 confirmed",
+ "body": "Hello,\n\nyour booking BK-ZN2STBC2 is confirmed.\n\nBooking reference: BK-ZN2STBC2\nYour reference: 18008\nAirline: Xenon Cargo Airlines (XC)\nLane: CGN-LIM\nPrice: 6828.36 EUR\nStatus: booked and ready to ship\n\nKind regards,\nXenon Cargo Airlines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:32:00.937327+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "18205"
+}

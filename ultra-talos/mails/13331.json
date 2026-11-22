@@ -1,0 +1,18 @@
+{
+ "id": 13331,
+ "from": "ruhrpott-express@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 85791 Ingolstadt to MUC on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can pick up in Ingolstadt and deliver to the air export warehouse at Munich Airport for an all-in price of 429.30 EUR.\n\nPickup time: 6 hours\nQuote valid until: 21 Nov 2026 20:07 UTC\nOffer reference: TRK-4382\n\nNo booking is needed.\n\nBest regards,\nRuhrpott Express",
+ "in_reply_to": 13199,
+ "references": [
+  13199
+ ],
+ "received_at": "2026-11-21T19:53:08.402767+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13199"
+}

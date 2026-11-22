@@ -1,0 +1,25 @@
+{
+ "id": 17782,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20103 Hamburg to HAM on 2026-11-26",
+ "body": "Good day,\n\nthank you for your request. You find our price offer in the attachment, as a PDF file (price-offer-TRK-5925.pdf).\n\nThe offer number is TRK-5925. No booking is necessary: give this number when you use the price.\n\nElbkante Logistik\nelbkante-logistik@hackloop.mail",
+ "in_reply_to": 17660,
+ "references": [
+  17660
+ ],
+ "received_at": "2026-11-21T21:24:09.278874+00:00",
+ "attachments": [
+  {
+   "id": 268,
+   "filename": "price-offer-TRK-5925.pdf",
+   "content_type": "application/pdf",
+   "size": 2309
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17660"
+}

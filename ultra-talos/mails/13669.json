@@ -1,0 +1,18 @@
+{
+ "id": 13669,
+ "from": "kranich-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 81311 Munich South to MUC on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Munich South and delivery to the MUC air export warehouse is 121.95 EUR.\n\nPickup time: 21 hours\nQuote valid until: 21 Nov 2026 20:13 UTC\nOffer reference: TRK-4510\n\nNo booking is required.\n\nBest regards,\nKranich Kurier",
+ "in_reply_to": 13557,
+ "references": [
+  13557
+ ],
+ "received_at": "2026-11-21T19:59:09.647851+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13557"
+}

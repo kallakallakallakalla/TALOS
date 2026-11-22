@@ -1,0 +1,18 @@
+{
+ "id": 28497,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to MEX",
+ "body": "Hi there,\n\nHope your week’s going well! Could you quote the fastest air freight option to MEX (Mexico City, MX)? The shipment will be ready for pickup on 2026-11-25 at our site in 24311 (Kiel), Germany. We’d need you to arrange the truck from our site to the departure airport.\n\nIt’s sports equipment in 3 pieces, with a gross weight of 1720 kg and a total volume of 14.11 cbm.\n\nCould you send me your all-in price in EUR, including the pickup, and let me know when it would arrive at MEX?\n\nThanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:50:03.714582+00:00",
+ "attachments": [],
+ "shipment": "28497",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a specified shipment to MEX.",
+  "sender_role": "customer"
+ }
+}

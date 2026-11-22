@@ -1,0 +1,18 @@
+{
+ "id": 9683,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 73488 Esslingen to STR on 2026-11-24",
+ "body": "Dear Alex,\n\nThank you for your enquiry. Our all-in price for pickup in Esslingen and delivery to the air export warehouse at Stuttgart Airport is 264.65 EUR.\n\nPickup time: 17 hours\nOffer valid until: 21 Nov 2026 18:54 UTC\nOffer reference: TRK-3089\n\nNo booking is required for pickup.\n\nKind regards,\nRheinufer Spedition",
+ "in_reply_to": 9577,
+ "references": [
+  9577
+ ],
+ "received_at": "2026-11-21T18:40:09.608385+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9577"
+}

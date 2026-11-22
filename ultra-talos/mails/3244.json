@@ -1,0 +1,21 @@
+{
+ "id": 3244,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to DEL",
+ "body": "Thank you for the booking confirmation. Please keep us informed about the pickup arrangements.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 3233,
+ "references": [
+  2977,
+  3199,
+  3223,
+  3233
+ ],
+ "received_at": "2026-11-21T16:15:14.681640+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2977"
+}

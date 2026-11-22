@@ -1,0 +1,18 @@
+{
+ "id": 17041,
+ "from": "ruhrpott-express@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 53521 Bonn to CGN on 2026-11-25",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can pick up your freight in Bonn and deliver it to the air export warehouse at Cologne Bonn Airport for an all-in price of 172.18 EUR.\n\nPickup time: 31 hours\nOffer valid until: 21 Nov 2026 21:26 UTC\nOffer reference: TRK-5673\n\nNo booking is needed for pickup.\n\nBest regards,\nRuhrpott Express",
+ "in_reply_to": 16934,
+ "references": [
+  16934
+ ],
+ "received_at": "2026-11-21T21:11:56.731404+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "16934"
+}

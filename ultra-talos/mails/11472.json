@@ -1,0 +1,18 @@
+{
+ "id": 11472,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 86458 Augsburg to MUC on 2026-11-25",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can collect your shipment in Augsburg and deliver it to the air export warehouse at Munich Airport for an all-in price of 114.90 EUR.\n\nPickup time: 31 hours\nValid until: 21 Nov 2026 19:37 UTC\nOffer reference: TRK-3733\n\nNo booking is needed for pickup.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 11374,
+ "references": [
+  11374
+ ],
+ "received_at": "2026-11-21T19:22:43.988661+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "11374"
+}

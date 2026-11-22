@@ -1,0 +1,16 @@
+{
+ "id": 13012,
+ "from": "fjordline-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-4UY7KJJ6 confirmed",
+ "body": "Hello,\n\nyour booking BK-4UY7KJJ6 is confirmed.\n\nBooking reference: BK-4UY7KJJ6\nYour reference: 12877\nAirline: Fjordline Air Cargo (FQ)\nLane: DUS-BOM\nPrice: 6221.11 EUR\nStatus: booked and ready to ship\n\nKind regards,\nFjordline Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T19:47:29.821264+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "13012"
+}

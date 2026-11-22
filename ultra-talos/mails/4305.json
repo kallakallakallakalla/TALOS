@@ -1,0 +1,16 @@
+{
+ "id": 4305,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-NAK56PDS confirmed",
+ "body": "Hello,\n\nyour booking BK-NAK56PDS is confirmed.\n\nBooking reference: BK-NAK56PDS\nYour reference: TALOS-4137-1\nAirline: Nova Atlas Cargo (NV)\nLane: STR-EZE\nPrice: 4638.85 EUR\nStatus: booked and ready to ship\n\nKind regards,\nNova Atlas Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:40:12.438059+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4305"
+}

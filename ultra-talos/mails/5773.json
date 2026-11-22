@@ -1,0 +1,21 @@
+{
+ "id": 5773,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – Bonn to SGN",
+ "body": "Thank you for booking our shipment and for the confirmation. Please keep us informed about the pickup.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 5755,
+ "references": [
+  5533,
+  5692,
+  5752,
+  5755
+ ],
+ "received_at": "2026-11-21T17:09:42.333996+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "bs",
+  "source": "old router"
+ },
+ "shipment": "5533"
+}

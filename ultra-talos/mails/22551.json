@@ -1,0 +1,16 @@
+{
+ "id": 22551,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 51154 to SGN, 1558 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Hofmann Textilwerk KG, 51154 to SGN, 1558 kg, ready on 2026-11-24? Where is it now?\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T22:59:56.848510+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "22551"
+}

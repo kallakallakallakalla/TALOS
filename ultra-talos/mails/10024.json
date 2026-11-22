@@ -1,0 +1,18 @@
+{
+ "id": 10024,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 93721 Regensburg to MUC on 2026-11-26",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can collect your shipment in Regensburg and deliver it to the air export warehouse at MUC. Our all-in price is 236.20 EUR, and the pickup time is 6 hours.\n\nThe quote is valid until 21 Nov 2026 19:00 UTC. Your offer reference is TRK-3213, and there’s no need to book the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 9942,
+ "references": [
+  9942
+ ],
+ "received_at": "2026-11-21T18:46:15.051149+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9942"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 11005,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 65797 Wiesbaden to FRA on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Wiesbaden to the air export warehouse at FRA is 165.10 EUR.\n\nPickup time: 25 hours\nQuote valid until: 21 Nov 2026 19:25 UTC\nOffer reference: TRK-3564\n\nNo booking is needed for the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 10907,
+ "references": [
+  10907
+ ],
+ "received_at": "2026-11-21T19:10:36.209835+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "10907"
+}

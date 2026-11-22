@@ -1,0 +1,18 @@
+{
+ "id": 12351,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request DUS-NRT on 2026-11-27, our reference 12086",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in airport-to-airport rate from DUS to NRT is 1528.39 EUR, including freight, fuel, and security.\n\nTransit time is 4 days, and the rate is valid until 21 Nov 2026 19:49 UTC. When booking, please quote R-NGz6tmITGPLXxEZU.\n\nBest regards,\nBorealis Freight Airways",
+ "in_reply_to": 12211,
+ "references": [
+  12211
+ ],
+ "received_at": "2026-11-21T19:34:55.251570+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12211"
+}

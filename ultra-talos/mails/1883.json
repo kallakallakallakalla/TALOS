@@ -1,0 +1,19 @@
+{
+ "id": 1883,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to CAI",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 1867,
+ "references": [
+  1844,
+  1867
+ ],
+ "received_at": "2026-11-21T15:44:01.025374+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "1844"
+}

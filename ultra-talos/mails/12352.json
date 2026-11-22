@@ -1,0 +1,18 @@
+{
+ "id": 12352,
+ "from": "grautal-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45715 Essen to DUS on 2026-11-27",
+ "body": "All-in price for pickup in Essen and delivery to DUS airport: 202.81 EUR\nPickup time: 7 hours\nValid until: 21 Nov 2026 19:49 UTC\nOffer reference: TRK-4066. No booking required.\n\nGrautal Trucking",
+ "in_reply_to": 12209,
+ "references": [
+  12209
+ ],
+ "received_at": "2026-11-21T19:34:55.250977+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12209"
+}

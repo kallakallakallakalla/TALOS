@@ -1,0 +1,18 @@
+{
+ "id": 12752,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request STR-EZE on 2026-11-26, our reference 12470",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: STR-EZE.\nWe fly CGN-NBO, CGN-TLV, DUS-MEX, DUS-MIA, DUS-YYZ, FRA-BKK, FRA-EZE, FRA-JNB, FRA-LOS, FRA-MEX, FRA-RUH, HAM-DXB, HAM-HKG, HAM-RUH, MUC-NBO, MUC-SGN, STR-MNL, STR-PVG, STR-YYZ.\n\nBest regards\nTamarind Airways\ntamarind-airways@hackloop.mail",
+ "in_reply_to": 12598,
+ "references": [
+  12598
+ ],
+ "received_at": "2026-11-21T19:40:59.330502+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12598"
+}

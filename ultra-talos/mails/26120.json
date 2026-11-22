@@ -1,0 +1,23 @@
+{
+ "id": 26120,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: GRU and TLV",
+ "body": "Hi Alex,\n\nThanks for booking the GRU shipment and confirming pickup on 23 Nov. Have a lovely day too!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 26113,
+ "references": [
+  25798,
+  26084,
+  26101,
+  26113
+ ],
+ "received_at": "2026-11-21T23:58:04.157361+00:00",
+ "attachments": [],
+ "shipment": "25798",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the GRU booking and pickup confirmation.",
+  "sender_role": "customer"
+ }
+}

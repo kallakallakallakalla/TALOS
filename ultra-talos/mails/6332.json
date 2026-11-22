@@ -1,0 +1,16 @@
+{
+ "id": 6332,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request to EZE",
+ "body": "Dear Air Freight Team,\n\nCould you please quote an all-in price in EUR for the fastest air freight option to EZE (Buenos Aires, AR)? Please include truck pickup from our site in Stuttgart, Germany (postcode 70498), and transport to the departure airport.\n\nThe shipment consists of 11 pieces of furniture samples, with a gross weight of 544 kg and a total volume of 1.86 cbm. It will be ready for pickup on 2026-11-28.\n\nPlease let me know the earliest pickup and arrival you can offer. Thank you for your assistance.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:26:44.340991+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "6332"
+}

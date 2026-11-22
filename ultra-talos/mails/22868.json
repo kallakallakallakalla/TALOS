@@ -1,0 +1,16 @@
+{
+ "id": 22868,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-2VQ3QB0S confirmed",
+ "body": "Hello,\n\nyour booking BK-2VQ3QB0S is confirmed.\n\nBooking reference: BK-2VQ3QB0S\nYour reference: 22581\nAirline: Meridian Freightways (MD)\nLane: FRA-DEL\nPrice: 815.24 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:02:35.652153+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "22868"
+}

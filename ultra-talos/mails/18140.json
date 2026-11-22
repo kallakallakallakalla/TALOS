@@ -1,0 +1,25 @@
+{
+ "id": 18140,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51943 to CGN on 2026-11-24",
+ "body": "Good day,\n\nthank you for your request. You find our price offer in the attachment, as a Word document (price-offer-TRK-6058.docx).\n\nThe offer number is TRK-6058. No booking is necessary: give this number when you use the price.\n\nBodenseefracht\nbodenseefracht@hackloop.mail",
+ "in_reply_to": 18081,
+ "references": [
+  18081
+ ],
+ "received_at": "2026-11-21T21:30:40.890522+00:00",
+ "attachments": [
+  {
+   "id": 339,
+   "filename": "price-offer-TRK-6058.docx",
+   "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "size": 1681
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18081"
+}

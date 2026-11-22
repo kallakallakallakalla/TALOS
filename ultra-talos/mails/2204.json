@@ -1,0 +1,21 @@
+{
+ "id": 2204,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to ORD",
+ "body": "Thank you for confirming the booking. Please keep us informed about the pickup.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 2193,
+ "references": [
+  947,
+  1082,
+  1156,
+  2193
+ ],
+ "received_at": "2026-11-21T15:54:42.072880+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "947"
+}

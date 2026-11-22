@@ -1,0 +1,18 @@
+{
+ "id": 4078,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 84236 Landshut to MUC on 2026-12-02",
+ "body": "Hello Air Freight Desk,\n\nThanks for reaching out! We can collect in Landshut and deliver to the air export warehouse at Munich Airport for an all-in price of 156.09 EUR.\n\nPickup time: 14 hours\nQuote valid until: 21 Nov 2026 16:50 UTC\nOffer reference: TRK-1329\n\nNo booking is needed for the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 4074,
+ "references": [
+  4074
+ ],
+ "received_at": "2026-11-21T16:35:46.140406+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4074"
+}

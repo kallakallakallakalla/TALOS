@@ -1,0 +1,20 @@
+{
+ "id": 29129,
+ "from": "ruhrpott-express@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 50620 Cologne to CGN on 2026-11-27",
+ "body": "Hi there,\n\nThanks for reaching out! Our all-in price for the pickup from Nordlicht Audio in Cologne and delivery to the air export warehouse at CGN is 274.27 EUR.\n\nPickup time: 20 hours\nQuote valid until: 22 Nov 2026 01:11 UTC\nOffer reference: TRK-9831\n\nNo booking is needed for the pickup.\n\nBest,\nRuhrpott Express",
+ "in_reply_to": 29043,
+ "references": [
+  29043
+ ],
+ "received_at": "2026-11-22T00:57:06.633162+00:00",
+ "attachments": [],
+ "shipment": "29043",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and validity.",
+  "sender_role": "trucker"
+ }
+}

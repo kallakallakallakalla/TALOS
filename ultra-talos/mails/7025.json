@@ -1,0 +1,18 @@
+{
+ "id": 7025,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24489 Kiel to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for pickup in Kiel and delivery to the air export warehouse at HAM is 92.36 EUR.\n\nPickup time: 30 hours\nPrice valid until: 21 Nov 2026 17:53 UTC\nOffer reference: TRK-2200\n\nNo booking is required.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 6912,
+ "references": [
+  6912
+ ],
+ "received_at": "2026-11-21T17:39:24.776412+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6912"
+}

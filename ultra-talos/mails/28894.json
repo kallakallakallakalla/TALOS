@@ -1,0 +1,18 @@
+{
+ "id": 28894,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to EZE",
+ "body": "Hi,\n\nCould you quote an all-in price in EUR for the fastest air freight option to EZE (Buenos Aires, AR), including truck pickup from our site in 50620 (Cologne), Germany, and transfer to the airport?\n\nThe furniture samples are ready for pickup on 2026-11-27: 9 pieces, 1757 kg gross, 5.16 cbm. Please confirm the earliest arrival.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:56:08.425802+00:00",
+ "attachments": [],
+ "shipment": "28894",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote and earliest arrival for a shipment.",
+  "sender_role": "customer"
+ }
+}

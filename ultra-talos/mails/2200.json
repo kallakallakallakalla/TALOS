@@ -1,0 +1,21 @@
+{
+ "id": 2200,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: DUS to JFK",
+ "body": "Thank you for confirming the booking. Please keep us updated.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 2192,
+ "references": [
+  741,
+  803,
+  871,
+  2192
+ ],
+ "received_at": "2026-11-21T15:54:40.052463+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "741"
+}

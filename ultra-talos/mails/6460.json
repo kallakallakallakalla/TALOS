@@ -1,0 +1,18 @@
+{
+ "id": 6460,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70498 Stuttgart to STR on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nOur all-in price for the Stuttgart pickup and delivery to the STR air export warehouse is 225.04 EUR. Pickup time: 9 hours.\n\nThis quote is valid until 21 Nov 2026 17:41 UTC. No booking is needed; your offer reference is TRK-2047.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 6359,
+ "references": [
+  6359
+ ],
+ "received_at": "2026-11-21T17:27:17.647509+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6359"
+}

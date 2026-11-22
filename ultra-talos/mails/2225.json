@@ -1,0 +1,16 @@
+{
+ "id": 2225,
+ "from": "xenon-cargo-airlines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-ERC5OOW3 confirmed",
+ "body": "Hello,\n\nyour booking BK-ERC5OOW3 is confirmed.\n\nBooking reference: BK-ERC5OOW3\nYour reference: TALOS-947-1\nAirline: Xenon Cargo Airlines (XC)\nLane: CGN-ORD\nPrice: 1483.43 EUR\nStatus: booked and ready to ship\n\nKind regards,\nXenon Cargo Airlines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:55:03.981296+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2225"
+}

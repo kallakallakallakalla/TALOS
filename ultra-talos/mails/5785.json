@@ -1,0 +1,16 @@
+{
+ "id": 5785,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-N2BPDW0R confirmed",
+ "body": "Hello,\n\nyour booking BK-N2BPDW0R is confirmed.\n\nBooking reference: BK-N2BPDW0R\nYour reference: TALOS-5533-1\nAirline: Juniper Cargo Lines (JP)\nLane: CGN-SGN\nPrice: 7137.45 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:10:02.891967+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "5785"
+}

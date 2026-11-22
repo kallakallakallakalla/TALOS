@@ -1,0 +1,18 @@
+{
+ "id": 7605,
+ "from": "westfalenroute@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 63198 Offenbach to FRA on 2026-11-25",
+ "body": "Dear Alex,\n\nOur all-in price for the requested pickup and delivery to Frankfurt Airport is 137.50 EUR.\n\nPickup time: 30 hours\nOffer valid until: 21 Nov 2026 18:06 UTC\nOffer reference: TRK-2437\n\nNo booking is required.\n\nKind regards,\nWestfalenroute",
+ "in_reply_to": 7526,
+ "references": [
+  7526
+ ],
+ "received_at": "2026-11-21T17:51:39.823384+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "7526"
+}

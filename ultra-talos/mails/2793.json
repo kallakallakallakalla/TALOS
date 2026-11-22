@@ -1,0 +1,23 @@
+{
+ "id": 2793,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Lueneburg to Toronto",
+ "body": "Thanks for confirming the booking. Please keep me posted on pickup.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 2775,
+ "references": [
+  2540,
+  2741,
+  2760,
+  2765,
+  2774,
+  2775
+ ],
+ "received_at": "2026-11-21T16:03:06.765349+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2540"
+}

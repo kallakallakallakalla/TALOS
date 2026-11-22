@@ -1,0 +1,19 @@
+{
+ "id": 17844,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Request for quotation from Hofmann Textilwerk KG",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 17805,
+ "references": [
+  17572,
+  17805
+ ],
+ "received_at": "2026-11-21T21:24:40.339968+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "17572"
+}

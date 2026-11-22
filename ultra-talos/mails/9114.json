@@ -1,0 +1,16 @@
+{
+ "id": 9114,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to SGN",
+ "body": "Hi there,\n\nHope your week’s going well. Could you send me an all-in price in EUR for the cheapest air freight option to SGN (Ho Chi Minh City, VN), including a truck you arrange from our site in 24646 (Kiel), Germany, to the departure airport?\n\nThe shipment is 4 pieces of electronic control units, with a gross weight of 1082 kg and a total volume of 4.41 cbm. It’ll be ready for pickup on 2026-11-23.\n\nThanks for taking a look!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T18:33:30.280071+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "9114"
+}

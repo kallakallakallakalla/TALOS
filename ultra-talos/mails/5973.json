@@ -1,0 +1,16 @@
+{
+ "id": 5973,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-9768CCHR confirmed",
+ "body": "Hello,\n\nyour booking BK-9768CCHR is confirmed.\n\nBooking reference: BK-9768CCHR\nYour reference: TALOS-5854-1\nAirline: Meridian Freightways (MD)\nLane: FRA-DEL\nPrice: 1987.70 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:15:35.115255+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "5973"
+}

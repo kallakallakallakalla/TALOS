@@ -1,0 +1,25 @@
+{
+ "id": 18139,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51943 to CGN on 2026-11-24",
+ "body": "Good day,\n\nthank you for your request. Our dispatcher recorded our price offer as a voice message. You find the recording in the attachment (voice-message.mp3).\n\nThe offer number is TRK-6056. No booking is necessary: give this number when you use the price.\n\nElbkante Logistik\nelbkante-logistik@hackloop.mail",
+ "in_reply_to": 18079,
+ "references": [
+  18079
+ ],
+ "received_at": "2026-11-21T21:30:39.707809+00:00",
+ "attachments": [
+  {
+   "id": 338,
+   "filename": "voice-message.mp3",
+   "content_type": "audio/mpeg",
+   "size": 199802
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18079"
+}

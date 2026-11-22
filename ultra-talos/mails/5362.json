@@ -1,0 +1,18 @@
+{
+ "id": 5362,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 28261 Bremen to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for pickup in Bremen and delivery to the air export warehouse at HAM is 165.36 EUR.\n\nPickup time: 17 hours\nPrice valid until: 21 Nov 2026 17:17 UTC\nOffer reference: TRK-1692\n\nNo booking is needed for the pickup.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 5268,
+ "references": [
+  5268
+ ],
+ "received_at": "2026-11-21T17:03:00.122735+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "5268"
+}

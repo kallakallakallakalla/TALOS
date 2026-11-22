@@ -1,0 +1,18 @@
+{
+ "id": 26222,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – RUH and GRU",
+ "body": "Hello,\n\nCould you please quote the fastest air freight option for each of these two shipments? Both are ready for pickup on 2026-11-28 at our site in 20674 Hamburg, Germany. Please arrange the truck from our site to the airport.\n\n1. Destination airport RUH (Riyadh, SA): sports equipment, 6 pieces, gross weight 591 kg, volume 1.95 cbm.\n2. Destination airport GRU (Sao Paulo, BR): machine parts, 6 pieces, gross weight 1335 kg, volume 10.63 cbm.\n\nPlease send both quotes in the same reply, with a separate all-in price in EUR for each shipment rather than a combined price.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:01:29.855225+00:00",
+ "attachments": [],
+ "shipment": "26222",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting new air freight quotes for two shipments.",
+  "sender_role": "customer"
+ }
+}

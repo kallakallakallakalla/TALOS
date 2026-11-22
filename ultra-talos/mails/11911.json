@@ -1,0 +1,18 @@
+{
+ "id": 11911,
+ "from": "taunusfracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 60504 Frankfurt am Main to FRA on 2026-11-24",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Frankfurt am Main and delivery to the air export warehouse at FRA is 427.06 EUR.\n\nPickup time: 3 hours\nQuote valid until: 21 Nov 2026 19:43 UTC\nOffer reference: TRK-3866\n\nNo booking is needed.\n\nBest regards,\nTaunusfracht",
+ "in_reply_to": 11788,
+ "references": [
+  11788
+ ],
+ "received_at": "2026-11-21T19:28:53.222278+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "11788"
+}

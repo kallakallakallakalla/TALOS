@@ -1,0 +1,20 @@
+{
+ "id": 28780,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24311 Kiel to HAM on 2026-11-25",
+ "body": "Hi there,\n\nThanks for reaching out! Our all-in price for the pickup from Kiel to the air export warehouse at Hamburg Airport is 459.46 EUR.\n\nPickup time: 11 hours\nQuote valid until: 22 Nov 2026 01:05 UTC\nOffer reference: TRK-9645\n\nNo booking is needed for the pickup.\n\nBest wishes,\nNeckarstrom Kurier",
+ "in_reply_to": 28676,
+ "references": [
+  28676
+ ],
+ "received_at": "2026-11-22T00:51:09.613661+00:00",
+ "attachments": [],
+ "shipment": "28676",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 4762,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51804 Bergisch Gladbach to CGN on 2026-11-29",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for the pickup from Bergisch Gladbach to the air export warehouse at Cologne Bonn Airport is 347.09 EUR.\n\nPickup time: 13 hours\nQuote valid until: 21 Nov 2026 17:05 UTC\nOffer reference: TRK-1527\n\nNo booking is required.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 4678,
+ "references": [
+  4678
+ ],
+ "received_at": "2026-11-21T16:51:05.170352+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4678"
+}

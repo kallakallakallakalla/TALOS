@@ -1,0 +1,19 @@
+{
+ "id": 7621,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to LAX",
+ "body": "Hello Alex,\n\nThe total gross weight is 998 kg for both lots together on one air waybill.\n\nPlease recheck the fastest option and let me know the earliest departure from MUC and arrival at LAX.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 7616,
+ "references": [
+  1638,
+  7616
+ ],
+ "received_at": "2026-11-21T17:51:56.071810+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_info",
+  "source": "old router"
+ },
+ "shipment": "1638"
+}

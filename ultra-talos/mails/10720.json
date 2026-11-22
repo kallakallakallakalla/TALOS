@@ -1,0 +1,21 @@
+{
+ "id": 10720,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to SGN",
+ "body": "Thanks for your message. I need to check that and will come back to you.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 10690,
+ "references": [
+  10590,
+  10656,
+  10671,
+  10690
+ ],
+ "received_at": "2026-11-21T19:04:27.685916+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "10590"
+}

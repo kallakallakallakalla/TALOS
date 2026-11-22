@@ -1,0 +1,19 @@
+{
+ "id": 4412,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to SGN",
+ "body": "Sorry I left out the pickup location: 51115 Bergisch Gladbach, Germany\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 4401,
+ "references": [
+  4373,
+  4401
+ ],
+ "received_at": "2026-11-21T16:44:29.143838+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "4373"
+}

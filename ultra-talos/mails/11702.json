@@ -1,0 +1,16 @@
+{
+ "id": 11702,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to MEL",
+ "body": "Hi there,\n\nHope your week’s going well. Could you quote me your fastest air freight option to MEL (Melbourne, AU)?\n\nThe machine parts will be ready for pickup at our site in 60504 Frankfurt am Main, Germany, on 2026-11-24. There are 4 pieces, with a gross weight of 1431 kg and a total volume of 10.71 cbm.\n\nCould you include the truck from our site to the airport in your all-in price in EUR and let me know the earliest arrival you can offer?\n\nThanks for checking!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T19:28:10.496017+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "11702"
+}

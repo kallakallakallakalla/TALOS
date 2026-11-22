@@ -1,0 +1,18 @@
+{
+ "id": 412,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51447 Bergisch Gladbach to CGN on 2026-11-25",
+ "body": "Hello TALOS team,\n\nThank you for your request. Our all-in price for pickup in Bergisch Gladbach and delivery to Cologne Airport is 222.36 EUR.\n\nPickup time: 13 hours\nOffer valid until: 21 Nov 2026 15:20 UTC\nQuote reference: TRK-181\n\nNo separate booking is needed.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 405,
+ "references": [
+  405
+ ],
+ "received_at": "2026-11-21T15:05:46.824352+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "405"
+}

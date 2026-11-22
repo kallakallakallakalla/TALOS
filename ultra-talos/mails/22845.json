@@ -1,0 +1,21 @@
+{
+ "id": 22845,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to DEL",
+ "body": "Hi Alex,\n\nThanks for confirming the booking and arranging pickup for 28 Nov.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 22836,
+ "references": [
+  22581,
+  22807,
+  22830,
+  22836
+ ],
+ "received_at": "2026-11-21T23:02:16.570591+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "22581"
+}

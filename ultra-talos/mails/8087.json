@@ -1,0 +1,21 @@
+{
+ "id": 8087,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to BOM",
+ "body": "Thanks for confirming the booking, Alex. Hope your week’s going well!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 8072,
+ "references": [
+  7895,
+  8041,
+  8068,
+  8072
+ ],
+ "received_at": "2026-11-21T18:04:37.538027+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "7895"
+}

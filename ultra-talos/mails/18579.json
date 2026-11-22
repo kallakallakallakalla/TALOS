@@ -1,0 +1,19 @@
+{
+ "id": 18579,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Request for quotation from Rheintal Elektronik GmbH",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 18559,
+ "references": [
+  18360,
+  18559
+ ],
+ "received_at": "2026-11-21T21:36:55.516362+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "18360"
+}

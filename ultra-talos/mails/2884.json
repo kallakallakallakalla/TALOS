@@ -1,0 +1,21 @@
+{
+ "id": 2884,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: FRA to DOH",
+ "body": "Hi, thanks for getting the shipment booked and letting me know. Hope you have a lovely day!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 2864,
+ "references": [
+  2829,
+  2842,
+  2858,
+  2864
+ ],
+ "received_at": "2026-11-21T16:08:35.233277+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2829"
+}

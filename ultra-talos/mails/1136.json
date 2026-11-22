@@ -1,0 +1,18 @@
+{
+ "id": 1136,
+ "from": "westfalenroute@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51896 Bergisch Gladbach to CGN on 2026-11-28",
+ "body": "Dear TALOS Team,\n\nOur fixed price for the requested pickup in Bergisch Gladbach and delivery to CGN Airport is 187.97 EUR.\n\nPickup time: 11 hours\nPrice valid until: 21 Nov 2026 15:34 UTC\nOffer reference: TRK-431\n\nNo booking is required.\n\nKind regards,\nWestfalenroute",
+ "in_reply_to": 1035,
+ "references": [
+  1035
+ ],
+ "received_at": "2026-11-21T15:19:53.717250+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "1035"
+}

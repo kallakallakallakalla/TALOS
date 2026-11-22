@@ -1,0 +1,16 @@
+{
+ "id": 1233,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight quote: STR to EZE",
+ "body": "Hi there,\n\nHope your week's going well. Could you send me an all-in price in EUR for the fastest air freight option from STR to EZE (Buenos Aires, AR)?\n\nThe textile samples will be ready on 2026-11-26, and we'll deliver them to Stuttgart airport (STR) ourselves. There are 12 pieces with a gross weight of 1228 kg and a total volume of 5.37 cbm.\n\nCould you also let me know the latest drop-off time at STR and when the shipment would arrive at EZE?\n\nThanks for checking!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:25:18.288590+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "1233"
+}

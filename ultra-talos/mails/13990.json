@@ -1,0 +1,18 @@
+{
+ "id": 13990,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 80186 Munich to MUC on 2026-11-23",
+ "body": "Hello Alex,\n\nAll-in price: 192.60 EUR\nPickup time: 21 hours\nValid until: 21 Nov 2026 20:19 UTC\nOffer reference: TRK-4632\n\nNo booking required.\n\nBodenseefracht",
+ "in_reply_to": 13891,
+ "references": [
+  13891
+ ],
+ "received_at": "2026-11-21T20:05:16.138042+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13891"
+}

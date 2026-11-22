@@ -1,0 +1,18 @@
+{
+ "id": 21682,
+ "from": "westfalenroute@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51896 Bergisch Gladbach to CGN on 2026-11-28",
+ "body": "Dear Alex,\n\nThank you for your inquiry. Our fixed all-in price for the requested pickup and delivery to the air export warehouse at CGN is 187.97 EUR.\n\nPickup time: 11 hours\nOffer valid until: 21 Nov 2026 22:52 UTC\nOffer reference: TRK-7147\n\nNo booking is required.\n\nKind regards,\nWestfalenroute",
+ "in_reply_to": 21672,
+ "references": [
+  21672
+ ],
+ "received_at": "2026-11-21T22:38:18.452852+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21672"
+}

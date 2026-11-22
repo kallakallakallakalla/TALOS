@@ -1,0 +1,19 @@
+{
+ "id": 7420,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: CGN to DFW",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 7419,
+ "references": [
+  7247,
+  7419
+ ],
+ "received_at": "2026-11-21T17:50:05.006994+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "7247"
+}

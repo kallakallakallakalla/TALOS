@@ -1,0 +1,16 @@
+{
+ "id": 11268,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-PJ3AJ7WD confirmed",
+ "body": "Hello,\n\nyour booking BK-PJ3AJ7WD is confirmed.\n\nBooking reference: BK-PJ3AJ7WD\nYour reference: 11082\nAirline: Ibisair Cargo (IB)\nLane: HAM-DEL\nPrice: 4981.34 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T19:17:19.038098+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "11268"
+}

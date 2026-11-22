@@ -1,0 +1,18 @@
+{
+ "id": 3174,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24983 Kiel to HAM on 2026-11-28",
+ "body": "Hi Air Freight Desk,\n\nThanks for reaching out! Our all-in price for the pickup to Hamburg Airport is 273.28 EUR, valid until 21 Nov 2026 16:29 UTC.\n\nPickup time: 19 hours. Your quote reference is TRK-1018, and there’s no need to book separately.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 3060,
+ "references": [
+  3060
+ ],
+ "received_at": "2026-11-21T16:14:31.631160+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "3060"
+}

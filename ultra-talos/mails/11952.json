@@ -1,0 +1,18 @@
+{
+ "id": 11952,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 60504 Frankfurt am Main to FRA on 2026-11-24",
+ "body": "All-in price: 206.09 EUR\nPickup time: 26 hours\nValid until: 21 Nov 2026 19:43 UTC\nOffer reference: TRK-3918\n\nNo booking is required.\n\nBodenseefracht",
+ "in_reply_to": 11821,
+ "references": [
+  11821
+ ],
+ "received_at": "2026-11-21T19:28:57.396321+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "11821"
+}

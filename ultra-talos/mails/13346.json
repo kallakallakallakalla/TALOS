@@ -1,0 +1,18 @@
+{
+ "id": 13346,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 85791 Ingolstadt to MUC on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can collect your freight in Ingolstadt and deliver it to the air export warehouse at Munich Airport for an all-in price of 173.60 EUR.\n\nPickup time: 31 hours\nQuote valid until: 21 Nov 2026 20:07 UTC\nOffer reference: TRK-4404\n\nNo booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 13208,
+ "references": [
+  13208
+ ],
+ "received_at": "2026-11-21T19:53:12.946971+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13208"
+}

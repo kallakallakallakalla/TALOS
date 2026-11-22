@@ -1,0 +1,18 @@
+{
+ "id": 14615,
+ "from": "ruhrpott-express@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 41007 Moenchengladbach to DUS on 2026-11-25",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Mönchengladbach to DUS is 391.90 EUR.\n\nPickup time: 11 hours\nPrice valid until: 21 Nov 2026 20:35 UTC\nOffer reference: TRK-4830\n\nNo booking is needed.\n\nBest regards,\nRuhrpott Express",
+ "in_reply_to": 14609,
+ "references": [
+  14609
+ ],
+ "received_at": "2026-11-21T20:20:52.684447+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14609"
+}

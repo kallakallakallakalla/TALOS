@@ -1,0 +1,21 @@
+{
+ "id": 23124,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to JFK",
+ "body": "Thanks for getting this booked, Alex! Glad we’re all set for pickup on 27 Nov.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 23116,
+ "references": [
+  22919,
+  23091,
+  23109,
+  23116
+ ],
+ "received_at": "2026-11-21T23:08:18.142398+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "22919"
+}

@@ -1,0 +1,16 @@
+{
+ "id": 4632,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 72146 to EZE, 1805 kg",
+ "body": "Hi,\n\nCould you let me know where the shipment below is now and confirm its current status?\n\nLindqvist Medtech GmbH | 72146 to EZE | 1805 kg gross | Ready date: 2026-11-30\n\nThanks.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:49:42.574035+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Tracking",
+  "source": "old router"
+ },
+ "shipment": "4632"
+}

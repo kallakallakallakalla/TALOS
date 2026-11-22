@@ -1,0 +1,16 @@
+{
+ "id": 7230,
+ "from": "ratedesk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Portal rates HAM-EZE 859.0 kg",
+ "body": "Hello,\n\nportal rates for HAM-EZE, 859.0 kg, 3.5 cbm (your mail \"Rate request HAM-EZE 859 kg 3.50 cbm\"):\n\n- Meridian Freightways (MD): 2877.65 EUR, 3 days, rate_id R-y5EgdTWkxyDXdiQo, valid until 21 Nov 2026 17:58 UTC\n- Wayzata Air Cargo (WZ): not on the portal, email wayzata-air-cargo@hackloop.mail\n\nBook with the rate_id on the portal or by mail to the airline.\n\nBest regards\nRate Desk\nratedesk@hackloop.mail",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:44:27.035220+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rate_offer",
+  "source": "old router"
+ },
+ "shipment": "7230"
+}

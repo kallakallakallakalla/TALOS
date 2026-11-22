@@ -1,0 +1,16 @@
+{
+ "id": 2899,
+ "from": "ultraviolet-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-O5LKVQ5R confirmed",
+ "body": "Hello,\n\nyour booking BK-O5LKVQ5R is confirmed.\n\nBooking reference: BK-O5LKVQ5R\nYour reference: TALOS-2829-1\nAirline: Ultraviolet Air Freight (UV)\nLane: FRA-DOH\nPrice: 324.36 EUR\nStatus: booked and ready to ship\n\nKind regards,\nUltraviolet Air Freight bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:08:54.346193+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2899"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 9319,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24646 Kiel to HAM on 2026-11-23",
+ "body": "Dear Alex,\n\nThank you for your inquiry. Our all-in price for the pickup from Kiel and delivery to the air export warehouse at Hamburg Airport is 158.56 EUR.\n\nPickup time: 19 hours\nOffer valid until: 21 Nov 2026 18:48 UTC\nOffer reference: TRK-2970\n\nNo booking is required.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 9212,
+ "references": [
+  9212
+ ],
+ "received_at": "2026-11-21T18:34:07.449314+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9212"
+}

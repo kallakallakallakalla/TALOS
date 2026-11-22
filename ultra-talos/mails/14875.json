@@ -1,0 +1,18 @@
+{
+ "id": 14875,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 22842 Hamburg North to HAM on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Hamburg North and delivery to the air export warehouse at HAM is 271.00 EUR.\n\nPickup time: 17 hours\nQuote valid until: 21 Nov 2026 20:38 UTC\nOffer reference: TRK-4920\n\nNo booking is needed for the pickup.\n\nBest regards,\nNordlicht Haulage",
+ "in_reply_to": 14745,
+ "references": [
+  14745
+ ],
+ "received_at": "2026-11-21T20:23:36.934956+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14745"
+}

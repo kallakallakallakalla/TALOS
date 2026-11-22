@@ -1,0 +1,16 @@
+{
+ "id": 2226,
+ "from": "fjordline-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-UKFNU9UN confirmed",
+ "body": "Hello,\n\nyour booking BK-UKFNU9UN is confirmed.\n\nBooking reference: BK-UKFNU9UN\nYour reference: TALOS-741-1\nAirline: Fjordline Air Cargo (FQ)\nLane: DUS-JFK\nPrice: 3696.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nFjordline Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:55:03.981296+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2226"
+}

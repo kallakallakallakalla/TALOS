@@ -1,0 +1,18 @@
+{
+ "id": 3471,
+ "from": "schwabenbote-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 42401 Wuppertal to DUS on 2026-11-27",
+ "body": "Hello Air Freight Desk,\n\nThank you for your request. Our all-in price for the pickup from Wuppertal to DUS airport is 379.79 EUR, valid until 21 Nov 2026 16:35 UTC.\n\nPickup time: 6 hours\nOffer reference: TRK-1108\n\nNo booking is required.\n\nBest regards,\nSchwabenbote Transporte",
+ "in_reply_to": 3384,
+ "references": [
+  3384
+ ],
+ "received_at": "2026-11-21T16:20:35.918055+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "3384"
+}

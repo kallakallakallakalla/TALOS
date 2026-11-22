@@ -1,0 +1,18 @@
+{
+ "id": 4507,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51115 Bergisch Gladbach to CGN on 2026-11-29",
+ "body": "Dear Air Freight Desk,\n\nOur fixed, all-in price for the requested pickup and delivery to the air export warehouse at CGN is 128.18 EUR.\n\nPickup time: 29 hours\nQuote valid until: 21 Nov 2026 16:59 UTC\nOffer reference: TRK-1464\n\nNo booking is required.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 4441,
+ "references": [
+  4441
+ ],
+ "received_at": "2026-11-21T16:45:04.523054+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4441"
+}

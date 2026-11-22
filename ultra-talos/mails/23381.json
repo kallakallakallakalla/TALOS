@@ -1,0 +1,21 @@
+{
+ "id": 23381,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: HAM to SGN",
+ "body": "Dear Alex,\n\nThank you for confirming the booking. We will deliver the shipment to HAM ourselves on 24 November, so no pickup is needed.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 23374,
+ "references": [
+  23197,
+  23264,
+  23337,
+  23374
+ ],
+ "received_at": "2026-11-21T23:13:47.830424+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "23197"
+}

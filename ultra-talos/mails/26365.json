@@ -1,0 +1,20 @@
+{
+ "id": 26365,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20674 Hamburg to HAM on 2026-11-28",
+ "body": "Dear Alex,\n\nOur all-in price for the requested pickup in Hamburg and delivery to the air export warehouse at HAM is 106.37 EUR.\n\nPickup time: 31 hours\nOffer valid until: 22 Nov 2026 00:16 UTC\nOffer reference: TRK-8570\n\nNo booking is required.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 26269,
+ "references": [
+  26269
+ ],
+ "received_at": "2026-11-22T00:02:10.222867+00:00",
+ "attachments": [],
+ "shipment": "26269",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to a pickup quote request with a price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

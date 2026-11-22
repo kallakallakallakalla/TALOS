@@ -1,0 +1,18 @@
+{
+ "id": 21700,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 53345 Bonn to CGN on 2026-11-28",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Bonn and delivery to the CGN air export warehouse is 50.50 EUR.\n\nPickup time: 32 hours\nQuote valid until: 21 Nov 2026 22:54 UTC\nOffer reference: TRK-7152\n\nNo booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 21697,
+ "references": [
+  21697
+ ],
+ "received_at": "2026-11-21T22:39:42.964832+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21697"
+}

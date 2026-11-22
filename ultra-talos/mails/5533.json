@@ -1,0 +1,16 @@
+{
+ "id": 5533,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – Bonn to SGN",
+ "body": "Hello,\n\nCould you please quote the fastest air freight option to SGN (Ho Chi Minh City, VN), including truck pickup from our site in 53088 (Bonn), Germany? Please arrange the truck to the departure airport. The shipment will be ready for pickup on 2026-11-28.\n\nThe cargo is electronic control units, packed in 5 pieces, with a gross weight of 1403 kg and a total volume of 13.44 cbm.\n\nPlease send us your all-in price in EUR and confirm the earliest possible pickup and arrival at SGN.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:08:33.414867+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "5533"
+}

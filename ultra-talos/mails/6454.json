@@ -1,0 +1,18 @@
+{
+ "id": 6454,
+ "from": "isarwelle-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70498 Stuttgart to STR on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nThanks for reaching out! Our all-in price for the pickup in Stuttgart and delivery to the air export warehouse at STR is 134.40 EUR.\n\nPickup time: 21 hours\nQuote valid until: 21 Nov 2026 17:41 UTC\nOffer reference: TRK-2029\n\nNo booking is needed for the pickup.\n\nBest regards,\nIsarwelle Spedition",
+ "in_reply_to": 6352,
+ "references": [
+  6352
+ ],
+ "received_at": "2026-11-21T17:27:16.611535+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6352"
+}

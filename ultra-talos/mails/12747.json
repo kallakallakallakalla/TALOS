@@ -1,0 +1,18 @@
+{
+ "id": 12747,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request STR-EZE on 2026-11-26, our reference 12470",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in airport-to-airport rate from STR to EZE is 1833.66 EUR, including freight, fuel and security.\n\nEstimated transit time is 7 days, and the rate is valid until 21 Nov 2026 19:55 UTC. When booking, please quote R-lf8h35otEOkbwmoF.\n\nBest regards,\nNova Atlas Cargo",
+ "in_reply_to": 12593,
+ "references": [
+  12593
+ ],
+ "received_at": "2026-11-21T19:40:59.329005+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12593"
+}

@@ -1,0 +1,25 @@
+{
+ "id": 17384,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51252 Bergisch Gladbach to CGN on 2026-11-28",
+ "body": "Dear customer,\n\nthank you for your enquiry. Our offer letter is attached to this mail as a Word document (offer-letter-TRK-5776.docx).\n\nOur offer number is TRK-5776. You do not need to book.\n\nKind regards\nDispatch, Maintal Transport Logistik\nmaintal-transport-logistik@hackloop.mail",
+ "in_reply_to": 17294,
+ "references": [
+  17294
+ ],
+ "received_at": "2026-11-21T21:18:00.595479+00:00",
+ "attachments": [
+  {
+   "id": 199,
+   "filename": "offer-letter-TRK-5776.docx",
+   "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "size": 1455
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17294"
+}

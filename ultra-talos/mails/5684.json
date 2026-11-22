@@ -1,0 +1,18 @@
+{
+ "id": 5684,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 53088 Bonn to CGN on 2026-11-28",
+ "body": "All-in price for pickup in Bonn and delivery to the CGN air export warehouse: 499.56 EUR.\nPickup time: 11 hours.\nPrice valid until 21 Nov 2026 17:23 UTC.\nOffer reference: TRK-1820. No booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 5580,
+ "references": [
+  5580
+ ],
+ "received_at": "2026-11-21T17:09:06.684849+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "5580"
+}

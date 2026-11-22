@@ -1,0 +1,25 @@
+{
+ "id": 17787,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20103 Hamburg to HAM on 2026-11-26",
+ "body": "Hello,\n\nthank you for your request. Please find our quotation attached as a Word document (quotation-TRK-5924.docx).\n\nYour offer reference is TRK-5924, and no booking is needed.\n\nBest regards\nSternmeile Logistik\nsternmeile-logistik@hackloop.mail",
+ "in_reply_to": 17664,
+ "references": [
+  17664
+ ],
+ "received_at": "2026-11-21T21:24:10.322136+00:00",
+ "attachments": [
+  {
+   "id": 271,
+   "filename": "quotation-TRK-5924.docx",
+   "content_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "size": 1523
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17664"
+}

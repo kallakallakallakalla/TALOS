@@ -1,0 +1,21 @@
+{
+ "id": 29912,
+ "from": "schwabenbote-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 40737 Duesseldorf to DUS on 2026-11-25",
+ "body": "Hi,\n\nThanks for your request. Our all-in price for the pickup in Duesseldorf and delivery to the DUS air export warehouse is 156.20 EUR.\n\nPickup time: 21 hours\nQuote valid until: 22 Nov 2026 01:23 UTC\nOffer reference: TRK-10202\n\nNo booking is required.\n\nBest regards,\nSchwabenbote Transporte",
+ "in_reply_to": 29777,
+ "references": [
+  29660,
+  29777
+ ],
+ "received_at": "2026-11-22T01:09:07.118946+00:00",
+ "attachments": [],
+ "shipment": "29660",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and quote validity.",
+  "sender_role": "trucker"
+ }
+}

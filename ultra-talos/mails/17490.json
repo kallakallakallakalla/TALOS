@@ -1,0 +1,16 @@
+{
+ "id": 17490,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment FRA to LOS, 1288 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Sonnberg Kaffeeroesterei GmbH, FRA to LOS, 1288 kg, ready on 2026-11-23? Where is it now?\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:20:06.272270+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "17490"
+}

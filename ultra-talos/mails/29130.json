@@ -1,0 +1,20 @@
+{
+ "id": 29130,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 50620 Cologne to CGN on 2026-11-27",
+ "body": "Dear Sir or Madam,\n\nThank you for your request. Our all-in price for the pickup from Nordlicht Audio in Cologne and delivery to the air export warehouse at Cologne Bonn Airport is 185.99 EUR.\n\nPickup time: 25 hours\nOffer valid until: 22 Nov 2026 01:11 UTC\nOffer reference: TRK-9829\n\nNo booking is required for the pickup.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 29041,
+ "references": [
+  29041
+ ],
+ "received_at": "2026-11-22T00:57:06.632737+00:00",
+ "attachments": [],
+ "shipment": "29041",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

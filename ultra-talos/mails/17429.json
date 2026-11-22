@@ -1,0 +1,19 @@
+{
+ "id": 17429,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Request for quotation from Weidner Spielwaren GmbH",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 17427,
+ "references": [
+  17243,
+  17427
+ ],
+ "received_at": "2026-11-21T21:18:14.376700+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "17243"
+}

@@ -1,0 +1,19 @@
+{
+ "id": 4969,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to RUH",
+ "body": "Hi there,\n\nThanks for getting back to me, and sorry I left out the pickup location. It’s Augsburg, Germany.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 4936,
+ "references": [
+  4929,
+  4936
+ ],
+ "received_at": "2026-11-21T16:56:35.195127+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "4929"
+}

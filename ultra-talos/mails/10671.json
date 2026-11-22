@@ -1,0 +1,19 @@
+{
+ "id": 10671,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to SGN",
+ "body": "Thank you, good point. We will send you the dangerous goods documents (shipper's declaration and safety data sheet) shortly.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 10656,
+ "references": [
+  10590,
+  10656
+ ],
+ "received_at": "2026-11-21T19:04:09.116072+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_info",
+  "source": "old router"
+ },
+ "shipment": "10590"
+}

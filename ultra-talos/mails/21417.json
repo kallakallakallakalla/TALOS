@@ -1,0 +1,19 @@
+{
+ "id": 21417,
+ "from": "wayzata-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Wayzata Air Cargo: monthly rate update",
+ "body": "Hello,\n\nthank you for your request. To quote we need:\n- the departure airport\n- the destination airport\n- the total weight in kg\n- the volume in cbm (or the dimensions and number of pieces)\n\nPlease reply in this thread.\n\nBest regards\nWayzata Air Cargo\nwayzata-air-cargo@hackloop.mail",
+ "in_reply_to": 21416,
+ "references": [
+  21399,
+  21416
+ ],
+ "received_at": "2026-11-21T22:33:51.224571+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "21399"
+}

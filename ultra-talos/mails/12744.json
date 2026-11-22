@@ -1,0 +1,18 @@
+{
+ "id": 12744,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request STR-EZE on 2026-11-26, our reference 12470",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: STR-EZE.\nWe fly CGN-ORD, DUS-ATL, DUS-DFW, DUS-NBO, FRA-CAI, FRA-DEL, FRA-HKG, FRA-LAX, FRA-MIA, HAM-DFW, HAM-EZE, HAM-SYD, HAM-TLV, MUC-EZE, MUC-PVG, MUC-TPE, STR-MIA, STR-MNL.\n\nBest regards\nMeridian Freightways\nmeridian-freightways@hackloop.mail",
+ "in_reply_to": 12587,
+ "references": [
+  12587
+ ],
+ "received_at": "2026-11-21T19:40:58.133146+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12587"
+}

@@ -1,0 +1,21 @@
+{
+ "id": 2434,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to GRU",
+ "body": "Thanks for getting the shipment booked and for the update. Hope your week’s going well!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 2429,
+ "references": [
+  2267,
+  2424,
+  2428,
+  2429
+ ],
+ "received_at": "2026-11-21T15:56:46.211533+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2267"
+}

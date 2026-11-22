@@ -1,0 +1,16 @@
+{
+ "id": 8145,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment MUC to PVG, 134 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Hofmann Textilwerk KG, MUC to PVG, 134 kg, ready on 2026-11-28? Where is it now?\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T18:07:44.012582+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "8145"
+}

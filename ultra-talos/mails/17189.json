@@ -1,0 +1,16 @@
+{
+ "id": 17189,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-5UYU3MNM confirmed",
+ "body": "Hello,\n\nyour booking BK-5UYU3MNM is confirmed.\n\nBooking reference: BK-5UYU3MNM\nYour reference: 14669\nAirline: Ibisair Cargo (IB)\nLane: HAM-DEL\nPrice: 3405.43 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:14:47.139792+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "17189"
+}

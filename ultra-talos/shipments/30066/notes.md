@@ -1,0 +1,12 @@
+# Shipment 30066: Kessler Feinmechanik GmbH, STR -> MEL
+- request: 10 pieces, gross 1530 kg, 9.71 cbm, chargeable 1621.57 kg, ready 2026-11-24, pickup 71279 Boeblingen, goal cheapest.
+- 2026-11-22 01:14 UTC air lookup: cheapest Solace Air Cargo (SL), 5610.63 EUR, 4 d, billed 1621.57 kg, rate_id R-bj3nZcRDYGijYQEc, valid until 2026-11-22 01:29:32 UTC (portal). Alternatives: Yellowtail 7086.26 EUR/5 d (tariff), Aurelia 7524.09 EUR/3 d (portal). Cheapest air selected; budget 3300 EUR is below air freight alone.
+- 2026-11-22 01:14 UTC asked truckers: Flinkwagen Logistik (mail 30135), Kranich Kurier (mail 30136); both active serving zone 71.
+- 2026-11-22 01:15 UTC trucker offers: Flinkwagen Logistik 356.45 EUR, 16 h, TRK-10305, valid until 01:29 UTC (mail 30211); Kranich Kurier 397.67 EUR, 12 h, TRK-10306, valid until 01:29 UTC (mail 30212). Chosen Kranich: only offer within the usual ~14 h cutoff; although Flinkwagen is cheaper, its 16 h pickup falls outside.
+- 2026-11-22 01:16 UTC QUOTE SENT mail id 30274: 6008.30 EUR all-in = air 5610.63 + truck 397.67. Solace Air Cargo SL, portal rate_id R-bj3nZcRDYGijYQEc (valid to 01:29:32 UTC), chargeable 1621.57 kg, 4 transit days; Kranich Kurier TRK-10306 (12 h). Pickup 24 Nov; departure 25 Nov; estimated arrival 29 Nov. Customer's 3300 EUR budget cannot be met (air alone exceeds it).
+- 2026-11-22 01:16:45 UTC acceptance mail 30299: customer accepted the 6,008.30 EUR all-in quote and asked us to book.
+- 2026-11-22 01:16 UTC rechecked Solace Air Cargo SL at 1621.57 chargeable kg / 9.71 cbm: 5610.63 EUR, 4 d, fresh rate_id R-MqPgCfeH5NS67M24 valid until 2026-11-22 01:31:54 UTC (portal); price unchanged.
+- 2026-11-22 01:16 UTC BOOKED Solace Air Cargo SL, booking BK-LE6VFOU7, team_reference 30066; estimated arrival 2026-11-29.
+- 2026-11-22 01:17 UTC confirmation mail 30311 sent to customer, replying to acceptance 30299: 6008.30 EUR all-in, air booking ref BK-LE6VFOU7.
+- 2026-11-22 01:17 UTC clarification mail 30317: Kranich's 397.67 EUR / 12 h offer (TRK-10306) is included in the quote but is not a confirmed pickup; collection remains unconfirmed (truckers are not booked).
+- 2026-11-22 01:17 UTC mail 30318: customer thanked us for booking details; no reply needed. Pickup collection remains unconfirmed.

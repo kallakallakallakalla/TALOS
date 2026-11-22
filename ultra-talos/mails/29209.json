@@ -1,0 +1,18 @@
+{
+ "id": 29209,
+ "from": "ultraviolet-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-WVZ8BLEO confirmed",
+ "body": "Hello,\n\nyour booking BK-WVZ8BLEO is confirmed.\n\nBooking reference: BK-WVZ8BLEO\nYour reference: 28894\nAirline: Ultraviolet Air Freight (UV)\nLane: CGN-EZE\nPrice: 8064.63 EUR\nStatus: booked and ready to ship\n\nKind regards,\nUltraviolet Air Freight bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T01:00:10.354258+00:00",
+ "attachments": [],
+ "shipment": "29209",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-WVZ8BLEO.",
+  "sender_role": "airline"
+ }
+}

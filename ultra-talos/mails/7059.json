@@ -1,0 +1,18 @@
+{
+ "id": 7059,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24489 Kiel to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThanks for reaching out! We can collect your shipment in Kiel and deliver it to the air export warehouse at HAM for an all-in price of 182.08 EUR.\n\nThe pickup time is 19 hours, and the quote is valid until 21 Nov 2026 17:54 UTC. Our offer reference is TRK-2229; no booking is needed for the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 6936,
+ "references": [
+  6936
+ ],
+ "received_at": "2026-11-21T17:39:27.092205+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6936"
+}

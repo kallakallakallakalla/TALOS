@@ -1,0 +1,23 @@
+{
+ "id": 8500,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: MUC to CAI",
+ "body": "Hi there,\n\nHope your week’s going well! Could you send me an all-in price in EUR for the cheapest air freight option from MUC to CAI (Cairo, EG)? We’ll deliver the shipment to MUC ourselves, and it’ll be ready on 2026-11-27.\n\nIt’s 5 pieces of furniture samples, with a gross weight of 292 kg and a total volume of 2.78 cbm. Each piece measures 120 x 40 x 116 cm. I’ve attached our packing specification for reference.\n\nThanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T18:15:18.122535+00:00",
+ "attachments": [
+  {
+   "id": 41,
+   "filename": "SLI_53351.pdf",
+   "content_type": "application/pdf",
+   "size": 2045
+  }
+ ],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "8500"
+}

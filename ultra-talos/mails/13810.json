@@ -1,0 +1,16 @@
+{
+ "id": 13810,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – Munich to BKK",
+ "body": "Dear Sir or Madam,\n\nCould you please quote the fastest air freight option to BKK (Bangkok, TH)? The shipment will be ready for pickup on 2026-11-23 at our site in 80186 (Munich), Germany. Please arrange the truck from our site to the departure airport.\n\nThe shipment consists of 7 pieces of electronic control units, with a gross weight of 923 kg and a total volume of 7.96 cbm.\n\nPlease provide an all-in price in EUR, including pickup, and let me know the earliest available arrival at BKK.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T20:04:34.697142+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "13810"
+}

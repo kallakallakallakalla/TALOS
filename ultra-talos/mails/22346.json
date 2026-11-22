@@ -1,0 +1,16 @@
+{
+ "id": 22346,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-WX09ORVQ confirmed",
+ "body": "Hello,\n\nyour booking BK-WX09ORVQ is confirmed.\n\nBooking reference: BK-WX09ORVQ\nYour reference: 22032\nAirline: Lumen Air Cargo (LM)\nLane: CGN-SGN\nPrice: 3349.70 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T22:50:25.167591+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "22346"
+}

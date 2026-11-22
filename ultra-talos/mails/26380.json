@@ -1,0 +1,20 @@
+{
+ "id": 26380,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20674 Hamburg to HAM on 2026-11-28",
+ "body": "Hello Alex,\n\nAll-in price for pickup in Hamburg and delivery to the HAM air export warehouse: 398.28 EUR.\nPickup time: 11 hours.\nValid until: 22 Nov 2026 00:16 UTC.\nOffer reference: TRK-8582. No booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 26285,
+ "references": [
+  26285
+ ],
+ "received_at": "2026-11-22T00:02:12.311630+00:00",
+ "attachments": [],
+ "shipment": "26285",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

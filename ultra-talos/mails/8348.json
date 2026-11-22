@@ -1,0 +1,18 @@
+{
+ "id": 8348,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 73523 Esslingen to STR on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup in Esslingen and delivery to the air export warehouse at STR is 131.24 EUR.\n\nPickup time: 20 hours\nPrice valid until: 21 Nov 2026 18:24 UTC\nOffer reference: TRK-2657\n\nNo booking is needed for the pickup.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 8258,
+ "references": [
+  8258
+ ],
+ "received_at": "2026-11-21T18:09:51.476431+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "8258"
+}

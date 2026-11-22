@@ -1,0 +1,18 @@
+{
+ "id": 6733,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 81617 Munich South to MUC on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nThanks for reaching out! Our all-in price for the pickup from Munich South to the air export warehouse at MUC is 245.80 EUR.\n\nPickup time: 27 hours\nOffer valid until: 21 Nov 2026 17:47 UTC\nOffer reference: TRK-2131\n\nNo booking is needed for the pickup.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 6660,
+ "references": [
+  6660
+ ],
+ "received_at": "2026-11-21T17:33:21.886732+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6660"
+}

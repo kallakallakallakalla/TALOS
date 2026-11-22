@@ -1,0 +1,19 @@
+{
+ "id": 14027,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – Munich to BKK",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 14012,
+ "references": [
+  13810,
+  14012
+ ],
+ "received_at": "2026-11-21T20:05:48.573989+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "13810"
+}

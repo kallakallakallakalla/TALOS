@@ -1,0 +1,19 @@
+{
+ "id": 8539,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to CAI",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 8528,
+ "references": [
+  8500,
+  8528
+ ],
+ "received_at": "2026-11-21T18:15:35.274093+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "8500"
+}

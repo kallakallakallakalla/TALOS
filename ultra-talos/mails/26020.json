@@ -1,0 +1,20 @@
+{
+ "id": 26020,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 65996 Wiesbaden to FRA on 2026-11-23",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can handle the pickup for an all-in price of 232.10 EUR, with pickup in 17 hours. The quote is valid until 22 Nov 2026 00:11 UTC.\n\nYour offer reference is TRK-8487. No booking is needed.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 25928,
+ "references": [
+  25928
+ ],
+ "received_at": "2026-11-21T23:56:33.425337+00:00",
+ "attachments": [],
+ "shipment": "25928",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup timing, and validity.",
+  "sender_role": "trucker"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 14531,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 93938 Regensburg to MUC on 2026-11-25",
+ "body": "Dear Alex,\n\nThank you for your enquiry. Our fixed all-in price for collection in Regensburg and delivery to the air export warehouse at Munich Airport is 132.02 EUR.\n\nPickup time: 30 hours\nOffer valid until: 21 Nov 2026 20:31 UTC\nOffer reference: TRK-4814\n\nNo booking is required for pickup.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 14412,
+ "references": [
+  14412
+ ],
+ "received_at": "2026-11-21T20:17:26.240702+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "14412"
+}

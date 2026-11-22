@@ -1,0 +1,16 @@
+{
+ "id": 17143,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-0SEMUCJG confirmed",
+ "body": "Hello,\n\nyour booking BK-0SEMUCJG is confirmed.\n\nBooking reference: BK-0SEMUCJG\nYour reference: 16871\nAirline: Borealis Freight Airways (BX)\nLane: CGN-SCL\nPrice: 4806.39 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:13:07.025498+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "17143"
+}

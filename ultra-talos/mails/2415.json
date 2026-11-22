@@ -1,0 +1,18 @@
+{
+ "id": 2415,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for the pickup from Bad Homburg to Frankfurt Airport is 168.80 EUR.\n\nPickup time: 25 hours\nPrice valid until: 21 Nov 2026 16:10 UTC\nOffer reference: TRK-780\n\nNo booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 2336,
+ "references": [
+  2336
+ ],
+ "received_at": "2026-11-21T15:56:20.037856+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "2336"
+}

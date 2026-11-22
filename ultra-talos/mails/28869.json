@@ -1,0 +1,18 @@
+{
+ "id": 28869,
+ "from": "riverbend-airlines-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-T590QYLQ confirmed",
+ "body": "Hello,\n\nyour booking BK-T590QYLQ is confirmed.\n\nBooking reference: BK-T590QYLQ\nYour reference: 28497\nAirline: Riverbend Airlines Cargo (RV)\nLane: HAM-MEX\nPrice: 9260.53 EUR\nStatus: booked and ready to ship\n\nKind regards,\nRiverbend Airlines Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:55:00.136236+00:00",
+ "attachments": [],
+ "shipment": "28869",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-T590QYLQ.",
+  "sender_role": "airline"
+ }
+}

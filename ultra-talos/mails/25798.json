@@ -1,0 +1,18 @@
+{
+ "id": 25798,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: GRU and TLV",
+ "body": "Hi there,\n\nHope your week’s going well! Could you quote the fastest air freight option for each of these two shipments? Both will be ready for pickup on 2026-11-23 at our site in Wiesbaden, Germany (postcode 65996). Please arrange the truck from our site to the airport as part of the quote.\n\n1. GRU (Sao Paulo, BR) — automotive sensors, 4 pieces, gross weight 1281 kg, volume 3.76 cbm.\n2. TLV (Tel Aviv, IL) — machine parts, 1 piece, gross weight 1812 kg, volume 5.75 cbm.\n\nCould you send both quotes in the same reply, with a separate all-in price in EUR for each shipment rather than a combined total?\n\nThanks for your help!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:55:25.738840+00:00",
+ "attachments": [],
+ "shipment": "25798",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting quotes for two new air freight shipments.",
+  "sender_role": "customer"
+ }
+}

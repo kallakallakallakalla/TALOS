@@ -1,0 +1,16 @@
+{
+ "id": 7811,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-HR4UKQWU confirmed",
+ "body": "Hello,\n\nyour booking BK-HR4UKQWU is confirmed.\n\nBooking reference: BK-HR4UKQWU\nYour reference: 7706\nAirline: Meridian Freightways (MD)\nLane: MUC-PVG\nPrice: 534.66 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:58:09.906389+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "7811"
+}

@@ -1,0 +1,4 @@
+# Shipment 25407: Weidner Spielwaren GmbH, FRA -> SGN
+- Original request 24387: furniture samples, pickup 64344 Darmstadt, ready 2026-11-24, to SGN; customer updated packing details in mail 24650 to 5 pieces, 1317 kg gross, 8.18 cbm.
+- Booked 2026-11-21 with Polaris Air Logistics, FRA-SGN, reference BK-7TCHGQ67, team reference 24387; 2 transit days. Estimated pickup 2026-11-24, departure 2026-11-25, arrival 2026-11-27. Airline confirmation mail 24727.
+- 2026-11-21 23:49 UTC tracking request mail 25407: asked where shipment is, matching customer, pickup postcode, destination, weight and ready date. Replied (dry run; no outgoing mail id) that it is booked and waiting for pickup; stated route, airline, booking reference, booked date, transit days and estimated pickup/departure/arrival, and noted this is the latest on file.

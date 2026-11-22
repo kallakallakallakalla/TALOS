@@ -1,0 +1,25 @@
+{
+ "id": 17386,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51252 Bergisch Gladbach to CGN on 2026-11-28",
+ "body": "Good day,\n\nthank you for your request. You find our price offer in the attachment, as a PDF file (price-offer-TRK-5768.pdf).\n\nThe offer number is TRK-5768. No booking is necessary: give this number when you use the price.\n\nElbkante Logistik\nelbkante-logistik@hackloop.mail",
+ "in_reply_to": 17295,
+ "references": [
+  17295
+ ],
+ "received_at": "2026-11-21T21:18:01.626397+00:00",
+ "attachments": [
+  {
+   "id": 200,
+   "filename": "price-offer-TRK-5768.pdf",
+   "content_type": "application/pdf",
+   "size": 2310
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17295"
+}

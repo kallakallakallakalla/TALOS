@@ -1,0 +1,18 @@
+{
+ "id": 5679,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 53088 Bonn to CGN on 2026-11-28",
+ "body": "Hello Air Freight Desk,\n\nOur all-in price for the pickup from Bonn to CGN airport is 268.45 EUR. Pickup time: 32 hours.\n\nThe price is valid until 21 Nov 2026 17:23 UTC. Our offer reference is TRK-1805. No booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 5562,
+ "references": [
+  5562
+ ],
+ "received_at": "2026-11-21T17:09:06.606354+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "5562"
+}

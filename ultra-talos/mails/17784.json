@@ -1,0 +1,25 @@
+{
+ "id": 17784,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20103 Hamburg to HAM on 2026-11-26",
+ "body": "Hello,\n\nthank you for your request. Please find our quotation attached as a PDF file (quotation-TRK-5931.pdf).\n\nYour offer reference is TRK-5931, and no booking is needed.\n\nBest regards\nNordlicht Haulage\nnordlicht-haulage@hackloop.mail",
+ "in_reply_to": 17661,
+ "references": [
+  17661
+ ],
+ "received_at": "2026-11-21T21:24:09.279062+00:00",
+ "attachments": [
+  {
+   "id": 270,
+   "filename": "quotation-TRK-5931.pdf",
+   "content_type": "application/pdf",
+   "size": 2084
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17661"
+}

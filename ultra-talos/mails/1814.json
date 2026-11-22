@@ -1,0 +1,16 @@
+{
+ "id": 1814,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment DUS to KUL, 1549 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Kessler Feinmechanik GmbH, DUS to KUL, 1549 kg, ready on 2026-11-26? Where is it now?\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:41:56.120435+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Tracking",
+  "source": "old router"
+ },
+ "shipment": "1814"
+}

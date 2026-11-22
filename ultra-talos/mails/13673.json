@@ -1,0 +1,18 @@
+{
+ "id": 13673,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 81311 Munich South to MUC on 2026-11-28",
+ "body": "All-in pickup price: 202.16 EUR\nPickup time: 4 hours\nValid until: 21 Nov 2026 20:13 UTC\nOffer reference: TRK-4520\n\nNo booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 13561,
+ "references": [
+  13561
+ ],
+ "received_at": "2026-11-21T19:59:09.649744+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13561"
+}

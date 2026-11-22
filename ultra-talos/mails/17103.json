@@ -1,0 +1,19 @@
+{
+ "id": 17103,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: AMSTERDAM SCHIPHOL - TLV / 104 CRATES 302 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 17087,
+ "references": [
+  16871,
+  17087
+ ],
+ "received_at": "2026-11-21T21:12:32.135062+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "16871"
+}

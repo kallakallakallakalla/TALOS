@@ -1,0 +1,18 @@
+{
+ "id": 7026,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 24489 Kiel to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThanks for your request. Our all-in price for pickup in Kiel and delivery to the air export warehouse at HAM is 137.13 EUR.\n\nPickup time: 26 hours\nPrice valid until: 21 Nov 2026 17:53 UTC\nOffer reference: TRK-2195\n\nNo booking is required for pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 6909,
+ "references": [
+  6909
+ ],
+ "received_at": "2026-11-21T17:39:24.775926+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "6909"
+}

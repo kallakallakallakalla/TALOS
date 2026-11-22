@@ -1,0 +1,25 @@
+{
+ "id": 17393,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51252 Bergisch Gladbach to CGN on 2026-11-28",
+ "body": "Good day,\n\nthank you for your request. Our dispatcher recorded our price offer as a voice message. You find the recording in the attachment (voice-message.mp3).\n\nThe offer number is TRK-5777. No booking is necessary: give this number when you use the price.\n\nBodenseefracht\nbodenseefracht@hackloop.mail",
+ "in_reply_to": 17300,
+ "references": [
+  17300
+ ],
+ "received_at": "2026-11-21T21:18:01.627725+00:00",
+ "attachments": [
+  {
+   "id": 204,
+   "filename": "voice-message.mp3",
+   "content_type": "audio/mpeg",
+   "size": 207743
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17300"
+}

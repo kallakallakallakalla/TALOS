@@ -1,0 +1,18 @@
+{
+ "id": 15549,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 73825 Esslingen to STR on 2026-11-23",
+ "body": "Dear Alex,\n\nOur all-in price for pickup in Esslingen and delivery to the STR air export warehouse is 405.73 EUR.\n\nPickup time: 22 hours\nValid until: 21 Nov 2026 20:56 UTC\nOffer reference: TRK-5168\n\nNo booking is required.\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 15427,
+ "references": [
+  15427
+ ],
+ "received_at": "2026-11-21T20:41:42.903958+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "15427"
+}

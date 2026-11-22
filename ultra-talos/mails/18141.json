@@ -1,0 +1,25 @@
+{
+ "id": 18141,
+ "from": "westfalenroute@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51943 to CGN on 2026-11-24",
+ "body": "Dear customer,\n\nthank you for your enquiry. Our offer letter is attached to this mail as a PDF file (offer-letter-TRK-6057.pdf).\n\nOur offer number is TRK-6057. You do not need to book.\n\nKind regards\nDispatch, Westfalenroute\nwestfalenroute@hackloop.mail",
+ "in_reply_to": 18080,
+ "references": [
+  18080
+ ],
+ "received_at": "2026-11-21T21:30:40.890224+00:00",
+ "attachments": [
+  {
+   "id": 340,
+   "filename": "offer-letter-TRK-6057.pdf",
+   "content_type": "application/pdf",
+   "size": 1878
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "18080"
+}

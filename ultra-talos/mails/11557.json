@@ -1,0 +1,16 @@
+{
+ "id": 11557,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-QJO1GNV8 confirmed",
+ "body": "Hello,\n\nyour booking BK-QJO1GNV8 is confirmed.\n\nBooking reference: BK-QJO1GNV8\nYour reference: 11306\nAirline: Ibisair Cargo (IB)\nLane: MUC-PEK\nPrice: 2535.52 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T19:23:49.334781+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "11557"
+}

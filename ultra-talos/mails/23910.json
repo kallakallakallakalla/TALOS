@@ -1,0 +1,19 @@
+{
+ "id": 23910,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to ATL",
+ "body": "Thank you for your offer. We accept it. Please go ahead and book the shipment now.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 23887,
+ "references": [
+  23688,
+  23887
+ ],
+ "received_at": "2026-11-21T23:26:11.419466+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "23688"
+}

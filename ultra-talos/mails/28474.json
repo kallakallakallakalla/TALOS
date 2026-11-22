@@ -1,0 +1,18 @@
+{
+ "id": 28474,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-X5CHRCPD confirmed",
+ "body": "Hello,\n\nyour booking BK-X5CHRCPD is confirmed.\n\nBooking reference: BK-X5CHRCPD\nYour reference: 28275\nAirline: Borealis Freight Airways (BX)\nLane: FRA-ORD\nPrice: 4895.80 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:47:24.719977+00:00",
+ "attachments": [],
+ "shipment": "28474",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-X5CHRCPD.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 2691,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26",
+ "body": "Hello Air Freight Desk,\n\nThanks for getting in touch! Our all-in price for the pickup to Hamburg Airport is 166.50 EUR.\n\nPickup time: 26 hours. The quote is valid until 21 Nov 2026 16:16 UTC.\n\nNo booking is needed for this pickup. Our offer reference is TRK-841.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 2575,
+ "references": [
+  2575
+ ],
+ "received_at": "2026-11-21T16:02:21.198473+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "2575"
+}

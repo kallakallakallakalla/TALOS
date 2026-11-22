@@ -1,0 +1,18 @@
+{
+ "id": 2699,
+ "from": "waldrand-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21663 Lueneburg to HAM on 2026-11-26",
+ "body": "All-in price for pickup in Lueneburg and delivery to the air export warehouse at Hamburg Airport: 193.60 EUR.\nPickup time: 18 hours.\nPrice valid until: 21 Nov 2026 16:16 UTC.\nOffer reference: TRK-852. No booking required.\n\nWaldrand Transporte",
+ "in_reply_to": 2584,
+ "references": [
+  2584
+ ],
+ "received_at": "2026-11-21T16:02:22.229577+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "2584"
+}

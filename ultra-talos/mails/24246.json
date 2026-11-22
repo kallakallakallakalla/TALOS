@@ -1,0 +1,18 @@
+{
+ "id": 24246,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 86483 Augsburg to MUC on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Augsburg and delivery to the air export warehouse at Munich Airport is 136.80 EUR.\n\nPickup time: 26 hours\nQuote valid until: 21 Nov 2026 23:46 UTC\nOffer reference: TRK-7961\n\nNo booking is needed for the pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 24121,
+ "references": [
+  24121
+ ],
+ "received_at": "2026-11-21T23:31:50.202051+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "24121"
+}

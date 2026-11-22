@@ -1,0 +1,18 @@
+{
+ "id": 13988,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 80186 Munich to MUC on 2026-11-23",
+ "body": "Hi Alex,\n\nThanks for reaching out! We can pick up your shipment in Munich and deliver it to the air export warehouse at MUC for an all-in price of 310.95 EUR.\n\nPickup time: 22 hours\nQuote valid until: 21 Nov 2026 20:19 UTC\nOffer reference: TRK-4630\n\nNo separate booking is needed.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 13887,
+ "references": [
+  13887
+ ],
+ "received_at": "2026-11-21T20:05:16.136216+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "13887"
+}

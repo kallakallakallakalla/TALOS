@@ -1,0 +1,16 @@
+{
+ "id": 13478,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request to ORD",
+ "body": "Hello,\n\nCould you please quote the cheapest air freight option to ORD (Chicago, US), including truck pickup from our site in 81311 (Munich South), Germany, and transport to the departure airport?\n\nThe shipment will be ready for pickup on 2026-11-28. It consists of 10 pieces of spare parts for packaging machines, with a gross weight of 196 kg and a total volume of 0.72 cbm.\n\nPlease send us your all-in price in EUR, including the pickup.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T19:58:30.863980+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "13478"
+}

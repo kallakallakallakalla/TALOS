@@ -1,0 +1,18 @@
+{
+ "id": 12344,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45715 Essen to DUS on 2026-11-27",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Essen to the air export warehouse at DUS is 187.81 EUR.\n\nPickup time: 13 hours\nThis price is valid until 21 Nov 2026 19:49 UTC.\nOffer reference: TRK-4052. No booking is needed.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 12203,
+ "references": [
+  12203
+ ],
+ "received_at": "2026-11-21T19:34:54.093952+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12203"
+}

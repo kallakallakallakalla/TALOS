@@ -1,0 +1,21 @@
+{
+ "id": 7793,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to PVG",
+ "body": "Hi Alex,\n\nThanks for confirming the booking! We’ll bring the shipment to MUC ourselves on November 28.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 7787,
+ "references": [
+  7706,
+  7740,
+  7763,
+  7787
+ ],
+ "received_at": "2026-11-21T17:57:52.976992+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "7706"
+}

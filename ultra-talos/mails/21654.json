@@ -1,0 +1,18 @@
+{
+ "id": 21654,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61018 Bad Homburg to FRA on 2026-11-25",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Bad Homburg and delivery to the FRA air export warehouse is 299.03 EUR.\n\nPickup time: 25 hours\nOffer valid until: 21 Nov 2026 22:51 UTC\nOffer reference: TRK-7138\n\nNo booking is required for pickup.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 21549,
+ "references": [
+  21549
+ ],
+ "received_at": "2026-11-21T22:37:18.819270+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "21549"
+}

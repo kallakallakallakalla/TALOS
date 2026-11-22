@@ -1,0 +1,16 @@
+{
+ "id": 4580,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-7T64ZYZ3 confirmed",
+ "body": "Hello,\n\nyour booking BK-7T64ZYZ3 is confirmed.\n\nBooking reference: BK-7T64ZYZ3\nYour reference: TALOS-4373-1\nAirline: Lumen Air Cargo (LM)\nLane: CGN-SGN\nPrice: 2150.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:46:12.641722+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "4580"
+}

@@ -1,0 +1,19 @@
+{
+ "id": 4675,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to DFW",
+ "body": "Hello,\n\nSorry for leaving out the pickup address: 51804 Bergisch Gladbach, Germany.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 4661,
+ "references": [
+  4649,
+  4661
+ ],
+ "received_at": "2026-11-21T16:50:31.751598+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4649"
+}

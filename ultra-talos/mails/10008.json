@@ -1,0 +1,18 @@
+{
+ "id": 10008,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 93721 Regensburg to MUC on 2026-11-26",
+ "body": "Hi Alex,\n\nThanks for reaching out! We’d be happy to handle the pickup from Regensburg to the air export warehouse at Munich Airport.\n\nAll-in price: 193.60 EUR\nPickup time: 5 hours\nPrice valid until: 21 Nov 2026 19:00 UTC\nOffer reference: TRK-3203\n\nNo booking is needed for the pickup.\n\nBest regards,\nNeckarstrom Kurier",
+ "in_reply_to": 9929,
+ "references": [
+  9929
+ ],
+ "received_at": "2026-11-21T18:46:12.900744+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9929"
+}

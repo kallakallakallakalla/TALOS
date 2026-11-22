@@ -1,0 +1,18 @@
+{
+ "id": 26774,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight quote to GRU",
+ "body": "Hi there,\n\nHope all’s well with you. Could you send me an all-in price in EUR for the fastest air freight option to GRU (Sao Paulo, BR)?\n\nThe shipment will be ready for pickup on 2026-11-27 at our site in 22911 (Hamburg North), Germany. Please include arranging the truck from our site to the airport.\n\nIt’s 6 pieces of electronic control units, with a gross weight of 671 kg and a total volume of 6.19 cbm. Could you also let me know the earliest arrival you can offer at GRU?\n\nThanks for taking a look!\n\nWe also need cargo insurance inside your all-in price: the goods are worth 81000 EUR, cover is 110 % of the value and the premium rate is 0.30 % (our frame agreement).\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:13:37.076984+00:00",
+ "attachments": [],
+ "shipment": "26774",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price and fastest air freight option for a new shipment to GRU.",
+  "sender_role": "customer"
+ }
+}

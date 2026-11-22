@@ -1,0 +1,18 @@
+{
+ "id": 10016,
+ "from": "isarwelle-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 93721 Regensburg to MUC on 2026-11-26",
+ "body": "Hi Alex,\n\nThanks for reaching out! Our all-in price for the pickup from Regensburg to Munich Airport is 104.00 EUR.\n\nPickup time: 33 hours\nOffer valid until: 21 Nov 2026 19:00 UTC\nOffer reference: TRK-3210\n\nNo booking is needed for the pickup.\n\nBest regards,\nIsarwelle Spedition",
+ "in_reply_to": 9932,
+ "references": [
+  9932
+ ],
+ "received_at": "2026-11-21T18:46:14.010904+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "9932"
+}

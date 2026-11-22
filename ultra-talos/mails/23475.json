@@ -1,0 +1,16 @@
+{
+ "id": 23475,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: STR to MEL",
+ "body": "Dear Sir or Madam,\n\nCould you please provide an all-in air freight quote in EUR from STR to MEL (Melbourne, AU)? The shipment will be ready on 2026-11-26, and we will deliver it to STR ourselves.\n\nThe shipment consists of 6 pieces of printed marketing material, with a gross weight of 1841 kg and a total volume of 4.63 cbm.\n\nThe goods must arrive at MEL no later than 2026-12-02. Among the options that meet this deadline, price will determine our choice.\n\nThank you in advance for your quotation.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:18:53.553286+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "23475"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 26485,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-0LF1O04H confirmed",
+ "body": "Hello,\n\nyour booking BK-0LF1O04H is confirmed.\n\nBooking reference: BK-0LF1O04H\nYour reference: 262221\nAirline: Tamarind Airways (TM)\nLane: HAM-RUH\nPrice: 1855.74 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:03:44.200325+00:00",
+ "attachments": [],
+ "shipment": "26485",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-0LF1O04H.",
+  "sender_role": "airline"
+ }
+}

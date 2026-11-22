@@ -1,0 +1,18 @@
+{
+ "id": 12359,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request DUS-NRT on 2026-11-27, our reference 12086",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: DUS-NRT.\nWe fly CGN-LIM, CGN-SYD, DUS-SYD, FRA-MEL, FRA-PVG, FRA-SIN, FRA-TPE, MUC-BKK, MUC-NRT, MUC-SGN, STR-EZE, STR-ORD.\n\nBest regards\nNova Atlas Cargo\nnova-atlas-cargo@hackloop.mail",
+ "in_reply_to": 12219,
+ "references": [
+  12219
+ ],
+ "received_at": "2026-11-21T19:34:56.318458+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "12219"
+}

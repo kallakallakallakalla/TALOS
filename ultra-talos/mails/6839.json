@@ -1,0 +1,16 @@
+{
+ "id": 6839,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-F6FTCQ24 confirmed",
+ "body": "Hello,\n\nyour booking BK-F6FTCQ24 is confirmed.\n\nBooking reference: BK-F6FTCQ24\nYour reference: TALOS-6639-1\nAirline: Nova Atlas Cargo (NV)\nLane: MUC-BKK\nPrice: 4987.36 EUR\nStatus: booked and ready to ship\n\nKind regards,\nNova Atlas Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:34:25.015717+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "6839"
+}

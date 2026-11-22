@@ -1,0 +1,21 @@
+{
+ "id": 25555,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to TLV",
+ "body": "Hi there,\n\nOur buyer has just withdrawn the order, so we need to cancel the shipment. Please don’t book it. If you’ve already booked it, please cancel the booking.\n\nSorry for the last-minute change, and thanks for your help!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 25499,
+ "references": [
+  25270,
+  25499
+ ],
+ "received_at": "2026-11-21T23:51:01.441805+00:00",
+ "attachments": [],
+ "shipment": "25270",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.98,
+  "reasoning": "The customer says the order was withdrawn and asks us not to book or to cancel the shipment.",
+  "sender_role": "customer"
+ }
+}

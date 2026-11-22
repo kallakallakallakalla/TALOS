@@ -1,0 +1,25 @@
+{
+ "id": 17775,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 20103 Hamburg to HAM on 2026-11-26",
+ "body": "Good day,\n\nthank you for your request. You find our price offer in the attachment, as a text file (price-offer-TRK-5912.txt).\n\nThe offer number is TRK-5912. No booking is necessary: give this number when you use the price.\n\nRheinufer Spedition\nrheinufer-spedition@hackloop.mail",
+ "in_reply_to": 17653,
+ "references": [
+  17653
+ ],
+ "received_at": "2026-11-21T21:24:07.981854+00:00",
+ "attachments": [
+  {
+   "id": 263,
+   "filename": "price-offer-TRK-5912.txt",
+   "content_type": "text/plain",
+   "size": 930
+  }
+ ],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "17653"
+}

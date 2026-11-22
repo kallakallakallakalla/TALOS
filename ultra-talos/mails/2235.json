@@ -1,0 +1,16 @@
+{
+ "id": 2235,
+ "from": "fjordline-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-4Z53E4AB confirmed",
+ "body": "Hello,\n\nyour booking BK-4Z53E4AB is confirmed.\n\nBooking reference: BK-4Z53E4AB\nYour reference: TALOS-1638-1\nAirline: Fjordline Air Cargo (FQ)\nLane: MUC-LAX\nPrice: 2780.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nFjordline Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:55:13.993617+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "2235"
+}

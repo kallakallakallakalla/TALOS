@@ -1,0 +1,23 @@
+{
+ "id": 2228,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to LAX",
+ "body": "Thank you for the booking confirmation. Please keep us informed of any updates.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 2217,
+ "references": [
+  1638,
+  1674,
+  1701,
+  2197,
+  2211,
+  2217
+ ],
+ "received_at": "2026-11-21T15:55:06.048738+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "update",
+  "source": "old router"
+ },
+ "shipment": "1638"
+}

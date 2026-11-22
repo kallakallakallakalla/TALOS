@@ -1,0 +1,21 @@
+{
+ "id": 10077,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to PVG",
+ "body": "Dear Alex,\n\nThank you for confirming the booking and arranging pickup for 26 November 2026.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 10069,
+ "references": [
+  9876,
+  10040,
+  10059,
+  10069
+ ],
+ "received_at": "2026-11-21T18:47:02.073989+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "9876"
+}

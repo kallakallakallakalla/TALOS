@@ -1,0 +1,16 @@
+{
+ "id": 5854,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: FRA–DEL",
+ "body": "Hi,\n\nCould you quote an all-in price in EUR for the cheapest air freight option to DEL (Delhi, IN)?\n\nWe’ll deliver the shipment to FRA ourselves. It’ll be ready on 2026-11-24: 11 pieces of printed marketing material, 736 kg gross, 6.88 cbm.\n\nThanks\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T17:14:36.384410+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "rfq",
+  "source": "old router"
+ },
+ "shipment": "5854"
+}

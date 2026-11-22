@@ -1,0 +1,18 @@
+{
+ "id": 11002,
+ "from": "kranich-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 65797 Wiesbaden to FRA on 2026-11-27",
+ "body": "Hi Alex,\n\nOur all-in price for pickup in Wiesbaden and delivery to the air export warehouse at Frankfurt Airport is 248.54 EUR.\n\nPickup time: 8 hours\nQuote valid until: 21 Nov 2026 19:25 UTC\nOffer reference: TRK-3565\n\nNo booking is needed.\n\nBest regards,\nKranich Kurier",
+ "in_reply_to": 10904,
+ "references": [
+  10904
+ ],
+ "received_at": "2026-11-21T19:10:35.162986+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "10904"
+}

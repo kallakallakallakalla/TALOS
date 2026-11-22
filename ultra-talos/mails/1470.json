@@ -1,0 +1,16 @@
+{
+ "id": 1470,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: DUS to KUL",
+ "body": "Dear Air Freight Team,\n\nCould you please quote your cheapest air freight option from DUS to KUL (Kuala Lumpur, MY)? We will deliver the shipment to DUS ourselves. It will be ready on 2026-11-26.\n\nThe shipment consists of 12 pieces of spare parts for packaging machines, with a gross weight of 1549 kg and a total volume of 8.26 cbm.\n\nPlease provide an all-in price in EUR.\n\nThank you for your assistance.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T15:31:22.981062+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "1470"
+}

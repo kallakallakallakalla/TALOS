@@ -1,0 +1,18 @@
+{
+ "id": 2416,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25",
+ "body": "All-in price for the Bad Homburg pickup and delivery to the FRA air export warehouse: 75.60 EUR.\nPickup time: 30 hours.\nPrice valid until 21 Nov 2026 16:10 UTC.\nOffer reference: TRK-783. No booking required.\n\nBodenseefracht",
+ "in_reply_to": 2337,
+ "references": [
+  2337
+ ],
+ "received_at": "2026-11-21T15:56:20.038400+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "RFQ",
+  "source": "old router"
+ },
+ "shipment": "2337"
+}

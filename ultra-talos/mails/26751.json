@@ -1,0 +1,18 @@
+{
+ "id": 26751,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 20674 to RUH, 591 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Rheintal Elektronik GmbH, 20674 to RUH, 591 kg, ready on 2026-11-28? Where is it now?\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T00:13:05.482487+00:00",
+ "attachments": [],
+ "shipment": "26751",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.97,
+  "reasoning": "The sender asks for the current status and location of a shipment.",
+  "sender_role": "tracking"
+ }
+}

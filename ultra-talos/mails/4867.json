@@ -1,0 +1,16 @@
+{
+ "id": 4867,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-0NTC4NKN confirmed",
+ "body": "Hello,\n\nyour booking BK-0NTC4NKN is confirmed.\n\nBooking reference: BK-0NTC4NKN\nYour reference: TALOS-4649-1\nAirline: Lumen Air Cargo (LM)\nLane: CGN-DFW\nPrice: 5819.38 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T16:52:12.210159+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "4867"
+}

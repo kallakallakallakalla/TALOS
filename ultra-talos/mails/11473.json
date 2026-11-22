@@ -1,0 +1,18 @@
+{
+ "id": 11473,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 86458 Augsburg to MUC on 2026-11-25",
+ "body": "All-in price for pickup and delivery to the air export warehouse: 246.58 EUR.\nPickup time: 23 hours.\nValid until: 21 Nov 2026 19:37 UTC.\nOffer reference: TRK-3737. No booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 11377,
+ "references": [
+  11377
+ ],
+ "received_at": "2026-11-21T19:22:43.989445+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "trucker_quote",
+  "source": "old router"
+ },
+ "shipment": "11377"
+}

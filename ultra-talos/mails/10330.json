@@ -1,0 +1,19 @@
+{
+ "id": 10330,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to MIA",
+ "body": "Thank you for your offer, but these goods are dangerous goods and you quoted without asking us for the dangerous goods documents, so we will not go ahead with it.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 10313,
+ "references": [
+  10142,
+  10313
+ ],
+ "received_at": "2026-11-21T18:52:36.434500+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_reject",
+  "source": "old router"
+ },
+ "shipment": "10142"
+}

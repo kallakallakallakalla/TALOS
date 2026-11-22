@@ -1,0 +1,18 @@
+{
+ "id": 2417,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25",
+ "body": "Hi Air Freight Desk,\n\nThanks for reaching out! Our all-in price for the pickup in Bad Homburg and delivery to the air export warehouse at Frankfurt Airport is 97.75 EUR.\n\nPickup time: 30 hours. The quote is valid until 21 Nov 2026 16:10 UTC.\n\nYour offer reference is TRK-784. No booking is needed.\n\nBest regards,\nNordlicht Haulage",
+ "in_reply_to": 2338,
+ "references": [
+  2338
+ ],
+ "received_at": "2026-11-21T15:56:20.038554+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "2338"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 5363,
+ "from": "waldrand-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 28261 Bremen to HAM on 2026-11-26",
+ "body": "All-in price for pickup in Bremen and delivery to the HAM air export warehouse: 184.36 EUR.\nPickup time: 15 hours.\nPrice valid until 21 Nov 2026 17:17 UTC.\nOffer reference: TRK-1695. No booking required.\n\nWaldrand Transporte",
+ "in_reply_to": 5269,
+ "references": [
+  5269
+ ],
+ "received_at": "2026-11-21T17:03:00.123029+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "Answer",
+  "source": "old router"
+ },
+ "shipment": "5269"
+}

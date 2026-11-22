@@ -1,0 +1,18 @@
+{
+ "id": 7436,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61391 Bad Homburg to FRA on 2026-11-25",
+ "body": "Hi TALOS Team,\n\nThanks for reaching out! We can collect your freight in Bad Homburg and deliver it to Frankfurt Airport for a fixed price of 97.75 EUR.\n\nPickup time: 30 hours. The quote is valid until 21 Nov 2026 18:04 UTC.\n\nYour offer reference is TRK-2373. No booking is needed for the pickup.\n\nBest regards,\nNordlicht Haulage",
+ "in_reply_to": 7416,
+ "references": [
+  7416
+ ],
+ "received_at": "2026-11-21T17:50:25.110331+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "other",
+  "source": "old router"
+ },
+ "shipment": "7416"
+}

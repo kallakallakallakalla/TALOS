@@ -1,0 +1,16 @@
+{
+ "id": 23150,
+ "from": "polaris-air-logistics@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-JZJ8J0BR confirmed",
+ "body": "Hello,\n\nyour booking BK-JZJ8J0BR is confirmed.\n\nBooking reference: BK-JZJ8J0BR\nYour reference: 22919\nAirline: Polaris Air Logistics (PL)\nLane: FRA-JFK\nPrice: 3664.83 EUR\nStatus: booked and ready to ship\n\nKind regards,\nPolaris Air Logistics bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T23:08:45.154302+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "23150"
+}

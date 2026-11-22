@@ -1,0 +1,16 @@
+{
+ "id": 17536,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 53521 to SCL, 1122 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Weidner Spielwaren GmbH, 53521 to SCL, 1122 kg, ready on 2026-11-25? Where is it now?\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T21:22:36.565939+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "tracking_request",
+  "source": "old router"
+ },
+ "shipment": "17536"
+}

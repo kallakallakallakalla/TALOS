@@ -1,0 +1,23 @@
+{
+ "id": 4268,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to EZE",
+ "body": "Thanks for confirming the booking. Please keep me posted on pickup.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 4264,
+ "references": [
+  4137,
+  4145,
+  4170,
+  4230,
+  4261,
+  4264
+ ],
+ "received_at": "2026-11-21T16:39:44.606799+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "bs",
+  "source": "old router"
+ },
+ "shipment": "4137"
+}

@@ -1,0 +1,19 @@
+{
+ "id": 5907,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: FRA–DEL",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 5865,
+ "references": [
+  5854,
+  5865
+ ],
+ "received_at": "2026-11-21T17:15:02.536187+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "customer_accept",
+  "source": "old router"
+ },
+ "shipment": "5854"
+}

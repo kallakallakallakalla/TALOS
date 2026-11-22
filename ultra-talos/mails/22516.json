@@ -1,0 +1,16 @@
+{
+ "id": 22516,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-9EF4SS9F confirmed",
+ "body": "Hello,\n\nyour booking BK-9EF4SS9F is confirmed.\n\nBooking reference: BK-9EF4SS9F\nYour reference: 22396\nAirline: Nova Atlas Cargo (NV)\nLane: FRA-TPE\nPrice: 1258.30 EUR\nStatus: booked and ready to ship\n\nKind regards,\nNova Atlas Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-21T22:55:55.300483+00:00",
+ "attachments": [],
+ "classification": {
+  "category": "booking_confirmation",
+  "source": "old router"
+ },
+ "shipment": "22516"
+}
