@@ -5,9 +5,10 @@
 #
 #   ./crm.sh [port] [database]
 #     port      default 8010
-#     database  the SQLite file of a running router, to follow its live data, e.g.
-#               ./crm.sh 8010 /path/to/TALOS/router/data/router.db
-#               Without it the copy in this folder is shown (a snapshot plus the dry run).
+#     database  the SQLite file of a router, to follow its live data. Without it the router's
+#               usual database is used (~/.talos/router.db): on the machine where the router
+#               runs, "Live" therefore follows it by itself; elsewhere "Live" is empty and the
+#               recorded dry run is shown.
 set -euo pipefail
 PORT="${1:-8010}"
 if [ -n "${2:-}" ]; then
@@ -58,6 +59,23 @@ open_page() {
     xdg-open "$1" >/dev/null 2>&1 || true
   fi
 }
+# If something already listens on the port, the browser would show that program instead of
+# this one: typically an older copy of the console that was never stopped.
+if .venv/bin/python -c "import socket, sys; s = socket.socket(); s.settimeout(0.5); sys.exit(s.connect_ex(('127.0.0.1', int(sys.argv[1]))))" "$PORT" 2>/dev/null; then
+  echo "Port $PORT is already in use, so this copy cannot start there."
+  if command -v lsof >/dev/null 2>&1; then
+    OLD="$(lsof -nP -iTCP:"$PORT" -sTCP:LISTEN -t 2>/dev/null | head -1)"
+    if [ -n "$OLD" ]; then
+      WHERE="$(lsof -a -p "$OLD" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')"
+      echo "It is used by process $OLD${WHERE:+, started in $WHERE}."
+      echo "If that is an older copy of this console, stop it and start again:"
+      echo "  kill $OLD"
+    fi
+  fi
+  echo "Or start this copy on another port:  bash $(basename "$0") $((PORT + 1))"
+  exit 1
+fi
+
 URL="http://localhost:$PORT"
 (
   sleep 3

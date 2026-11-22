@@ -107,6 +107,11 @@ class MessageStore:
                 CREATE INDEX IF NOT EXISTS idx_processed_messages_category
                     ON processed_messages (category, message_id DESC);
 
+                -- Items of the CRM's action queue that an operator has dealt with by hand.
+                CREATE TABLE IF NOT EXISTS crm_dismissed (
+                    key TEXT PRIMARY KEY, dismissed_at TEXT NOT NULL
+                );
+
                 CREATE TABLE IF NOT EXISTS message_failures (
                     message_id INTEGER PRIMARY KEY,
                     attempts INTEGER NOT NULL,
@@ -628,6 +633,7 @@ class MessageStore:
                   || '|' || (SELECT COUNT(*) FROM air_options)
                   || '|' || (SELECT COUNT(*) || ':' || COUNT(sent_message_id) FROM outbound_mails)
                   || '|' || (SELECT COALESCE(SUM(attempts), 0) FROM message_failures)
+                  || '|' || (SELECT COUNT(*) FROM crm_dismissed)
                 """
             ).fetchone()
         return row[0]
@@ -691,3 +697,44 @@ class MessageStore:
                     mail.in_reply_to, mail.sent_message_id, int(mail.used_template), mail.created_at,
                 ),
             )  # fmt: skip
+
+    # --- Operator actions from the CRM (app/actions.py) -------------------------------------
+
+    def dismissed(self) -> set[str]:
+        with self._connect() as conn:
+            return {row["key"] for row in conn.execute("SELECT key FROM crm_dismissed")}
+
+    def dismiss(self, key: str) -> None:
+        with self._connect() as conn:
+            conn.execute("INSERT OR REPLACE INTO crm_dismissed (key, dismissed_at) VALUES (?, ?)", (key, _utc_now_iso()))
+
+    def restore_dismissed(self) -> int:
+        """Bring every dismissed item back; returns how many there were."""
+        with self._connect() as conn:
+            return conn.execute("DELETE FROM crm_dismissed").rowcount
+
+    def recent(self, *, shipments: int, mails: int) -> dict[str, list[dict[str, Any]]]:
+        """The latest requests and mails as light rows, oldest first (the CRM's status bar)."""
+        with self._connect() as conn:
+            requests = conn.execute(
+                """
+                SELECT id, state, error, booking_ref FROM shipments
+                WHERE COALESCE(error, '') NOT LIKE 'legacy:%' ORDER BY id DESC LIMIT ?
+                """,
+                (shipments,),
+            ).fetchall()
+            inbound = conn.execute(
+                "SELECT message_id AS id, category, confidence, reasoning FROM processed_messages ORDER BY message_id DESC LIMIT ?",
+                (mails,),
+            ).fetchall()
+        return {"shipments": [dict(row) for row in reversed(requests)], "mails": [dict(row) for row in reversed(inbound)]}
+
+    def forget_message(self, message_id: int) -> None:
+        """Remove a stored mail, so that processing it again stores the new reading."""
+        with self._connect() as conn:
+            conn.execute("DELETE FROM processed_messages WHERE message_id = ?", (message_id,))
+
+    def clear_failure(self, message_id: int) -> None:
+        """Forget the failed attempts of a mail, so it is processed again from the start."""
+        with self._connect() as conn:
+            conn.execute("DELETE FROM message_failures WHERE message_id = ?", (message_id,))

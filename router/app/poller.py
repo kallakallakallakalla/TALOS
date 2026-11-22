@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from collections import deque
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
@@ -50,11 +51,17 @@ class MailboxPoller:
         self._classifier = classifier
         self._store = store
         self._workflow = workflow
+        self.workflow = workflow  # the CRM's actions run through the same workflow
         self._poll_lock = asyncio.Lock()
+        # Held for a whole cycle (poll and timers). An operator action from the CRM takes it
+        # too, so a manual booking never runs in between two steps of the same shipment.
+        self.work_lock = asyncio.Lock()
         self._stop_event = asyncio.Event()
         self.running: bool = False
         self.last_poll_at: str | None = None
         self.last_error: str | None = None
+        # (time, went well) of the latest polls: an hour at the default interval. Read by the CRM's status bar.
+        self.polls: deque[tuple[str, bool]] = deque(maxlen=900)
         self._backoff = 0.0
 
     @observe(name="mail")
@@ -192,19 +199,23 @@ class MailboxPoller:
         next poll wait for its Retry-After instead of hammering the limit.
         """
         self._backoff = 0.0
-        try:
-            await self.poll_once()
-        except httpx.HTTPStatusError as exc:
-            self._note_error(exc)
-            if exc.response.status_code == 429:
-                self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
-        except Exception as exc:  # noqa: BLE001 - keep background poller alive
-            self._note_error(exc)
-        try:
-            if self._workflow:
-                await self._workflow.tick()
-        except Exception as exc:  # noqa: BLE001 - keep background poller alive
-            self._note_error(exc)
+        async with self.work_lock:
+            polled = False
+            try:
+                await self.poll_once()
+                polled = True
+            except httpx.HTTPStatusError as exc:
+                self._note_error(exc)
+                if exc.response.status_code == 429:
+                    self._backoff = float(exc.response.headers.get("Retry-After", "5")) + 1
+            except Exception as exc:  # noqa: BLE001 - keep background poller alive
+                self._note_error(exc)
+            self.polls.append((datetime.now(UTC).isoformat(), polled))
+            try:
+                if self._workflow:
+                    await self._workflow.tick()
+            except Exception as exc:  # noqa: BLE001 - keep background poller alive
+                self._note_error(exc)
 
     def _note_error(self, exc: Exception) -> None:
         self.last_poll_at = datetime.now(UTC).isoformat()

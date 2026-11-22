@@ -20,7 +20,7 @@
         <div><b>TALOS</b><span>Air freight desk</span></div>
       </div>
       <nav class="nav" id="nav" aria-label="Sections"></nav>
-      <div class="rail-foot"><span id="source-line"></span><span id="mode-line"></span><b id="clock"></b><span>All times in UTC</span></div>
+      <div class="rail-foot" id="build"></div>
     </aside>
     <div class="stage">
       <header class="bar glass">
@@ -28,12 +28,15 @@
         <label class="search"><span class="icon" id="search-icon"></span><input id="search" type="search" placeholder="Search this page  ( / )" aria-label="Search this page"></label>
         <div class="seg" id="source" role="group" aria-label="Data shown"></div>
         <span class="chip" id="live"></span>
+        <button class="iconbtn" id="bell" aria-label="Notifications for new cases"></button>
         <button class="iconbtn" id="theme" title="Light or dark" aria-label="Switch between light and dark"></button>
       </header>
+      <div class="health glass" id="health" role="status" aria-label="System status"></div>
       <main class="view" id="view" tabindex="-1"></main>
     </div>
   </div>
   <div id="tip" role="tooltip"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
   <script type="module" src="/crm/assets/app.js"></script>
 </body>
 </html>

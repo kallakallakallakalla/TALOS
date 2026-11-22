@@ -7,6 +7,7 @@ snapshot says why: in a dry-run replay the clocks are mixed and the recorded cus
 verdicts answered the old process's quotes, so timings and win rates are not judged there.
 """
 
+import re
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -32,6 +33,7 @@ VOLUME_KG_PER_CBM = 167.0  # chargeable weight rule of every tariff (docs/data.m
 ROUND_WINDOW_MINUTES = 6.0  # a round closes 6 minutes after it is sent (docs/scoring.md)
 LOW_CONFIDENCE = 0.7  # same threshold as the poller
 STUCK_AFTER_MINUTES = 5.0  # pricing normally ends within the trucker wait (60 s)
+WAIT_BEFORE_LISTING_MINUTES = 2.0  # a question or booking younger than this is work in progress, not a case
 _LEGACY = "legacy:"  # error text written by scripts/backfill_legacy.py
 
 
@@ -526,57 +528,98 @@ def lanes(deals: list[dict], data: Dataset, today: date, live: bool) -> list[dic
     return sorted(rows, key=lambda r: (-r["requests"], r["lane"]))
 
 
-def attention(deals: list[dict], data: Dataset, settings: Settings, *, live: bool, now: datetime) -> list[dict[str, Any]]:
-    """Open actions, most urgent first. `kind` names the rule; time-based rules need live data."""
+CLOSED_BY_OPERATOR = "closed by operator"  # same text as app/actions.py writes
+GAVE_UP = "processing failed"  # start of the reasoning the poller stores when it gives up on a mail
+
+
+def attention(
+    deals: list[dict],
+    data: Dataset,
+    settings: Settings,
+    *,
+    live: bool,
+    now: datetime,
+    held_changes: list[dict] | None = None,
+    dismissed: set[str] | None = None,
+    poller: dict | None = None,
+) -> list[dict[str, Any]]:
+    """The queue of cases that need a person, most urgent first.
+
+    Only cases the agent cannot finish alone are listed. A quote waiting for its answer is
+    normal and is not; neither is a question or a booking that has only just gone out
+    (`WAIT_BEFORE_LISTING_MINUTES`, live data only). Each item has a stable `key` (so it can
+    be dismissed), the `kind` of rule behind it, the `actions` that apply, and
+    `needs_person`: false for the few items that are listed for information only.
+    """
     items: list[dict[str, Any]] = []
 
-    def add(level: str, kind: str, d: dict | None, title: str, detail: str, **extra: Any) -> None:
+    def add(level: str, kind: str, d: dict | None, title: str, detail: str, actions: list[str], qualifier: Any = "", waiting: float | None = None, **extra: Any) -> None:
+        subject = d["id"] if d else extra.get("mail_id") or extra.get("change_id") or ""
         items.append(
             {
+                "key": f"{kind}:{subject}:{qualifier}",
                 "level": level,
                 "kind": kind,
                 "shipment_id": d["id"] if d else None,
-                "company": d["company"] if d else None,
+                "company": d["company"] if d else extra.pop("company", None),
                 "lane": d["lane"] if d else None,
                 "title": title,
                 "detail": detail,
+                "actions": [*actions, "dismiss"],
+                "needs_person": bool(actions) or kind == "poller_stopped",
+                "waiting_minutes": None if waiting is None else round(waiting),
                 **extra,
             }
         )
 
+    if live and poller and poller["enabled"] and (not poller["running"] or poller["last_error"]):
+        stopped = not poller["running"]
+        add("critical", "poller_stopped", None, "The mailbox poller has stopped" if stopped else "The last mailbox poll failed",
+            (poller["last_error"] or "No mail is being read.") + (" Restart the router." if stopped else " It is retried on the next cycle."),
+            [], "stopped" if stopped else "error")  # fmt: skip
     for d in deals:
-        state = d["state"]
+        state, who = d["state"], d["company"]
         idle = _minutes(d["updated_at"], now.isoformat()) if live else None
+        young = idle is not None and idle < WAIT_BEFORE_LISTING_MINUTES
         if state == S.FAILED:
-            add("critical", "failed", d, "Processing failed", d["error"] or "No error text stored.")
-        elif state == S.BOOKING:
-            add("warning", "booking_open", d, "Booking in progress",
-                f"Attempt {d['booking_attempts']} of {settings.max_booking_attempts} with {d['airline']}.")  # fmt: skip
-        elif state == S.AWAITING_INFO:
-            add("warning", "awaiting_information", d, "Awaiting customer information",
-                f"Clarification {d['clarifications']} of {settings.max_clarifications} sent. Missing: "
-                + ("; ".join(d["missing"]) or "not determined") + ".")  # fmt: skip
+            if d["error"] == CLOSED_BY_OPERATOR:
+                continue
+            gave_up_booking = (d["error"] or "").startswith("not booked")
+            add("critical", "failed", d, f"Booking for {who} failed" if gave_up_booking else f"The request from {who} could not be processed",
+                d["error"] or "No error text stored.", ["retry_booking"] if gave_up_booking else [], waiting=idle)  # fmt: skip
+        elif state == S.BOOKING and not young:
+            add("warning", "booking_open", d, f"Booking for {who} is still open",
+                f"Attempt {d['booking_attempts']} of {settings.max_booking_attempts} with {d['airline']}.",
+                ["retry_booking"], d["booking_attempts"], waiting=idle)  # fmt: skip
+        elif state == S.AWAITING_INFO and not young:
+            can_ask = d["clarifications"] < settings.max_clarifications and d["missing"]
+            add("warning", "awaiting_information", d, f"{who} has not answered our question",
+                f"Asked {d['clarifications']} of {settings.max_clarifications} times. Missing: "
+                + ("; ".join(d["missing"]) or "not determined") + ".",
+                ["remind_customer", "close_shipment"] if can_ask else ["close_shipment"], d["clarifications"], waiting=idle)  # fmt: skip
         elif state in (S.NEW, S.PRICING) and idle is not None and idle > STUCK_AFTER_MINUTES:
-            add("warning", "pricing_delayed", d, "Pricing delayed",
-                f"No change for {idle:.0f} minutes. Pricing normally completes within {settings.trucker_wait_seconds:.0f} s.")  # fmt: skip
+            add("warning", "pricing_delayed", d, f"Pricing for {who} is stuck",
+                f"No change for {idle:.0f} minutes. Pricing normally completes within {settings.trucker_wait_seconds:.0f} s.",
+                ["close_shipment"], waiting=idle)  # fmt: skip
         elif state == S.QUOTED:
             expires = _parse_time(d["valid_until"])
-            if d["truck_mode"] == "estimate":
-                add("warning", "estimated_trucking", d, "Quote contains estimated trucking cost",
-                    f"No trucker offer was received in time. {_eur(d['truck_eur'])} of {_eur(d['all_in_eur'])} is an estimate.")  # fmt: skip
-            elif live and expires and expires < now:
-                add("warning", "quote_expired", d, "Quote expired without response", f"Valid until {d['valid_until']}.")
-            else:
-                add("info", "awaiting_decision", d, "Awaiting customer decision",
-                    f"{_eur(d['all_in_eur'])} with {d['airline']}, valid until {d['valid_until']}.")  # fmt: skip
-        elif state == S.BOOKED and not d["dry_run_booking"]:
-            add("info", "confirmation_pending", d, "Airline confirmation pending", f"Booking reference {d['booking_ref']}.")
-    for failure in data.failures:
+            if live and expires and expires < now:
+                add("warning", "quote_expired", d, f"The quote to {who} expired unanswered", f"Valid until {d['valid_until']}.", ["close_shipment"])
+    stored = {m["id"]: m for m in data.mails}
+    # A mail that failed once and went through on a later attempt needs nobody.
+    open_failures = [f for f in data.failures
+                     if f["message_id"] not in stored or (stored[f["message_id"]]["reasoning"] or "").startswith(GAVE_UP)]  # fmt: skip
+    for failure in open_failures:
         add("warning", "mail_failed", None, f"Mail {failure['message_id']} could not be processed",
             f"{failure['attempts']} of {settings.max_message_attempts} attempts. {failure['last_error'] or ''}".strip(),
-            mail_id=failure["message_id"])  # fmt: skip
-    order = {"critical": 0, "warning": 1, "info": 2}
-    return sorted(items, key=lambda item: order[item["level"]])
+            ["retry_mail"], failure["attempts"], mail_id=failure["message_id"])  # fmt: skip
+    for change in held_changes or []:
+        add("warning", "data_change_held", None, "Reference data change held for review",
+            f"{change['record_key']}: {change['reason'] or 'failed a check'}. From {change['sender'] or 'unknown'}: {change['subject']}",
+            [], change_id=change["id"], mail_id=change["message_id"], company=_pretty(change["sender"]))  # fmt: skip
+    hidden = dismissed or set()
+    order = {"critical": 0, "warning": 1}
+    return sorted((item for item in items if item["key"] not in hidden), key=lambda item: (not item["needs_person"], order[item["level"]]))
 
 
 # --- findings --------------------------------------------------------------------------------
@@ -746,6 +789,7 @@ def snapshot(
     tariff_airlines: set[str] | None = None,
     labels: list[dict] | None = None,
     now: datetime | None = None,
+    poller: dict | None = None,
 ) -> dict[str, Any]:
     """Everything the CRM lists and charts, in one read of the database."""
     live, now = source == "live", now or datetime.now(UTC)
@@ -753,6 +797,12 @@ def snapshot(
     received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
     rows = [deal(s, data, live=live, received=received) for s in data.shipments]
     deals, legacy = [d for d in rows if not d["legacy"]], [d for d in rows if d["legacy"]]
+    held_changes = [
+        {**change.model_dump(), "sender": update.sender, "subject": update.subject}
+        for update in (store.data_updates() if live else [])
+        for change in update.changes
+        if change.status == "held"
+    ]
     used = {code for d in deals for code in (d["origin"], d["destination"]) if code}
     zone_map = reference.zones  # zone -> (area, airport)
     origins = {airport for _, airport in zone_map.values()}
@@ -783,20 +833,114 @@ def snapshot(
             code: {"city": city, "lat": lat, "lon": lon, "origin": code in origins, "used": code in used}
             for code, (city, lat, lon) in AIRPORTS.items()
         },
-        "attention": attention(deals, data, settings, live=live, now=now),
+        "attention": attention(deals, data, settings, live=live, now=now, held_changes=held_changes, dismissed=(hidden := store.dismissed()), poller=poller),
+        "dismissed": len(hidden),
+        "poller": poller if live else None,
         "findings": findings(deals, settings, live=live),
         "mail": mail_stats(data, reference, labels),
         "outbound": outbound_stats(data),
     }
 
 
-def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int, *, source: str) -> dict[str, Any] | None:
+def _trace(store: MessageStore, shipment: Shipment, d: dict, options: list[AirOption], requests: list[TruckerRequest], reference: Reference, *, live: bool = True) -> list[dict[str, Any]]:
+    """Why this shipment stands where it stands, as the steps that led there, in order.
+
+    `tone` marks a step that went well ("ok"), one to look at ("warn") or one that failed
+    ("bad"). Where a later fact shows a better choice existed, the step says so.
+    """
+    steps: list[dict[str, Any]] = []
+
+    def step(label: str, detail: str, tone: str = "ok", at: str | None = None) -> None:
+        steps.append({"label": label, "detail": detail, "tone": tone, "at": at})
+
+    def name(email: str | None) -> str:
+        carrier = reference.carrier_for_email(email)
+        return carrier.name if carrier else _pretty(email)
+
+    cargo = ", ".join(part for part in (
+        f"{d['pieces']} pieces" if d["pieces"] else None, f"{d['gross_kg']:g} kg" if d["gross_kg"] else None,
+        f"{round(d['volume_cbm'], 2):g} cbm" if d["volume_cbm"] else None) if part)  # fmt: skip
+    step("Request received",
+         f"{d['company']} asked for {('the ' + d['goal'] + ' option') if d['goal'] else 'a quote'} to {d['destination'] or 'an unnamed airport'}"
+         + (f": {cargo}" if cargo else "") + (f", pickup in {d['pickup_city'] or d['pickup_postal_code']}." if d["pickup"] else ", delivered to the airport by the customer."),
+         at=d["received_at"])  # fmt: skip
+    if d["clarifications"] or d["missing"]:
+        step("Details incomplete",
+             f"Asked the customer {('once', 'twice').__getitem__(d['clarifications'] - 1) if 1 <= d['clarifications'] <= 2 else _n(d['clarifications'], 'time')}." + (f" Still missing: {'; '.join(d['missing'])}." if d["missing"] else " The answer completed the request."),
+             "warn" if d["missing"] else "ok")  # fmt: skip
+    if d["assumptions"]:
+        step("Assumptions made", "; ".join(d["assumptions"]).capitalize() + ".", "warn")
+    if d["dangerous_goods"]:
+        step("Dangerous goods", f"{d['dangerous_goods']}. Documents {'received' if d['dg_documents_received'] else 'not received yet: no quote before they arrive'}.",
+             "ok" if d["dg_documents_received"] else "warn")  # fmt: skip
+
+    offers = [r for r in requests if r.answered and r.price_eur is not None]
+    if requests:
+        lowest = min(offers, key=lambda r: r.price_eur) if offers else None
+        if d["truck_mode"] == "estimate":
+            asked_back = sum(r.answered and r.price_eur is None for r in requests)
+            text = (f"Asked {_n(len(requests), 'trucker')}; no offer had arrived when the quote went out"
+                    + (f" ({asked_back} answered without a price)" if asked_back else "") + f", so {_eur(d['truck_eur'])} was estimated.")  # fmt: skip
+            if lowest:  # an offer that came in afterwards shows how far the estimate was off
+                text += f" A later offer from {name(lowest.trucker)} was {_eur(lowest.price_eur)}: the estimate was {_eur(abs(d['truck_eur'] - lowest.price_eur))} {'higher' if d['truck_eur'] > lowest.price_eur else 'lower'}."
+            step("Trucking estimated", text, "warn")
+        elif offers:
+            text = f"Asked {len(requests)} truckers, {len(offers)} sent an offer. Lowest: {name(lowest.trucker)} at {_eur(lowest.price_eur)}."
+            if d["trucker"] and d["trucker"] != lowest.trucker and d["truck_eur"]:
+                text += f" Used {name(d['trucker'])} at {_eur(d['truck_eur'])}, because the pickup time decides before the price does."
+            step("Trucking priced", text, "ok" if len(offers) == len(requests) else "warn")
+        elif d["all_in_eur"] is None:
+            step("Trucking requested", f"Asked {len(requests)} truckers; no offer yet.", "warn")
+
+    if options:
+        a = d["air"]
+        text = f"Priced {_n(a['n'], 'airline')}. Lowest: {a['cheapest_airline']} at {_eur(a['cheapest_eur'])} ({_n(a['cheapest_days'], 'day')})."
+        if a["speed_days"] > 0:
+            text += f" Fastest: {a['fastest_airline']} at {_eur(a['fastest_eur'])} ({_n(a['fastest_days'], 'day')})."
+        if d["airline"]:
+            why = {"fastest": "the customer asked for the fastest option", "cheapest": "the customer asked for the cheapest option"}.get(d["goal"], "no priority was stated, so the lowest price counts")
+            text += f" Chose {d['airline']} because {why}."
+        step("Air freight priced", text)
+
+    if d["all_in_eur"] is not None:
+        text = f"{d['all_in_eur']:,.2f} EUR all-in with {d['airline']}"
+        tone = "ok"
+        if d["minutes_to_quote"] is not None:
+            late = d["minutes_to_quote"] > ROUND_WINDOW_MINUTES
+            text += f", {d['minutes_to_quote']:g} min after the request" + (f": after the {ROUND_WINDOW_MINUTES:.0f}-minute window" if late else "")
+            tone = "bad" if late else "ok"
+        step("Quote sent", text + (f". Valid until {d['valid_until']}." if d["valid_until"] else "."), tone)
+
+    quote = shipment.quote or {}
+    verdict_id = quote.get("accept_message_id") or quote.get("reject_message_id")
+    verdict = store.get_message(verdict_id) if verdict_id else None
+    # In a replay the customer's reply is the recorded one: it answered the earlier process's quote.
+    recorded = "" if live else "\nRecorded reply: it answered the earlier process's quote, not this one."
+    if d["state"] == S.REJECTED or quote.get("reject_message_id"):
+        step("Declined by the customer", (verdict.body.strip()[:300] if verdict else "No reply text stored.") + recorded, "bad", verdict.received_at if verdict else None)
+    elif quote.get("accept_message_id"):
+        step("Accepted by the customer", (verdict.body.strip()[:300] if verdict else "") + recorded, "ok", verdict.received_at if verdict else None)
+    elif d["state"] == S.QUOTED:
+        step("Awaiting the customer's decision", "No reply to the quote yet.", "warn")
+
+    if d["state"] in (S.BOOKED, S.CONFIRMED):
+        step("Booked" if d["state"] == S.BOOKED else "Booked and confirmed by the airline",
+             "Simulated: nothing was booked in a dry run." if d["dry_run_booking"] else f"Booking reference {d['booking_ref']}.",
+             at=d["last_booking_attempt_at"])  # fmt: skip
+    elif d["state"] == S.BOOKING:
+        step("Booking in progress", f"Attempt {d['booking_attempts']} with {d['airline']}.", "warn", d["last_booking_attempt_at"])
+    if d["state"] == S.FAILED:
+        step("Closed by an operator" if d["error"] == CLOSED_BY_OPERATOR else "Failed", d["error"] or "No error text stored.", "bad")
+    return steps
+
+
+def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int, *, source: str, data: Dataset | None = None) -> dict[str, Any] | None:
     """One shipment with its compared flights, trucker offers and the whole conversation."""
     shipment = store.get_shipment(shipment_id)
     if shipment is None:
         return None
     live = source == "live"
-    data = Dataset.load(store)
+    data = data or Dataset.load(store)
     received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
     row = deal(shipment, data, live=live, received=received)
     options, requests = data.options.get(shipment_id, []), data.truckers.get(shipment_id, [])
@@ -852,6 +996,7 @@ def shipment_detail(store: MessageStore, reference: Reference, shipment_id: int,
     return {
         "source": source,
         "deal": row,
+        "trace": _trace(store, shipment, row, options, requests, reference, live=source == "live"),
         "options": [
             {
                 "airline": o.airline, "code": o.airline_code, "source": o.source,
@@ -915,3 +1060,407 @@ def mails(
             }
         )
     return {"total": len(rows), "offset": offset, "items": rows[offset : offset + limit]}
+
+
+
+# --- sessions: one request as the sequence of things that happened, for the live stream ----------
+
+_INBOUND_TITLE = {
+    "rfq": "Request from {who}", "customer_info": "{who} sent the missing details", "customer_accept": "{who} accepted the quote",
+    "customer_reject": "{who} declined the quote", "customer_question": "{who} asked a question", "trucker_quote": "Offer from {who}",
+    "trucker_decline": "{who} declined the pickup", "booking_confirmation": "{who} confirmed the booking",
+    "tracking_request": "Tracking question for this shipment", "rate_offer": "Rate offer from {who}", "tariff_update": "Tariff update from {who}",
+}  # fmt: skip
+_OUTBOUND_TITLE = {
+    "quote": "Quote written to {who}", "clarification": "Asked {who} for the missing details", "booking_note": "Booking confirmed to {who}",
+    "booking_request": "Booking requested from {who}", "no_price": "Told {who} that no price is available",
+    "answer": "Answered the question of {who}", "tracking_answer": "Tracking answer written", "airline_request": "Asked {who} for a rate",
+}  # fmt: skip
+_INBOUND_TONE = {"customer_accept": "ok", "customer_reject": "bad", "trucker_decline": "warn", "booking_confirmation": "ok"}
+_CATEGORY_WORDS = {"rfq": "a quote request", "customer_accept": "an acceptance", "customer_reject": "a decline", "customer_info": "missing details",
+                   "customer_question": "a question", "trucker_quote": "a trucker offer", "trucker_decline": "a trucker's decline",
+                   "booking_confirmation": "a booking confirmation", "tracking_request": "a tracking question", "other": "needing no answer"}  # fmt: skip
+
+
+def session_events(store: MessageStore, reference: Reference, shipment_id: int, *, source: str, data: Dataset | None = None) -> list[dict[str, Any]] | None:
+    """What happened on one request, in order: every mail in and out, and between them what the
+    router concluded (what it understood, which airlines it compared, how it priced the pickup).
+
+    Each event has a stable `id`, so a listener can tell a new one from one it has shown. The
+    router's conclusions are the steps of the decision trace, placed where they were reached.
+    """
+    detail = shipment_detail(store, reference, shipment_id, source=source, data=data)
+    if detail is None:
+        return None
+    d, steps = detail["deal"], {step["label"]: step for step in detail["trace"]}
+    offers = {t["email"]: t for t in detail["truckers"]}
+    events: list[dict[str, Any]] = []
+
+    def add(key: str, actor: str, title: str, detail_text: str | None = None, *, at: str | None = None, tone: str = "info", body: str | None = None) -> None:
+        events.append({"id": f"{shipment_id}:{key}", "session": shipment_id, "at": at, "actor": actor, "title": title,
+                       "detail": detail_text, "tone": tone, "body": body})  # fmt: skip
+
+    def conclusion(key: str, label: str, title: str, at: str | None) -> None:
+        if step := steps.get(label):
+            add(key, "talos", title, step["detail"], at=at, tone=step["tone"] if step["tone"] != "ok" else "info")
+
+    priced = False
+
+    def pricing(at: str | None) -> None:  # reached once, just before the first quote (or at the end, if none went out)
+        nonlocal priced
+        if priced:
+            return
+        priced = True
+        conclusion("air", "Air freight priced", "Compared the airlines", at)
+        for label, title in (("Trucking priced", "Chose the pickup"), ("Trucking estimated", "Estimated the pickup")):
+            conclusion("truck", label, title, at)
+
+    asked: list[str] = []
+    for index, item in enumerate(detail["timeline"]):
+        who, at = item["who"], item["at"]
+        if item["direction"] == "in":
+            category = item["category"]
+            title = _INBOUND_TITLE.get(category, "Mail from {who}").format(who=who)
+            offer = offers.get(item["address"]) if category == "trucker_quote" else None
+            if offer and offer["price_eur"] is not None:
+                title += f": {offer['price_eur']:,.2f} EUR" + (f", pickup within {offer['pickup_hours']:g} h" if offer["pickup_hours"] is not None else "")
+            add(f"in:{item['id']}", item["role"], title, f"Read as {_CATEGORY_WORDS.get(category, category.replace('_', ' '))}, {100 * item['confidence']:.0f}% sure · {item['subject']}",
+                at=at, tone=_INBOUND_TONE.get(category, "info"), body=item["body"])  # fmt: skip
+            if index == 0:
+                conclusion("understood", "Request received", "Understood the request", at)
+                conclusion("assumed", "Assumptions made", "Made assumptions", at)
+                conclusion("incomplete", "Details incomplete", "Details are missing", at)
+            if category == "customer_accept":
+                for label in ("Booked", "Booked and confirmed by the airline", "Booking in progress"):
+                    conclusion("booked", label, label, at)
+        elif item["kind"] == "trucker_request":
+            asked.append(who)
+            following = detail["timeline"][index + 1] if index + 1 < len(detail["timeline"]) else None
+            if not (following and following["direction"] == "out" and following["kind"] == "trucker_request"):
+                add("asked", "talos", f"Asked {_n(len(asked), 'trucker')} for a pickup offer", ", ".join(asked), at=at, body=item["body"])
+        else:
+            if item["kind"] == "quote":
+                pricing(at)
+            title = _OUTBOUND_TITLE.get(item["kind"], "Mail written to {who}").format(who=who)
+            if item["kind"] == "quote" and d["all_in_eur"] is not None:
+                title += f": {d['all_in_eur']:,.2f} EUR all-in"
+            add(f"out:{item['id']}", "talos", title, item["subject"] + ("" if item["sent"] else " · draft, not sent"),
+                at=at, tone="ok" if item["kind"] in ("quote", "booking_note", "tracking_answer") else "info", body=item["body"])  # fmt: skip
+    if detail["options"]:
+        pricing(None)
+    conclusion("failed", "Failed", "Processing failed", None)
+    conclusion("closed", "Closed by an operator", "Closed by an operator", None)
+    return events
+
+
+def sessions(store: MessageStore, reference: Reference, *, source: str, data: Dataset | None = None) -> list[dict[str, Any]]:
+    """Every request as a session, the one with the latest activity first."""
+    live = source == "live"
+    data = data or Dataset.load(store)
+    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
+    inbound: dict[int, list[str]] = defaultdict(list)
+    for mail_id, shipment_id in data.mail_shipments().items():
+        inbound[shipment_id].append(received.get(mail_id) or "")
+    rows = []
+    for shipment in data.shipments:
+        if is_legacy(shipment):
+            continue
+        d = deal(shipment, data, live=live, received=received)
+        outbound = data.outbound.get(shipment.id, [])
+        last = max([*inbound[shipment.id], d["received_at"] or "", *([d["updated_at"] or ""] if live else [])])
+        rows.append({
+            "id": shipment.id, "company": d["company"], "lane": d["lane"] or (f"?-{d['destination']}" if d["destination"] else None),
+            "state": shipment.state.value, "all_in_eur": d["all_in_eur"], "started_at": d["received_at"], "last_at": last or None,
+            "mails": len(inbound[shipment.id]) + len(outbound), "open": shipment.state in OPEN or shipment.state == S.BOOKING,
+        })  # fmt: skip
+    return sorted(rows, key=lambda row: (row["last_at"] or "", row["id"]), reverse=True)
+
+
+def recent_events(store: MessageStore, reference: Reference, *, source: str, limit: int = 12) -> list[dict[str, Any]]:
+    """The events of the sessions with the latest activity: what the live stream watches for news."""
+    data = Dataset.load(store)
+    events: list[dict[str, Any]] = []
+    for row in sessions(store, reference, source=source, data=data)[:limit]:
+        events.extend(session_events(store, reference, row["id"], source=source, data=data) or [])
+    return events
+
+
+# --- status bar: one tick per minute of polling, per request, per booking, per mail ----------------
+
+HEALTH_MINUTES, HEALTH_REQUESTS, HEALTH_BOOKINGS, HEALTH_MAILS = 30, 30, 12, 30
+_REQUEST_TICK = {
+    S.NEW: ("warn", "received"), S.AWAITING_INFO: ("warn", "waiting for the customer"), S.PRICING: ("warn", "being priced"),
+    S.QUOTED: ("ok", "quoted"), S.BOOKING: ("ok", "accepted"), S.BOOKED: ("ok", "booked"), S.CONFIRMED: ("ok", "booked and confirmed"),
+    S.REJECTED: ("ok", "quoted, declined by the customer"),
+}  # fmt: skip
+
+
+def health(recent: dict[str, list[dict]], polls: list[tuple[str, bool]], poller: dict[str, Any], *, now: datetime) -> list[dict[str, Any]]:
+    """The strips of the status bar, each a row of ticks, oldest on the left.
+
+    A tick is `ok`, `warn`, `bad` or `none` (nothing to say) and carries a `tip`; a tick
+    about a request also carries the page it opens. The mailbox strip exists only in the
+    process that reads the mailbox.
+    """
+
+    def tick(tone: str, tip: str, href: str | None = None) -> dict[str, Any]:
+        return {"tone": tone, "tip": tip, "href": href}
+
+    def padded(ticks: list[dict], width: int) -> list[dict]:
+        return [tick("none", "")] * (width - len(ticks)) + ticks[-width:]
+
+    strips: list[dict[str, Any]] = []
+    if poller["enabled"]:
+        per_minute: dict[str, list[bool]] = defaultdict(list)
+        for at, went_well in polls:
+            per_minute[at[:16]].append(went_well)
+        ticks = []
+        for back in range(HEALTH_MINUTES - 1, -1, -1):
+            minute = now - timedelta(minutes=back)
+            results = per_minute.get(minute.isoformat()[:16], [])
+            failed = results.count(False)
+            ticks.append(tick("none" if not results else "bad" if failed else "ok",
+                              f"{minute:%H:%M} UTC · " + ("no poll" if not results else f"{failed} of {_n(len(results), 'poll')} failed" if failed else _n(len(results), "poll"))))  # fmt: skip
+        state = "bad" if not poller["running"] else "warn" if poller["last_error"] else "ok"
+        strips.append({"key": "mailbox", "name": "Mailbox", "state": state, "ticks": ticks,
+                       "text": {"bad": "stopped", "warn": "last poll failed", "ok": ""}[state]})  # fmt: skip
+
+    requests, bookings = [], []
+    for row in recent["shipments"]:
+        state, error, link = S(row["state"]), row["error"] or "", f"#/shipment/{row['id']}"
+        if state == S.FAILED:
+            closed = error == CLOSED_BY_OPERATOR
+            requests.append(tick("none" if closed else "bad", f"Request {row['id']}: " + ("closed by an operator" if closed else f"failed, {error}"), link))
+        else:
+            tone, words = _REQUEST_TICK[state]
+            requests.append(tick(tone, f"Request {row['id']}: {words}", link))
+        if state in (S.BOOKED, S.CONFIRMED):
+            simulated = row["booking_ref"] == DRY_RUN_BOOKING_REF
+            bookings.append(tick("ok", f"Request {row['id']}: " + ("booking simulated in a dry run" if simulated else f"booked as {row['booking_ref']}"), link))
+        elif state == S.BOOKING:
+            bookings.append(tick("warn", f"Request {row['id']}: booking open", link))
+        elif state == S.FAILED and error.startswith("not booked"):
+            bookings.append(tick("bad", f"Request {row['id']}: {error}", link))
+    done = sum(t["tone"] == "ok" for t in requests)
+    strips.append({"key": "requests", "name": "Requests", "state": "bad" if requests and requests[-1]["tone"] == "bad" else "ok",
+                   "ticks": padded(requests, HEALTH_REQUESTS), "text": f"{done}/{len(requests)}" if requests else ""})  # fmt: skip
+    strips.append({"key": "bookings", "name": "Bookings", "state": "bad" if bookings and bookings[-1]["tone"] == "bad" else "ok",
+                   "ticks": padded(bookings, HEALTH_BOOKINGS), "text": ""})  # fmt: skip
+    mails = [
+        tick("bad", f"Mail {m['id']}: given up after repeated failures") if (m["reasoning"] or "").startswith(GAVE_UP)
+        else tick("warn" if m["confidence"] < LOW_CONFIDENCE else "ok", f"Mail {m['id']}: read as {m['category'].replace('_', ' ')}" + (f", {100 * m['confidence']:.0f}% sure" if m["confidence"] < LOW_CONFIDENCE else ""))
+        for m in recent["mails"]
+    ]  # fmt: skip
+    strips.append({"key": "mail", "name": "Mail", "state": "bad" if mails and mails[-1]["tone"] == "bad" else "ok", "ticks": padded(mails, HEALTH_MAILS), "text": ""})
+    return strips
+
+
+# --- performance: which carriers were used, and what the requests contained ----------------------
+
+_INSURANCE = re.compile(r"insur|versicher", re.IGNORECASE)  # insurance, insured, Transportversicherung, versichert
+
+
+def scorecard(store: MessageStore, reference: Reference, settings: Settings, *, source: str, tariff_airlines: set[str] | None = None) -> dict[str, Any]:
+    """Which airlines and truckers the quotes used, and what customers asked for.
+
+    A carrier is counted per quote that went out with it, next to how often it was priced
+    or asked. What a request contained is read from the extracted request, except
+    insurance, which the router does not extract: that row is a word search in the request
+    mail.
+    """
+    live = source == "live"
+    data = Dataset.load(store)
+    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
+    deals = [deal(s, data, live=live, received=received) for s in data.shipments if not is_legacy(s)]
+    quoted = sum(d["all_in_eur"] is not None for d in deals)
+    ids = {d["id"] for d in deals}
+    air = [row for row in airlines(deals, data, reference, tariff_airlines or set()) if row["compared"] or row["chosen"]]
+    trucks = [row for row in truckers(deals, data, reference, live=live, received=received) if row["asked"]]
+    bodies = {d["id"]: (message.body if (message := store.get_message(d["id"])) else "") for d in deals}
+
+    def asked(label: str, count: int) -> dict[str, Any]:
+        return {"name": label, "count": count}
+
+    return {
+        "source": source,
+        "requests": len(deals),
+        "quoted": quoted,
+        "pickups": sum(sid in ids for sid in data.truckers),
+        "airlines": [{"name": row["name"], "quoted": row["chosen"], "accepted": row["accepted"], "priced": row["compared"]}
+                     for row in sorted(air, key=lambda row: (-row["chosen"], -row["accepted"], -row["compared"], row["name"]))],  # fmt: skip
+        "truckers": [{"name": row["name"], "selected": row["chosen"], "asked": row["asked"], "answered": row["answered"]}
+                     for row in sorted(trucks, key=lambda row: (-row["chosen"], -row["answered"], -row["asked"], row["name"]))],  # fmt: skip
+        "top_airline_share_pct": _pct(max((row["chosen"] for row in air), default=0), quoted) if quoted else None,
+        "asks": [
+            asked("Pickup at the customer's site", sum(bool(d["pickup"]) for d in deals)),
+            asked("Fastest option", sum(d["goal"] == "fastest" for d in deals)),
+            asked("Cheapest option", sum(d["goal"] == "cheapest" for d in deals)),
+            asked("Further questions in the request", sum(bool(d["extra_questions"]) for d in deals)),
+            asked("Delivery deadline", sum(bool(d["deliver_by"]) for d in deals)),
+            asked("Dangerous goods", sum(bool(d["dangerous_goods"]) for d in deals)),
+            asked("Special cargo", sum(bool(d["special_cargo"]) for d in deals)),
+            asked("Named or excluded carrier", sum(bool(d["preferred_airline"] or d["preferred_trucker"] or d["excluded_carriers"]) for d in deals)),
+            asked("Insurance", sum(bool(_INSURANCE.search(bodies[d["id"]])) for d in deals)),
+        ],
+    }
+
+
+# --- the compose prompt's style rules, checked on the mail that went out -----------------------
+
+_LABEL_LINE = re.compile(r"^[^\W\d_][\w /\-]{1,30}:\s*\S")
+_RAW_DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+_STOCK = re.compile(
+    r"\b(certainly|i hope this finds you well|please find below|do not hesitate|kindly|as per|please be advised"
+    r"|we are pleased to|thank you for your (enquiry|inquiry)|feel free to reach out)\b",
+    re.IGNORECASE,
+)
+_THANKS_FIRST = re.compile(r"^(thank you|thanks|many thanks|vielen dank|danke)\b", re.IGNORECASE)
+_MARKUP = re.compile(r"\*\*|—|^\s*([-*•]|#{1,6}|\d+\.)\s", re.MULTILINE)
+_PHONE = re.compile(r"\+\d[\d ()/\-]{7,}\d")
+_SENTENCE_END = re.compile(r"[.!?](?=\s|$)")
+MAIL_CHECKS = ["opens with thanks", "stock phrase", "label lines", "raw dates", "more than 5 sentences", "markup", "phone number or footer"]
+
+
+def mail_checks(text: str) -> list[str]:
+    """Which style rules of prompts/talos-compose-mail.md a customer mail breaks.
+
+    Plain pattern checks, so they find the mechanical breaches only (a label line, a raw
+    date, a banned phrase); whether a mail sounds like a person is still a reader's call.
+    """
+    lines = [line.strip() for line in text.strip().splitlines() if line.strip()]
+    if not lines:
+        return []
+    body = lines[1:] if lines[0].endswith(",") else lines  # without the greeting
+    found = []
+    if body and _THANKS_FIRST.match(body[0]):
+        found.append("opens with thanks")
+    if _STOCK.search(text):
+        found.append("stock phrase")
+    if any(_LABEL_LINE.match(line) for line in body):
+        found.append("label lines")
+    if _RAW_DATE.search(text):
+        found.append("raw dates")
+    if len(_SENTENCE_END.findall("\n".join(body))) > 5:
+        found.append("more than 5 sentences")
+    if _MARKUP.search(text):
+        found.append("markup")
+    if _PHONE.search(text):
+        found.append("phone number or footer")
+    return found
+
+
+# --- rounds: one request, one outcome ---------------------------------------------------------
+
+_OPENER = re.compile(r"^(thanks|thank you)( very much)? for (your|the) (offer|quote|quotation)[.,!]?\s*(but\s+)?", re.IGNORECASE)
+
+
+def _reason(reply: str) -> str:
+    """Why the customer declined, in their words: the first paragraph of the reply without its opening thanks."""
+    first = next((part.strip() for part in reply.strip().split("\n\n") if part.strip()), "")
+    if first.endswith(",") and "\n" not in first:  # a greeting line on its own
+        first = next((part.strip() for part in reply.strip().split("\n\n")[1:] if part.strip()), first)
+    text = " ".join(_OPENER.sub("", first).split())
+    return (text[:1].upper() + text[1:])[:220] if text else "Declined by the customer"
+
+
+def rounds(store: MessageStore, reference: Reference, settings: Settings, *, source: str, board: dict[int, dict] | None = None) -> dict[str, Any]:
+    """Every request with how it ended and, if it did not end well, what it cost us.
+
+    The outcome comes from our own records; where the platform's board is available its
+    verdict and reason are added, and they win. `quote_mail` is the mail the customer (and
+    the jury) read.
+    """
+    live = source == "live"
+    data = Dataset.load(store)
+    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
+    rows = []
+    for shipment in data.shipments:
+        if is_legacy(shipment):
+            continue
+        d = deal(shipment, data, live=live, received=received)
+        quote = shipment.quote or {}
+        outbound = data.outbound.get(shipment.id, [])
+        quote_mail = next((m for m in outbound if m.kind == "quote"), None)
+        verdict_id = quote.get("accept_message_id") or quote.get("reject_message_id")
+        verdict_mail = store.get_message(verdict_id) if verdict_id else None
+        request_mail = store.get_message(shipment.id)
+        entry = (board or {}).get(shipment.id)
+        state = shipment.state
+        booked = state in (S.BOOKED, S.CONFIRMED) and not d["dry_run_booking"]
+        late = d["minutes_to_quote"] is not None and d["minutes_to_quote"] > ROUND_WINDOW_MINUTES
+        if state in ACCEPTED:
+            outcome = "accepted"
+        elif state == S.REJECTED:
+            outcome = "declined"
+        elif state == S.QUOTED:
+            outcome = "awaiting decision"
+        elif state in (S.NEW, S.PRICING):
+            outcome = "in progress"
+        elif state == S.AWAITING_INFO:
+            outcome = "waiting for customer"
+        else:
+            outcome = "no quote"
+        # what, if anything, this round cost us; one cause per round, the first that applies
+        if entry and str(entry["verdict"]).lower() in ("rejected", "no answer", "voided"):
+            cause = f"Board: {entry['verdict']}" + (f" ({entry['reason']})" if entry["reason"] else "")
+        elif outcome == "no quote":
+            cause = "No quote sent"
+        elif late:
+            cause = "Answered after the 6-minute window"
+        elif outcome == "declined":
+            cause = _reason(verdict_mail.body) if verdict_mail else "Declined by the customer"
+        elif outcome == "accepted" and live and not booked:
+            cause = "Accepted but not booked"
+        else:
+            cause = None
+        rows.append(
+            {
+                "id": shipment.id,
+                "received_at": d["received_at"],
+                "company": d["company"],
+                "account": d["account"],
+                "lane": d["lane"] or (f"?-{d['destination']}" if d["destination"] else None),
+                "goal": d["goal"],
+                "all_in_eur": d["all_in_eur"],
+                "airline": d["airline"],
+                "minutes_to_quote": d["minutes_to_quote"],
+                "in_window": None if d["minutes_to_quote"] is None else not late,
+                "outcome": outcome,
+                "state": state.value,
+                "booked": booked,
+                "booking_ref": None if d["dry_run_booking"] else d["booking_ref"],
+                "dry_run_booking": d["dry_run_booking"],
+                "truck_mode": d["truck_mode"],
+                "customer_said": verdict_mail.body.strip()[:400] if verdict_mail else None,
+                "board": entry,
+                "cause": cause,
+                "error": d["error"],
+                "request_mail": request_mail.body.strip() if request_mail else None,
+                "quote_mail": quote_mail.body if quote_mail else None,
+                "mail_flags": mail_checks(quote_mail.body) if quote_mail else None,
+            }
+        )
+    rows.sort(key=lambda r: r["id"], reverse=True)
+    flags = Counter(flag for r in rows for flag in r["mail_flags"] or [])
+    decided = [r for r in rows if r["outcome"] not in ("in progress", "awaiting decision", "waiting for customer")]
+    causes = Counter(r["cause"] for r in rows if r["cause"])
+    return {
+        "source": source,
+        "board_available": board is not None,
+        "total": len(rows),
+        "quoted": sum(r["all_in_eur"] is not None for r in rows),
+        "accepted": sum(r["outcome"] == "accepted" for r in rows),
+        "declined": sum(r["outcome"] == "declined" for r in rows),
+        "no_quote": sum(r["outcome"] == "no quote" for r in rows),
+        "booked": sum(r["booked"] for r in rows),
+        "in_window": sum(r["in_window"] is True for r in rows),
+        "timed": sum(r["in_window"] is not None for r in rows),
+        "clean": sum(r["cause"] is None for r in decided),
+        "lost": sum(r["cause"] is not None for r in decided),
+        "decided": len(decided),
+        "causes": [{"cause": cause, "count": count} for cause, count in causes.most_common()],
+        "quote_mails": sum(r["quote_mail"] is not None for r in rows),
+        "mails_clean": sum(r["mail_flags"] == [] for r in rows),
+        "mail_checks": [{"check": check, "count": flags[check]} for check in MAIL_CHECKS if flags[check]],
+        "rounds": rows,
+    }

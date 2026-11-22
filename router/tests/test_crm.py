@@ -101,7 +101,7 @@ def test_findings_name_their_cases(replay: MessageStore) -> None:
 
 def test_attention_lists_what_a_person_has_to_do(replay: MessageStore) -> None:
     items = _snapshot(replay, "replay")["attention"]
-    assert [(i["shipment_id"], i["level"]) for i in items if i["kind"] == "estimated_trucking"] == [(1977, "warning")]
+    assert {i["kind"] for i in items} == {"awaiting_information"}  # only what a person can decide (tests/test_console.py)
     waiting = [i for i in items if i["kind"] == "awaiting_information"]
     assert {i["shipment_id"] for i in waiting} == {3637, 3940} and "pickup address" in waiting[0]["detail"]
 
@@ -144,7 +144,7 @@ def test_every_airport_of_the_start_kit_has_a_place() -> None:
 @pytest.fixture
 def client(tmp_path: Path):
     """The app over an empty live database; the replay comes from the committed files."""
-    settings = Settings(langfuse_enabled=False, sqlite_db_path=str(tmp_path / "live.db"))
+    settings = Settings(langfuse_enabled=False, mailbox_poll_enabled=False, sqlite_db_path=str(tmp_path / "live.db"))
     app.dependency_overrides[get_settings] = lambda: settings
     previous = getattr(app.state, "store", None)
     app.state.store = MessageStore(settings.sqlite_db_path)
@@ -155,7 +155,7 @@ def client(tmp_path: Path):
 
 def test_crm_endpoints(client: TestClient) -> None:
     page = client.get("/crm")
-    assert page.status_code == 200 and "/crm/assets/app.js" in page.text
+    assert page.status_code == 200 and "/app.js" in page.text  # under the build's own address (tests/test_console.py)
     for asset in ("app.js", "views.js", "lib.js", "globe.js", "land.js", "crm.css"):
         assert client.get(f"/crm/assets/{asset}").status_code == 200
 

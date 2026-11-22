@@ -144,7 +144,18 @@ async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
 
 
-app.mount("/crm/assets", StaticFiles(directory=crm_api.UI_DIR), name="crm-assets")
+class _FreshFiles(StaticFiles):
+    """The CRM's own scripts and styles, checked with the server on every load, so that after
+    an update no browser keeps running yesterday's script against today's data."""
+
+    def file_response(self, *args, **kwargs):
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
+app.mount(crm_api.ASSETS, _FreshFiles(directory=crm_api.UI_DIR), name="crm-build-assets")  # what the page loads
+app.mount("/crm/assets", _FreshFiles(directory=crm_api.UI_DIR), name="crm-assets")  # the same files under their plain address
 
 
 @app.get("/", include_in_schema=False)
