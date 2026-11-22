@@ -30,3 +30,24 @@ The page follows the desk's files every 2 seconds.
 | `tests/test_crm.py` | `.venv/bin/python -m pytest` (after `pip install -e ".[dev]"`) |
 
 `ULTRA_TALOS_DIR` points it at another ultra-talos folder (default `../ultra-talos`).
+
+## Netlify
+
+This branch deploys the CRM to Netlify as a static snapshot. Connect the repository in
+Netlify, pick this branch, and leave every build setting empty: `netlify.toml` at the
+repository root sets them.
+
+- `crm/netlify_build.py` runs during the build. It asks the real app (`app.py`) for every page
+  and `/crm/api/*` answer and writes them to `crm/dist/`. The data is the ultra-talos
+  snapshot committed in this repository (`state/board.db`, `mails/`, `logs/`, `shipments/`,
+  `data/*.csv`, `state/NEEDS_HUMAN`). To show newer data, commit a new snapshot and Netlify rebuilds.
+- The export's clock is set to the snapshot's newest activity, so "today" means the snapshot's
+  day whenever the build runs. `CRM_SNAPSHOT_AT` (an ISO time) overrides that.
+- The mail search takes a free query, so `netlify/functions/search.mjs` answers it, using
+  the mail index the build writes.
+
+To try the export locally: `pip install -r crm/requirements-netlify.txt && python crm/netlify_build.py`,
+or `npx netlify-cli dev` from the repository root.
+
+The deployed site is public. It holds the snapshot's mails and customers, so turn on
+password protection in Netlify if needed.

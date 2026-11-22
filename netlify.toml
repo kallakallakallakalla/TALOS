@@ -1,0 +1,49 @@
+# Netlify deploy of the TALOS CRM (read-only console over the ultra-talos snapshot in this repo).
+# The build exports every CRM page and API answer to static files (crm/netlify_build.py);
+# only the mail search runs as a function. No settings are needed in the Netlify UI.
+
+[build]
+  command = "pip install -r crm/requirements-netlify.txt && python crm/netlify_build.py crm/dist"
+  publish = "crm/dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  PYTHON_VERSION = "3.13"
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# The search takes a free query, so a function answers it.
+[[redirects]]
+  from = "/crm/api/search"
+  to = "/.netlify/functions/search"
+  status = 200
+  force = true
+
+# Every other API address is a file written at build time.
+[[redirects]]
+  from = "/crm/api/shipments/:id"
+  to = "/crm/api/shipments/:id.json"
+  status = 200
+
+[[redirects]]
+  from = "/crm/api/:name"
+  to = "/crm/api/:name.json"
+  status = 200
+
+[[redirects]]
+  from = "/crm/slop"
+  to = "/crm/slop/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/crm"
+  to = "/crm/index.html"
+  status = 200
+
+[[headers]]
+  for = "/crm/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+    X-Robots-Tag = "noindex"
