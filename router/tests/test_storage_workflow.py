@@ -70,3 +70,15 @@ def test_trucker_requests_air_options_and_outbound(tmp_path: Path) -> None:
     store.mark_outbound_sent(mail.id, 1082)
     assert store.find_outbound(1082).kind == "quote"
     assert [m.id for m in store.outbound_mails(947)] == [mail.id]
+
+
+def test_the_store_closes_every_connection(tmp_path) -> None:
+    import sqlite3
+
+    import pytest
+
+    store = MessageStore(str(tmp_path / "store.db"))
+    with store._connect() as conn:  # noqa: SLF001
+        conn.execute("SELECT 1")
+    with pytest.raises(sqlite3.ProgrammingError):  # "Cannot operate on a closed database"
+        conn.execute("SELECT 1")

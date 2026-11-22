@@ -7,10 +7,9 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
 from langfuse import get_client, observe
 
-from app import crm_api, updates
+from app import updates
 from app.classifier import DecisionClassifier
 from app.composer import Composer
 from app.config import Settings, configure_langfuse_env, get_settings
@@ -131,12 +130,9 @@ app = FastAPI(
 )
 
 
-app.include_router(crm_api.router)
-
-
 @app.exception_handler(Exception)
 async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
-    """Any unhandled error: name it in the response, so the CRM page can show the cause.
+    """Any unhandled error: name it in the response, so a caller can see the cause.
 
     The traceback still goes to the server log; Starlette re-raises after this response.
     """
@@ -144,23 +140,9 @@ async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
 
 
-class _FreshFiles(StaticFiles):
-    """The CRM's own scripts and styles, checked with the server on every load, so that after
-    an update no browser keeps running yesterday's script against today's data."""
-
-    def file_response(self, *args, **kwargs):
-        response = super().file_response(*args, **kwargs)
-        response.headers["Cache-Control"] = "no-cache"
-        return response
-
-
-app.mount(crm_api.ASSETS, _FreshFiles(directory=crm_api.UI_DIR), name="crm-build-assets")  # what the page loads
-app.mount("/crm/assets", _FreshFiles(directory=crm_api.UI_DIR), name="crm-assets")  # the same files under their plain address
-
-
 @app.get("/", include_in_schema=False)
 async def root_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/crm")
+    return RedirectResponse(url="/docs")  # the CRM is its own server now: crm/crm.sh
 
 
 def get_input_client(settings: Settings = Depends(get_settings)) -> InputApiClient:

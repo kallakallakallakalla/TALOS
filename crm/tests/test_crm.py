@@ -8,9 +8,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app import desk
-from app.main import app
-from app.storage import MessageStore
+import desk
+from app import app
 
 NOW = datetime(2026, 11, 22, 12, 0, tzinfo=UTC)
 CUSTOMER, TRUCKER = "acme-tools@hackloop.mail", "fast-truck@hackloop.mail"
@@ -202,11 +201,3 @@ def test_the_version_moves_when_the_desk_writes(client: TestClient, folder: Fold
     first = client.get("/crm/api/version").json()["version"]
     folder.event(700, "decision", "quoted", 1)
     assert client.get("/crm/api/version").json()["version"] != first
-
-
-def test_the_store_closes_every_connection(tmp_path: Path) -> None:
-    store = MessageStore(str(tmp_path / "store.db"))
-    with store._connect() as conn:  # noqa: SLF001
-        conn.execute("SELECT 1")
-    with pytest.raises(sqlite3.ProgrammingError):  # "Cannot operate on a closed database"
-        conn.execute("SELECT 1")

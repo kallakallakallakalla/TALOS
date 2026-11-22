@@ -5,7 +5,7 @@ rem changes nothing. The first run creates .venv and installs the dependencies.
 rem
 rem   crm.bat [port] [ultra-talos folder]
 rem     port      default 8010
-rem     folder    the ultra-talos folder to show (default: ..\ultra-talos next to this router)
+rem     folder    the ultra-talos folder to show (default: ..\ultra-talos next to this folder)
 setlocal
 cd /d "%~dp0"
 set PORT=%1
@@ -22,8 +22,6 @@ if not "%~2"=="" (
   )
   set "ULTRA_TALOS_DIR=%~f2"
 )
-set MAILBOX_POLL_ENABLED=false
-set LANGFUSE_ENABLED=false
 start "" /b powershell -NoProfile -Command "Start-Sleep 3; Start-Process 'http://localhost:%PORT%/crm'"
 echo TALOS CRM: http://localhost:%PORT%/crm    Ctrl+C stops it.
-.venv\Scripts\uvicorn app.main:app --port %PORT%
+.venv\Scripts\uvicorn app:app --port %PORT%

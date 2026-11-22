@@ -1,6 +1,6 @@
 # CRM: UX review and rebuild plan
 
-Status: **built** (2026-11-22, see section 7 and ADR 58). Code: `router/app/desk.py` (data), `router/app/crm_api.py` (read-only endpoints), `router/app/crm_ui/` (pages), tests in `router/tests/test_crm.py`.
+Status: **built** (2026-11-22, see section 7 and ADR 58). Code: `crm/` at the top of the repo, its own server independent of the router: `crm/desk.py` (data), `crm/app.py` (read-only endpoints), `crm/ui/` (pages), tests in `crm/tests/test_crm.py`; start with `bash crm/crm.sh`.
 
 Goal (user): a person who works in the shipping industry opens the CRM, sees at a glance where things stand, knows what they can do, and finds their way without an explanation. No duplicate functions. Modelled on large CRMs (HubSpot, Salesforce, Pipedrive) and freight systems (CargoWise, Magaya, Freightos/WebCargo).
 
@@ -237,7 +237,7 @@ Not used: the platform board (`GET /v1/board/me`, its rounds cannot be matched t
 | Step | Content | Result |
 |---|---|---|
 | 0 | Approve this plan; open questions (section 7) | decisions → `decisions.md` (ADR 58) |
-| 1 | **Data:** one read layer `app/desk.py` that turns the ultra-talos files (section 5) into shipments, customers, carriers. Tests against small fixture files. | one source, one status vocabulary |
+| 1 | **Data:** one read layer `crm/desk.py` that turns the ultra-talos files (section 5) into shipments, customers, carriers. Tests against small fixture files. | one source, one status vocabulary |
 | 2 | **Frame:** new navigation, header with global search and status dot, Settings page; remove Live/Dry-run from the header | the person finds their way |
 | 3 | **Shipments + shipment page** (table, board, timeline with live stream) | replaces Rounds, Sessions, Ultra, Lookup/Mail |
 | 4 | **Today** (three blocks, read-only; a line opens its shipment) | replaces Now |

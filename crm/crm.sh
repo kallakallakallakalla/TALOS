@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Start the CRM on this machine and open it in the browser.
 # Read-only: it shows what the ultra-talos desk has done, from the desk's own files, and changes
-# nothing. The mailbox poller stays off, so nothing is fetched, sent or booked and no LLM is
-# called. The first run creates .venv and installs the dependencies.
+# nothing: no mail, no booking, no LLM call. It is its own small server, independent of the
+# router. The first run creates .venv and installs the dependencies.
 #
 #   ./crm.sh [port] [ultra-talos folder]
 #     port      default 8010
-#     folder    the ultra-talos folder to show (default: ../ultra-talos next to this router)
+#     folder    the ultra-talos folder to show (default: ../ultra-talos next to this folder)
 set -euo pipefail
 PORT="${1:-8010}"
 if [ -n "${2:-}" ]; then
@@ -80,4 +80,4 @@ URL="http://localhost:$PORT"
   open_page "$URL/crm"
 ) &
 echo "TALOS CRM: $URL/crm    Ctrl+C stops it."
-MAILBOX_POLL_ENABLED=false LANGFUSE_ENABLED=false exec .venv/bin/uvicorn app.main:app --port "$PORT"
+exec .venv/bin/uvicorn app:app --port "$PORT"

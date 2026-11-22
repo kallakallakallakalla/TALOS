@@ -1,26 +1,29 @@
 """The CRM: a read-only console over what the ultra-talos desk has done (ADR 58).
 
-`GET /crm` serves the interface (plain HTML, CSS and JavaScript from `app/crm_ui/`, no build
-step, no external requests). The `/crm/api/*` endpoints return the figures of `app/desk.py`.
-Every endpoint only reads; there is no action of any kind.
+Its own small server, independent of the router: `uvicorn app:app` in this folder (see crm.sh).
+`GET /crm` serves the interface (plain HTML, CSS and JavaScript from `ui/`, no build step, no
+external requests). The `/crm/api/*` endpoints return the figures of `desk.py`. Every endpoint
+only reads; there is no action of any kind.
 """
 
+import logging
 import re
 import subprocess
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
-from app import desk
+import desk
 
-UI_DIR = Path(__file__).parent / "crm_ui"
+UI_DIR = Path(__file__).parent / "ui"
 
 
 def _build() -> str:
     """Which version of the code this process runs: the BUILD file of a packed copy, else the git commit."""
-    root = Path(__file__).parent.parent
+    root = Path(__file__).parent
     try:
         if (root / "BUILD").exists():
             return (root / "BUILD").read_text().strip()[:40]
@@ -135,3 +138,35 @@ async def settings() -> dict[str, Any]:
             source("Pickup zones", root / "data" / "pickup_zones.csv", len(data.zones), "postcode zone to airport"),
         ],
     }
+
+
+# --- the server ----------------------------------------------------------------------------------
+
+app = FastAPI(title="TALOS CRM", docs_url=None, redoc_url=None, openapi_url=None)
+app.include_router(router)
+
+
+@app.exception_handler(Exception)
+async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
+    """Any unhandled error: name it in the response, so the page can show the cause (the traceback goes to the log)."""
+    logging.getLogger("crm").exception("Unhandled error on %s", request.url.path)
+    return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
+
+
+class _FreshFiles(StaticFiles):
+    """The page's scripts and styles, checked with the server on every load, so that after an
+    update no browser keeps running yesterday's script against today's data."""
+
+    def file_response(self, *args, **kwargs):
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
+app.mount(ASSETS, _FreshFiles(directory=UI_DIR), name="crm-build-assets")  # what the page loads
+app.mount("/crm/assets", _FreshFiles(directory=UI_DIR), name="crm-assets")  # the same files under their plain address
+
+
+@app.get("/", include_in_schema=False)
+async def root_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/crm")

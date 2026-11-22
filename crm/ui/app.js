@@ -86,7 +86,7 @@ async function poll() {
   } catch {
     state.online = false; paintDesk();
     if (!document.getElementById('offline')) $('view').prepend(h('div', { class: 'notice glass offline', id: 'offline' }, icon('alert'), h('div', null,
-      'The CRM server on this computer is not running, so this page is no longer updated. Start it again: ', h('code', null, 'bash router/crm.sh'), '. The page reconnects by itself.')));
+      'The CRM server on this computer is not running, so this page is no longer updated. Start it again: ', h('code', null, 'bash crm/crm.sh'), '. The page reconnects by itself.')));
   }
 }
 

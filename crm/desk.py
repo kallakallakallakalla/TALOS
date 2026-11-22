@@ -23,7 +23,9 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(os.environ.get("ULTRA_TALOS_DIR", Path(__file__).resolve().parents[2] / "ultra-talos"))
+from airports import AIRPORTS
+
+ROOT = Path(os.environ.get("ULTRA_TALOS_DIR", Path(__file__).resolve().parent.parent / "ultra-talos"))
 STALE = timedelta(minutes=30)  # a desk session without an end this old has died, it is not working
 BOOKING_GRACE = timedelta(minutes=10)  # an acceptance not booked after this needs a person
 CUSTOMER_RFQ = {"rfq", "RFQ"}  # the second is the old router's label on the oldest mails
@@ -656,8 +658,6 @@ def strips(desk: Desk) -> list[dict[str, Any]]:
 
 def globe(desk: Desk) -> dict[str, Any]:
     """Routes for the globe: per departure and destination airport, how many requests and how they ended."""
-    from app.airports import AIRPORTS
-
     grouped: dict[tuple[str | None, str], list[dict[str, Any]]] = {}
     for s in desk.shipments.values():
         if s["destination"]:
