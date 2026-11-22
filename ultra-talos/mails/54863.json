@@ -1,0 +1,18 @@
+{
+ "id": 54863,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: STR to SGN",
+ "body": "Dear Sir or Madam,\n\nCould you please quote the fastest air freight option from STR to SGN (Ho Chi Minh City, VN)? The shipment will be ready on 2026-11-25, and we will deliver it to Stuttgart Airport (STR) ourselves.\n\nThe shipment consists of 3 pieces of printed marketing material, with a gross weight of 497 kg and a total volume of 2.65 cbm.\n\nPlease include the all-in price in EUR and confirm the earliest available departure and expected transit time.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:21:01.126844+00:00",
+ "attachments": [],
+ "shipment": "54863",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is making a new request for an air freight quote for a specific shipment.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 50110,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment STR to MEL, 189 kg",
+ "body": "Hi,\n\nCould you let me know where this shipment is now and what its current status is?\n\nNordlicht Audio GmbH | STR to MEL | 189 kg gross | Ready date: 2026-11-27\n\nThanks.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:42:27.154112+00:00",
+ "attachments": [],
+ "shipment": "50110",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks where the shipment is and for its current status.",
+  "sender_role": "tracking"
+ }
+}

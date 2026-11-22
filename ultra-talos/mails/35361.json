@@ -1,0 +1,23 @@
+{
+ "id": 35361,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Luftfrachtanfrage nach EZE – Ankunft bis 2026-12-01",
+ "body": "Thank you for confirming the booking, Alex.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 35357,
+ "references": [
+  35112,
+  35322,
+  35341,
+  35357
+ ],
+ "received_at": "2026-11-22T02:54:30.340242+00:00",
+ "attachments": [],
+ "shipment": "35112",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and does not ask for anything or accept a new quote.",
+  "sender_role": "customer"
+ }
+}

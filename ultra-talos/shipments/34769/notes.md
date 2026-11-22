@@ -1,0 +1,13 @@
+# Shipment 34769: Sonnberg Kaffeeroesterei GmbH, DUS -> JFK
+- request: 11 pieces, 1061 kg gross, 5.97 cbm, chargeable 1061 kg, ready 2026-11-28, pickup 47914 Duisburg, goal fastest. Cargo and pickup details carried forward from mail 34124; new destination/date are separate shipment request.
+- 2026-11-22 02:46 UTC asked truckers: Domblick (34854), Elbkante (34855), Rheinufer (34856), Vogelsberg (34864); all asked for exactly 11 pcs/1061 kg/5.97 cbm and ready 28 Nov.
+- 2026-11-22 02:46 UTC offers: Domblick 248.15 EUR/19 h/ref TRK-11659; Elbkante 159.49 EUR/28 h/ref TRK-11662; Rheinufer 259.32 EUR/8 h/ref TRK-11661; Vogelsberg 194.71 EUR/22 h/ref TRK-11660; all valid until 03:01 UTC. Chosen Rheinufer: cheapest pickup within about 14 h; cheaper offers are slower.
+- 2026-11-22 02:45 UTC air: DUS-JFK, chargeable 1061 kg; fastest option Fjordline Air Cargo (FQ) 2546.40 EUR, 3 d, rate_id R--dLGGY7rZLML4fQK valid until 2026-11-22 03:00:54 UTC (source portal). Other options: Cobalt tariff 4 d, Ultraviolet portal 6 d, Yellowtail tariff 5 d.
+- Estimated departure 2026-11-29 (ready date + ceil(8/24) pickup days); estimated arrival 2026-12-02.
+- 2026-11-22 02:46 UTC QUOTE SENT mail 35032: 2805.72 EUR all-in = FQ air 2546.40 + Rheinufer pickup 259.32; attached offer.pdf; valid until 03:00 UTC; airfreight and pickup not yet booked at quote time.
+- 2026-11-22 02:48 UTC acceptance mail 35048: customer accepted 2805.72 EUR and requested booking.
+- 2026-11-22 02:48 UTC refreshed FQ rate: 2546.40 EUR, 3 d, 1061 kg, rate_id R-VrINKY99QL7G70hF valid until 2026-11-22 03:03:24 UTC; unchanged vs accepted air price.
+- 2026-11-22 02:48 UTC BOOKED airfreight: Fjordline Air Cargo (FQ), 2546.40 EUR, booking BK-QZNAH579, team_reference 34769; estimated arrival 2026-12-02.
+- Customer confirmation mail 35059: air booking confirmed; stated pickup offer remains quoted only and no truck booking was made.
+- 2026-11-22 03:01 UTC tracking mail 35552: records still show cargo at Duisburg shipper site, not collected/in transit; replied to tracking@ in mail 35776. Air booking BK-QZNAH579 confirmed, ETA 2026-12-02; pickup remains unbooked.
+- Open: Duisburg pickup is not booked; truckers are never booked through this desk.

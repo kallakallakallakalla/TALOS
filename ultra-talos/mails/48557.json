@@ -1,0 +1,21 @@
+{
+ "id": 48557,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - SIN / 34 PCS 740 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 48529,
+ "references": [
+  48213,
+  48529
+ ],
+ "received_at": "2026-11-22T07:09:13.858458+00:00",
+ "attachments": [],
+ "shipment": "48213",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts our quote and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

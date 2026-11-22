@@ -1,0 +1,20 @@
+{
+ "id": 55390,
+ "from": "odenwald-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21107 Lueneburg to HAM on 2026-12-05",
+ "body": "Dear Sir or Madam,\n\nThank you for your inquiry. Our all-in price for the requested pickup and delivery to the air export warehouse at Hamburg Airport is 221.70 EUR.\n\nPickup time: 26 hours\nOffer valid until: 22 Nov 2026 09:42 UTC\nOffer reference: TRK-17630\n\nNo booking is required.\n\nKind regards,\nOdenwald Cargo",
+ "in_reply_to": 55249,
+ "references": [
+  55249
+ ],
+ "received_at": "2026-11-22T09:28:01.522140+00:00",
+ "attachments": [],
+ "shipment": "55249",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

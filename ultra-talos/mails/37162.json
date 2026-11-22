@@ -1,0 +1,23 @@
+{
+ "id": 37162,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – PVG",
+ "body": "Dear Alex,\n\nThank you for confirming that nothing was booked and that you will close the quote and withdraw the remaining enquiries.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 37146,
+ "references": [
+  35811,
+  36278,
+  36279,
+  37146
+ ],
+ "received_at": "2026-11-22T03:29:57.042954+00:00",
+ "attachments": [],
+ "shipment": "35811",
+ "classification": {
+  "category": "other",
+  "confidence": 0.98,
+  "reasoning": "The customer only acknowledges the confirmation and does not ask a question or accept or reject a quote.",
+  "sender_role": "customer"
+ }
+}

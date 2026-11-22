@@ -1,0 +1,23 @@
+{
+ "id": 50103,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight option: HAM to GRU",
+ "body": "Thanks for getting this booked, Alex! Hope you have a lovely day too.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 50102,
+ "references": [
+  49928,
+  50059,
+  50080,
+  50102
+ ],
+ "received_at": "2026-11-22T07:40:36.838388+00:00",
+ "attachments": [],
+ "shipment": "49928",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for booking and offers a polite acknowledgement, without asking a question or making a new request.",
+  "sender_role": "customer"
+ }
+}

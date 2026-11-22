@@ -1,0 +1,18 @@
+{
+ "id": 34124,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – NBO import",
+ "body": "Dear Sir or Madam,\n\nOur buyer in Nairobi, KE, is importing furniture samples from us in Germany, and I am arranging the flight for their import. Could you please quote the cheapest air freight option to NBO for this import shipment?\n\nThe shipment consists of 11 pieces, with a gross weight of 1061 kg and a total volume of 5.97 cbm. It will be ready for pickup on 2026-11-26 at our site in Duisburg, Germany, postcode 47914.\n\nPlease arrange the truck from our site to the departure airport and include the pickup and trucking in your all-in price in EUR.\n\nThank you for your assistance.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:33:22.360988+00:00",
+ "attachments": [],
+ "shipment": "34124",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The sender is requesting an all-in air freight quote for a new shipment to Nairobi.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "id": 44450,
+ "from": "vogelsberg-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 36030 Fulda to FRA on 2026-11-27",
+ "body": "Hi Alex,\n\nOur all-in price for the pickup from Fulda and delivery to the air export warehouse at FRA is 146.97 EUR.\n\nPickup time: 29 hours\nQuote valid until: 22 Nov 2026 06:15 UTC\nOffer reference: TRK-14618\n\nNo booking is needed.\n\nBest regards,\nVogelsberg Haulage",
+ "in_reply_to": 44410,
+ "references": [
+  44410
+ ],
+ "received_at": "2026-11-22T06:01:12.241492+00:00",
+ "attachments": [],
+ "shipment": "44410",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and validity.",
+  "sender_role": "trucker"
+ }
+}

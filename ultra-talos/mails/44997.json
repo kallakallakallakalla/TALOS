@@ -1,0 +1,20 @@
+{
+ "id": 44997,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 60413 Frankfurt am Main to FRA on 2026-11-25",
+ "body": "All-in price for pickup in Frankfurt am Main and delivery to the FRA air export warehouse: 139.08 EUR.\nPickup time: 26 hours.\nOffer valid until: 22 Nov 2026 06:21 UTC.\nQuote reference: TRK-14823. No booking required.\n\nBodenseefracht",
+ "in_reply_to": 44821,
+ "references": [
+  44821
+ ],
+ "received_at": "2026-11-22T06:07:07.855237+00:00",
+ "attachments": [],
+ "shipment": "44821",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

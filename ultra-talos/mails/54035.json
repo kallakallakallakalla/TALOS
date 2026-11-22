@@ -1,0 +1,21 @@
+{
+ "id": 54035,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51871 Bergisch Gladbach to CGN on 2026-11-27",
+ "body": "Dear Sir or Madam,\n\nOur all-in price for pickup from Weidner Spielwaren GmbH in Bergisch Gladbach and delivery to the air export warehouse at Cologne Bonn Airport is 91.01 EUR.\n\nPickup time: 29 hours\nOffer valid until: 22 Nov 2026 09:18 UTC\nOffer reference: TRK-17252\n\nNo booking is required for pickup.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 53927,
+ "references": [
+  53806,
+  53927
+ ],
+ "received_at": "2026-11-22T09:03:49.464064+00:00",
+ "attachments": [],
+ "shipment": "53806",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

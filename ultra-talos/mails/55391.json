@@ -1,0 +1,20 @@
+{
+ "id": 55391,
+ "from": "waldrand-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21107 Lueneburg to HAM on 2026-12-05",
+ "body": "All-in price for pickup and delivery to HAM: 398.39 EUR.\nPickup time: 18 hours.\nOffer valid until 22 Nov 2026 09:42 UTC.\nOffer reference: TRK-17633. No booking required.\n\nWaldrand Transporte",
+ "in_reply_to": 55251,
+ "references": [
+  55251
+ ],
+ "received_at": "2026-11-22T09:28:01.522257+00:00",
+ "attachments": [],
+ "shipment": "55251",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to the pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

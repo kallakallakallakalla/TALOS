@@ -1,0 +1,20 @@
+{
+ "id": 39481,
+ "from": "schwabenbote-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 55274 Mainz to FRA on 2026-11-24",
+ "body": "Hi Alex,\n\nThanks for your request. Our all-in price for pickup in Mainz and delivery to the FRA air export warehouse is 77.80 EUR.\n\nPickup time: 31 hours\nQuote valid until: 22 Nov 2026 04:32 UTC\nOffer reference: TRK-13149\n\nNo booking is needed for pickup.\n\nBest regards,\nSchwabenbote Transporte",
+ "in_reply_to": 39351,
+ "references": [
+  39351
+ ],
+ "received_at": "2026-11-22T04:17:45.728258+00:00",
+ "attachments": [],
+ "shipment": "39351",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, validity, and offer reference.",
+  "sender_role": "trucker"
+ }
+}

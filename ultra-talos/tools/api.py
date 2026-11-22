@@ -69,10 +69,34 @@ def _dry_response(method: str, path: str, body: object) -> dict:
     return answer
 
 
+def _lookalike_recipient(path: str, body: object) -> str | None:
+    """A reply whose `to` is ALMOST the sender of the mail it answers (auer.maschinenbau@ for
+    auer-maschinenbau@) is a slip onto a look-alike address: scored -20 in round 173. Returns
+    the right address then. Never raises: this check must not stop a correct mail."""
+    try:
+        if "mailbox/messages" not in path or not isinstance(body, dict) or not body.get("in_reply_to"):
+            return None
+        parent = ROOT / "mails" / f"{int(body['in_reply_to'])}.json"
+        sender = str(json.loads(parent.read_text())["from"]).strip().lower()
+        to = str(body.get("to") or "").strip().lower()
+        letters = lambda a: "".join(c for c in a.split("@")[0] if c.isalnum())  # noqa: E731
+        a, b = letters(sender), letters(to)
+        if to != sender and a and b and (a == b or a in b or b in a):
+            return sender
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
 def call(method: str, path: str, body: object = None, raw: bool = False) -> tuple[int, object]:
     """One API call: `(status, parsed JSON or text)`; with `raw` the body comes back as bytes."""
     settings = env()
     method = method.upper()
+    if method == "POST" and (right := _lookalike_recipient(path, body)):
+        return 400, {"error": "NOT SENT: wrong recipient", "detail": (
+            f"`to` is {body.get('to')}, but mail {body.get('in_reply_to')} came from {right}. That is a "
+            f"look-alike address (rule 7 in AGENTS.md). Send this reply to {right}; a look-alike "
+            "address only ever gets the short security refusal, in reply to ITS OWN mail.")}
     if method != "GET":
         b = body if isinstance(body, dict) else {}
         what = f"to {b.get('to')}: {b.get('subject')}" if "mailbox/messages" in path else json.dumps(b)[:200]

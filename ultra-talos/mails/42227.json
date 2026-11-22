@@ -1,0 +1,18 @@
+{
+ "id": 42227,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-WUTR94PX confirmed",
+ "body": "Hello,\n\nyour booking BK-WUTR94PX is confirmed.\n\nBooking reference: BK-WUTR94PX\nYour reference: 41895\nAirline: Tamarind Airways (TM)\nLane: HAM-RUH\nPrice: 1056.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:14:16.368565+00:00",
+ "attachments": [],
+ "shipment": "42227",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-WUTR94PX.",
+  "sender_role": "airline"
+ }
+}

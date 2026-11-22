@@ -1,0 +1,18 @@
+{
+ "id": 45114,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-709SJXJ3 confirmed",
+ "body": "Hello,\n\nyour booking BK-709SJXJ3 is confirmed.\n\nBooking reference: BK-709SJXJ3\nYour reference: 44658\nAirline: Borealis Freight Airways (BX)\nLane: FRA-CAI\nPrice: 1919.11 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:09:10.114844+00:00",
+ "attachments": [],
+ "shipment": "45114",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-709SJXJ3.",
+  "sender_role": "airline"
+ }
+}

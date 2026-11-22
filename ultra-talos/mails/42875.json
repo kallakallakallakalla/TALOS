@@ -1,0 +1,23 @@
+{
+ "id": 42875,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to NBO",
+ "body": "Hi Alex,\n\nThanks for confirming the airfreight booking.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 42867,
+ "references": [
+  42590,
+  42825,
+  42845,
+  42867
+ ],
+ "received_at": "2026-11-22T05:25:56.694605+00:00",
+ "attachments": [],
+ "shipment": "42590",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only acknowledges the confirmed booking and does not accept a new quote or ask a question.",
+  "sender_role": "customer"
+ }
+}

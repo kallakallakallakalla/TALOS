@@ -1,0 +1,18 @@
+{
+ "id": 34454,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-T2JCDO2U confirmed",
+ "body": "Hello,\n\nyour booking BK-T2JCDO2U is confirmed.\n\nBooking reference: BK-T2JCDO2U\nYour reference: 34124\nAirline: Meridian Freightways (MD)\nLane: DUS-NBO\nPrice: 3246.66 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:36:29.072947+00:00",
+ "attachments": [],
+ "shipment": "34454",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-T2JCDO2U.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": 45717,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: AMSTERDAM SCHIPHOL - PVG / 138 CTN 4,945 KGS",
+ "body": "Sorry for the change. The final packing list shows different shipment details:\n\n2 pieces, 1494 kg gross weight, 11.18 cbm\n\nEverything else stays the same. Could you please update your offer?\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 45693,
+ "references": [
+  45644,
+  45693
+ ],
+ "received_at": "2026-11-22T06:18:57.104077+00:00",
+ "attachments": [],
+ "shipment": "45644",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.98,
+  "reasoning": "The customer is providing corrected shipment details and asking us to update the existing offer.",
+  "sender_role": "customer"
+ }
+}

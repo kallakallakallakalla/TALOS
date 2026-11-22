@@ -1,0 +1,18 @@
+{
+ "id": 45865,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-FR7JT5Z5 confirmed",
+ "body": "Hello,\n\nyour booking BK-FR7JT5Z5 is confirmed.\n\nBooking reference: BK-FR7JT5Z5\nYour reference: 45644\nAirline: Tamarind Airways (TM)\nLane: FRA-JNB\nPrice: 5657.20 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:20:31.519175+00:00",
+ "attachments": [],
+ "shipment": "45865",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-FR7JT5Z5.",
+  "sender_role": "airline"
+ }
+}

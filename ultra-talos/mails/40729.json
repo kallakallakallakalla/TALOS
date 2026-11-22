@@ -1,0 +1,18 @@
+{
+ "id": 40729,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: AMSTERDAM SCHIPHOL - PVG / 207 CRATES 5,097 KGS",
+ "body": "Hallo,\n\nich hoffe, bei Ihnen läuft die Woche gut! Können Sie mir bitte die schnellste Luftfrachtoption von FRA nach MEX (Mexico City, MX) anbieten? Für uns kommt es bei dieser Sendung auf die kürzeste Laufzeit an.\n\nDie Ware ist am 2026-11-27 bereit. Wir liefern sie selbst am Flughafen FRA an. Es handelt sich um gedrucktes Werbematerial: 11 Packstücke mit insgesamt 1902 kg Bruttogewicht und 8.54 cbm Volumen.\n\nBitte nennen Sie mir den All-in-Preis in EUR und hängen Sie das Angebot als PDF an Ihre Antwort an, damit unser Einkauf es ablegen kann.\n\nVielen Dank schon mal!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG\n\n\n-----Original Message-----\nSent: 2026-09-30\nSubject: AMSTERDAM SCHIPHOL - PVG / 207 CRATES 5,097 KGS\n\nDear team,\n\npls quote air freight ex AMSTERDAM SCHIPHOL to PVG:\n207 CRATES / 5,097 KGS / 7.1 CBM, laboratory glassware\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:47:12.356712+00:00",
+ "attachments": [],
+ "shipment": "40729",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests an all-in price for a new FRA-to-MEX shipment and provides its cargo details and ready date.",
+  "sender_role": "customer"
+ }
+}

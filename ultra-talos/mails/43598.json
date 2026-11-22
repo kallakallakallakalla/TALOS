@@ -1,0 +1,21 @@
+{
+ "id": 43598,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - MEX / 208 PLT 494 KGS",
+ "body": "Dear Sir or Madam,\n\nMy buyer has withdrawn the order, so I need to cancel the shipment. Please do not book it. If you have already booked it, please cancel the booking.\n\nI apologise for the inconvenience.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 43538,
+ "references": [
+  43304,
+  43538
+ ],
+ "received_at": "2026-11-22T05:37:50.942316+00:00",
+ "attachments": [],
+ "shipment": "43304",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer says the order was withdrawn and asks us not to book, or to cancel any existing booking.",
+  "sender_role": "customer"
+ }
+}

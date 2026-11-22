@@ -1,0 +1,18 @@
+{
+ "id": 51348,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - SYD / 51 CTN 260 KGS",
+ "body": "Merhaba,\n\nATL’deki alıcımız, ambalaj makinelerine ait yedek parçaları bizden, Almanya’dan ithal ediyor. Alıcımızın bu import işlemi için ATL’ye hava taşımayı biz organize ediyoruz.\n\nGönderi 2 parçadan oluşuyor; brüt ağırlığı 1241 kg, toplam hacmi 4.68 cbm. Yük, 2026-11-28 tarihinde 40073 Duesseldorf, Germany adresindeki tesisimizden teslim alınmaya hazır olacak. Tesisimizden kalkış havalimanına kadar kamyonlu taşımayı da sizin organize etmenizi rica ederim.\n\nBu import gönderisi için en ucuz seçeneği istiyoruz. Tesisten teslim alma ve havalimanına taşıma dahil, ATL’ye kadar tüm masrafları kapsayan fiyat teklifinizi EUR cinsinden iletebilir misiniz?\n\nTeşekkür ederim.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH\n\n\n-----Original Message-----\nSent: 2026-10-19\nSubject: VIENNA AIRPORT - SYD / 51 CTN 260 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to SYD:\n51 CTN / 260 KGS / 15.1 CBM, machine parts\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:14:06.372495+00:00",
+ "attachments": [],
+ "shipment": "51348",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The sender requests a new all-in air freight quote for a shipment from Germany to ATL, including pickup and airport trucking.",
+  "sender_role": "customer"
+ }
+}

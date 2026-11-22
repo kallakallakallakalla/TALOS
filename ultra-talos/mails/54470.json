@@ -1,0 +1,21 @@
+{
+ "id": 54470,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - ASU / 225 CTN 390 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 54446,
+ "references": [
+  54129,
+  54446
+ ],
+ "received_at": "2026-11-22T09:10:50.831215+00:00",
+ "attachments": [],
+ "shipment": "54129",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

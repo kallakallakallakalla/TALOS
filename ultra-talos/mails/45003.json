@@ -1,0 +1,20 @@
+{
+ "id": 45003,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 60413 Frankfurt am Main to FRA on 2026-11-25",
+ "body": "Hi there,\n\nThanks for your request! We can collect in Frankfurt am Main and deliver to the FRA air export warehouse for an all-in price of 233.63 EUR.\n\nPickup time: 15 hours\nQuote valid until: 22 Nov 2026 06:21 UTC\nOffer reference: TRK-14826\n\nNo booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 44822,
+ "references": [
+  44822
+ ],
+ "received_at": "2026-11-22T06:07:08.879610+00:00",
+ "attachments": [],
+ "shipment": "44822",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

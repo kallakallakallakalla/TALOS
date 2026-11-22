@@ -1,0 +1,24 @@
+{
+ "id": 53492,
+ "from": "ratedesk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Sea freight quote request: DEHAM to AEJEA, 1 x 40ft FCL, ready 2026-11-27",
+ "body": "Hello,\n\nwe still cannot quote without:\n- the departure airport\n- the destination airport\n\nSend a new request with these details and we will price it.\n\nBest regards\nRate Desk\nratedesk@hackloop.mail",
+ "in_reply_to": 53487,
+ "references": [
+  53425,
+  53481,
+  53483,
+  53486,
+  53487
+ ],
+ "received_at": "2026-11-22T08:54:35.617852+00:00",
+ "attachments": [],
+ "shipment": "53425",
+ "classification": {
+  "category": "other",
+  "confidence": 0.96,
+  "reasoning": "The rate desk requests air-freight airport details despite the clarified sea-freight request; this is not a rate offer or a defined category action.",
+  "sender_role": "ratedesk"
+ }
+}

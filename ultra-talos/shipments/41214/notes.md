@@ -1,0 +1,11 @@
+# Shipment 41214: Nordlicht Audio, STR -> BOM
+- request: 5 pieces, gross 1911 kg (packing list 79555; mail says 1089 kg), 6.96 cbm, chargeable 1911 kg, ready 2026-11-27, pickup 73796 Esslingen, goal fastest. Packing list confirms laboratory glassware, not restricted.
+- 2026-11-22T05:00Z air: fastest option Xenon Cargo Airlines (XC) 4920.00 EUR, 3 d, billed 2000 kg after anti-weight-break, rate_id R-gG9Aa3tdzqlX-l-0 valid 05:14:42Z (portal).
+- 2026-11-22T05:00Z asked truckers: Domblick (41316), Hansekogge (41317), Neckarstrom (41318), Rheinufer (41319), Spessart (41320); all requested with 5 pcs / 1911 kg / 6.96 cbm.
+- 2026-11-22T05:00Z trucker offers: Hansekogge 334.43 EUR, 22 h, TRK-13689; Neckarstrom 318.32 EUR, 20 h, TRK-13688; Domblick 274.10 EUR, 27 h, TRK-13686; Rheinufer 297.21 EUR, 17 h, TRK-13690; Spessart 420.65 EUR, 8 h, TRK-13687; all valid to 05:14Z. Chosen Spessart: only offer within ~14 h, as reference convention favors the cheapest fast pickup.
+- 2026-11-22T05:01Z QUOTE SENT mail id 41471: 5340.65 EUR all-in = air 4920.00 + truck 420.65; fastest XC, 3 d, estimate arrival 2026-12-01; valid until 05:14Z (truck offer expiry is earlier than portal rate expiry 05:14:42Z). Price uses SLI gross 1911 kg rather than email 1089 kg.
+- 2026-11-22T05:01:32Z acceptance: mail 41495 accepted the 5340.65 EUR quote.
+- 2026-11-22T05:01Z rechecked XC at 2000 kg billed: 4920.00 EUR, rate_id R-DBQ8_SaEE9RidEaV valid to 05:16:42Z (portal); unchanged from quoted air price.
+- 2026-11-22T05:01Z BOOKED BK-S4J0SO37 with Xenon Cargo Airlines (XC), team_reference 41214, ETA 2026-12-01. API status booked; pickup offer remains 8 h / 420.65 EUR (truckers are not booked).
+- 2026-11-22T05:01Z confirmation sent to customer in reply to 41495, mail 41509.
+- 2026-11-22T05:12Z tracking request 41904 from Mira: verified airline confirmation BK-S4J0SO37 (41512) says booked and ready to ship. Replied in mail 42056: not collected/in transit; ready 27 Nov; Spessart 8 h pickup remains quote only, not a confirmed truck booking; estimated arrival 1 Dec conditional on pickup/departure.

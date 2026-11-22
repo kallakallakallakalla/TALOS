@@ -1,0 +1,18 @@
+{
+ "id": 49928,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight option: HAM to GRU",
+ "body": "Hi there,\n\nHope your week’s going well! Could you send me an all-in price in EUR for the fastest air freight option from HAM to GRU (Sao Paulo, BR)?\n\nThe automotive sensors will be ready on 2026-11-29, and we’ll deliver them to Hamburg airport (HAM) ourselves. It’s 12 pieces with a gross weight of 1353 kg and a total volume of 4.94 cbm.\n\nCould you attach the offer as a PDF to your reply? Our purchasing department needs it for filing.\n\nThanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:37:30.392946+00:00",
+ "attachments": [],
+ "shipment": "49928",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price for a new air-freight shipment from HAM to GRU.",
+  "sender_role": "customer"
+ }
+}

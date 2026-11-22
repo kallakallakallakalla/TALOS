@@ -1,0 +1,18 @@
+{
+ "id": 46177,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-HA1U7VUQ confirmed",
+ "body": "Hello,\n\nyour booking BK-HA1U7VUQ is confirmed.\n\nBooking reference: BK-HA1U7VUQ\nYour reference: 45931\nAirline: Solace Air Cargo (SL)\nLane: STR-MEL\nPrice: 1915.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:27:21.862703+00:00",
+ "attachments": [],
+ "shipment": "46177",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-HA1U7VUQ.",
+  "sender_role": "airline"
+ }
+}

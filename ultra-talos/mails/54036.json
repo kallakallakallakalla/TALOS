@@ -1,0 +1,21 @@
+{
+ "id": 54036,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51871 Bergisch Gladbach to CGN on 2026-11-27",
+ "body": "Hello,\n\nThank you for your inquiry. Our all-in price for the pickup in Bergisch Gladbach and delivery to the CGN air export warehouse is 153.73 EUR.\n\nPickup time: 13 hours\nOffer valid until: 22 Nov 2026 09:18 UTC\nOffer reference: TRK-17249\n\nNo booking is required for the pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 53928,
+ "references": [
+  53806,
+  53928
+ ],
+ "received_at": "2026-11-22T09:03:50.479191+00:00",
+ "attachments": [],
+ "shipment": "53806",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and offer validity.",
+  "sender_role": "trucker"
+ }
+}

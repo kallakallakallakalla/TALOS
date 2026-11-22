@@ -1,0 +1,23 @@
+{
+ "id": 44154,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Ingolstadt to Beijing",
+ "body": "Hi Alex,\n\nPlease use our site in 85040 Ingolstadt for pickup, not Kiel.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 44147,
+ "references": [
+  43982,
+  44070,
+  44098,
+  44147
+ ],
+ "received_at": "2026-11-22T05:55:07.506411+00:00",
+ "attachments": [],
+ "shipment": "43982",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer answers our open question by confirming the pickup address in Ingolstadt.",
+  "sender_role": "customer"
+ }
+}

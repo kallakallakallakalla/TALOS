@@ -1,0 +1,18 @@
+{
+ "id": 47149,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 42763 to ATL, 497 kg",
+ "body": "Dear team,\n\nCould you please confirm the current location and status of the Sonnberg Kaffeeroesterei GmbH shipment on the route 42763 to ATL, with a gross weight of 497 kg and a ready date of 2026-11-28?\n\nThank you for your assistance.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:48:53.390258+00:00",
+ "attachments": [],
+ "shipment": "47149",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the shipment’s current location and status.",
+  "sender_role": "tracking"
+ }
+}

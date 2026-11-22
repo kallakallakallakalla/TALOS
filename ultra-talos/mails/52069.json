@@ -1,0 +1,18 @@
+{
+ "id": 52069,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-CO7R1XET confirmed",
+ "body": "Hello,\n\nyour booking BK-CO7R1XET is confirmed.\n\nBooking reference: BK-CO7R1XET\nYour reference: 51708\nAirline: Tamarind Airways (TM)\nLane: MUC-SGN\nPrice: 2231.04 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:22:49.105375+00:00",
+ "attachments": [],
+ "shipment": "52069",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-CO7R1XET.",
+  "sender_role": "airline"
+ }
+}

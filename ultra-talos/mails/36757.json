@@ -1,0 +1,21 @@
+{
+ "id": 36757,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: FRA to KUL",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 36749,
+ "references": [
+  36693,
+  36749
+ ],
+ "received_at": "2026-11-22T03:22:35.516875+00:00",
+ "attachments": [],
+ "shipment": "36693",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer declines the quote, saying the price seems too low and they will not proceed.",
+  "sender_role": "customer"
+ }
+}

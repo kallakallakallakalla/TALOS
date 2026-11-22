@@ -1,0 +1,21 @@
+{
+ "id": 36014,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70275 Stuttgart to STR on 2026-11-26",
+ "body": "Hi there,\n\nThanks for reaching out! We can collect your shipment in Stuttgart and deliver it to the air export warehouse at STR for an all-in price of 290.56 EUR.\n\nPickup time: 14 hours\nQuote valid until: 22 Nov 2026 03:19 UTC\nOffer reference: TRK-12029\n\nNo booking is needed for the pickup.\n\nBest wishes,\nNordlicht Haulage",
+ "in_reply_to": 36005,
+ "references": [
+  35811,
+  36005
+ ],
+ "received_at": "2026-11-22T03:05:15.497266+00:00",
+ "attachments": [],
+ "shipment": "35811",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

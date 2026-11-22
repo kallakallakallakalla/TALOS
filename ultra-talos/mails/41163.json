@@ -1,0 +1,22 @@
+{
+ "id": 41163,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Confirmed booking BK-5NVFGRA6: MUC-DXB schedule and acceptance cutoff | 29 Nov | Sonnberg",
+ "body": "Dear Alex,\n\nWe acknowledge your confirmed booking. We cannot verify the Munich cargo acceptance cutoff or the scheduled Dubai arrival date and time from the information available. The transit time of 1 day does not establish either of these local times.\n\nOur fixed price is 1395.36 EUR, valid until 22 Nov 2026 05:11 UTC. The reference to quote when booking is R-UG0__DICZeMxi4BL.\n\nKind regards,\nLumen Air Cargo",
+ "in_reply_to": 41161,
+ "references": [
+  41078,
+  41100,
+  41161
+ ],
+ "received_at": "2026-11-22T04:57:06.552452+00:00",
+ "attachments": [],
+ "shipment": "41078",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.97,
+  "reasoning": "The airline replies to a request for the booking’s acceptance cutoff and arrival time but cannot provide those details.",
+  "sender_role": "airline"
+ }
+}

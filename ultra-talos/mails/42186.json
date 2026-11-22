@@ -1,0 +1,21 @@
+{
+ "id": 42186,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to RUH",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 42163,
+ "references": [
+  41895,
+  42163
+ ],
+ "received_at": "2026-11-22T05:13:20.655302+00:00",
+ "attachments": [],
+ "shipment": "41895",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

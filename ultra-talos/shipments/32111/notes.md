@@ -1,0 +1,6 @@
+# Shipment 32111: Nordlicht Audio GmbH, CGN -> SIN
+- linked original request 31485 (Mira Petersen): 12 electronic control units, 2000 kg gross, 11.02 cbm, chargeable 2000 kg; ready 2026-11-24; pickup 50380 Cologne; cheapest. Status request 32111 refers to this booked shipment.
+- 2026-11-22 01:45 UTC trucker offers: Ruhrpott Express 301 EUR / 20 h (TRK-10646); Sternmeile Logistik 348 EUR / 12 h (TRK-10651, valid to 01:59 UTC, chosen: cheapest within ~14 h); Kranich Kurier 329 EUR / 17 h (TRK-10645); Hansekogge Trucking 203 EUR / 25 h (TRK-10652).
+- 2026-11-22 01:45 UTC air quote sent by mail 31663: Fjordline Air Cargo, CGN-SIN, 6 days; customer all-in offer 4751 EUR (pickup was 348 EUR). Customer accepted at mail 31696 after rejecting a 7% price-match request; booking immediate.
+- 2026-11-22 01:46 UTC BOOKED BK-5PNAJPZI with Fjordline Air Cargo, team_reference 31485; airline confirmation mail 31715 says price 4400 EUR and status "booked and ready to ship". Planned pickup 24 Nov. Earlier confirmation mail 31700 gave ETA 30 Nov; recalculation with 12 h pickup window + 6 transit days gives 1 Dec; corrected customer in reply 32333.
+- 2026-11-22 tracking request mail 32111: replied in-thread by mail 32333. As of request time, pickup is future; shipment remains at shipper in 50380 and has not departed. Sent current status and corrected ETA.

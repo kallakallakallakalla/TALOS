@@ -1,0 +1,18 @@
+{
+ "id": 42264,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: AMSTERDAM SCHIPHOL - ULN / 118 CTN 2,333 KGS",
+ "body": "Hello,\n\nOur buyer in Miami is importing furniture samples from us in Germany, and we are arranging the flight for their import. Could you please quote your cheapest air freight option for this import shipment to MIA (Miami, US)?\n\nThe shipment consists of 10 pieces with a gross weight of 765 kg and a total volume of 4.35 cbm. It will be ready for pickup on 2026-11-26 at our site in 72755 Tuebingen, Germany.\n\nPlease quote an all-in price in EUR, including pickup at our site and the truck transport to the departure airport, which you would arrange.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH\n\n\n-----Original Message-----\nSent: 2026-10-22\nSubject: AMSTERDAM SCHIPHOL - ULN / 118 CTN 2,333 KGS\n\nDear team,\n\npls quote air freight ex AMSTERDAM SCHIPHOL to ULN:\n118 CTN / 2,333 KGS / 15.1 CBM, sports equipment\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:17:33.506555+00:00",
+ "attachments": [],
+ "shipment": "42264",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer is requesting a new all-in air-freight quote for a shipment from Germany to Miami.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "id": 36247,
+ "from": "kestrel-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request FRA-PEK / TALOS 36108",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: FRA-PEK.\nWe fly CGN-MIA, DUS-DFW, DUS-KUL, DUS-NRT, FRA-BOM, FRA-CAI, FRA-DEL, FRA-MEX, FRA-MIA, FRA-NRT, HAM-HKG, HAM-PEK, MUC-GRU, MUC-LAX, MUC-MEL, MUC-PEK, MUC-SIN, STR-MIA.\n\nBest regards\nKestrel Airways\nkestrel-airways@hackloop.mail",
+ "in_reply_to": 36223,
+ "references": [
+  36223
+ ],
+ "received_at": "2026-11-22T03:11:38.360338+00:00",
+ "attachments": [],
+ "shipment": "36223",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.83,
+  "reasoning": "The airline replies to a shipment-specific rate request with its available lanes, but does not provide a price.",
+  "sender_role": "airline"
+ }
+}

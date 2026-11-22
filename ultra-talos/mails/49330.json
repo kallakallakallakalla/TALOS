@@ -1,0 +1,21 @@
+{
+ "id": 49330,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - EZE / 153 CTN 1,247 KGS",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 49314,
+ "references": [
+  48973,
+  49314
+ ],
+ "received_at": "2026-11-22T07:21:17.173408+00:00",
+ "attachments": [],
+ "shipment": "48973",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer explicitly declines the offer because the price is too high.",
+  "sender_role": "customer"
+ }
+}

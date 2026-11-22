@@ -1,0 +1,21 @@
+{
+ "id": 36279,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – PVG",
+ "body": "Thank you for your offer, but we have already placed this shipment.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 36278,
+ "references": [
+  35811,
+  36278
+ ],
+ "received_at": "2026-11-22T03:14:43.551612+00:00",
+ "attachments": [],
+ "shipment": "35811",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer declines the quote because they have already placed the shipment elsewhere.",
+  "sender_role": "customer"
+ }
+}

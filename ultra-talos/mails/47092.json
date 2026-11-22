@@ -1,0 +1,18 @@
+{
+ "id": 47092,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-F2GFLB3R confirmed",
+ "body": "Hello,\n\nyour booking BK-F2GFLB3R is confirmed.\n\nBooking reference: BK-F2GFLB3R\nYour reference: 46783\nAirline: Tamarind Airways (TM)\nLane: DUS-MIA\nPrice: 1871.03 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:46:02.904859+00:00",
+ "attachments": [],
+ "shipment": "47092",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-F2GFLB3R.",
+  "sender_role": "airline"
+ }
+}

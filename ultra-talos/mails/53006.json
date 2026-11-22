@@ -1,0 +1,21 @@
+{
+ "id": 53006,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: CGN to LIM",
+ "body": "Thanks for the offer. It works for us, and I’d like to place the shipment with you. Another forwarder quoted 7 percent less for the same shipment. Could you match their rate?\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 52940,
+ "references": [
+  52886,
+  52940
+ ],
+ "received_at": "2026-11-22T08:39:14.626034+00:00",
+ "attachments": [],
+ "shipment": "52886",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the offer and asks whether we can match a lower competing rate.",
+  "sender_role": "customer"
+ }
+}

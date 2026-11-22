@@ -1,0 +1,20 @@
+{
+ "id": 39105,
+ "from": "neckarstrom-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote Augsburg to MUC on 2026-12-04",
+ "body": "Hello,\n\nthank you for your request. To quote we need:\n- the pickup postcode\n\nPlease reply in this thread.\n\nBest regards\nNeckarstrom Kurier\nneckarstrom-kurier@hackloop.mail",
+ "in_reply_to": 39090,
+ "references": [
+  39090
+ ],
+ "received_at": "2026-11-22T04:14:08.914366+00:00",
+ "attachments": [],
+ "shipment": "39090",
+ "classification": {
+  "category": "trucker_decline",
+  "confidence": 0.99,
+  "reasoning": "The trucker asks for the missing pickup postcode instead of providing a price for the requested pickup.",
+  "sender_role": "trucker"
+ }
+}

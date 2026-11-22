@@ -1,0 +1,23 @@
+{
+ "id": 40337,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Hamburg North to Toronto",
+ "body": "Hi Alex,\n\nThanks for the update. I’ll check on the Shipper’s Declaration and SDS and get back to you. Hope your week’s going well!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 40325,
+ "references": [
+  40163,
+  40258,
+  40295,
+  40325
+ ],
+ "received_at": "2026-11-22T04:36:12.665662+00:00",
+ "attachments": [],
+ "shipment": "40163",
+ "classification": {
+  "category": "other",
+  "confidence": 0.97,
+  "reasoning": "The customer only acknowledges the update and says they will follow up with the requested documents; they are not providing missing shipment details yet.",
+  "sender_role": "customer"
+ }
+}

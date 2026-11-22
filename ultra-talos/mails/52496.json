@@ -1,0 +1,20 @@
+{
+ "id": 52496,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45111 Essen to DUS on 2026-11-24",
+ "body": "Hi there,\n\nThanks for reaching out! Our all-in price for the pickup is 350.30 EUR.\n\nPickup time: 13 hours\nQuote valid until: 22 Nov 2026 08:41 UTC\nOffer reference: TRK-16833\n\nNo booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 52326,
+ "references": [
+  52326
+ ],
+ "received_at": "2026-11-22T08:27:09.326962+00:00",
+ "attachments": [],
+ "shipment": "52326",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

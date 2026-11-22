@@ -1,0 +1,12 @@
+# Shipment 53124: Kessler Feinmechanik GmbH, HAM -> BOG
+- request: 3 pieces laboratory glassware, 630 kg gross, 3.96 cbm, chargeable 661.32 kg, ready 2026-11-28, customer delivers to HAM, goal cheapest
+- 2026-11-22T08:44Z air: Riverbend Airlines Cargo 1732.65 EUR, 4 d, rate_id R-jtbaczkSLhYYf1f5 valid 2026-11-22T08:59:43Z (source portal); cheapest available, selected
+- 2026-11-22T08:44:54Z QUOTE SENT mail id 53185: 1732.65 EUR all-in = air 1732.65 + truck 0 (customer delivery); offered validity until 08:59:43Z
+- 2026-11-22T08:45:22Z acceptance mail 53249: customer accepted quote 53185 and requested booking.
+- 2026-11-22T08:45Z rechecked Riverbend portal rate at 661.32 kg: EUR 1732.65 unchanged, rate_id R-ztQzvgAZp4mP5ebY valid until 2026-11-22T09:00:31Z.
+- 2026-11-22T08:45Z BOOKED BK-6JHMC5IM with Riverbend Airlines Cargo, team_reference 53124, 1732.65 EUR; estimated arrival 2026-12-02.
+- 2026-11-22T08:45:38Z booking confirmation sent in reply to mail 53249; outgoing mail id 53266.
+- 2026-11-22T08:45:46Z cancellation request mail 53268: buyer withdrew order; booking BK-6JHMC5IM already made.
+- 2026-11-22T08:45Z cancelled booking BK-6JHMC5IM via DELETE /v1/portal/bookings/BK-6JHMC5IM; API status cancelled.
+- 2026-11-22T08:45:57Z cancellation confirmed to customer in mail 53285 (reply to 53268).
+- 2026-11-22T08:45:48Z duplicate cancellation request mail 53276 (reply to booking confirmation 53266); already-actioned cancellation reiterated in reply mail 53294.

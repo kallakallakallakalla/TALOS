@@ -1,0 +1,21 @@
+{
+ "id": 43254,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to PEK",
+ "body": "Hello,\n\nThank you for your offer. It suits us well, and we would like to place the shipment with you. However, another forwarder has offered us a rate 10 percent lower for the same shipment.\n\nCould you match their rate?\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 43236,
+ "references": [
+  42935,
+  43236
+ ],
+ "received_at": "2026-11-22T05:32:19.441711+00:00",
+ "attachments": [],
+ "shipment": "42935",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.98,
+  "reasoning": "The customer says the offer suits them and wants to place the shipment, while also asking whether we can match a lower rate.",
+  "sender_role": "customer"
+ }
+}

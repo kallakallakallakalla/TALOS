@@ -1,0 +1,18 @@
+{
+ "id": 50474,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment HAM to GRU, 1353 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Hofmann Textilwerk KG, HAM to GRU, 1353 kg, ready on 2026-11-29? Where is it now?\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:49:21.715253+00:00",
+ "attachments": [],
+ "shipment": "50474",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the shipment’s current status and location.",
+  "sender_role": "tracking"
+ }
+}

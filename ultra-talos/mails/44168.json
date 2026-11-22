@@ -1,0 +1,25 @@
+{
+ "id": 44168,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Ingolstadt to Beijing",
+ "body": "Hi Alex,\n\nThanks for updating the pickup location. I’ll check on the SDS and Shipper’s Declaration and get back to you.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 44165,
+ "references": [
+  43982,
+  44070,
+  44098,
+  44147,
+  44154,
+  44165
+ ],
+ "received_at": "2026-11-22T05:55:38.010976+00:00",
+ "attachments": [],
+ "shipment": "43982",
+ "classification": {
+  "category": "other",
+  "confidence": 0.96,
+  "reasoning": "The customer only acknowledges the pickup update and says they will follow up, without providing the requested documents or asking a question.",
+  "sender_role": "customer"
+ }
+}

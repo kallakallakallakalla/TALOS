@@ -1,0 +1,18 @@
+{
+ "id": 45190,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – PVG and BKK",
+ "body": "Hello,\n\nCould you please quote the cheapest air freight option for each of the following shipments?\n\n1. To PVG (Shanghai, CN): machine parts, 2 pieces, gross weight 1972 kg, volume 15.00 cbm.\n2. To BKK (Bangkok, TH): furniture samples, 4 pieces, gross weight 690 kg, volume 4.63 cbm.\n\nBoth shipments are ready for pickup on 2026-11-26 at our site in 61017 (Bad Homburg), Germany. Please arrange the truck transport from our site to the airport and include it in your quote.\n\nPlease send both quotes in the same reply, with a separate all-in price in EUR for each shipment, not one combined price.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:12:14.401422+00:00",
+ "attachments": [],
+ "shipment": "45190",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests separate all-in air freight quotes for two new shipments.",
+  "sender_role": "customer"
+ }
+}

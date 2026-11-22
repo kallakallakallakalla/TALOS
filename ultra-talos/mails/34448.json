@@ -1,0 +1,23 @@
+{
+ "id": 34448,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – NBO import",
+ "body": "Thank you for confirming the air freight booking and for clarifying that the collection has not yet been booked.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 34446,
+ "references": [
+  34124,
+  34401,
+  34427,
+  34446
+ ],
+ "received_at": "2026-11-22T02:36:08.341503+00:00",
+ "attachments": [],
+ "shipment": "34124",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking and collection clarification, without accepting or asking anything.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "id": 52504,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Correction: pickup quote 45111 Essen to DUS on 2026-11-24",
+ "body": "Hi there,\n\nThanks for the correction! We can collect from your site in Essen and deliver to the air export warehouse at DUS Airport.\n\nOur all-in price is 350.30 EUR, and the pickup time is 13 hours. The quote is valid until 22 Nov 2026 08:41 UTC.\n\nYour offer reference is TRK-16836. No booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 52360,
+ "references": [
+  52360
+ ],
+ "received_at": "2026-11-22T08:27:16.732259+00:00",
+ "attachments": [],
+ "shipment": "52360",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker responds to the pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

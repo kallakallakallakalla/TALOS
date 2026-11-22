@@ -1,0 +1,18 @@
+{
+ "id": 49004,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 50107 to ORD, 246 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Weidner Spielwaren GmbH, 50107 to ORD, 246 kg, ready on 2026-11-29? Where is it now?\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:19:20.710935+00:00",
+ "attachments": [],
+ "shipment": "49004",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the current location and status of a shipment.",
+  "sender_role": "tracking"
+ }
+}

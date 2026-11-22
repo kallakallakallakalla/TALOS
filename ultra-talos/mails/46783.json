@@ -1,0 +1,18 @@
+{
+ "id": 46783,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: ZURICH AIRPORT - PPT / 204 PCS 1,872 KGS",
+ "body": "안녕하세요.\n\n도착지의 구매처가 독일에 있는 저희로부터 인쇄 홍보물을 수입할 예정입니다. 구매처의 수입 건(import shipment)에 필요한 MIA (Miami, US)행 항공 운송은 저희가 주선하고 있습니다.\n\n화물은 총 3개이며, 총중량은 549 kg, 부피는 5.26 cbm입니다. 2026-11-24부터 41680 (Moenchengladbach), Germany에 있는 저희 사업장에서 픽업 가능합니다. 공항까지의 트럭 운송도 귀사에서安排해 주시기 바랍니다.\n\n이번 수입 건(import)은 가장 저렴한 옵션(cheapest)으로 부탁드립니다. 픽업과 공항까지의 트럭 운송을 포함한 모든 비용을 EUR 기준으로 견적해 주시겠습니까?\n\n구매팀에서 견적서를 보관하므로, 회신하실 때 PDF로 첨부해 주시면 감사하겠습니다.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH\n\n\n-----Original Message-----\nSent: 2026-09-29\nSubject: ZURICH AIRPORT - PPT / 204 PCS 1,872 KGS\n\nDear team,\n\npls quote air freight ex ZURICH AIRPORT to PPT:\n204 PCS / 1,872 KGS / 6.4 CBM, electronic control units\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:42:48.502306+00:00",
+ "attachments": [],
+ "shipment": "46783",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air-freight quote for a shipment from Germany to Miami, including pickup and airport trucking.",
+  "sender_role": "customer"
+ }
+}

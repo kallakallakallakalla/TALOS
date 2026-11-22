@@ -1,0 +1,23 @@
+{
+ "id": 48870,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: DFW행 항공운임 견적 요청",
+ "body": "As already mentioned, we had to cancel the shipment to DFW because our buyer withdrew the order. Please cancel booking BK-BC73SCBR.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 48863,
+ "references": [
+  48598,
+  48815,
+  48840,
+  48863
+ ],
+ "received_at": "2026-11-22T07:15:51.909335+00:00",
+ "attachments": [],
+ "shipment": "48598",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer says the shipment is canceled because the buyer withdrew the order and asks us to cancel the booking.",
+  "sender_role": "customer"
+ }
+}

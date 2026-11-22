@@ -1,0 +1,25 @@
+{
+ "id": 41165,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - LAX / 32 PLT 163 KGS",
+ "body": "Dear Alex,\n\nThank you for confirming the booking and for checking the flight details.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 41164,
+ "references": [
+  40984,
+  41114,
+  41139,
+  41152,
+  41155,
+  41164
+ ],
+ "received_at": "2026-11-22T04:57:24.774681+00:00",
+ "attachments": [],
+ "shipment": "40984",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and checking the details, with no question or new request.",
+  "sender_role": "customer"
+ }
+}

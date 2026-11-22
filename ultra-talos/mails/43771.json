@@ -1,0 +1,21 @@
+{
+ "id": 43771,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: MUC to LAX import quote",
+ "body": "Our buyer has withdrawn the order, so we need to cancel the shipment. Please don’t book it. If you’ve already booked it, please cancel the booking.\n\nSorry for the inconvenience.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 43697,
+ "references": [
+  43646,
+  43697
+ ],
+ "received_at": "2026-11-22T05:42:58.230478+00:00",
+ "attachments": [],
+ "shipment": "43646",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer says the order was withdrawn and asks us not to book, or to cancel if already booked.",
+  "sender_role": "customer"
+ }
+}

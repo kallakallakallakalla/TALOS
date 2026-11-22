@@ -1,0 +1,18 @@
+{
+ "id": 52592,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-58XXRHIQ confirmed",
+ "body": "Hello,\n\nyour booking BK-58XXRHIQ is confirmed.\n\nBooking reference: BK-58XXRHIQ\nYour reference: 52190\nAirline: Juniper Cargo Lines (JP)\nLane: DUS-YYZ\nPrice: 3530.60 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:28:59.463503+00:00",
+ "attachments": [],
+ "shipment": "52592",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-58XXRHIQ.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 34496,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight quote: FRA to SGN",
+ "body": "Hi there,\n\nHope your week’s going well! Our buyer in Ho Chi Minh City, VN, is importing sports equipment from us in Germany, and I’m arranging the flight for their import. Could you quote the fastest air freight option to SGN and let me know the earliest arrival?\n\nWe’ll deliver the goods to Frankfurt airport (FRA) ourselves. The shipment will be ready on 2026-11-24 and consists of 5 pieces, with a gross weight of 2674.21 lb and a total volume of 279.70 cubic feet.\n\nCould you include the all-in price in EUR and attach the offer as a PDF to your reply? Our purchasing department needs the PDF for filing.\n\nThanks for checking what’s available!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:39:27.193000+00:00",
+ "attachments": [],
+ "shipment": "34496",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a specific shipment from FRA to SGN.",
+  "sender_role": "customer"
+ }
+}

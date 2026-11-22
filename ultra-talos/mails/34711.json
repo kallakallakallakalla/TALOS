@@ -1,0 +1,18 @@
+{
+ "id": 34711,
+ "from": "polaris-air-logistics@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-5EEK9QWE confirmed",
+ "body": "Hello,\n\nyour booking BK-5EEK9QWE is confirmed.\n\nBooking reference: BK-5EEK9QWE\nYour reference: 34496\nAirline: Polaris Air Logistics (PL)\nLane: FRA-SGN\nPrice: 4166.42 EUR\nStatus: booked and ready to ship\n\nKind regards,\nPolaris Air Logistics bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:41:39.262856+00:00",
+ "attachments": [],
+ "shipment": "34711",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-5EEK9QWE.",
+  "sender_role": "airline"
+ }
+}

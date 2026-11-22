@@ -1,0 +1,12 @@
+# Shipment 45931: Auer Maschinenbau GmbH, STR -> MEL
+- request: 12 pieces (1 drum, 3 cartons, 8 crates), 423 kg gross, 1.8952 cbm, chargeable 423 kg; ready 2026-11-28, pickup 72128 Tuebingen; goal cheapest.
+- 2026-11-22 06:24 UTC figures from mail: Lot 1 130 kg/0.70 cbm; Lot 2 69 kg/0.9072 cbm; Lot 3 224 kg/0.288 cbm. Total gross 423 kg; volume-weight 316.4984 kg.
+- 2026-11-22 06:24 UTC air prices: STR-MEL cheapest Solace Air Cargo (SL), portal 1915.00 EUR / 4 days, rate_id R-SfX_a7Jwtk776vBc, billed 500 kg (anti-weight-break), valid until 2026-11-22 06:39:47.983502 UTC. Alternatives: Yellowtail 2436.48 EUR tariff / 5 d; Aurelia 2588.76 EUR portal / 3 d. Cheapest requested, so SL selected subject to all-in truck price.
+- 2026-11-22 06:24 UTC asked truckers: Alpenblick Logistik (mail 45996) and Hansekogge Trucking (mail 46000), exact same 12 pieces, 423 kg, 1.8952 cbm, ready date.
+- 2026-11-22 06:26 UTC QUOTE SENT mail id 46127: 2097.91 EUR all-in = air 1915.00 + truck 182.91. Used Solace SL and Alpenblick (9 h); cheaper 17 h Hansekogge offer not used. Collection 2026-11-28; departure 2026-11-29; estimated arrival 2026-12-03. Valid until 2026-11-22 06:39 UTC; no booking had been requested at quote time.
+- 2026-11-22 06:26 UTC acceptance mail 46144: customer approved quote 46127 and requested booking.
+- 2026-11-22 06:26 UTC rechecked Solace Air Cargo (SL) STR-MEL at billed 500 kg: 1915.00 EUR, rate_id R-AM68EN7a5yn7sVoU, valid until 06:41:43 UTC; unchanged from accepted air price.
+- 2026-11-22 06:26 UTC BOOKED with Solace Air Cargo (SL), booking reference BK-HA1U7VUQ, team_reference 45931, 1915.00 EUR air; agreed all-in remains 2097.91 EUR including Alpenblick pickup 182.91 EUR. Estimated arrival 2026-12-03.
+- 2026-11-22 06:26 UTC booking confirmation sent to customer in reply to 46144, mail 46162. Awaiting airline confirmation email.
+- 2026-11-22 06:37 UTC tracking request 46431 (Auer, 72128 Tübingen -> MEL, 423 kg): checked Solace airline confirmation 46177 for BK-HA1U7VUQ (confirmed, “booked and ready to ship”). No pickup, handover, departure or tracking scan recorded; truck pickup remains an offer only. Cargo is due ready 28 Nov; live location unverified, expected at shipper pending collection. 3 Dec arrival is estimated. Replied to tracking@ in mail 46574.
+- 2026-11-22 06:27 UTC airline confirmation mail 46177 received: Solace confirmed BK-HA1U7VUQ, status “booked and ready to ship”. (This supersedes the pending-confirmation note above.)

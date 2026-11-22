@@ -1,0 +1,23 @@
+{
+ "id": 37828,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: STR–MIA hava navlun teklifi",
+ "body": "Merhaba Alex,\n\nRezervasyonu yaptığınız ve teyidini ilettiğiniz için teşekkürler.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 37826,
+ "references": [
+  37586,
+  37780,
+  37803,
+  37826
+ ],
+ "received_at": "2026-11-22T03:43:50.303428+00:00",
+ "attachments": [],
+ "shipment": "37586",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for making and confirming the booking.",
+  "sender_role": "customer"
+ }
+}

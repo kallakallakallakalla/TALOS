@@ -1,0 +1,25 @@
+{
+ "id": 39587,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - TLV / 19 CTN 2,796 KGS",
+ "body": "예약 확인해 주셔서 감사합니다. 예약 번호 BK-ZPWPGW9O 확인했습니다.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 39579,
+ "references": [
+  39222,
+  39500,
+  39521,
+  39549,
+  39559,
+  39579
+ ],
+ "received_at": "2026-11-22T04:19:56.406371+00:00",
+ "attachments": [],
+ "shipment": "39222",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer thanks us and acknowledges the confirmed booking reference without asking for anything.",
+  "sender_role": "customer"
+ }
+}

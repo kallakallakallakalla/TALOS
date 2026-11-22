@@ -1,0 +1,21 @@
+{
+ "id": 39521,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - TLV / 19 CTN 2,796 KGS",
+ "body": "Thanks for the offer. It works for us, and we’d like to place the shipment with you.\n\nAnother forwarder has quoted 9 percent less for the same shipment. Can you match their rate?\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 39500,
+ "references": [
+  39222,
+  39500
+ ],
+ "received_at": "2026-11-22T04:18:35.344955+00:00",
+ "attachments": [],
+ "shipment": "39222",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the offer and asks us to book, so this is customer_accept despite also asking whether we can match a lower rate.",
+  "sender_role": "customer"
+ }
+}

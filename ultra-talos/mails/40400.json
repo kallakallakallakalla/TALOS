@@ -1,0 +1,18 @@
+{
+ "id": 40400,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: AMSTERDAM SCHIPHOL - TNR / 41 CRATES 176 KGS",
+ "body": "Hi,\n\nI’m arranging air freight for our buyer’s import into Toronto, CA. Could you quote an all-in price in EUR for the fastest option to YYZ, including pickup at our site in 28945 Bremen, Germany, and trucking to the departure airport?\n\nThe import shipment is 8 pieces of sports equipment, ready for pickup on 2026-11-25, with a gross weight of 121.26 lb and a volume of 16.25 cubic feet.\n\nMira Petersen\nNordlicht Audio\n\n\n-----Original Message-----\nSent: 2026-10-02\nSubject: AMSTERDAM SCHIPHOL - TNR / 41 CRATES 176 KGS\n\nDear team,\n\npls quote air freight ex AMSTERDAM SCHIPHOL to TNR:\n41 CRATES / 176 KGS / 8 CBM, precision instruments\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:41:07.776700+00:00",
+ "attachments": [],
+ "shipment": "40400",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The sender requests an all-in quote for a new air-freight shipment to Toronto.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": 41784,
+ "from": "grautal-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45806 Essen to DUS on 2026-11-28",
+ "body": "All-in pickup price: 386.89 EUR\nPickup time: 7 hours\nPrice valid until: 22 Nov 2026 05:20 UTC\nOffer reference: TRK-13813\n\nGrautal Trucking",
+ "in_reply_to": 41660,
+ "references": [
+  41548,
+  41660
+ ],
+ "received_at": "2026-11-22T05:06:19.936390+00:00",
+ "attachments": [],
+ "shipment": "41548",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

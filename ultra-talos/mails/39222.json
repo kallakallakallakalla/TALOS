@@ -1,0 +1,18 @@
+{
+ "id": 39222,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - TLV / 19 CTN 2,796 KGS",
+ "body": "안녕하세요,\n\nGermany Mainz 55274 소재 당사 사업장에서 픽업해 RUH (Riyadh, SA)까지 보내는 항공운송 견적 부탁드립니다. 픽업은 2026-11-24부터 가능하며, 공항까지의 픽업 트럭도 배차해 주세요.\n\n화물은 가구 샘플 12개이며, 총중량은 2028.26 lb, 부피는 113.01 cubic feet입니다.\n\n가장 저렴한 옵션으로, 픽업을 포함한 모든 비용을 합산해 EUR로 견적 부탁드립니다.\n\nSara\nLindqvist Medtech\n\n\n-----Original Message-----\nSent: 2026-09-20\nSubject: BRUSSELS AIRPORT - TLV / 19 CTN 2,796 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to TLV:\n19 CTN / 2,796 KGS / 4.9 CBM, laboratory glassware\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:16:48.788841+00:00",
+ "attachments": [],
+ "shipment": "39222",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer makes a new request for an all-in air freight quote from Mainz to Riyadh, including pickup.",
+  "sender_role": "customer"
+ }
+}

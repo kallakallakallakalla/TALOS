@@ -1,0 +1,25 @@
+{
+ "id": 55538,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - SGN / 89 PLT 440 KGS",
+ "body": "Hello,\n\nCould you please check the fastest air freight option from Stuttgart Airport (STR) to Tel Aviv (TLV, IL) and send us your all-in price in EUR?\n\nThe shipment will be ready on 2026-11-27, and we will deliver it to STR ourselves. It consists of 11 pieces of maintenance spray cans, with a gross weight of 1223 kg and a volume of 2.96 cbm.\n\nThe packing list is attached. Please let us know the earliest possible departure and arrival.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH\n\n\n-----Original Message-----\nSent: 2026-10-12\nSubject: VIENNA AIRPORT - SGN / 89 PLT 440 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to SGN:\n89 PLT / 440 KGS / 13.4 CBM, automotive sensors\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:33:08.311021+00:00",
+ "attachments": [
+  {
+   "id": 1601,
+   "filename": "packing-spec_73386.xlsx",
+   "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "size": 2001
+  }
+ ],
+ "shipment": "55538",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer is requesting an all-in price and fastest air freight option for a new shipment from STR to TLV.",
+  "sender_role": "customer"
+ }
+}

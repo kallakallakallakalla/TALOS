@@ -1,0 +1,20 @@
+{
+ "id": 37180,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Withdrawal: STR-PVG quote request, reference 35811",
+ "body": "Dear Alex,\n\nWe confirm that your STR–PVG quote request has been withdrawn. No booking was made, and no further action is required.\n\nFor your records only, the rate was 2738.41 EUR, with a transit time of 5 days and validity through 22 Nov 2026 03:44 UTC. The reference that would have been used to book was R-X_qvtypQohAIwraM.\n\nKind regards,\nLumen Air Cargo",
+ "in_reply_to": 37147,
+ "references": [
+  37147
+ ],
+ "received_at": "2026-11-22T03:30:17.269242+00:00",
+ "attachments": [],
+ "shipment": "37147",
+ "classification": {
+  "category": "other",
+  "confidence": 0.96,
+  "reasoning": "The airline acknowledges withdrawal of the quote request and provides no new offer or booking confirmation.",
+  "sender_role": "airline"
+ }
+}

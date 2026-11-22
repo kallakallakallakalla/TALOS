@@ -1,0 +1,20 @@
+{
+ "id": 47897,
+ "from": "schwabenbote-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 28676 Bremen to HAM on 2026-11-28",
+ "body": "Hello,\n\nThank you for your inquiry. Our all-in price for the pickup in Bremen and delivery to the air export warehouse at Hamburg Airport is 449.69 EUR.\n\nPickup time: 12 hours\nOffer valid until: 22 Nov 2026 07:10 UTC\nOffer reference: TRK-15605\n\nNo booking is required.\n\nBest regards,\nSchwabenbote Transporte",
+ "in_reply_to": 47808,
+ "references": [
+  47808
+ ],
+ "received_at": "2026-11-22T06:56:04.451560+00:00",
+ "attachments": [],
+ "shipment": "47808",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

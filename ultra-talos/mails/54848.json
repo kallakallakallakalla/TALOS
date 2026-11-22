@@ -1,0 +1,18 @@
+{
+ "id": 54848,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 81843 to SGN, 1951 kg",
+ "body": "Hi,\n\nCould you confirm where this shipment is now and send me a status update?\n\nLindqvist Medtech GmbH | 81843 to SGN | 1951 kg gross | Ready date: 2026-11-28\n\nThanks.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:20:57.404577+00:00",
+ "attachments": [],
+ "shipment": "54848",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the shipment’s current location and a status update.",
+  "sender_role": "tracking"
+ }
+}

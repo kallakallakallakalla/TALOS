@@ -1,0 +1,21 @@
+{
+ "id": 51239,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - ATL / 149 CTN 765 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 51178,
+ "references": [
+  51075,
+  51178
+ ],
+ "received_at": "2026-11-22T08:08:59.368070+00:00",
+ "attachments": [],
+ "shipment": "51075",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the offer and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

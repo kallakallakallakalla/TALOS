@@ -1,0 +1,20 @@
+{
+ "id": 43161,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 47941 Duisburg to DUS on 2026-11-28",
+ "body": "Hi there,\n\nThanks for getting in touch! We can collect in Duisburg and deliver to the air export warehouse at DUS for an all-in price of 381.95 EUR.\n\nPickup time: 19 hours\nQuote valid until: 22 Nov 2026 05:45 UTC\nOffer reference: TRK-14257\n\nNo booking is needed for the pickup.\n\nBest wishes,\nDomblick Kurierdienst",
+ "in_reply_to": 43043,
+ "references": [
+  43043
+ ],
+ "received_at": "2026-11-22T05:30:38.940443+00:00",
+ "attachments": [],
+ "shipment": "43043",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and offer details.",
+  "sender_role": "trucker"
+ }
+}

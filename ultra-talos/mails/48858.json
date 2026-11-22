@@ -1,0 +1,21 @@
+{
+ "id": 48858,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: DFW행 항공운임 견적 요청",
+ "body": "Hello,\n\nOur buyer has withdrawn the order, so we have to cancel the shipment. Please do not book it. If you have already booked it, please cancel the booking.\n\nSorry for the inconvenience.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 48815,
+ "references": [
+  48598,
+  48815
+ ],
+ "received_at": "2026-11-22T07:15:36.516098+00:00",
+ "attachments": [],
+ "shipment": "48598",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer says the order was withdrawn and asks us not to book, declining the quoted shipment.",
+  "sender_role": "customer"
+ }
+}

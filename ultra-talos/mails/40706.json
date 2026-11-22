@@ -1,0 +1,23 @@
+{
+ "id": 40706,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: AMSTERDAM SCHIPHOL - TNR / 41 CRATES 176 KGS",
+ "body": "Thanks for confirming the air freight booking, Alex.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 40701,
+ "references": [
+  40400,
+  40679,
+  40687,
+  40701
+ ],
+ "received_at": "2026-11-22T04:44:49.940485+00:00",
+ "attachments": [],
+ "shipment": "40400",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and does not ask for action or information.",
+  "sender_role": "customer"
+ }
+}

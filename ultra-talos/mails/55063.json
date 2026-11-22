@@ -1,0 +1,18 @@
+{
+ "id": 55063,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-ZQPF25SG confirmed",
+ "body": "Hello,\n\nyour booking BK-ZQPF25SG is confirmed.\n\nBooking reference: BK-ZQPF25SG\nYour reference: 54863\nAirline: Borealis Freight Airways (BX)\nLane: STR-SGN\nPrice: 1915.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:22:55.931295+00:00",
+ "attachments": [],
+ "shipment": "55063",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-ZQPF25SG.",
+  "sender_role": "airline"
+ }
+}

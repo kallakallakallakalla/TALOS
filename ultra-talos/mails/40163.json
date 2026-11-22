@@ -1,0 +1,25 @@
+{
+ "id": 40163,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: Hamburg North to Toronto",
+ "body": "Hello,\n\nplease quote air freight for this shipment:\n\n- Pickup: from our site at 22296 Hamburg North, Germany (please arrange the truck)\n- Destination airport: Toronto (YYZ), CA\n- Commodity: spare batteries for forklifts, 6 pieces\n- Gross weight: 417 kg\n- Volume: 2.88 cbm\n- Ready date: 2026-11-26\n- Service: the cheapest option\n- Our shipper's letter of instruction is attached to this email\n- The goods are general cargo, non-dangerous\n\nPlease reply with your all-in price in EUR.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:35:03.871849+00:00",
+ "attachments": [
+  {
+   "id": 1124,
+   "filename": "packing_list_13740.xlsx",
+   "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "size": 2020
+  }
+ ],
+ "shipment": "40163",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price for a new air-freight shipment.",
+  "sender_role": "customer"
+ }
+}

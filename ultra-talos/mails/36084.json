@@ -1,0 +1,20 @@
+{
+ "id": 36084,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70275 Stuttgart to STR – 26 Nov",
+ "body": "Dear Sir or Madam,\n\nOur all-inclusive rate for the requested pickup in Stuttgart and delivery to STR is 132.37 EUR. Pickup lead time: 28 hours.\n\nThis offer is valid until 22 Nov 2026 03:24 UTC. Offer reference: TRK-12042. No booking is required.\n\nKind regards,\nRheinufer Spedition",
+ "in_reply_to": 36062,
+ "references": [
+  36062
+ ],
+ "received_at": "2026-11-22T03:09:29.060782+00:00",
+ "attachments": [],
+ "shipment": "36062",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a specific price, lead time, and validity.",
+  "sender_role": "trucker"
+ }
+}

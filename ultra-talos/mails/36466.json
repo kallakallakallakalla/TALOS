@@ -1,0 +1,20 @@
+{
+ "id": 36466,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup rate request – 36272 Fulda to FRA – 2026-11-27 – ref 36304",
+ "body": "Hi there,\n\nThanks for getting in touch! Our all-in price for the pickup and delivery to FRA is 266.44 EUR. Pickup time: 8 hours. The quote is valid until 22 Nov 2026 03:31 UTC.\n\nOur offer reference is TRK-12215. No booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 36379,
+ "references": [
+  36379
+ ],
+ "received_at": "2026-11-22T03:16:36.659987+00:00",
+ "attachments": [],
+ "shipment": "36379",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to a pickup rate request with an all-in price, pickup time, and quote validity.",
+  "sender_role": "trucker"
+ }
+}

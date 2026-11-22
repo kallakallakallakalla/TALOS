@@ -1,0 +1,18 @@
+{
+ "id": 36835,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to SGN",
+ "body": "Hi there,\n\nHope your week’s going well! I’m arranging air freight from Germany for our buyer’s import into Vietnam. Could you quote your cheapest option for this import shipment to SGN (Ho Chi Minh City, VN)?\n\nThe laboratory glassware will be ready for pickup on 2026-11-28 at our site in 51341 (Bergisch Gladbach), Germany. There are 10 pieces, with a gross weight of 785 kg and a total volume of 3.01 cbm.\n\nCould you arrange the truck from our site to the airport and include that leg in your all-in price in EUR?\n\nThanks for taking a look!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:28:04.378720+00:00",
+ "attachments": [],
+ "shipment": "36835",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a specific shipment from Germany to SGN.",
+  "sender_role": "customer"
+ }
+}

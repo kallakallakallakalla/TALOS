@@ -1,0 +1,18 @@
+{
+ "id": 39931,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Fastest air freight to RUH",
+ "body": "Hello,\n\nOur buyer in Riyadh, SA, is importing electronic control units from us in Germany. I am arranging the flight for their import and would appreciate your quote for the fastest option from DUS to RUH.\n\nThe goods will be ready on 2026-11-27, and we will deliver them ourselves to Duesseldorf Airport (DUS). The import shipment consists of 11 pieces with a gross weight of 1049 kg and a volume of 4.21 cbm.\n\nCould you please confirm the earliest available flight and arrival at RUH, together with your all-in price in EUR?\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:28:56.234458+00:00",
+ "attachments": [],
+ "shipment": "39931",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price and fastest flight option for a new shipment.",
+  "sender_role": "customer"
+ }
+}

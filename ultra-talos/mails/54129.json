@@ -1,0 +1,18 @@
+{
+ "id": 54129,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - ASU / 225 CTN 390 KGS",
+ "body": "Merhaba,\n\nSGN (Ho Chi Minh City, VN) varışlı tekstil numuneleri için en hızlı seçeneği istiyoruz. Gönderi 7 parça, brüt 1951 kg ve 13.67 cbm.\n\nYük 2026-11-28 tarihinde 81843 (Munich South), Germany adresindeki tesisimizden alıma hazır. Havalimanına kamyon nakliyesini de siz organize edecek şekilde, tüm masraflar dahil EUR teklifinizi iletebilir misiniz?\n\nSara\nLindqvist Medtech\n\n\n-----Original Message-----\nSent: 2026-10-16\nSubject: BRUSSELS AIRPORT - ASU / 225 CTN 390 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to ASU:\n225 CTN / 390 KGS / 15.8 CBM, automotive sensors\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:08:52.599769+00:00",
+ "attachments": [],
+ "shipment": "54129",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is making a new request for an all-in quote for a shipment from Munich to Ho Chi Minh City.",
+  "sender_role": "customer"
+ }
+}

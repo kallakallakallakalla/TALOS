@@ -1,0 +1,20 @@
+{
+ "id": 43162,
+ "from": "rheinufer-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 47941 Duisburg to DUS on 2026-11-28",
+ "body": "Dear Sir or Madam,\n\nThank you for your request. Our fixed all-in price for collection in Duisburg and delivery to the air export warehouse at Düsseldorf Airport is 366.36 EUR.\n\nPickup time: 8 hours\nValid until: 22 Nov 2026 05:45 UTC\nOffer reference: TRK-14255\n\nNo booking is required for pickup.\n\nKind regards,\nRheinufer Spedition",
+ "in_reply_to": 43045,
+ "references": [
+  43045
+ ],
+ "received_at": "2026-11-22T05:30:38.940821+00:00",
+ "attachments": [],
+ "shipment": "43045",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

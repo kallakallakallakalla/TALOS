@@ -1,0 +1,11 @@
+# Shipment 34124: Sonnberg Kaffeeroesterei GmbH, DUS -> NBO
+- request: 11 pieces, 1061 kg gross, 5.97 cbm, chargeable 1061 kg, ready 2026-11-26, pickup 47914 Duisburg, goal cheapest. Furniture samples; customer asks export air freight plus truck pickup.
+- 2026-11-22 02:33 UTC asked truckers: Domblick (34257), Elbkante (34256), Rheinufer (34258), Vogelsberg (34255).
+- 2026-11-22 02:34 UTC offers: Domblick 248.15 EUR/19 h/TRK-11521; Elbkante 159.49 EUR/28 h/TRK-11520; Rheinufer 259.32 EUR/8 h/TRK-11522; Vogelsberg 194.71 EUR/22 h/TRK-11523; all valid until 02:48 UTC. Chose Rheinufer (cheapest within 14 h; others slower).
+- 2026-11-22 02:33 UTC air: Meridian Freightways 3246.66 EUR, 6 d, rate_id R-YAMt3YvTrqite_Ue valid until 02:48:42 UTC (source portal); 1061 kg billed.
+- 2026-11-22 02:35 UTC QUOTE SENT mail 34401: 3505.98 EUR all-in = air 3246.66 + truck 259.32; pickup 26 Nov, ETA 3 Dec.
+- Open: awaiting customer decision; no booking requested or made.
+- 2026-11-22 02:35 UTC customer acceptance mail 34427 replied to quote 34401. Revalidated Meridian MD DUS-NBO at 1061 kg: 3246.66 EUR, 6 d; fresh rate_id R-yiLqMDR7khAVna55 valid until 02:50:48 UTC. Agreed total unchanged at 3505.98 EUR (air 3246.66 + Rheinufer pickup quote 259.32).
+- 2026-11-22 02:35 UTC BOOKED airfreight BK-T2JCDO2U with Meridian Freightways; team_reference 34124; rate_id R-yiLqMDR7khAVna55; ETA 3 Dec. Customer confirmation mail 34446. Rheinufer's pickup is quoted only, not booked; customer told this explicitly.
+- Open: airfreight booked; truck pickup remains unbooked (Rheinufer offer TRK-11522, 8 h, quoted for 26 Nov).
+- 2026-11-22 02:46 UTC tracking request 34804: matched to this booked NBO shipment (47914 Duisburg, 1061 kg). Latest records: still at shipper site, not collected/in transit; Meridian air booking BK-T2JCDO2U confirmed, cargo ready 26 Nov; pickup quote only, not booked. Replied to tracking@ in mail 34977.

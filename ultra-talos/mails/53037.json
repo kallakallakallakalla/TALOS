@@ -1,0 +1,23 @@
+{
+ "id": 53037,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: CGN to LIM",
+ "body": "That’s fine, I accept your offer. Please book the shipment now.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 53028,
+ "references": [
+  52886,
+  52940,
+  53006,
+  53028
+ ],
+ "received_at": "2026-11-22T08:39:54.414539+00:00",
+ "attachments": [],
+ "shipment": "52886",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer explicitly accepts the offer and asks us to book the shipment.",
+  "sender_role": "customer"
+ }
+}

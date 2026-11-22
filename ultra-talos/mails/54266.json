@@ -1,0 +1,18 @@
+{
+ "id": 54266,
+ "from": "lindqvist_medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Our mailbox is down: price for Ho Chi Minh City (SGN)",
+ "body": "Hello,\n\nour usual mailbox has been down since this morning and I cannot open anything in it. Could you confirm your price for our shipment to Ho Chi Minh City (SGN) to this address, so that I can pass it on today?\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:09:17.680977+00:00",
+ "attachments": [],
+ "shipment": "54266",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.85,
+  "reasoning": "The customer asks us to confirm the price for a shipment, but does not provide a new transport request or accept a quote.",
+  "sender_role": "customer"
+ }
+}

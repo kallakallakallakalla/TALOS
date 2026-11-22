@@ -1,0 +1,23 @@
+{
+ "id": 52000,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to SGN",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 51932,
+ "references": [
+  51708,
+  51800,
+  51862,
+  51932
+ ],
+ "received_at": "2026-11-22T08:21:50.544037+00:00",
+ "attachments": [],
+ "shipment": "51708",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the offer and asks us to book the shipment.",
+  "sender_role": "customer"
+ }
+}

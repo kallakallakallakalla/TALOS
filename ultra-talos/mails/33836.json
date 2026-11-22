@@ -1,0 +1,18 @@
+{
+ "id": 33836,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to ICN",
+ "body": "Hi,\n\nCould you quote the same shipment again? My earlier request, \"Air freight quote to YYZ\", was sent on 2026-11-21 at 23:31 UTC and was for YYZ. The cargo and pickup details are unchanged and you have them from that request.\n\nThis time the destination is ICN and the shipment is ready on 2026-11-26. Please send me your all-in price in EUR for the fastest option.\n\nThanks!\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:27:17.362747+00:00",
+ "attachments": [],
+ "shipment": "33836",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in quote for the same cargo to a different destination and ready date.",
+  "sender_role": "customer"
+ }
+}

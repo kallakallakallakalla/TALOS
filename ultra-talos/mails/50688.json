@@ -1,0 +1,23 @@
+{
+ "id": 50688,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: CGN → SCL 최단 소요시간 항공운임 견적 문의",
+ "body": "Alex님, 빠르게 예약 잡아주셔서 감사합니다! 예약 번호 BK-GC80K62X와 도착 예정일 30 Nov 확인했습니다.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 50687,
+ "references": [
+  50494,
+  50637,
+  50657,
+  50687
+ ],
+ "received_at": "2026-11-22T07:52:35.656607+00:00",
+ "attachments": [],
+ "shipment": "50494",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks Alex and acknowledges the booking reference and estimated arrival.",
+  "sender_role": "customer"
+ }
+}

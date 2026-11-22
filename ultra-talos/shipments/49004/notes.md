@@ -1,0 +1,2 @@
+# Tracking request 49004: matched to shipment 48213, Weidner Spielwaren GmbH, CGN -> ORD
+- 2026-11-22 07:19 UTC tracking request 49004: replied in mail 49202. Meridian confirmed BK-H4P0IIHX booked/ready to ship; cargo due ready at Cologne site 29 Nov. No collection, CGN handover, departure, or live scan recorded; shipper site is latest confirmable location, not in transit. 1 Dec ORD arrival is estimated only (pickup 29 Nov, planned departure 30 Nov); Sternmeile 12 h offer is not a pickup booking.

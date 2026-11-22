@@ -1,0 +1,20 @@
+{
+ "id": 52500,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 45111 Essen to DUS on 2026-11-24",
+ "body": "Hello,\n\nthank you for your request. To quote we need:\n- the pickup postcode\n\nPlease reply in this thread.\n\nBest regards\nMaintal Transport Logistik\nmaintal-transport-logistik@hackloop.mail",
+ "in_reply_to": 52329,
+ "references": [
+  52329
+ ],
+ "received_at": "2026-11-22T08:27:10.664413+00:00",
+ "attachments": [],
+ "shipment": "52329",
+ "classification": {
+  "category": "trucker_decline",
+  "confidence": 0.99,
+  "reasoning": "The trucker is replying to a pickup quote request and asks for the postcode instead of offering a price.",
+  "sender_role": "trucker"
+ }
+}

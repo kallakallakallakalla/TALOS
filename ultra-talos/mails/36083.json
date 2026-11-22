@@ -1,0 +1,20 @@
+{
+ "id": 36083,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 70275 Stuttgart to STR – 26 Nov",
+ "body": "Hi,\n\nThanks for your request. Our all-in price for pickup in Stuttgart and delivery to STR is 312.56 EUR.\n\nPickup time: 9 hours\nQuote valid until: 22 Nov 2026 03:24 UTC\nOffer reference: TRK-12041\n\nNo booking is required.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 36064,
+ "references": [
+  36064
+ ],
+ "received_at": "2026-11-22T03:09:29.061255+00:00",
+ "attachments": [],
+ "shipment": "36064",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and validity.",
+  "sender_role": "trucker"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 45931,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to MEL",
+ "body": "Hello,\n\nCould you please quote your cheapest air freight option to MEL (Melbourne, AU) for printed marketing material? The cargo will be ready for pickup on 2026-11-28 at our site in 72128 (Tuebingen), Germany. Please arrange the truck from our site to the airport and include this in your quote.\n\nLot 1: 1 drum, together 130 kg gross (114 kg net), together 0.70 cbm\nLot 2: 3 cartons, each 23 kg gross (20 kg net), each 60 x 40 x 126 cm\nLot 3: 8 crates, each 28 kg gross (24 kg net), each 60 x 40 x 15 cm\n\nPlease send all lots together as a single consignment under one air waybill and quote one all-in price in EUR for the complete shipment.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:24:24.664141+00:00",
+ "attachments": [],
+ "shipment": "45931",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in quote for a new air-freight shipment to Melbourne.",
+  "sender_role": "customer"
+ }
+}

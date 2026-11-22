@@ -1,0 +1,21 @@
+{
+ "id": 33169,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: HAM to MEX",
+ "body": "Thank you for asking. We’ll send you the dangerous goods documents (shipper’s declaration and safety data sheet) shortly.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 33157,
+ "references": [
+  33100,
+  33157
+ ],
+ "received_at": "2026-11-22T02:15:46.255992+00:00",
+ "attachments": [],
+ "shipment": "33100",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer is replying to our request by promising the missing dangerous-goods documents.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": 33699,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 80602 Munich to MUC on 2026-11-24",
+ "body": "Hi there,\n\nThanks for the enquiry! Our all-in price for the Munich pickup and delivery to the MUC air export warehouse is 159.73 EUR.\n\nPickup time: 26 hours\nOffer valid until: 22 Nov 2026 02:37 UTC\nOffer reference: TRK-11304\n\nNo booking is needed for the pickup.\n\nBest wishes,\nNordlicht Haulage",
+ "in_reply_to": 33584,
+ "references": [
+  33304,
+  33584
+ ],
+ "received_at": "2026-11-22T02:22:30.607293+00:00",
+ "attachments": [],
+ "shipment": "33304",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

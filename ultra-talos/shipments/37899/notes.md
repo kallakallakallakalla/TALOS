@@ -1,0 +1,11 @@
+# Shipment 37899: Hofmann Textilwerk KG, MUC -> SGN and ICN
+- Request mail 37899 (2026-11-22 03:46:17 UTC): two separate airport-to-airport prices; ready 2026-11-26; customer delivers to MUC; fastest requested.
+- SGN: automotive sensors, 6 pcs, gross/chargeable 1592 kg (6.77 cbm); fastest priced option Nova Atlas Cargo 5810.80 EUR, 3 d, portal rate_id R-J7ZlRgg6IcCZlBqK valid until 2026-11-22 04:01:49 UTC. Alternatives: Tamarind 2674.56 EUR/4 d; Polaris 2786.00 EUR/4 d; Helix tariff 5460.56 EUR/6 d. Chosen fastest despite higher price.
+- ICN: printed marketing material, 7 pcs, gross 813 kg, chargeable 1008.68 kg (6.04 cbm); fastest priced option Ibisair Cargo 3439.60 EUR, 2 d, portal rate_id R-7am6Oy7XnFJGgsi_ valid until 2026-11-22 04:01:49 UTC. Alternatives: Wayzata tariff 2239.27 EUR/5 d; Polaris 2309.88 EUR/5 d. Chosen fastest despite higher price.
+- Estimated arrival dates from ready date + portal transit: SGN 2026-11-29; ICN 2026-11-28. No pickup charge: customer delivers to MUC.
+- 2026-11-22 03:47:12 UTC QUOTE SENT mail id 38079: SGN 5810.80 EUR all-in airport-to-airport (air 5810.80 + truck 0); ICN 3439.60 EUR all-in airport-to-airport (air 3439.60 + truck 0). Fastest options as requested.
+- 2026-11-22 03:47:44 UTC customer mail 38096: accepts both offers but asks to book SGN now; ICN to remain unbooked until later confirmation.
+- 2026-11-22 03:47:54 UTC refreshed Nova Atlas rate before booking: 5810.80 EUR, 3 d, 1592 kg, rate_id R-KhiMVUZddsqzED8B valid until 04:02:57 UTC (same price as accepted quote).
+- 2026-11-22 03:48 UTC BOOKED MUC-SGN Nova Atlas Cargo, 5810.80 EUR, booking BK-GYQ6XYOS, team_reference 37899, ETA 2026-11-29.
+- 2026-11-22 03:48:10 UTC confirmation sent mail id 38112 replying to 38096; MUC-ICN remains unbooked pending customer confirmation.
+- 2026-11-22 03:58 UTC tracking mail 38401 matched: no handover or live tracking scan recorded; exact current location unverified. Since cargo is due ready 26 Nov and customer delivers to MUC, expected to remain with customer pending delivery. Replied mail 38421 with booking BK-GYQ6XYOS and estimated arrival 29 Nov.

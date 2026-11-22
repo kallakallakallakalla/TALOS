@@ -1,0 +1,18 @@
+{
+ "id": 32130,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: MUC to YYZ",
+ "body": "Hi there,\n\nHope your week’s going well! I’m arranging the flight from Germany for our buyer’s import into Toronto, Canada. Could you send me an all-in price in EUR for the cheapest air freight option from MUC to YYZ?\n\nThe import shipment consists of 5 pieces of automotive sensors, with a gross weight of 3258.44 lb and a total volume of 306.18 cubic feet. The goods will be ready on 2026-11-25, and we’ll deliver them to MUC ourselves, so there’s no need to arrange pickup.\n\nThanks for having a look!\n\nPlease include cargo insurance in the all-in price, on the terms of our frame agreement: goods value 90000 EUR, insured at 110 % of that value, premium rate 0.45 %.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T01:56:54.503541+00:00",
+ "attachments": [],
+ "shipment": "32130",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in air freight price for a specific shipment, so this is a new quote request.",
+  "sender_role": "customer"
+ }
+}

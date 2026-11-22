@@ -1,0 +1,18 @@
+{
+ "id": 48213,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - SIN / 34 PCS 740 KGS",
+ "body": "Hi there,\n\nHope your week’s going well. Could you quote the fastest air freight option to ORD (Chicago, US) for a shipment of automotive sensors? We have 6 pieces with a gross weight of 246 kg and a volume of 1.10 cbm.\n\nThe shipment will be ready for pickup on 2026-11-29 at our site in 50107 (Cologne), Germany. Could you arrange the truck from our site to the airport and include that in your all-in price in EUR?\n\nCould you also let me know the earliest arrival you can offer at ORD?\n\nThanks for checking!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg\n\n\n-----Original Message-----\nSent: 2026-10-16\nSubject: BRUSSELS AIRPORT - SIN / 34 PCS 740 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to SIN:\n34 PCS / 740 KGS / 1.5 CBM, spare parts for packaging machines\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:07:08.778101+00:00",
+ "attachments": [],
+ "shipment": "48213",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer is requesting a new all-in quote for an air shipment from Cologne to Chicago, including pickup and earliest arrival.",
+  "sender_role": "customer"
+ }
+}

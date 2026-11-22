@@ -1,0 +1,18 @@
+{
+ "id": 46742,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-MHPIY2SB confirmed",
+ "body": "Hello,\n\nyour booking BK-MHPIY2SB is confirmed.\n\nBooking reference: BK-MHPIY2SB\nYour reference: 46444\nAirline: Solace Air Cargo (SL)\nLane: DUS-ATL\nPrice: 1395.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:39:42.353103+00:00",
+ "attachments": [],
+ "shipment": "46742",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-MHPIY2SB.",
+  "sender_role": "airline"
+ }
+}

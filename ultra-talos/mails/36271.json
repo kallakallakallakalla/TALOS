@@ -1,0 +1,20 @@
+{
+ "id": 36271,
+ "from": "elbflug-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: STR-PVG rate inquiry, ref 35811",
+ "body": "Hi,\n\nOur fastest airport-to-airport option from STR to PVG is 2727.50 EUR all-in, with a transit time of 4 days.\n\nThe quote is valid until 22 Nov 2026 03:28 UTC. Please use reference R-Dv9Ts0mrgjmd1l31 when booking.\n\nBest regards,\nElbflug Air Freight",
+ "in_reply_to": 36261,
+ "references": [
+  36261
+ ],
+ "received_at": "2026-11-22T03:13:32.975240+00:00",
+ "attachments": [],
+ "shipment": "36261",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.99,
+  "reasoning": "The airline replies with a one-shipment STR-PVG price, transit time, validity, and booking reference.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "id": 47469,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 85869 Ingolstadt to MUC on 2026-11-29",
+ "body": "Dear Sir or Madam,\n\nOur all-in price for collection in Ingolstadt and delivery to the air export warehouse at Munich Airport is 361.78 EUR.\n\nPickup time: 9 hours\nOffer valid until: 22 Nov 2026 07:04 UTC\nOffer reference: TRK-15531\n\nNo booking is required for pickup.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 47321,
+ "references": [
+  47321
+ ],
+ "received_at": "2026-11-22T06:50:04.717834+00:00",
+ "attachments": [],
+ "shipment": "47321",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

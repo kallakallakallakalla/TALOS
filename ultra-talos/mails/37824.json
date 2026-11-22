@@ -1,0 +1,18 @@
+{
+ "id": 37824,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-2YNN90W8 confirmed",
+ "body": "Hello,\n\nyour booking BK-2YNN90W8 is confirmed.\n\nBooking reference: BK-2YNN90W8\nYour reference: 37586\nAirline: Solace Air Cargo (SL)\nLane: STR-MIA\nPrice: 3680.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:43:30.229704+00:00",
+ "attachments": [],
+ "shipment": "37824",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-2YNN90W8.",
+  "sender_role": "airline"
+ }
+}

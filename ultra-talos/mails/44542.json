@@ -1,0 +1,18 @@
+{
+ "id": 44542,
+ "from": "polaris-air-logistics@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-B9DS3MN2 confirmed",
+ "body": "Hello,\n\nyour booking BK-B9DS3MN2 is confirmed.\n\nBooking reference: BK-B9DS3MN2\nYour reference: 44325\nAirline: Polaris Air Logistics (PL)\nLane: FRA-KUL\nPrice: 3685.90 EUR\nStatus: booked and ready to ship\n\nKind regards,\nPolaris Air Logistics bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:02:59.482256+00:00",
+ "attachments": [],
+ "shipment": "44542",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-B9DS3MN2.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "id": 38216,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: Wuppertal to New York",
+ "body": "Hello,\n\nplease quote air freight for this shipment:\n\n- Pickup: from our site at 42346 Wuppertal, Germany (please arrange the truck)\n- Destination airport: New York (JFK), US\n- Commodity: cleaning agent, 11 pieces\n- Gross weight: 1034 kg\n- Volume: 6.62 cbm\n- Ready date: 2026-11-25\n- Service: the fastest option\n- Our shipper's letter of instruction is attached to this email\n- The goods are general cargo, non-dangerous\n\nPlease reply with your all-in price in EUR.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:52:25.511489+00:00",
+ "attachments": [
+  {
+   "id": 1046,
+   "filename": "packing_list_34372.pdf",
+   "content_type": "application/pdf",
+   "size": 2118
+  }
+ ],
+ "shipment": "38216",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in air freight quote for a new shipment.",
+  "sender_role": "customer"
+ }
+}

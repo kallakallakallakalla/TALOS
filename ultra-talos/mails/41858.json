@@ -1,0 +1,18 @@
+{
+ "id": 41858,
+ "from": "riverbend-airlines-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-3WER0318 confirmed",
+ "body": "Hello,\n\nyour booking BK-3WER0318 is confirmed.\n\nBooking reference: BK-3WER0318\nYour reference: 41548\nAirline: Riverbend Airlines Cargo (RV)\nLane: DUS-RUH\nPrice: 2897.47 EUR\nStatus: booked and ready to ship\n\nKind regards,\nRiverbend Airlines Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:08:36.118285+00:00",
+ "attachments": [],
+ "shipment": "41858",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-3WER0318.",
+  "sender_role": "airline"
+ }
+}

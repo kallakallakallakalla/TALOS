@@ -1,0 +1,25 @@
+{
+ "id": 45852,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: RE: FW: AMSTERDAM SCHIPHOL - PVG / 138 CTN 4,945 KGS",
+ "body": "Hi Alex,\n\nThanks for confirming the booking.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 45840,
+ "references": [
+  45644,
+  45693,
+  45717,
+  45769,
+  45810,
+  45840
+ ],
+ "received_at": "2026-11-22T06:20:15.399289+00:00",
+ "attachments": [],
+ "shipment": "45644",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and does not ask a question or request an action.",
+  "sender_role": "customer"
+ }
+}

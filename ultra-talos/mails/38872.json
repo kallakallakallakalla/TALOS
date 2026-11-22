@@ -1,0 +1,23 @@
+{
+ "id": 38872,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Essen to Riyadh",
+ "body": "Hello Alex,\n\nThank you for confirming the booking and providing the reference.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 38867,
+ "references": [
+  38571,
+  38827,
+  38849,
+  38867
+ ],
+ "received_at": "2026-11-22T04:07:07.398962+00:00",
+ "attachments": [],
+ "shipment": "38571",
+ "classification": {
+  "category": "other",
+  "confidence": 0.98,
+  "reasoning": "The customer only thanks us for confirming the booking and providing the reference.",
+  "sender_role": "customer"
+ }
+}

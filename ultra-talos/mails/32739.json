@@ -1,0 +1,18 @@
+{
+ "id": 32739,
+ "from": "aurelia-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-4PMBLM3C confirmed",
+ "body": "Hello,\n\nyour booking BK-4PMBLM3C is confirmed.\n\nBooking reference: BK-4PMBLM3C\nYour reference: 32367\nAirline: Aurelia Air Cargo (AU)\nLane: FRA-LIM\nPrice: 937.96 EUR\nStatus: booked and ready to ship\n\nKind regards,\nAurelia Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:06:16.054221+00:00",
+ "attachments": [],
+ "shipment": "32739",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-4PMBLM3C.",
+  "sender_role": "airline"
+ }
+}

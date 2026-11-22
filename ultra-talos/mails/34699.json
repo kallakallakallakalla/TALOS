@@ -1,0 +1,23 @@
+{
+ "id": 34699,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight quote: FRA to SGN",
+ "body": "Thanks for confirming the booking, Alex! Glad it’s all set.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 34686,
+ "references": [
+  34496,
+  34641,
+  34662,
+  34686
+ ],
+ "received_at": "2026-11-22T02:41:19.746823+00:00",
+ "attachments": [],
+ "shipment": "34496",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking confirmation, with no request or question.",
+  "sender_role": "customer"
+ }
+}

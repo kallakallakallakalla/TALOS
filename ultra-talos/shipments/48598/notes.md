@@ -1,0 +1,15 @@
+# Shipment 48598: Rheintal Elektronik GmbH, DUS -> DFW
+- request: 4 pieces sports equipment, 159 gross kg, 1.44 cbm, chargeable 240.48 kg, ready 2026-11-24, pickup 44780 Dortmund, goal cheapest; PDF quote requested.
+- 2026-11-22 07:13 UTC air: Meridian Freightways 940.28 EUR, 4 d, billed 240.48 kg, rate_id R-asS-KLveW1Ejb1Ih valid 2026-11-22T07:28:36Z (source portal); Kestrel Airways 1055 EUR, 1 d, tariff. Lowest air fare Meridian.
+- 2026-11-22 07:13 UTC asked truckers: Flinkwagen Logistik (mail 48685), Schwabenbote Transporte (mail 48686), Vogelsberg Haulage (mail 48688); all for 44780-DUS, 4 pcs/159 kg/1.44 cbm.
+- 2026-11-22 07:14 UTC trucker offers: Flinkwagen Logistik 141.07 EUR, 15 h, ref TRK-15902; Schwabenbote Transporte 116.64 EUR, 20 h, ref TRK-15904; Vogelsberg Haulage 111.05 EUR, 22 h, ref TRK-15903; all valid until 07:28 UTC. Chosen Vogelsberg: none pickup within ~14 h, so cheapest overall.
+- 2026-11-22 07:14 UTC choice: Meridian Freightways 940.28 EUR portal (lowest air price, 4 transit days) + Vogelsberg pickup 111.05 EUR = 1051.33 EUR all-in; departure estimate 2026-11-25, arrival estimate 2026-11-29. Quote valid until 2026-11-22 07:28 UTC.
+- 2026-11-22 07:14 UTC QUOTE SENT mail 48815 replying to 48598: 1051.33 EUR all-in = air 940.28 + truck 111.05; PDF TALOS_Quote_48598.pdf attached. No booking requested/needed yet.
+- 2026-11-22 07:15 UTC acceptance: customer mail 48840 accepts 48815. Refreshed Meridian rate at 240.48 kg: 940.28 EUR unchanged, rate_id R--QriuCiq4MS1DNav valid to 07:30:29Z. Booked Meridian Freightways via portal: BK-BC73SCBR, team_reference 48598, status booked. All-in remains 1051.33 EUR incl. Vogelsberg pickup 111.05 EUR; estimated arrival 2026-11-29.
+- 2026-11-22 07:15 UTC booking confirmation sent to customer in mail 48863, replying to acceptance 48840; shared booking reference BK-BC73SCBR and estimated arrival 29 Nov.
+- 2026-11-22 07:16 UTC cancellation: customer mail 48858 says buyer withdrew order. Portal cancellation of BK-BC73SCBR completed via API, status cancelled; no trucker booking was made.
+- 2026-11-22 07:16 UTC cancellation confirmed to customer in mail 48871 replying to 48858; booking BK-BC73SCBR is cancelled; shipment will not move.
+- 2026-11-22 07:16 UTC customer repeated cancellation request in mail 48870 (following booking confirmation 48863); repeated idempotent cancellation call confirmed BK-BC73SCBR status cancelled.
+- 2026-11-22 07:16 UTC replied to repeated cancellation in mail 48877 (to 48870): reconfirmed booking cancelled and no pickup booked.
+- 2026-11-22 07:16 UTC customer thanked us for cancellation in mail 48875; no reply needed.
+- 2026-11-22 07:16 UTC follow-up mail 48870: customer repeated cancellation request; DELETE reconfirmed BK-BC73SCBR status cancelled. Existing confirmation mail 48877 replies directly to 48870; no pickup was booked. Nothing remains open.

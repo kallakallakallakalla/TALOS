@@ -1,0 +1,18 @@
+{
+ "id": 35933,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-R8VAKK5O confirmed",
+ "body": "Hello,\n\nyour booking BK-R8VAKK5O is confirmed.\n\nBooking reference: BK-R8VAKK5O\nYour reference: 35404\nAirline: Nova Atlas Cargo (NV)\nLane: MUC-SGN\nPrice: 3650.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nNova Atlas Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:04:16.459168+00:00",
+ "attachments": [],
+ "shipment": "35933",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-R8VAKK5O.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "id": 53276,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: HAM to BOG",
+ "body": "Dear Alex,\n\nAs mentioned in my earlier email, we had to cancel the shipment because our buyer withdrew the order. Please cancel booking BK-6JHMC5IM.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 53266,
+ "references": [
+  53124,
+  53185,
+  53249,
+  53266
+ ],
+ "received_at": "2026-11-22T08:45:48.463137+00:00",
+ "attachments": [],
+ "shipment": "53124",
+ "classification": {
+  "category": "other",
+  "confidence": 0.95,
+  "reasoning": "The customer is asking to cancel an already confirmed booking, not accepting or declining a quote.",
+  "sender_role": "customer"
+ }
+}

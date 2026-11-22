@@ -1,0 +1,18 @@
+{
+ "id": 32773,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - MNL / 116 CTN 853 KGS",
+ "body": "Hi there,\n\nHope your week’s going well! Our buyer in Riyadh, SA is importing some textile samples from us in Germany, and I’m arranging the flight for their import. Could you quote the fastest option to RUH, please?\n\nThe 2 pieces are 239 kg gross and 1.10 cbm in total. They’ll be ready for pickup on 2026-11-29 at our site in 44616 (Dortmund), Germany. Could you arrange the truck from our site to the airport and include it in the all-in price in EUR?\n\nIt would be great if you could also let me know the earliest arrival you can offer for this import shipment. Thanks for checking!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG\n\n\n-----Original Message-----\nSent: 2026-10-06\nSubject: VIENNA AIRPORT - MNL / 116 CTN 853 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to MNL:\n116 CTN / 853 KGS / 4.1 CBM, furniture samples\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:09:04.475760+00:00",
+ "attachments": [],
+ "shipment": "32773",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in quote for a different shipment from Germany to Riyadh, including pickup and the fastest arrival option.",
+  "sender_role": "customer"
+ }
+}

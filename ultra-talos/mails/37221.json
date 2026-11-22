@@ -1,0 +1,18 @@
+{
+ "id": 37221,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - LOS / 46 PLT 2,526 KGS",
+ "body": "Hi,\n\nCould you quote your fastest air freight option to MEX (Mexico City, MX), with an all-in price in EUR? Please arrange truck pickup from our site in 41668 Moenchengladbach, Germany, and transport to the airport. The shipment is ready for pickup on 2026-11-24.\n\nIt's 12 pieces of electronic control units, 1133 kg gross and 3.87 cbm.\n\nPlease attach the offer as a PDF to your reply so our purchasing department can file it.\n\nSara\nLindqvist Medtech\n\n\n-----Original Message-----\nSent: 2026-10-12\nSubject: VIENNA AIRPORT - LOS / 46 PLT 2,526 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to LOS:\n46 PLT / 2,526 KGS / 8.2 CBM, furniture samples\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:34:08.371789+00:00",
+ "attachments": [],
+ "shipment": "37221",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a shipment from Germany to Mexico City.",
+  "sender_role": "customer"
+ }
+}

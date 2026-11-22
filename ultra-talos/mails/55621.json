@@ -1,0 +1,21 @@
+{
+ "id": 55621,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - SGN / 89 PLT 440 KGS",
+ "body": "Thank you, good point. We will send you the dangerous goods documents (shipper's declaration and safety data sheet) shortly.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 55615,
+ "references": [
+  55538,
+  55615
+ ],
+ "received_at": "2026-11-22T09:33:54.537430+00:00",
+ "attachments": [],
+ "shipment": "55538",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer responds to our request for the dangerous-goods documents and says they will send them shortly.",
+  "sender_role": "customer"
+ }
+}

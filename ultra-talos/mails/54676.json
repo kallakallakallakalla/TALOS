@@ -1,0 +1,21 @@
+{
+ "id": 54676,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to YYZ",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 54632,
+ "references": [
+  54566,
+  54632
+ ],
+ "received_at": "2026-11-22T09:15:48.385263+00:00",
+ "attachments": [],
+ "shipment": "54566",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted option and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

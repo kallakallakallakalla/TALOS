@@ -1,0 +1,21 @@
+{
+ "id": 46079,
+ "from": "hansekogge-trucking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 72128 Tuebingen to STR on 2026-11-28",
+ "body": "Dear Sir or Madam,\n\nOur all-in price for collection in Tuebingen and delivery to the air export warehouse at STR airport is 159.45 EUR.\n\nPickup time: 17 hours\nQuote valid until: 22 Nov 2026 06:39 UTC\nOffer reference: TRK-15150\n\nKind regards,\nHansekogge Trucking",
+ "in_reply_to": 46000,
+ "references": [
+  45931,
+  46000
+ ],
+ "received_at": "2026-11-22T06:25:25.986487+00:00",
+ "attachments": [],
+ "shipment": "45931",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

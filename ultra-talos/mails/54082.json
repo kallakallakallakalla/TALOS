@@ -1,0 +1,21 @@
+{
+ "id": 54082,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to ORD",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 54078,
+ "references": [
+  53806,
+  54078
+ ],
+ "received_at": "2026-11-22T09:04:59.340326+00:00",
+ "attachments": [],
+ "shipment": "53806",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer explicitly declines the offer because the price is too high.",
+  "sender_role": "customer"
+ }
+}

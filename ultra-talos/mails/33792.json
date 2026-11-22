@@ -1,0 +1,18 @@
+{
+ "id": 33792,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-OHT3A7F9 confirmed",
+ "body": "Hello,\n\nyour booking BK-OHT3A7F9 is confirmed.\n\nBooking reference: BK-OHT3A7F9\nYour reference: 33304-RUH\nAirline: Juniper Cargo Lines (JP)\nLane: MUC-RUH\nPrice: 2108.20 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:24:28.154330+00:00",
+ "attachments": [],
+ "shipment": "33792",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-OHT3A7F9.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 43304,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - MEX / 208 PLT 494 KGS",
+ "body": "Dear Sir or Madam,\n\nI am arranging air freight for our buyer’s import of sports equipment from Germany. Could you please quote an all-in price in EUR for the fastest option to SGN (Ho Chi Minh City, VN)?\n\nThe import shipment consists of 1 piece, with a gross weight of 1978 kg and a volume of 5.45 cbm. It will be ready for pickup on 2026-11-27 at our site in Tuebingen, Germany, postcode 72872. Please include collection and arrange trucking from our site to the departure airport.\n\nPlease confirm the earliest arrival you can offer at SGN.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm\n\n\n-----Original Message-----\nSent: 2026-10-25\nSubject: VIENNA AIRPORT - MEX / 208 PLT 494 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to MEX:\n208 PLT / 494 KGS / 14.2 CBM, spare parts for packaging machines\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:35:45.836397+00:00",
+ "attachments": [],
+ "shipment": "43304",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests an all-in price and fastest air-freight option for a new shipment.",
+  "sender_role": "customer"
+ }
+}

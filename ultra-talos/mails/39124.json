@@ -1,0 +1,25 @@
+{
+ "id": 39124,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - TNR / 123 CRATES 433 KGS",
+ "body": "Thank you for your offer, but your price is too high for us, so we will not go ahead with it.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 39115,
+ "references": [
+  38901,
+  39024,
+  39028,
+  39058,
+  39071,
+  39115
+ ],
+ "received_at": "2026-11-22T04:14:39.325239+00:00",
+ "attachments": [],
+ "shipment": "38901",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer explicitly declines the offer because the price is too high.",
+  "sender_role": "customer"
+ }
+}

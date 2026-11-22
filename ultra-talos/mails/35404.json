@@ -1,0 +1,18 @@
+{
+ "id": 35404,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - JNB / 228 PCS 212 KGS",
+ "body": "Dear Sir or Madam,\n\nCould you please quote your fastest air freight option to SGN (Ho Chi Minh City, VN) for 7 pieces of textile samples? The shipment has a gross weight of 664 kg and a volume of 5.17 cbm.\n\nThe goods will be ready for pickup on 2026-11-25 at our site in 93294 (Regensburg), Germany. Please arrange truck pickup from our site and transport to the departure airport.\n\nPlease provide an all-in price in EUR, including the pickup and road transport, and confirm the earliest available pickup and expected arrival at SGN.\n\nThank you for your assistance.\n\nBy the way, we already have an offer of roughly 2130 EUR all-in from another forwarder. I hope you can get close to that.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm\n\n\n-----Original Message-----\nSent: 2026-10-22\nSubject: BRUSSELS AIRPORT - JNB / 228 PCS 212 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to JNB:\n228 PCS / 212 KGS / 5.2 CBM, furniture samples\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:57:43.799667+00:00",
+ "attachments": [],
+ "shipment": "35404",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a shipment from Germany to SGN.",
+  "sender_role": "customer"
+ }
+}

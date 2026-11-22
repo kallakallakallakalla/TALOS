@@ -1,0 +1,18 @@
+{
+ "id": 35062,
+ "from": "fjordline-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-QZNAH579 confirmed",
+ "body": "Hello,\n\nyour booking BK-QZNAH579 is confirmed.\n\nBooking reference: BK-QZNAH579\nYour reference: 34769\nAirline: Fjordline Air Cargo (FQ)\nLane: DUS-JFK\nPrice: 2546.40 EUR\nStatus: booked and ready to ship\n\nKind regards,\nFjordline Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:49:04.471868+00:00",
+ "attachments": [],
+ "shipment": "35062",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-QZNAH579.",
+  "sender_role": "airline"
+ }
+}

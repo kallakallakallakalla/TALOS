@@ -1,0 +1,21 @@
+{
+ "id": 38317,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Wuppertal to New York",
+ "body": "Thank you, good point. We will send you the dangerous goods documents (shipper's declaration and safety data sheet) shortly.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 38295,
+ "references": [
+  38216,
+  38295
+ ],
+ "received_at": "2026-11-22T03:53:01.218342+00:00",
+ "attachments": [],
+ "shipment": "38216",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer is responding to our request by promising the missing dangerous-goods documents.",
+  "sender_role": "customer"
+ }
+}

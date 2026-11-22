@@ -1,0 +1,21 @@
+{
+ "id": 40052,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Fastest air freight to RUH",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 40007,
+ "references": [
+  39931,
+  40007
+ ],
+ "received_at": "2026-11-22T04:29:58.496100+00:00",
+ "attachments": [],
+ "shipment": "39931",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted option and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

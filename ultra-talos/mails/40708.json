@@ -1,0 +1,18 @@
+{
+ "id": 40708,
+ "from": "borealis-freight-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-EUX4ZBXQ confirmed",
+ "body": "Hello,\n\nyour booking BK-EUX4ZBXQ is confirmed.\n\nBooking reference: BK-EUX4ZBXQ\nYour reference: 40400\nAirline: Borealis Freight Airways (BX)\nLane: HAM-YYZ\nPrice: 339.65 EUR\nStatus: booked and ready to ship\n\nKind regards,\nBorealis Freight Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:45:04.602327+00:00",
+ "attachments": [],
+ "shipment": "40708",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-EUX4ZBXQ.",
+  "sender_role": "airline"
+ }
+}

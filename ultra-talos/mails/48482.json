@@ -1,0 +1,20 @@
+{
+ "id": 48482,
+ "from": "sternmeile-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 50107 Cologne to CGN on 2026-11-29",
+ "body": "All-in price for pickup in Cologne and delivery to the CGN air export warehouse: 137.52 EUR.\nPickup time: 12 hours.\nPrice valid until 22 Nov 2026 07:22 UTC.\nOffer reference: TRK-15810. No booking required.\n\nSternmeile Logistik",
+ "in_reply_to": 48348,
+ "references": [
+  48348
+ ],
+ "received_at": "2026-11-22T07:08:05.591911+00:00",
+ "attachments": [],
+ "shipment": "48348",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

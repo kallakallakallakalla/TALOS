@@ -1,0 +1,25 @@
+{
+ "id": 53505,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight inquiry – MNL",
+ "body": "Hello,\n\nCould you please quote the fastest air freight option to MNL (Manila, PH)? The furniture samples will be ready for pickup at our site in 70839 (Stuttgart), Germany, on 2026-11-26. Please arrange the truck from our site to the departure airport and include it in your all-in price in EUR.\n\nThe shipment consists of 10 pieces, with a gross weight of 1155 kg and a total volume of 2.86 cbm. The packing list is attached.\n\nPlease attach your offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:56:40.629061+00:00",
+ "attachments": [
+  {
+   "id": 1539,
+   "filename": "packing_list_66707.pdf",
+   "content_type": "application/pdf",
+   "size": 2048
+  }
+ ],
+ "shipment": "53505",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a shipment to Manila.",
+  "sender_role": "customer"
+ }
+}

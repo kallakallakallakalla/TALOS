@@ -1,0 +1,18 @@
+{
+ "id": 37549,
+ "from": "xenon-cargo-airlines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-LWL7YPNM confirmed",
+ "body": "Hello,\n\nyour booking BK-LWL7YPNM is confirmed.\n\nBooking reference: BK-LWL7YPNM\nYour reference: 37221\nAirline: Xenon Cargo Airlines (XC)\nLane: DUS-MEX\nPrice: 3399.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nXenon Cargo Airlines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:38:49.877619+00:00",
+ "attachments": [],
+ "shipment": "37549",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-LWL7YPNM.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "id": 33100,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: HAM to MEX",
+ "body": "Hi,\n\nCould you quote an all-in price in EUR for the fastest air freight option from HAM to MEX (Mexico City, MX)? The shipment will be ready on 2026-11-28, and we’ll deliver it to Hamburg airport (HAM) ourselves.\n\nIt’s 3 pieces of cleaning agent (general cargo, non-dangerous), 583 kg gross and 4.32 cbm. The packing list is attached.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:15:08.634491+00:00",
+ "attachments": [
+  {
+   "id": 925,
+   "filename": "packing-spec_20520.pdf",
+   "content_type": "application/pdf",
+   "size": 2103
+  }
+ ],
+ "shipment": "33100",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price for a new air-freight shipment.",
+  "sender_role": "customer"
+ }
+}

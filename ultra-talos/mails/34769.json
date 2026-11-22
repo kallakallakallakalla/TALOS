@@ -1,0 +1,18 @@
+{
+ "id": 34769,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – JFK",
+ "body": "Hello,\n\nCould you please quote for the same shipment as in my request \"Air freight quote request – NBO import\", sent on 2026-11-22 at 02:33 UTC for destination NBO? The cargo and pickup details are unchanged, and you have them from my previous request.\n\nThe new destination is JFK, and the shipment will be ready for pickup on 2026-11-28. Please quote an all-in price in EUR for the fastest option.\n\nPlease attach your offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThank you.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:45:31.767778+00:00",
+ "attachments": [],
+ "shipment": "34769",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in quote for a new destination and pickup date.",
+  "sender_role": "customer"
+ }
+}

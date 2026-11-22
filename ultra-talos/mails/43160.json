@@ -1,0 +1,20 @@
+{
+ "id": 43160,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 47941 Duisburg to DUS on 2026-11-28",
+ "body": "Dear Sir or Madam,\n\nOur all-in price for the requested pickup in Duisburg and delivery to the air export warehouse at DUS is 239.77 EUR.\n\nPickup time: 28 hours\nOffer valid until: 22 Nov 2026 05:45 UTC\nOffer reference: TRK-14256\n\nNo booking is required.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 43044,
+ "references": [
+  43044
+ ],
+ "received_at": "2026-11-22T05:30:38.940642+00:00",
+ "attachments": [],
+ "shipment": "43044",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with a price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

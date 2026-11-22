@@ -1,0 +1,21 @@
+{
+ "id": 52783,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: AMSTERDAM SCHIPHOL - PPT / 110 CRATES 127 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 52729,
+ "references": [
+  52622,
+  52729
+ ],
+ "received_at": "2026-11-22T08:33:27.605044+00:00",
+ "attachments": [],
+ "shipment": "52622",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the offer and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

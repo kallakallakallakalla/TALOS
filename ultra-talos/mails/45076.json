@@ -1,0 +1,21 @@
+{
+ "id": 45076,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quotes for CAI and TLV",
+ "body": "Thanks for your offer. We’re happy to go ahead on that basis for both shipments. Please book only the first shipment for now. We’ll confirm the second shipment later.\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": 45043,
+ "references": [
+  44658,
+  45043
+ ],
+ "received_at": "2026-11-22T06:08:09.861496+00:00",
+ "attachments": [],
+ "shipment": "44658",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quote and asks us to book the first shipment, while deferring the second.",
+  "sender_role": "customer"
+ }
+}

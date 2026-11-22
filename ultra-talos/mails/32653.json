@@ -1,0 +1,21 @@
+{
+ "id": 32653,
+ "from": "nordlicht-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 61882 Bad Homburg to FRA on 2026-11-27",
+ "body": "Hi there,\n\nThanks for reaching out! We can pick up your freight in Bad Homburg and deliver it to the air export warehouse at Frankfurt Airport.\n\nAll-in price: 70.95 EUR\nPickup time: 30 hours\nQuote valid until: 22 Nov 2026 02:18 UTC\nOffer reference: TRK-10976\n\nNo booking is needed for the pickup.\n\nBest regards,\nNordlicht Haulage",
+ "in_reply_to": 32563,
+ "references": [
+  32367,
+  32563
+ ],
+ "received_at": "2026-11-22T02:04:05.507494+00:00",
+ "attachments": [],
+ "shipment": "32367",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and quote validity.",
+  "sender_role": "trucker"
+ }
+}

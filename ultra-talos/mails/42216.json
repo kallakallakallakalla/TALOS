@@ -1,0 +1,23 @@
+{
+ "id": 42216,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request to RUH",
+ "body": "Dear Alex,\n\nThank you for confirming the air freight booking. Please confirm once collection from our site in postcode 21505 is booked.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 42212,
+ "references": [
+  41895,
+  42163,
+  42186,
+  42212
+ ],
+ "received_at": "2026-11-22T05:14:02.524313+00:00",
+ "attachments": [],
+ "shipment": "41895",
+ "classification": {
+  "category": "other",
+  "confidence": 0.94,
+  "reasoning": "The customer acknowledges the air freight booking and asks to be kept informed once collection is booked, without accepting or asking a shipment question that needs an answer.",
+  "sender_role": "customer"
+ }
+}

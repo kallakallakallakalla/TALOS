@@ -1,0 +1,20 @@
+{
+ "id": 48481,
+ "from": "kranich-kurier@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 50107 Cologne to CGN on 2026-11-29",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for the pickup in Cologne and delivery to the air export warehouse at CGN is 136.06 EUR.\n\nPickup time: 17 hours\nQuote valid until: 22 Nov 2026 07:22 UTC\nOffer reference: TRK-15809\n\nNo booking is required.\n\nBest regards,\nKranich Kurier",
+ "in_reply_to": 48346,
+ "references": [
+  48346
+ ],
+ "received_at": "2026-11-22T07:08:05.591630+00:00",
+ "attachments": [],
+ "shipment": "48346",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and quote details.",
+  "sender_role": "trucker"
+ }
+}

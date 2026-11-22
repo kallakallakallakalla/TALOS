@@ -1,0 +1,18 @@
+{
+ "id": 49661,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-O7HOT4H2 confirmed",
+ "body": "Hello,\n\nyour booking BK-O7HOT4H2 is confirmed.\n\nBooking reference: BK-O7HOT4H2\nYour reference: 49454\nAirline: Solace Air Cargo (SL)\nLane: MUC-MEX\nPrice: 3390.26 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:27:25.910090+00:00",
+ "attachments": [],
+ "shipment": "49661",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-O7HOT4H2.",
+  "sender_role": "airline"
+ }
+}

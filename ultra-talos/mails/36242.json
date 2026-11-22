@@ -1,0 +1,20 @@
+{
+ "id": 36242,
+ "from": "helix-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: STR-PVG rate request",
+ "body": "Dear Sir or Madam,\n\nThank you for your inquiry. Our all-in airport-to-airport rate for STR–PVG is 2847.51 EUR.\n\nTransit time: 4 days\nRate valid until: 22 Nov 2026 03:25 UTC\nPlease quote R-QCB04CMtrq-7z9C0 when booking.\n\nKind regards,\nHelix Air Freight",
+ "in_reply_to": 36218,
+ "references": [
+  36218
+ ],
+ "received_at": "2026-11-22T03:11:26.272399+00:00",
+ "attachments": [],
+ "shipment": "36218",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.99,
+  "reasoning": "The airline replies to the shipment-specific rate request with an all-in price, transit time, validity, and rate reference.",
+  "sender_role": "airline"
+ }
+}

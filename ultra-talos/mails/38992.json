@@ -1,0 +1,20 @@
+{
+ "id": 38992,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote Regensburg (zone 93) to MUC on 2026-12-04",
+ "body": "Hello,\n\nthank you for your request. To quote we need:\n- the pickup postcode\n\nPlease reply in this thread.\n\nBest regards\nElbkante Logistik\nelbkante-logistik@hackloop.mail",
+ "in_reply_to": 38947,
+ "references": [
+  38947
+ ],
+ "received_at": "2026-11-22T04:11:43.114625+00:00",
+ "attachments": [],
+ "shipment": "38947",
+ "classification": {
+  "category": "trucker_decline",
+  "confidence": 0.99,
+  "reasoning": "The trucker cannot provide a quote yet and asks for the missing pickup postcode.",
+  "sender_role": "trucker"
+ }
+}

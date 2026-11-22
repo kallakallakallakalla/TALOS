@@ -1,0 +1,23 @@
+{
+ "id": 44528,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: KUL행 항공 운송 견적 요청",
+ "body": "예약해 주셔서 감사합니다. 예약번호 BK-B9DS3MN2 확인했습니다.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 44523,
+ "references": [
+  44325,
+  44476,
+  44504,
+  44523
+ ],
+ "received_at": "2026-11-22T06:02:37.674197+00:00",
+ "attachments": [],
+ "shipment": "44325",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking reference, without accepting or asking anything.",
+  "sender_role": "customer"
+ }
+}

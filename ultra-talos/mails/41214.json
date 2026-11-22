@@ -1,0 +1,25 @@
+{
+ "id": 41214,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to BOM",
+ "body": "Hi,\n\nCould you quote an all-in price in EUR for the fastest air freight option to BOM (Mumbai, IN)? Please arrange the truck from our site in 73796 (Esslingen), Germany, to the airport. The shipment will be ready for pickup on 2026-11-27.\n\nIt’s 5 pieces of laboratory glassware, 1089 kg gross and 6.96 cbm. The packing list is attached.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:59:18.620587+00:00",
+ "attachments": [
+  {
+   "id": 1167,
+   "filename": "SLI_79555.xlsx",
+   "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "size": 1972
+  }
+ ],
+ "shipment": "41214",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests an all-in quote for a new air freight shipment to Mumbai.",
+  "sender_role": "customer"
+ }
+}

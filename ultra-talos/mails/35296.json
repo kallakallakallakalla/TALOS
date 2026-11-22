@@ -1,0 +1,20 @@
+{
+ "id": 35296,
+ "from": "flinkwagen-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 71356 Boeblingen to STR on 2026-11-26",
+ "body": "Hi there,\n\nThanks for reaching out! We’d be happy to collect your freight in Boeblingen and deliver it to the STR air export warehouse.\n\nAll-in price: 374.12 EUR\nPickup time: 16 hours\nQuote valid until: 22 Nov 2026 03:07 UTC\nOffer reference: TRK-11774\n\nNo booking is needed for the pickup.\n\nBest regards,\nFlinkwagen Logistik",
+ "in_reply_to": 35201,
+ "references": [
+  35201
+ ],
+ "received_at": "2026-11-22T02:52:40.417382+00:00",
+ "attachments": [],
+ "shipment": "35201",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to the pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

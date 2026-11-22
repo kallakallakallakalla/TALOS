@@ -1,0 +1,18 @@
+{
+ "id": 50862,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - YYZ / 169 CRATES 1,314 KGS",
+ "body": "Hello,\n\nCould you please quote your cheapest air freight option from HAM to JFK (New York, US)? Our buyer in New York is importing the goods from us in Germany, and we are arranging the flight for this import shipment.\n\nThe printed marketing material will be ready on 2026-11-28. We will deliver the shipment to HAM ourselves. There are 12 pieces with a gross weight of 485 kg and a total volume of 1.34 cbm.\n\nPlease quote an all-in price in EUR for this import. Please attach the offer to your reply as a PDF, as our purchasing department needs it for filing.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH\n\n\n-----Original Message-----\nSent: 2026-10-02\nSubject: BRUSSELS AIRPORT - YYZ / 169 CRATES 1,314 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to YYZ:\n169 CRATES / 1,314 KGS / 18.1 CBM, automotive sensors\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:01:54.334929+00:00",
+ "attachments": [],
+ "shipment": "50862",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a shipment from HAM to JFK.",
+  "sender_role": "customer"
+ }
+}

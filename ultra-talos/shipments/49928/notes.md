@@ -1,0 +1,12 @@
+# Shipment 49928: Hofmann Textilwerk KG, HAM -> GRU
+- request: 12 pieces, 1353 kg gross, 4.94 cbm, chargeable 1353 kg, ready 2026-11-29, customer delivers to HAM, goal fastest
+- 2026-11-22 07:37 UTC air: Ibisair Cargo (IB) 3991.35 EUR, 3 d, rate_id R-P0l04SPLra2h-p-m valid until 2026-11-22T07:52:47.982299+00:00 (source portal); fastest among returned options
+- 2026-11-22 07:38 UTC QUOTE SENT mail 50059 (reply to 49928): 3991.35 EUR all-in = air 3991.35 + truck 0.00 (customer delivers); PDF offer attached; estimated arrival 2026-12-02; API confirmed HTTP 201
+- 2026-11-22 07:39 UTC ACCEPTED mail 50080: Petra approved 3991.35 EUR and asked us to book.
+- 2026-11-22 07:39 UTC refreshed IB rate before booking: 3991.35 EUR unchanged, 1353 kg chargeable, rate_id R-rhDkZyrXapuHbr3f valid until 2026-11-22T07:54:52.678822+00:00.
+- 2026-11-22 07:39 UTC BOOKED BK-CXHDF4PJ with Ibisair Cargo (IB), team_reference 49928, 3991.35 EUR, 3 d; estimated arrival 2026-12-02. Portal API HTTP 201.
+- 2026-11-22 07:40 UTC airline confirmation mail 50101: BK-CXHDF4PJ confirmed, booked and ready to ship.
+- 2026-11-22 07:40 UTC BOOKING CONFIRMATION SENT mail 50102 (reply to 50080): confirmed booking BK-CXHDF4PJ and ETA 2 Dec.
+- 2026-11-22 07:40 UTC customer thanks mail 50103; no reply needed.
+- 2026-11-22 07:50 UTC tracking request 50474 matched by customer, HAM-GRU, 1353 kg, ready date and route to this booked shipment. Airline confirms BK-CXHDF4PJ booked and ready to ship; no handover or live tracking scan is recorded. As cargo is due ready 29 Nov and Hofmann delivers to HAM, current physical location is unverified and expected to remain with Hofmann pending airport delivery; estimated arrival 2 Dec.
+- 2026-11-22 07:50 UTC replied to tracking@ in mail 50590 (reply to 50474): shared booking BK-CXHDF4PJ, ETA 2 Dec, and caveat that no handover/location scan exists.

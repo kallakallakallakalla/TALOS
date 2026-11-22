@@ -1,0 +1,21 @@
+{
+ "id": 50657,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: CGN → SCL 최단 소요시간 항공운임 견적 문의",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 50637,
+ "references": [
+  50494,
+  50637
+ ],
+ "received_at": "2026-11-22T07:51:42.272819+00:00",
+ "attachments": [],
+ "shipment": "50494",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted offer and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

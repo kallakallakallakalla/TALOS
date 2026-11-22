@@ -1,0 +1,25 @@
+{
+ "id": 42590,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to NBO",
+ "body": "Hi,\n\nPlease quote your cheapest air freight option to NBO (Nairobi, KE), all-in in EUR, including truck pickup from our site at 36241 (Fulda), Germany, to the airport. The shipment is ready for pickup on 2026-11-24.\n\nTextile samples: 5 pieces, 721 kg gross, 3.50 cbm. Each piece measures 100 x 100 x 70 cm. Our packing specification is attached.\n\nThanks\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:23:36.603160+00:00",
+ "attachments": [
+  {
+   "id": 1218,
+   "filename": "packing_list_76486.xlsx",
+   "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   "size": 1974
+  }
+ ],
+ "shipment": "42590",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a specified shipment to Nairobi.",
+  "sender_role": "customer"
+ }
+}

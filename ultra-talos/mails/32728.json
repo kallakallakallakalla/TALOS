@@ -1,0 +1,21 @@
+{
+ "id": 32728,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - KUL / 105 CTN 35 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 32702,
+ "references": [
+  32367,
+  32702
+ ],
+ "received_at": "2026-11-22T02:05:23.606836+00:00",
+ "attachments": [],
+ "shipment": "32367",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts our offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

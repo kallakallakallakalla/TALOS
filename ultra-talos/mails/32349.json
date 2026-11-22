@@ -1,0 +1,18 @@
+{
+ "id": 32349,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-UKB4HVV5 confirmed",
+ "body": "Hello,\n\nyour booking BK-UKB4HVV5 is confirmed.\n\nBooking reference: BK-UKB4HVV5\nYour reference: 32130\nAirline: Lumen Air Cargo (LM)\nLane: MUC-YYZ\nPrice: 2956.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:00:45.789583+00:00",
+ "attachments": [],
+ "shipment": "32349",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-UKB4HVV5.",
+  "sender_role": "airline"
+ }
+}

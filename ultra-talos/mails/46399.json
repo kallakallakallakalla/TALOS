@@ -1,0 +1,18 @@
+{
+ "id": 46399,
+ "from": "ultraviolet-air-freight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-9MSMDWW1 confirmed",
+ "body": "Hello,\n\nyour booking BK-9MSMDWW1 is confirmed.\n\nBooking reference: BK-9MSMDWW1\nYour reference: 46209\nAirline: Ultraviolet Air Freight (UV)\nLane: MUC-RUH\nPrice: 1788.58 EUR\nStatus: booked and ready to ship\n\nKind regards,\nUltraviolet Air Freight bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:32:32.076496+00:00",
+ "attachments": [],
+ "shipment": "46399",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-9MSMDWW1.",
+  "sender_role": "airline"
+ }
+}

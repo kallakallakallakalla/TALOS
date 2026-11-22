@@ -1,0 +1,18 @@
+{
+ "id": 42892,
+ "from": "juniper-cargo-lines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-E5MLVGKV confirmed",
+ "body": "Hello,\n\nyour booking BK-E5MLVGKV is confirmed.\n\nBooking reference: BK-E5MLVGKV\nYour reference: 42590\nAirline: Juniper Cargo Lines (JP)\nLane: FRA-NBO\nPrice: 2320.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nJuniper Cargo Lines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:26:17.175070+00:00",
+ "attachments": [],
+ "shipment": "42892",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-E5MLVGKV.",
+  "sender_role": "airline"
+ }
+}

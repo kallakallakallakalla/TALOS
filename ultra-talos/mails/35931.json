@@ -1,0 +1,23 @@
+{
+ "id": 35931,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - JNB / 228 PCS 212 KGS",
+ "body": "Dear Alex,\n\nThank you for confirming the air freight booking. Please let me know once pickup on 25 November is confirmed.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 35899,
+ "references": [
+  35404,
+  35786,
+  35794,
+  35899
+ ],
+ "received_at": "2026-11-22T03:04:06.897731+00:00",
+ "attachments": [],
+ "shipment": "35404",
+ "classification": {
+  "category": "other",
+  "confidence": 0.97,
+  "reasoning": "The customer acknowledges the confirmed air-freight booking and asks to be kept informed about pickup confirmation, without accepting a new quote or asking a substantive shipment question.",
+  "sender_role": "customer"
+ }
+}

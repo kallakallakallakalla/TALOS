@@ -1,0 +1,14 @@
+# Shipment 35112: Auer Maschinenbau, STR -> EZE
+- request: 1 piece, 1732 kg gross, 4.98 cbm, chargeable 1732 kg, ready 2026-11-26, pickup 71356 Boeblingen, goal cheapest arrival by 2026-12-01
+- 2026-11-22 02:52 UTC asked truckers: Flinkwagen (mail 35201), Kranich (mail 35205)
+- 2026-11-22 02:52 UTC trucker offers: Flinkwagen 374.12 EUR, 16 h, ref TRK-11774, valid 03:07 UTC (reply 35296); Kranich 416.44 EUR, 12 h, ref TRK-11773, valid 03:07 UTC (reply 35298). Chosen Flinkwagen: lowest all-in pickup; 16 h -> ceil 1 day, departure 27 Nov, still meets deadline.
+- 2026-11-22 02:51 UTC air: Fjordline Air Cargo 6217.88 EUR, 4 d, rate_id R-OGYGZLZuTNFsdQrd, billed 1732 kg, valid until 2026-11-22 03:06:56 UTC (source portal). Other portal options: Nova Atlas 4451.24 EUR/7 d (R-FOJ7-AQBUw47-aNY), Aurelia 5732.92 EUR/6 d (R-hmfiVn3utGhHbGMv); neither meets deadline with 27 Nov departure. Chosen Fjordline is the only priced option meeting 1 Dec arrival.
+- 2026-11-22 02:53 UTC QUOTE SENT mail 35322: 6592.00 EUR all-in = air 6217.88 + truck 374.12; valid to 03:06 UTC. In reply to customer mail 35112.
+- 2026-11-22 02:54 UTC customer accepted quote (mail 35341, replying to 35322).
+- 2026-11-22 02:54 UTC refreshed Fjordline rate before booking: 6217.88 EUR, billed 1732 kg, rate_id R-Q9t2falfPASLbZOa, valid until 03:09:06 UTC; unchanged. Booked via portal: BK-1L4HE5QG, team_reference 35112, status booked.
+- 2026-11-22 02:54 UTC booking confirmation sent to customer in reply to 35341 as mail 35357: 6592.00 EUR agreed all-in; pickup 26 Nov, arrival EZE 1 Dec; booking ref BK-1L4HE5QG.
+- 2026-11-22 02:54 UTC customer acknowledged booking confirmation (mail 35361); no reply needed. No separate airline confirmation mail found in mailbox poll through mail 35361; portal booking response is status booked.
+- 2026-11-22 02:54 UTC airline confirmation received in mail 35362: Fjordline confirmed BK-1L4HE5QG, status booked and ready to ship.
+- 2026-11-22 03:03 UTC tracking request mail 35831 asked current location. As of this time pickup was still scheduled for 2026-11-26 in Böblingen; no live scan/location recorded. Planned EZE arrival remains 2026-12-01.
+- 2026-11-22 03:04 UTC tracking reply sent to tracking@hackloop.mail in mail 36008 (reply to 35831): advised pickup not yet done, confirmed booking BK-1L4HE5QG, no live scan/location, planned EZE arrival 1 Dec.
+- Current status (2026-11-22 03:05 UTC): airline confirmation received (mail 35362); pickup scheduled for 2026-11-26; no live tracking scan/location available. Tracking request 35831 answered in mail 36008.

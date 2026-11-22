@@ -1,0 +1,18 @@
+{
+ "id": 43646,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "MUC to LAX import quote",
+ "body": "Hi,\n\nI’m arranging air freight from Germany for our buyer’s import at LAX. We’ll deliver to MUC ourselves; the goods will be ready on 2026-11-29.\n\nThe import shipment is 12 pieces of electronic control units, 350 kg gross and 3.33 cbm. Could you quote the fastest option with an all-in price in EUR?\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:41:50.237620+00:00",
+ "attachments": [],
+ "shipment": "43646",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in quote for a new air-freight shipment from MUC to LAX.",
+  "sender_role": "customer"
+ }
+}

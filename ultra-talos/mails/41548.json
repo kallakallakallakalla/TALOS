@@ -1,0 +1,18 @@
+{
+ "id": 41548,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to RUH",
+ "body": "Hello,\n\nCould you please quote the cheapest air freight option to RUH (Riyadh, SA)? The shipment will be ready for pickup on 2026-11-28 at our site in 45806 (Essen), Germany. Please arrange the truck from our site to the airport and include this in the all-in price in EUR.\n\nThe shipment is 1 piece of automotive sensors, with a gross weight of 3344.42 lb and a volume of 295.24 cubic feet.\n\nPlease attach your offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:05:23.500442+00:00",
+ "attachments": [],
+ "shipment": "41548",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a shipment to Riyadh.",
+  "sender_role": "customer"
+ }
+}

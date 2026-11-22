@@ -1,0 +1,21 @@
+{
+ "id": 42136,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21505 Lueneburg to HAM on 2026-11-29",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for pickup in Lueneburg and delivery to the air export warehouse at HAM airport is 86.64 EUR.\n\nPickup time: 28 hours\nQuote valid until: 22 Nov 2026 05:26 UTC\nOffer reference: TRK-13929\n\nNo booking is needed.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 42010,
+ "references": [
+  41895,
+  42010
+ ],
+ "received_at": "2026-11-22T05:12:21.943008+00:00",
+ "attachments": [],
+ "shipment": "41895",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and quote validity.",
+  "sender_role": "trucker"
+ }
+}

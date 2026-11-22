@@ -1,0 +1,18 @@
+{
+ "id": 46187,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment FRA to JNB, 1494 kg",
+ "body": "Hi,\n\nCould you confirm the current location and status of our shipment?\n\nLindqvist Medtech GmbH | FRA to JNB | 1494 kg | Ready date: 2026-11-27\n\nThanks.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:29:48.569574+00:00",
+ "attachments": [],
+ "shipment": "46187",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the shipment’s current location and status.",
+  "sender_role": "tracking"
+ }
+}

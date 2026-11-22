@@ -1,0 +1,23 @@
+{
+ "id": 55478,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - ATL / 208 CTN 5,200 KGS",
+ "body": "Hi Alex,\n\nThanks for confirming the booking.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 55473,
+ "references": [
+  55129,
+  55430,
+  55454,
+  55473
+ ],
+ "received_at": "2026-11-22T09:29:27.446738+00:00",
+ "attachments": [],
+ "shipment": "55129",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and does not request anything further.",
+  "sender_role": "customer"
+ }
+}

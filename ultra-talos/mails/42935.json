@@ -1,0 +1,18 @@
+{
+ "id": 42935,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to PEK",
+ "body": "Hello,\n\nCould you please quote your cheapest air freight option to PEK (Beijing, CN) for 5 pieces of furniture samples? The gross weight is 1953 kg and the total volume is 4.91 cbm.\n\nThe shipment will be ready for pickup on 2026-11-28 at our site, postcode 47941 (Duisburg), Germany. Please arrange the truck to the departure airport and include this in your all-in price in EUR.\n\nPlease attach your offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:29:42.402547+00:00",
+ "attachments": [],
+ "shipment": "42935",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new all-in air freight quote for a specified shipment to PEK.",
+  "sender_role": "customer"
+ }
+}

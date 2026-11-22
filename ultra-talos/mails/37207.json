@@ -1,0 +1,18 @@
+{
+ "id": 37207,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-FJDM41ZR confirmed",
+ "body": "Hello,\n\nyour booking BK-FJDM41ZR is confirmed.\n\nBooking reference: BK-FJDM41ZR\nYour reference: 36835\nAirline: Lumen Air Cargo (LM)\nLane: CGN-SGN\nPrice: 1931.10 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:32:49.619948+00:00",
+ "attachments": [],
+ "shipment": "37207",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-FJDM41ZR.",
+  "sender_role": "airline"
+ }
+}

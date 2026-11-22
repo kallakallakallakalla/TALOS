@@ -1,0 +1,12 @@
+# Shipment 51348: Sonnberg Kaffeeroesterei GmbH, DUS -> ATL
+- request: 2 pieces, gross 1241 kg, 4.68 cbm, chargeable 1241 kg, ready 2026-11-28, pickup 40073 Duesseldorf, goal cheapest
+- 2026-11-22 08:14 UTC air: Solace Air Cargo 2941.17 EUR, 3 d, rate_id R-6mW2yX7a-fMJguin valid 2026-11-22T08:29:23+00:00 (source portal); next cheapest Meridian Freightways 3114.91 EUR (5 d), Riverbend 3164.55 (2 d), Polaris 3325.88 (3 d)
+- 2026-11-22 08:14 UTC asked truckers for exact shipment dimensions and ready date: Domblick Kurierdienst, Hansekogge Trucking, Rheinufer Spedition, Schwabenbote Transporte
+- Note: current mail's Germany/ATL figures supersede forwarded 19 Oct Vienna/SYD cargo figures.
+- 2026-11-22 08:15 UTC trucker offers (all exact shipment request replies, valid until 08:29 UTC): Domblick Kurierdienst 295.33 EUR, 4 h, ref TRK-16571 (reply 51536); Hansekogge Trucking 181.28 EUR, 24 h, ref TRK-16572 (reply 51538); Rheinufer Spedition 147.87 EUR, 28 h, ref TRK-16573 (reply 51537); Schwabenbote Transporte 176.28 EUR, 21 h, ref TRK-16574 (reply 51539). Chosen Domblick: cheapest offer within usual ~14 h pickup window; slower, cheaper options excluded.
+- 2026-11-22 08:15 UTC QUOTE SENT mail id 51558: 3236.50 EUR all-in = air 2941.17 + truck 295.33; Solace Air Cargo rate R-6mW2yX7a-fMJguin, 3 transit days, Domblick TRK-16571; planned arrival 2026-12-02. Customer accepted in mail 51582; see booking entry below.
+- 2026-11-22 08:15:48 UTC acceptance mail 51582: customer accepted quoted 3236.50 EUR and asked us to book.
+- 2026-11-22 08:17 UTC rechecked Solace DUS-ATL for 1241 kg: 2941.17 EUR, 3 d, fresh rate_id R-Ce8tG0k2CiciJFTg valid until 08:32:34 UTC (same as quoted air amount); booked via portal immediately as BK-BKV8RUD9, team_reference 51348.
+- 2026-11-22 08:17 UTC booking confirmation sent to customer in-thread as mail id recorded on board: BK-BKV8RUD9; planned arrival 2026-12-02.
+- 2026-11-22 08:17:53 UTC customer replied in mail 51644 thanking us for booking confirmation; no reply needed.
+- 2026-11-22 08:25 UTC tracking request 52168 matched by 40073, ATL, 1241 kg and ready date. Airline confirmation 51647 confirms BK-BKV8RUD9 booked and ready to ship; no pickup, airport handover, departure or tracking scan. Domblick 4 h quote TRK-16571 is not a booked pickup; exact location unverified, expected at shipper pending collection. 2 Dec arrival remains estimated, contingent on collection and planned departure. Replied to tracking@ in mail 52315.

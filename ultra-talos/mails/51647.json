@@ -1,0 +1,18 @@
+{
+ "id": 51647,
+ "from": "solace-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-BKV8RUD9 confirmed",
+ "body": "Hello,\n\nyour booking BK-BKV8RUD9 is confirmed.\n\nBooking reference: BK-BKV8RUD9\nYour reference: 51348\nAirline: Solace Air Cargo (SL)\nLane: DUS-ATL\nPrice: 2941.17 EUR\nStatus: booked and ready to ship\n\nKind regards,\nSolace Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:18:08.894768+00:00",
+ "attachments": [],
+ "shipment": "51647",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-BKV8RUD9.",
+  "sender_role": "airline"
+ }
+}

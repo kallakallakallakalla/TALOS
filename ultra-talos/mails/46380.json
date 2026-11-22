@@ -1,0 +1,23 @@
+{
+ "id": 46380,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: BRUSSELS AIRPORT - PEK / 159 CRATES 157 KGS",
+ "body": "Dear Alex,\n\nThank you for confirming the booking.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 46373,
+ "references": [
+  46209,
+  46313,
+  46350,
+  46373
+ ],
+ "received_at": "2026-11-22T06:32:10.705869+00:00",
+ "attachments": [],
+ "shipment": "46209",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us for confirming the booking and does not ask a question or request an action.",
+  "sender_role": "customer"
+ }
+}

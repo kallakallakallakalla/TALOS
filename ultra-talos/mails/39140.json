@@ -1,0 +1,27 @@
+{
+ "id": 39140,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - TNR / 123 CRATES 433 KGS",
+ "body": "Hello Alex,\n\nPlease refer to my first email.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 39136,
+ "references": [
+  38901,
+  39024,
+  39028,
+  39058,
+  39071,
+  39115,
+  39124,
+  39136
+ ],
+ "received_at": "2026-11-22T04:15:11.952644+00:00",
+ "attachments": [],
+ "shipment": "38901",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.75,
+  "reasoning": "The customer refers Alex back to an earlier email, so the message needs that prior request or question reviewed.",
+  "sender_role": "customer"
+ }
+}

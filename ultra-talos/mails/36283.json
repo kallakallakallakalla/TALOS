@@ -1,0 +1,21 @@
+{
+ "id": 36283,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: FRA to PEK",
+ "body": "Thank you for your offer. That seems too low to be right, so we will not go ahead with it.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 36281,
+ "references": [
+  36108,
+  36281
+ ],
+ "received_at": "2026-11-22T03:15:04.799421+00:00",
+ "attachments": [],
+ "shipment": "36108",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.99,
+  "reasoning": "The customer says the quoted price seems too low and explicitly declines to proceed.",
+  "sender_role": "customer"
+ }
+}

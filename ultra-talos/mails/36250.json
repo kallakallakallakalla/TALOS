@@ -1,0 +1,20 @@
+{
+ "id": 36250,
+ "from": "vega-skyfreight@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request FRA-PEK / TALOS 36108",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: FRA-PEK.\nWe fly CGN-LOS, DUS-KUL, DUS-PEK, FRA-MNL, HAM-DEL, HAM-DFW, HAM-PEK, HAM-SYD, MUC-LIM, MUC-NBO, MUC-ORD, STR-MIA, STR-YYZ.\n\nBest regards\nVega Skyfreight\nvega-skyfreight@hackloop.mail",
+ "in_reply_to": 36225,
+ "references": [
+  36225
+ ],
+ "received_at": "2026-11-22T03:11:38.360514+00:00",
+ "attachments": [],
+ "shipment": "36225",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.99,
+  "reasoning": "The airline replied to a shipment-specific rate request but cannot serve the requested FRA-PEK lane, so it is declining to offer a rate.",
+  "sender_role": "airline"
+ }
+}

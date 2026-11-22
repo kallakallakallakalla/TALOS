@@ -1,0 +1,20 @@
+{
+ "id": 55392,
+ "from": "maintal-transport-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21107 Lueneburg to HAM on 2026-12-05",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for collection in Lueneburg and delivery to the air export warehouse at HAM is 425.39 EUR.\n\nPickup time: 14 hours\nOffer valid until: 22 Nov 2026 09:42 UTC\nOffer reference: TRK-17632\n\nNo booking is required for pickup.\n\nBest regards,\nMaintal Transport Logistik",
+ "in_reply_to": 55248,
+ "references": [
+  55248
+ ],
+ "received_at": "2026-11-22T09:28:01.521352+00:00",
+ "attachments": [],
+ "shipment": "55248",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

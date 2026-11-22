@@ -1,0 +1,18 @@
+{
+ "id": 46209,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - PEK / 159 CRATES 157 KGS",
+ "body": "Dear Air Freight Team,\n\nOur buyer in Riyadh, SA, is importing textile samples from us in Germany, and I am arranging the flight for their import. Could you please quote the cheapest air freight option from Munich Airport (MUC) to RUH and provide an all-in price in EUR?\n\nThe import shipment consists of 6 pieces, with a gross weight of 631 kg and a total volume of 5.25 cbm. The goods will be ready on 2026-11-26, and we will deliver them to MUC ourselves.\n\nPlease attach your offer as a PDF to your reply so that our purchasing department can file it.\n\nThank you for your assistance.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH\n\n\n-----Original Message-----\nSent: 2026-09-15\nSubject: BRUSSELS AIRPORT - PEK / 159 CRATES 157 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to PEK:\n159 CRATES / 157 KGS / 3.4 CBM, spare parts for packaging machines\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:30:28.835587+00:00",
+ "attachments": [],
+ "shipment": "46209",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests a new all-in air freight quote for a shipment from MUC to RUH.",
+  "sender_role": "customer"
+ }
+}

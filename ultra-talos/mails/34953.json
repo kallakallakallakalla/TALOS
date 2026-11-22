@@ -1,0 +1,21 @@
+{
+ "id": 34953,
+ "from": "vogelsberg-haulage@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 47914 Duisburg to DUS on 2026-11-28",
+ "body": "Hi,\n\nThanks for your request. Our all-in price for the pickup in Duisburg and delivery to the air export warehouse at DUS is 194.71 EUR.\n\nPickup time: 22 hours\nQuote valid until: 22 Nov 2026 03:01 UTC\nOffer reference: TRK-11660\n\nNo booking is needed for the pickup.\n\nBest regards,\nVogelsberg Haulage",
+ "in_reply_to": 34864,
+ "references": [
+  34769,
+  34864
+ ],
+ "received_at": "2026-11-22T02:46:34.355315+00:00",
+ "attachments": [],
+ "shipment": "34769",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price and validity.",
+  "sender_role": "trucker"
+ }
+}

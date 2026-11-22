@@ -1,0 +1,21 @@
+{
+ "id": 39028,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - TNR / 123 CRATES 433 KGS",
+ "body": "Hi Alex,\n\nSorry I left out the pickup location. It is Augsburg, Germany.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 39024,
+ "references": [
+  38901,
+  39024
+ ],
+ "received_at": "2026-11-22T04:12:28.638094+00:00",
+ "attachments": [],
+ "shipment": "38901",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer supplies the missing pickup location requested in the prior email so we can price the shipment.",
+  "sender_role": "customer"
+ }
+}

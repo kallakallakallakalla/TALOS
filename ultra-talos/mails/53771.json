@@ -1,0 +1,21 @@
+{
+ "id": 53771,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight inquiry – MNL",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 53751,
+ "references": [
+  53505,
+  53751
+ ],
+ "received_at": "2026-11-22T08:59:10.821046+00:00",
+ "attachments": [],
+ "shipment": "53505",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted offer and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

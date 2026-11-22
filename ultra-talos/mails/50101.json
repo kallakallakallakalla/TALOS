@@ -1,0 +1,18 @@
+{
+ "id": 50101,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-CXHDF4PJ confirmed",
+ "body": "Hello,\n\nyour booking BK-CXHDF4PJ is confirmed.\n\nBooking reference: BK-CXHDF4PJ\nYour reference: 49928\nAirline: Ibisair Cargo (IB)\nLane: HAM-GRU\nPrice: 3991.35 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:40:26.667187+00:00",
+ "attachments": [],
+ "shipment": "50101",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-CXHDF4PJ.",
+  "sender_role": "airline"
+ }
+}

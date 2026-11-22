@@ -1,0 +1,23 @@
+{
+ "id": 37139,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: FRA to PEK",
+ "body": "Dear Alex,\n\nThank you for the clarification and for confirming that the shipment remains unbooked.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 37128,
+ "references": [
+  36108,
+  36281,
+  36283,
+  37128
+ ],
+ "received_at": "2026-11-22T03:29:31.731729+00:00",
+ "attachments": [],
+ "shipment": "36108",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks Alex and acknowledges that the shipment remains unbooked, without asking a question or accepting the quote.",
+  "sender_role": "customer"
+ }
+}

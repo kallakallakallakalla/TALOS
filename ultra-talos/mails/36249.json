@@ -1,0 +1,20 @@
+{
+ "id": 36249,
+ "from": "wayzata-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request FRA-PEK / TALOS 36108",
+ "body": "Hello,\n\nthank you for your request. We do not serve this lane/zone: FRA-PEK.\nWe fly CGN-DEL, CGN-EZE, CGN-LIM, CGN-SCL, DUS-BOG, DUS-NBO, DUS-TLV, FRA-ATL, FRA-DOH, FRA-EZE, FRA-JFK, FRA-LAX, FRA-MEX, FRA-NRT, HAM-EZE, HAM-HKG, HAM-TLV, MUC-CAI, MUC-DXB, MUC-EZE, MUC-ICN, MUC-MIA, MUC-NRT, MUC-PEK, MUC-SCL, STR-SGN.\n\nBest regards\nWayzata Air Cargo\nwayzata-air-cargo@hackloop.mail",
+ "in_reply_to": 36226,
+ "references": [
+  36226
+ ],
+ "received_at": "2026-11-22T03:11:38.361033+00:00",
+ "attachments": [],
+ "shipment": "36226",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.72,
+  "reasoning": "The airline replies to a shipment-specific rate request but does not quote the requested lane, instead listing lanes it serves.",
+  "sender_role": "airline"
+ }
+}

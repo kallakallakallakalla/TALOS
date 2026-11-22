@@ -1,0 +1,12 @@
+# Shipment 45644: Lindqvist Medtech, FRA -> JNB
+- request: 1 piece furniture samples, 964 kg gross, 6.87 cbm, chargeable 1147.29 kg, ready 2026-11-27, pickup customer delivers to FRA, goal cheapest.
+- 2026-11-22 06:18 UTC air: Tamarind Airways EUR 3476.29, 6 d, rate_id R-mK9Q4CYV8ruxgap6 valid until 2026-11-22 06:33:34 UTC (source portal); chosen as cheapest of priced options. Estimated arrival 2026-12-03.
+- 2026-11-22 06:18 UTC QUOTE SENT mail id 45693: 3476.29 EUR all-in = air 3476.29 + truck 0 (customer delivers to FRA); airport-to-airport, 6 days transit.
+- 2026-11-22 06:19 UTC customer correction (mail 45717): final packing list is 2 pieces, 1494 kg gross, 11.18 cbm; all other details unchanged. Chargeable/billed weight 1867.06 kg.
+- 2026-11-22 06:19 UTC revised air: Tamarind Airways EUR 5657.20, 6 d, rate_id R-s2i3UjfBDFFt7cVN valid until 2026-11-22 06:34:11 UTC (source portal); cheapest at corrected weight. Estimated arrival 2026-12-03; customer delivers to FRA, no pickup.
+- 2026-11-22 06:19 UTC UPDATED QUOTE SENT mail id 45769 (reply to 45717): 5657.20 EUR all-in = air 5657.20 + truck 0; corrected packing details and 1867.06 kg chargeable weight.
+- Booking not requested; awaiting customer's decision on revised offer.
+- 2026-11-22 06:19 UTC acceptance (mail 45810): Sara accepted the revised offer. Checked current Tamarind rate at 1,494 kg gross / 11.18 cbm = 1,867.06 kg chargeable: EUR 5657.20, 6 d, rate_id R-CH9INUKebivuHRa1 valid until 06:34:59 UTC (portal, dataset v3); unchanged from accepted price.
+- 2026-11-22 06:19 UTC BOOKED BK-FR7JT5Z5 with Tamarind Airways, team_reference 45644, rate_id R-CH9INUKebivuHRa1; ETA 2026-12-03.
+- 2026-11-22 06:20 UTC booking confirmation sent to customer (mail 45840), reply to 45810: booking reference BK-FR7JT5Z5, EUR 5657.20, estimated arrival 3 Dec.
+- 2026-11-22 06:30 UTC tracking request mail 46187: checked airline confirmation 45865 (BK-FR7JT5Z5, “booked and ready to ship”); cargo not yet handed over, customer delivery to FRA pending until ready date 27 Nov. Replied to tracking@ in mail 46196; estimated arrival remains 3 Dec.

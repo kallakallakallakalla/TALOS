@@ -1,0 +1,18 @@
+{
+ "id": 41512,
+ "from": "xenon-cargo-airlines@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-S4J0SO37 confirmed",
+ "body": "Hello,\n\nyour booking BK-S4J0SO37 is confirmed.\n\nBooking reference: BK-S4J0SO37\nYour reference: 41214\nAirline: Xenon Cargo Airlines (XC)\nLane: STR-BOM\nPrice: 4920.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nXenon Cargo Airlines bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:02:15.827818+00:00",
+ "attachments": [],
+ "shipment": "41512",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-S4J0SO37.",
+  "sender_role": "airline"
+ }
+}

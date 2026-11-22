@@ -1,0 +1,4 @@
+# Tracking request 45955: Rheintal Elektronik GmbH, shipment 45190 FRA -> PVG
+- Customer identifies cargo as 1972 kg, ready 2026-11-26 in 61017 Bad Homburg; matches the PVG leg of shipment 45190 (2 pieces, 15.00 cbm, chargeable 2505 kg).
+- Checked shipment 45190 notes and airline confirmation mail 45605: Nova Atlas Cargo confirmed booking BK-LYLPCW5X for FRA-PVG. No collection, handover or movement is recorded. The Bodenseefracht pickup (147.20 EUR, 30 h, TRK-14998) was only quoted, not booked; exact physical location cannot be verified. Estimated arrival 2026-12-02 is conditional on pickup/transit assumptions, not a confirmed ETA.
+- 2026-11-22 06:25 UTC replied to tracking mail 45955 as mail 46054 with booking status, lack of movement/location confirmation, pickup not arranged, and conditional ETA.

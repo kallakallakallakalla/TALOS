@@ -1,0 +1,18 @@
+{
+ "id": 40935,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-Q1PJHVB1 confirmed",
+ "body": "Hello,\n\nyour booking BK-Q1PJHVB1 is confirmed.\n\nBooking reference: BK-Q1PJHVB1\nYour reference: 40729\nAirline: Tamarind Airways (TM)\nLane: FRA-MEX\nPrice: 5021.28 EUR\nStatus: booked and ready to ship\n\nKind regards,\nTamarind Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:49:04.753356+00:00",
+ "attachments": [],
+ "shipment": "40935",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-Q1PJHVB1.",
+  "sender_role": "airline"
+ }
+}

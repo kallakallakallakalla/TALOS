@@ -1,0 +1,23 @@
+{
+ "id": 47089,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: ZURICH AIRPORT - PPT / 204 PCS 1,872 KGS",
+ "body": "Alex님, 예약을 진행해 주셔서 감사합니다. 예약 번호 BK-F2GFLB3R 확인했습니다.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 47087,
+ "references": [
+  46783,
+  47044,
+  47069,
+  47087
+ ],
+ "received_at": "2026-11-22T06:45:53.358292+00:00",
+ "attachments": [],
+ "shipment": "46783",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking reference, requiring no reply.",
+  "sender_role": "customer"
+ }
+}

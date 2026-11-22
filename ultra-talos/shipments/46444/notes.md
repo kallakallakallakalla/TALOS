@@ -1,0 +1,13 @@
+# Shipment 46444: Sonnberg Kaffeeroesterei GmbH, DUS -> ATL
+- request: 4 pieces, 497 kg gross, 2.50 cbm, chargeable 497 kg, ready 2026-11-28, pickup 42763 Wuppertal, goal cheapest.
+- 2026-11-22 06:37 UTC asked truckers for exact shipment: Westfalenroute (mail 46580), Schwabenbote Transporte (46581), Spessart Spedition (46579).
+- 2026-11-22 06:36 UTC air options at 500 kg billed: Solace Air Cargo 1395 EUR/3 d (portal, R-aeJ21V3vYC6IY2RN, valid to 06:52:01Z); Meridian 1445 EUR/5 d (R-bYgYPchuoSKtuPc8); Riverbend 1495 EUR/2 d (R-USPnkx8ZZjsjzIw8); Polaris 1605 EUR/3 d (R-vCY_TphspBZlL0sM). Cheapest air selected: Solace; rates from quote_air.py, origin DUS per zone 42.
+- 2026-11-22 06:37 UTC trucker offers (matched to own requests): Westfalenroute 203.58 EUR, 4 h, ref TRK-15313, valid 06:52; Schwabenbote Transporte 219.43 EUR, 6 h, ref TRK-15312, valid 06:52; Spessart Spedition 70.85 EUR, 32 h, ref TRK-15314, valid 06:52. Chosen Westfalenroute: cheapest offer within ~14 h; Spessart is slower than cutoff.
+- 2026-11-22 06:38 UTC air: Solace Air Cargo 1395.00 EUR, 3 d, rate_id R-aeJ21V3vYC6IY2RN valid 2026-11-22 06:52:01Z (source portal), billed 500 kg.
+- 2026-11-22 06:38 UTC QUOTE SENT mail id 46699: 1598.58 EUR all-in = air 1395.00 + truck 203.58. Pickup 28 Nov; estimated departure 29 Nov, arrival 2 Dec. Quote valid until 06:52 UTC. No booking requested or made.
+- 2026-11-22 06:38 UTC customer accepted quote 46699 (mail 46724) and asked us to book.
+- 2026-11-22 06:39 UTC rechecked Solace at quoted 500 kg billed weight: 1395.00 EUR, 3 d, fresh rate_id R-fwgKCAR4FIoqsZ87 valid to 06:54:01Z (dataset v3); price unchanged. Booked via portal as BK-MHPIY2SB, team_reference 46444, status booked; planned arrival 2 Dec.
+- 2026-11-22 06:39 UTC booking confirmation sent to customer, mail 46737, replying to 46724.
+- 2026-11-22 06:39 UTC airline confirmed BK-MHPIY2SB (mail 46742): booked and ready to ship.
+- 2026-11-22 06:48 UTC tracking request mail 47149 asked for current location/status. No collection or live movement scan is recorded; pickup remains scheduled from 42763 Wuppertal on 28 Nov, planned departure 29 Nov, expected ATL arrival 2 Dec.
+- 2026-11-22 06:49 UTC tracking status sent to tracking@hackloop.mail in reply to 47149 (mail 47292); clarified schedule is not a live scan.

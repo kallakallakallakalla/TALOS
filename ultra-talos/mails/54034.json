@@ -1,0 +1,21 @@
+{
+ "id": 54034,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 51871 Bergisch Gladbach to CGN on 2026-11-27",
+ "body": "All-in price for pickup and delivery to CGN: 169.88 EUR\nPickup time: 12 hours\nValid until: 22 Nov 2026 09:18 UTC\nOffer reference: TRK-17250 — no booking required.\n\nBodenseefracht",
+ "in_reply_to": 53926,
+ "references": [
+  53806,
+  53926
+ ],
+ "received_at": "2026-11-22T09:03:49.463810+00:00",
+ "attachments": [],
+ "shipment": "53806",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

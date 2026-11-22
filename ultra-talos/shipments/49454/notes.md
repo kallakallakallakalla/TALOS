@@ -1,0 +1,12 @@
+# Shipment 49454: Rheintal Elektronik GmbH, MUC -> MEX
+- request: 9 pieces furniture samples, 1046 gross kg, 6.70 cbm, chargeable 1118.90 kg, ready 2026-11-26, pickup customer delivers to MUC, goal fastest
+- 2026-11-22 07:25 UTC air options: Cobalt Skylift EUR 2506.34 / 3 d (tariff); Ibisair Cargo EUR 2842.01 / 4 d (portal); Solace Air Cargo EUR 3390.26 / 2 d (portal). Chosen Solace, fastest; no pickup.
+- rate_id R-s3lclJfIQNVsY-Gg valid until 2026-11-22T07:40:36.589341+00:00; billed 1118.90 kg; expected arrival 2026-11-28.
+- PDF offer: offer-49454.pdf
+- 2026-11-22 07:26 UTC QUOTE SENT mail id 49586: 3390.26 EUR all-in = air 3390.26 + truck 0 (self-delivery); PDF attached.
+- 2026-11-22 07:26 UTC acceptance mail 49617: customer approved 3390.26 EUR and requested booking.
+- 2026-11-22 07:26 UTC rate rechecked before booking: Solace Air Cargo EUR 3390.26, 2 d, rate_id R-yibzwjYQmhnk1fPS valid until 2026-11-22T07:41:50.103592+00:00; billed 1118.90 kg (gross 1046 kg, 6.70 cbm); unchanged from accepted offer.
+- 2026-11-22 07:26 UTC BOOKED BK-O7HOT4H2 with Solace Air Cargo, team_reference 49454, ETA 2026-11-28.
+- 2026-11-22 07:26 UTC booking confirmation sent to customer in reply mail 49638.
+- 2026-11-22 07:27 UTC airline confirmation mail 49661: Solace Air Cargo confirmed BK-O7HOT4H2, MUC-MEX, status booked and ready to ship.
+- 2026-11-22 07:36 UTC tracking request mail 49907 matched to this shipment by customer, lane, gross weight and ready date; replied in mail 49914. No pickup, airport handover or tracking scan recorded; exact current physical location cannot be verified. Shipment is due ready 2026-11-26 and customer delivers to MUC.

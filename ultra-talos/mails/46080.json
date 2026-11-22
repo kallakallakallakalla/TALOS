@@ -1,0 +1,21 @@
+{
+ "id": 46080,
+ "from": "alpenblick-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 72128 Tuebingen to STR on 2026-11-28",
+ "body": "Hello,\n\nThanks for your request. Our all-in price for pickup in Tuebingen and delivery to the air export warehouse at STR is 182.91 EUR.\n\nPickup time: 9 hours\nPrice valid until: 22 Nov 2026 06:39 UTC\nOffer reference: TRK-15151\n\nNo booking is needed for pickup.\n\nBest regards,\nAlpenblick Logistik",
+ "in_reply_to": 45996,
+ "references": [
+  45931,
+  45996
+ ],
+ "received_at": "2026-11-22T06:25:25.986741+00:00",
+ "attachments": [],
+ "shipment": "45931",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

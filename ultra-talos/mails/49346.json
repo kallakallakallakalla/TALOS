@@ -1,0 +1,22 @@
+{
+ "id": 49346,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - EZE / 153 CTN 1,247 KGS",
+ "body": "Thank you for clarifying that pickup on 25 November 2026 is quoted but not yet booked.\n\nCould you please confirm that the offer is for our shipment to SGN, as the subject line refers to EZE? Please provide one all-in total in a single currency for the most economical option, including pickup from our site in 84789 and all charges through to SGN.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": 49335,
+ "references": [
+  48973,
+  49314,
+  49335
+ ],
+ "received_at": "2026-11-22T07:21:32.308846+00:00",
+ "attachments": [],
+ "shipment": "48973",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.98,
+  "reasoning": "The customer asks for clarification and a revised all-in total for the quoted shipment, without accepting or rejecting the offer.",
+  "sender_role": "customer"
+ }
+}

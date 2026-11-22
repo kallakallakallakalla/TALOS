@@ -1,0 +1,18 @@
+{
+ "id": 49454,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request: MUC to MEX",
+ "body": "Hello,\n\nOur buyer in Mexico City, MX, is importing furniture samples from us in Germany, and we are arranging the flight for their import. Could you please quote the fastest air freight option from MUC to MEX and confirm the expected arrival date?\n\nThe import shipment consists of 9 pieces, with a gross weight of 1046 kg and a total volume of 6.70 cbm. The goods will be ready on 2026-11-26, and we will deliver them to MUC ourselves.\n\nPlease quote an all-in price in EUR and attach your offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThank you.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:25:20.572433+00:00",
+ "attachments": [],
+ "shipment": "49454",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a specified shipment from MUC to MEX.",
+  "sender_role": "customer"
+ }
+}

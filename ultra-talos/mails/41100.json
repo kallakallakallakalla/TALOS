@@ -1,0 +1,20 @@
+{
+ "id": 41100,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: MUC-DXB cutoff and scheduled arrival | 29 Nov 2026 | Sonnberg",
+ "body": "Dear Sonnberg team,\n\nThe quoted transit time for our fastest service from Munich to Dubai is 1 day. We cannot confirm the cargo acceptance cutoff in Munich or the scheduled arrival date and time in Dubai from the rate quote alone. The cutoff would be stated in Munich local time and the arrival in Dubai local time.\n\nThe rate is 1395.36 EUR, valid until 22 Nov 2026 05:09 UTC. Please quote R-21f4q6qMYuNGjTa1 when booking.\n\nKind regards,\nLumen Air Cargo",
+ "in_reply_to": 41078,
+ "references": [
+  41078
+ ],
+ "received_at": "2026-11-22T04:54:28.167173+00:00",
+ "attachments": [],
+ "shipment": "41078",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.93,
+  "reasoning": "The airline provides a shipment-specific rate and validity for the requested route, rather than confirming a booking.",
+  "sender_role": "airline"
+ }
+}

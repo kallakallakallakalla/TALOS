@@ -1,0 +1,20 @@
+{
+ "id": 45004,
+ "from": "isarwelle-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 60413 Frankfurt am Main to FRA on 2026-11-25",
+ "body": "Hi there,\n\nThanks for reaching out! Our all-in price for pickup in Frankfurt and delivery to the air export warehouse at FRA is 186.59 EUR.\n\nPickup time: 16 hours\nQuote valid until: 22 Nov 2026 06:21 UTC\nOffer reference: TRK-14820\n\nNo booking is needed for the pickup.\n\nBest,\nIsarwelle Spedition",
+ "in_reply_to": 44824,
+ "references": [
+  44824
+ ],
+ "received_at": "2026-11-22T06:07:08.880237+00:00",
+ "attachments": [],
+ "shipment": "44824",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

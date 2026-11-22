@@ -1,0 +1,21 @@
+{
+ "id": 37542,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: RE: FW: VIENNA AIRPORT - LOS / 46 PLT 2,526 KGS",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 37541,
+ "references": [
+  37221,
+  37541
+ ],
+ "received_at": "2026-11-22T03:37:21.662611+00:00",
+ "attachments": [],
+ "shipment": "37221",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the offer and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 48598,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "DFW행 항공운임 견적 요청",
+ "body": "안녕하세요.\n\nGermany Dortmund 44780에 있는 저희 사업장에서 픽업하여 DFW (Dallas, US)까지 보내는 항공화물 견적을 부탁드립니다. 출발 공항까지의 트럭 운송도 귀사에서安排해 주시기 바랍니다.\n\n화물은 스포츠 장비 4개이며, 총중량은 159 kg, 부피는 1.44 cbm입니다. 2026-11-24부터 픽업 가능합니다.\n\n가장 저렴한 옵션으로 부탁드립니다. 픽업과 공항까지의 트럭 운송을 포함해 모든 비용이 포함된 총액을 EUR로 알려주시기 바랍니다.\n\n구매부서에서 견적서를 보관하므로, 회신하실 때 견적서를 PDF로 첨부해 주시면 감사하겠습니다.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:13:12.789464+00:00",
+ "attachments": [],
+ "shipment": "48598",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in air freight quote for a new shipment from Dortmund to Dallas.",
+  "sender_role": "customer"
+ }
+}

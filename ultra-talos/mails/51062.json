@@ -1,0 +1,18 @@
+{
+ "id": 51062,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-780F13D6 confirmed",
+ "body": "Hello,\n\nyour booking BK-780F13D6 is confirmed.\n\nBooking reference: BK-780F13D6\nYour reference: 50862\nAirline: Ibisair Cargo (IB)\nLane: HAM-JFK\nPrice: 1240.00 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:06:48.249863+00:00",
+ "attachments": [],
+ "shipment": "51062",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms that booking BK-780F13D6 is confirmed.",
+  "sender_role": "airline"
+ }
+}

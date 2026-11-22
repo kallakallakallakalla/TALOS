@@ -1,0 +1,11 @@
+# Shipment 40984: Sonnberg Kaffeeroesterei GmbH, MUC -> DXB
+- request: 5 pieces precision instruments, gross 408.0018 kg (899.49 lb), 2.15010 cbm (75.93 ft³), chargeable 408.0 kg; ready 2026-11-29, customer delivers to MUC; goal fastest.
+- 2026-11-22 04:53 UTC air options: Wayzata Air Cargo 975.00 EUR, 2 d, billed 500 kg (tariff); Quetzal Air Freight 1305.60 EUR, 2 d, billed 408 kg (tariff); Lumen Air Cargo 1395.36 EUR, 1 d, rate_id R-mYVJyiaoFOTe2P6y, valid until 2026-11-22T05:08:31Z (portal). Chosen Lumen as fastest; customer delivers, so no pickup charge. Asked Lumen for MUC acceptance cutoff and scheduled DXB arrival; actual schedule details were not available.
+- 2026-11-22 04:53 UTC asked Lumen Air Cargo (mail 41078) for the MUC acceptance cutoff and confirmed scheduled DXB arrival/time; no booking requested.
+- 2026-11-22 04:54 UTC Lumen reply mail 41100: rate is 1395.36 EUR valid until 05:09 UTC; could not confirm MUC cutoff or scheduled DXB arrival from rate quote (would be local-time data).
+- 2026-11-22 04:54 UTC QUOTE SENT mail 41114: 1395.36 EUR all-in = air 1395.36 + pickup 0 (customer delivers); Lumen 1-day transit. Estimated arrival 30 Nov only if accepted/dispatched 29 Nov; airline has not confirmed actual schedule/cutoff. No booking.
+- 2026-11-22 04:55 UTC before booking: refreshed Lumen portal rate at 408.0 kg billed, 2.15010 cbm; 1395.36 EUR, rate_id R-IuPxk1B1u8FJuvfT valid until 05:10:23Z (same airline and price as accepted offer).
+- 2026-11-22 04:55 UTC BOOKED BK-5NVFGRA6 with Lumen Air Cargo via portal at 1395.36 EUR, team_reference 40984, rate_id R-IuPxk1B1u8FJuvfT. Estimated arrival 30 Nov only if accepted/dispatched 29 Nov; actual schedule/cutoff still unconfirmed.
+- 2026-11-22 04:55 UTC booking confirmation sent to customer (mail 41152) replying to acceptance 41139; advised booking reference and that schedule/cutoff remain unconfirmed.
+- 2026-11-22 04:56 UTC Lumen booking confirmation mail 41157 confirms BK-5NVFGRA6, reference 40984, MUC-DXB, 1395.36 EUR; booked and ready to ship.
+- 2026-11-22 04:56 UTC followed up against confirmed booking for cutoff/schedule (mail 41161). Lumen reply 41163: unable to verify MUC cutoff or scheduled DXB arrival date/time; 1-day transit alone does not establish either. Customer update mail 41164; will pass on details if confirmed.

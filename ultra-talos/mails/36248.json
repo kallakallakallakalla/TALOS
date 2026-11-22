@@ -1,0 +1,20 @@
+{
+ "id": 36248,
+ "from": "orion-cargo-air@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Rate request FRA-PEK / TALOS 36108",
+ "body": "Fastest option for FRA–PEK:\nAll-in airport-to-airport rate: 2692.21 EUR\nTransit time: 4 days\nValid until: 22 Nov 2026 03:26 UTC\nPlease quote R-39oKl8P5oFFR5ci_ when booking.\n\nOrion Cargo Air",
+ "in_reply_to": 36227,
+ "references": [
+  36227
+ ],
+ "received_at": "2026-11-22T03:11:38.360810+00:00",
+ "attachments": [],
+ "shipment": "36227",
+ "classification": {
+  "category": "rate_offer",
+  "confidence": 0.99,
+  "reasoning": "The airline replies to a one-shipment rate request with a specific price, transit time, validity, and rate reference.",
+  "sender_role": "airline"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 39739,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: MUC to PVG",
+ "body": "Hello,\n\nCould you please quote the fastest air freight option from MUC to PVG (Shanghai, CN)?\n\nWe will deliver the shipment to MUC ourselves. It will be ready on 2026-11-28. The shipment consists of 1 piece of furniture samples, with a gross weight of 1027.36 lb and a volume of 129.96 cubic feet.\n\nPlease let me know the earliest departure and arrival you can offer, together with your all-in price in EUR.\n\nThank you.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:22:52.309209+00:00",
+ "attachments": [],
+ "shipment": "39739",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting a new air freight quote for a shipment from MUC to PVG.",
+  "sender_role": "customer"
+ }
+}

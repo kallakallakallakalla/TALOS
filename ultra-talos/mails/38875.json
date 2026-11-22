@@ -1,0 +1,18 @@
+{
+ "id": 38875,
+ "from": "aurelia-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-CSIOEQWW confirmed",
+ "body": "Hello,\n\nyour booking BK-CSIOEQWW is confirmed.\n\nBooking reference: BK-CSIOEQWW\nYour reference: 38571\nAirline: Aurelia Air Cargo (AU)\nLane: DUS-RUH\nPrice: 2551.12 EUR\nStatus: booked and ready to ship\n\nKind regards,\nAurelia Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:07:21.937181+00:00",
+ "attachments": [],
+ "shipment": "38875",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-CSIOEQWW.",
+  "sender_role": "airline"
+ }
+}

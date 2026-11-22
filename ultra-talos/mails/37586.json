@@ -1,0 +1,18 @@
+{
+ "id": 37586,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "STR–MIA hava navlun teklifi",
+ "body": "Merhaba,\n\nYükü Stuttgart Havalimanı’na (STR) biz teslim edeceğiz. MIA (Miami, US) varışlı gönderi için en ucuz seçeneği istiyoruz. Tüm masraflar dahil EUR cinsinden fiyat verebilir misiniz?\n\nHassas cihazlar: 1 parça, brüt 1986 kg, 9.51 cbm. Yük 2026-11-26 tarihinde teslime hazır olacak.\n\nSatın alma departmanımız dosyaladığı için lütfen teklifinizi yanıtınıza PDF olarak ekleyin.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:40:13.006437+00:00",
+ "attachments": [],
+ "shipment": "37586",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price for a new shipment from STR to MIA.",
+  "sender_role": "customer"
+ }
+}

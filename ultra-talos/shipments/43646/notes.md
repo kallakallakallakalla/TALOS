@@ -1,0 +1,13 @@
+# Shipment 43646: Lindqvist Medtech, MUC -> LAX
+- request: 12 pieces, electronic control units, 350 kg gross, 3.33 cbm, chargeable 556.11 kg, ready 2026-11-29, pickup customer delivers to MUC, goal fastest.
+- 2026-11-22 05:42 UTC air: Fjordline Air Cargo (FQ) 1785.11 EUR, 3 d, rate_id R-0dwnPBEurgUmq_k1, valid until 2026-11-22 05:57:05 UTC (source portal); chosen as fastest over 5 d Yellowtail and 6 d Kestrel. Estimated arrival 2026-12-02.
+- 2026-11-22 05:42 UTC QUOTE SENT mail id 43697: 1785.11 EUR all-in = air 1785.11 + truck 0 (customer delivers); validity stated until 05:57 UTC.
+- 2026-11-22 05:42 UTC acceptance mail 43755: Sara accepted the quoted option and asked us to book.
+- 2026-11-22 05:42 UTC rechecked FQ rate for 350 kg gross / 3.33 cbm (chargeable 556.11 kg): 1785.11 EUR, 3 d, rate_id R-g_bbTT64jiEVfLGM, valid until 05:57:57 UTC; unchanged from offer.
+- 2026-11-22 05:42 UTC BOOKED BK-WM4WZ2CS with Fjordline Air Cargo (FQ), team_reference 43646, rate_id R-g_bbTT64jiEVfLGM, 1785.11 EUR; estimated arrival 2026-12-02.
+- 2026-11-22 05:43 UTC booking confirmation sent to customer as mail 43777, replying to acceptance 43755.
+- 2026-11-22 05:42 UTC cancellation mail 43771: buyer withdrew order; requested cancellation if booked. Booking had just gone through.
+- 2026-11-22 05:43 UTC CANCELLED booking BK-WM4WZ2CS via DELETE; API status cancelled. Customer notified in mail 43794 (reply to 43771); shipment is not booked.
+- 2026-11-22 05:43 UTC follow-up mail 43791 repeated the cancellation request for BK-WM4WZ2CS; cancellation had already succeeded and customer was notified in mail 43794.
+- 2026-11-22 05:43 UTC handling mail 43771: verified DELETE result remains cancelled for BK-WM4WZ2CS and retrieved confirmation mail 43794; customer acknowledged in mail 43807, so no further reply needed.
+- 2026-11-22 05:44 UTC mail 43791: Sara repeated the cancellation request for BK-WM4WZ2CS. Rechecked DELETE; API status remains cancelled. Cancellation had already been confirmed in mail 43794 and acknowledged by Sara in mail 43807; no reply or further action needed.

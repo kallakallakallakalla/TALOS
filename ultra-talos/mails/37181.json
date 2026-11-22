@@ -1,0 +1,20 @@
+{
+ "id": 37181,
+ "from": "tamarind-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Withdrawal: STR-PVG quote request, reference 35811",
+ "body": "Hi Alex,\n\nThanks for letting us know. We’ve withdrawn the quote request under R-G2M0kSjItoytVmL0 and confirm that no booking was made.\n\nThe rate of 3883.96 EUR, transit time of 2 days, and validity through 22 Nov 2026 03:44 UTC no longer apply. No further action is needed.\n\nBest regards,\nTamarind Airways",
+ "in_reply_to": 37148,
+ "references": [
+  37148
+ ],
+ "received_at": "2026-11-22T03:30:17.269382+00:00",
+ "attachments": [],
+ "shipment": "37148",
+ "classification": {
+  "category": "other",
+  "confidence": 0.98,
+  "reasoning": "The airline acknowledges the withdrawal and confirms no booking was made; it does not provide an active rate or booking confirmation.",
+  "sender_role": "airline"
+ }
+}

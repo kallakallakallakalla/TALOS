@@ -1,0 +1,13 @@
+# Shipment 45190: Rheintal Elektronik GmbH, Bad Homburg (FRA) -> PVG and BKK
+- request: separate shipments; PVG machine parts, 2 pieces, gross 1972 kg, 15.00 cbm, chargeable 2505 kg; BKK furniture samples, 4 pieces, gross 690 kg, 4.63 cbm, chargeable 773.21 kg; ready 2026-11-26; pickup 61017 Bad Homburg; goal cheapest per air option.
+- 2026-11-22 06:12 UTC asked truckers separately for each shipment: Bodenseefracht, Hansekogge Trucking, Nordlicht Haulage, Spessart Spedition, Westfalenroute (requests 45336-45345).
+- 2026-11-22 06:13 UTC PVG truck offers: Bodenseefracht 147.20 EUR, 30 h, ref TRK-14998, valid to 06:27; Nordlicht 187.25 EUR, 30 h, TRK-14996; Hansekogge 308.45 EUR, 23 h, TRK-14997; Westfalenroute 336.50 EUR, 23 h, TRK-15001; Spessart 383.60 EUR, 25 h, TRK-15005. Chosen Bodenseefracht, cheapest overall as none are within ~14 h. Replies 45502-45506.
+- 2026-11-22 06:13 UTC BKK truck offers: Bodenseefracht 77.93 EUR, 30 h, ref TRK-15000, valid to 06:27; Nordlicht 100.66 EUR, 30 h, TRK-15002; Westfalenroute 163.32 EUR, 23 h, TRK-14999; Spessart 175.79 EUR, 25 h, TRK-15003; Hansekogge 152.59 EUR, 23 h, TRK-15004. Chosen Bodenseefracht, cheapest overall as none are within ~14 h. Replies 45507-45512.
+- 2026-11-22 06:12 UTC PVG air: Nova Atlas Cargo 6087.15 EUR, 4 d, rate_id R-XsUD-hoBdB7tZpXx, valid until 2026-11-22 06:27:35 UTC (portal); chosen cheapest air option.
+- 2026-11-22 06:12 UTC BKK air: Ibisair Cargo 2033.54 EUR, 4 d, rate_id R-ftHBMNWI6FZLLT_i, valid until 2026-11-22 06:27:35 UTC (portal); chosen cheapest air option.
+- Estimated for both with 30 h pickup: departure 2026-11-28; arrival 2026-12-02.
+- 2026-11-22 06:13 UTC QUOTE SENT mail 45546: PVG 6234.35 EUR all-in = air 6087.15 + truck 147.20; BKK 2111.47 EUR all-in = air 2033.54 + truck 77.93. Valid to 06:27 UTC. Both options estimated arrival 2026-12-02.
+- 2026-11-22 06:14 UTC customer 45568 accepted both quoted prices but instructed us to book PVG only; BKK remains unconfirmed.
+- 2026-11-22 06:14 UTC refreshed PVG rate with Nova Atlas Cargo (NV), FRA-PVG, 2505 kg chargeable: 6087.15 EUR, 4 d, rate_id R-2x4FR2bjk-EGUZHM valid until 06:29:34 UTC (portal; same price as offer).
+- 2026-11-22 06:14 UTC BOOKED PVG with Nova Atlas Cargo, booking BK-LYLPCW5X, team_reference 45190, airline rate 6087.15 EUR; estimated arrival 2026-12-02. Pickup remains the quoted Bodenseefracht offer (147.20 EUR, TRK-14998); truckers are not booked.
+- 2026-11-22 06:14 UTC confirmation sent to customer as mail 45587 in reply to 45568: PVG booked, all-in total 6234.35 EUR including quoted pickup; BKK left untouched pending confirmation.

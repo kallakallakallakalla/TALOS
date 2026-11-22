@@ -1,0 +1,18 @@
+{
+ "id": 32502,
+ "from": "kessler-feinmechanik.mail@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "New mail address: offer for Lima (LIM)",
+ "body": "Hello,\n\nwe are switching mail systems this week and my old mailbox is being closed. Please send your offer for our shipment to Lima (LIM) to this address instead, and use it for everything that follows.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:03:24.706363+00:00",
+ "attachments": [],
+ "shipment": "32502",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.78,
+  "reasoning": "The customer provides an updated email address for an existing shipment offer, rather than requesting a new quote.",
+  "sender_role": "customer"
+ }
+}

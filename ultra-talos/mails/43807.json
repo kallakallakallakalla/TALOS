@@ -1,0 +1,23 @@
+{
+ "id": 43807,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: MUC to LAX import quote",
+ "body": "Hi Alex,\n\nThanks for confirming the cancellation.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 43794,
+ "references": [
+  43646,
+  43697,
+  43771,
+  43794
+ ],
+ "received_at": "2026-11-22T05:43:27.706416+00:00",
+ "attachments": [],
+ "shipment": "43646",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only acknowledges the cancellation confirmation and does not ask for further action.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": 36258,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – PVG",
+ "body": "Dear Alex,\n\nThank you for the update. The machine parts will be ready for collection on 26 November 2026. Please confirm the earliest collection time and expected arrival at PVG for the fastest available option.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 36256,
+ "references": [
+  35811,
+  36256
+ ],
+ "received_at": "2026-11-22T03:12:06.941503+00:00",
+ "attachments": [],
+ "shipment": "35811",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.93,
+  "reasoning": "The customer provides the collection date but also asks for the earliest collection time and expected arrival, which need a response.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,14 @@
+# Shipment 43304: Kessler Feinmechanik GmbH, STR -> SGN
+- request: 1 piece, 1978 gross kg, 5.45 cbm, chargeable 1978 kg, ready 2026-11-27, pickup 72872 Tuebingen, goal fastest / earliest arrival. New request in current mail supersedes forwarded MEX/VIE cargo details.
+- 2026-11-22 05:36 UTC asked truckers: Alpenblick Logistik (mail 43404), Hansekogge Trucking (mail 43405).
+- 2026-11-22 05:36 UTC trucker offers: Alpenblick 447.26 EUR, 9 h, ref TRK-14361, valid until 05:51 UTC (reply 43511); Hansekogge 392.70 EUR, 17 h, ref TRK-14360, valid until 05:51 UTC (reply 43512). Chosen: Alpenblick, cheapest within the usual ~14 h cutoff.
+- 2026-11-22 05:36 UTC air rates: Borealis Freight Airways 7120.80 EUR, 3 d, rate_id R-TeUKw4xSdmONfIz5, valid 2026-11-22 05:51:05 UTC (portal); Wayzata Air Cargo 5716.42 EUR, 5 d (tariff); Danube Wings Cargo 6685.64 EUR, 5 d (tariff). Fastest air option is Borealis.
+- 2026-11-22 05:37 UTC QUOTE SENT mail 43538: 7568.06 EUR all-in = Borealis air 7120.80 + Alpenblick pickup 447.26; fastest air 3 d, pickup 9 h. Departure 2026-11-28, earliest arrival 2026-12-01. Valid to 2026-11-22 05:51 UTC. Customer mail supersedes old forwarded Vienna-MEX details.
+- 2026-11-22 05:37 UTC acceptance: customer accepted quote in mail 43570; rechecked BX STR-SGN at 1978 gross/chargeable kg, 5.45 cbm: 7120.80 EUR, 3 d, fresh rate_id R-Zl31ntf9u0kSVCRp valid until 05:52:48 UTC (portal, dataset v3), unchanged from accepted air price.
+- 2026-11-22 05:37 UTC BOOKED BK-EH4UBMQD with Borealis Freight Airways, team_reference 43304, fresh rate_id R-Zl31ntf9u0kSVCRp, air 7120.80 EUR; accepted all-in remains 7568.06 EUR with Alpenblick pickup 447.26 EUR; ETA 2026-12-01.
+- 2026-11-22 05:37 UTC confirmation sent to customer in mail 43602 (reply to 43570), booking ref BK-EH4UBMQD and ETA 1 Dec.
+- 2026-11-22 05:37 UTC customer cancellation: mail 43598 says buyer withdrew order and asks to cancel if booked. Portal cancellation completed successfully: BK-EH4UBMQD status cancelled (DELETE /v1/portal/bookings/BK-EH4UBMQD).
+- 2026-11-22 05:38 UTC cancellation confirmed to customer in mail 43606 (reply to 43598). Shipment is not booked; booking was canceled. No pickup booking was made.
+- 2026-11-22 05:38 UTC follow-up cancellation request in mail 43604 repeated request for BK-EH4UBMQD cancellation; booking was already cancelled. Reconfirmed directly in reply mail 43616.
+- 2026-11-22 05:38 UTC customer acknowledged cancellation in mail 43615; no reply needed. Booking remains cancelled.
+- 2026-11-22 05:38 UTC mail 43604 repeated cancellation request for BK-EH4UBMQD. Rechecked with DELETE /v1/portal/bookings/BK-EH4UBMQD; status remains cancelled (idempotent). Reply 43616 to mail 43604 already confirmed the cancellation. No further customer reply needed.

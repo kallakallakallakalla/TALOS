@@ -1,0 +1,12 @@
+# Shipment 37221: Lindqvist Medtech, DUS -> MEX
+- request: 12 pieces, 1133 kg gross, 3.87 cbm, chargeable 1133 kg, ready 2026-11-24, pickup 41668 Moenchengladbach | fastest
+- 2026-11-22 03:34 UTC air options: Xenon Cargo Airlines 3399.00 EUR, 2 d, portal rate_id R-_iGXfzdvvN387mrX; fastest of available options (UV 3 d, TM 4 d, tariff Danube 5 d). Zone 41 maps to DUS.
+- 2026-11-22 03:34 UTC asked truckers: Odenwald Cargo (attempt logged; API timed out, no reply), Ruhrpott Express (mail 37444), Vogelsberg Haulage (mail 37445).
+- 2026-11-22 03:35 UTC trucker offers: Ruhrpott Express 259.29 EUR, 11 h, ref TRK-12600, valid 03:50 UTC; Vogelsberg Haulage 291.95 EUR, 13 h, ref TRK-12601, valid 03:50 UTC; chosen Ruhrpott (lowest offer and within fast pickup window). Odenwald did not reply.
+- 2026-11-22 03:34 UTC air: Xenon Cargo Airlines 3399.00 EUR, 2 d, rate_id R-_iGXfzdvvN387mrX valid 03:49:25 UTC (source portal); fastest of priced options.
+- All-in quote: air 3399.00 + truck 259.29 = 3658.29 EUR; pickup 24 Nov, estimated departure 25 Nov and arrival 27 Nov.
+- 2026-11-22 03:36 UTC QUOTE SENT mail id 37541 with PDF TALOS_Offer_37221.pdf: 3658.29 EUR all-in = air 3399.00 + truck 259.29; valid until 03:49 UTC. Estimated arrival 2026-11-27; awaiting customer decision at that time.
+- 2026-11-22 03:37 UTC acceptance received in mail 37542, replying to quote 37541.
+- 2026-11-22 03:38 UTC refreshed Xenon XC rate for DUS-MEX at 1133 kg / 3.87 cbm: 3399.00 EUR, unchanged; rate_id R-oTsbQQjOB4QwVsYE valid until 03:53:09 UTC (source portal).
+- 2026-11-22 03:38 UTC BOOKED BK-LWL7YPNM with Xenon Cargo Airlines, team_reference 37221, 3399.00 EUR air; ETA 2026-11-27. Accepted all-in remains 3658.29 EUR (air 3399.00 + Ruhrpott pickup quote 259.29). Confirmation sent in mail 37545, replying to 37542.
+- 2026-11-22 03:48 UTC tracking request 38085: confirmed airline mail 37549 says BK-LWL7YPNM, DUS-MEX, booked and ready to ship; pickup is scheduled 24 Nov from 41668 Moenchengladbach, so not yet collected/in transit; ETA 27 Nov. Replied to tracking@ in mail 38114.

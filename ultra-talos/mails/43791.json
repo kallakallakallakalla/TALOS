@@ -1,0 +1,23 @@
+{
+ "id": 43791,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: MUC to LAX import quote",
+ "body": "Hi Alex,\n\nAs mentioned, we had to cancel the shipment because our buyer withdrew the order. Please cancel booking BK-WM4WZ2CS.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 43777,
+ "references": [
+  43646,
+  43697,
+  43755,
+  43777
+ ],
+ "received_at": "2026-11-22T05:43:14.491083+00:00",
+ "attachments": [],
+ "shipment": "43646",
+ "classification": {
+  "category": "customer_reject",
+  "confidence": 0.98,
+  "reasoning": "The customer says the shipment was cancelled and asks us to cancel the booking.",
+  "sender_role": "customer"
+ }
+}

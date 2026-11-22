@@ -96,8 +96,14 @@ Start every run by reading `knowledge/learnings.md`, the shipment's `notes.md` (
   requests, read that request (`GET /v1/mailbox/messages/<in_reply_to>`, one call for all
   of them) and use only replies to a request with exactly your pieces, weight and volume.
 - No trucker answered in time: 0.28 EUR per gross kg has been a workable pickup estimate.
-- Dates: pickup on the ready date; departure = ready date + ceil(pickup hours / 24) days;
-  arrival = departure + transit days.
+- Dates: count in hours, do not round the pickup up to a full day. Arrival = ready date
+  (00:00) + pickup hours + transit days x 24 h; the date that lands on is the arrival date
+  (ready 27 Nov, 11 h pickup, 2 transit days -> 29 Nov; a 29 h pickup -> 30 Nov).
+  Departure = the date of ready date + pickup hours.
+  With an arrive-by date, an option is in time when that arrival date is on or before the
+  deadline. In round 179 we rounded an 11 h pickup up to a day, threw out the 2-day
+  airlines as late, quoted the 1-day one (1410.83 EUR instead of about 1075) and were
+  rejected as too high.
 - Which trucker? Experience from scored rounds: the reference price usually contains the
   cheapest trucker that picks up within about 14 hours (and the cheapest overall when none
   is that fast), for "cheapest" and "fastest" requests alike. Taking a slower, cheaper

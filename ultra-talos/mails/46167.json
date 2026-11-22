@@ -1,0 +1,23 @@
+{
+ "id": 46167,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to MEL",
+ "body": "Hello Alex,\n\nMany thanks for confirming the booking. I have noted the booking reference and the expected arrival on 3 December.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": 46162,
+ "references": [
+  45931,
+  46127,
+  46144,
+  46162
+ ],
+ "received_at": "2026-11-22T06:26:58.383959+00:00",
+ "attachments": [],
+ "shipment": "45931",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking confirmation and arrival details.",
+  "sender_role": "customer"
+ }
+}

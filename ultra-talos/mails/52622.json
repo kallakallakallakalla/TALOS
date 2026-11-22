@@ -1,0 +1,18 @@
+{
+ "id": 52622,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: AMSTERDAM SCHIPHOL - PPT / 110 CRATES 127 KGS",
+ "body": "Hi there,\n\nHope your week’s going well. Our buyer in Mexico City (MX) is importing furniture samples from us in Germany, and I’m arranging the flight to MEX for their import. Could you quote the fastest option and let me know the expected transit time?\n\nThe shipment will be ready on 2026-11-27, and we’ll deliver it to Düsseldorf Airport (DUS) ourselves. It’s 11 pieces, with a gross weight of 492 kg and a total volume of 1.86 cbm.\n\nCould you send me an all-in price in EUR for this import shipment? Please attach the offer as a PDF to your reply, as our purchasing department needs it for filing.\n\nThanks for checking!\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg\n\n\n-----Original Message-----\nSent: 2026-09-19\nSubject: AMSTERDAM SCHIPHOL - PPT / 110 CRATES 127 KGS\n\nDear team,\n\npls quote air freight ex AMSTERDAM SCHIPHOL to PPT:\n110 CRATES / 127 KGS / 11.7 CBM, printed marketing material\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:32:19.950605+00:00",
+ "attachments": [],
+ "shipment": "52622",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price and fastest option for a new shipment from DUS to MEX.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 53793,
+ "from": "meridian-freightways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-PRJ9DP3Y confirmed",
+ "body": "Hello,\n\nyour booking BK-PRJ9DP3Y is confirmed.\n\nBooking reference: BK-PRJ9DP3Y\nYour reference: 53505\nAirline: Meridian Freightways (MD)\nLane: STR-MNL\nPrice: 2509.20 EUR\nStatus: booked and ready to ship\n\nKind regards,\nMeridian Freightways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:00:02.947923+00:00",
+ "attachments": [],
+ "shipment": "53793",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-PRJ9DP3Y.",
+  "sender_role": "airline"
+ }
+}

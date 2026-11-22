@@ -1,0 +1,21 @@
+{
+ "id": 50444,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to YYZ",
+ "body": "Hi there,\n\nHope your week’s going well! Thanks for the offer—it looks good, and I’d like to place the shipment with you. Another forwarder has quoted 9 percent less for the same shipment. Is there any chance you could match that?\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 50443,
+ "references": [
+  50143,
+  50443
+ ],
+ "received_at": "2026-11-22T07:46:56.692358+00:00",
+ "attachments": [],
+ "shipment": "50143",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer says they would like to place the shipment with us, so this is an acceptance despite also asking whether we can match a competitor’s price.",
+  "sender_role": "customer"
+ }
+}

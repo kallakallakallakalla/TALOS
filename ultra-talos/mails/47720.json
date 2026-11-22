@@ -1,0 +1,18 @@
+{
+ "id": 47720,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: ZURICH AIRPORT - SGN / 122 CRATES 790 KGS",
+ "body": "Hello,\n\nOur buyer in New York, US, is importing spare parts for packaging machines from us in Germany. We are arranging the flight for their import to JFK. Could you please quote the cheapest option for this import shipment as one all-in price in EUR, including the truck you arrange from our site in 28676 (Bremen), Germany, to the airport?\n\nThe goods are ready for pickup on 2026-11-28:\n\nLot 1: 8 crates, each 105 kg gross (97 kg net), each 60 x 40 x 87 cm\nLot 2: 1 drum, together 675 kg gross (594 kg net), together 4.46 cbm\nLot 3: 6 cases, each 47 kg gross (40 kg net), each 110 x 110 x 126 cm\n\nPlease keep all lots together in the same consignment and cover them under one air waybill.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH\n\n\n-----Original Message-----\nSent: 2026-10-20\nSubject: ZURICH AIRPORT - SGN / 122 CRATES 790 KGS\n\nDear team,\n\npls quote air freight ex ZURICH AIRPORT to SGN:\n122 CRATES / 790 KGS / 10 CBM, precision instruments\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:55:00.985532+00:00",
+ "attachments": [],
+ "shipment": "47720",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer is requesting a new all-in quote for a shipment from Germany to JFK, with pickup and cargo details provided.",
+  "sender_role": "customer"
+ }
+}

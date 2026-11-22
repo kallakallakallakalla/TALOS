@@ -1,0 +1,18 @@
+{
+ "id": 55129,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - ATL / 208 CTN 5,200 KGS",
+ "body": "Hi,\n\nCould you quote one all-in price in EUR for the fastest air freight option to YYZ (Toronto, CA)? The printed marketing material is ready for pickup on 2026-12-05 at our site in 21107 (Lueneburg), Germany. Please arrange the truck to the airport.\n\nLot 1: 2 cartons, each 474 kg gross (445 kg net), each 120 x 80 x 119 cm\nLot 2: 7 drums, each 32 kg gross (28 kg net), each 110 x 110 x 103 cm\nLot 3: 2 pallets, together 726 kg gross (646 kg net), together 4.33 cbm\n\nPlease ship all lots together as a single consignment under one air waybill.\n\nMira Petersen\nNordlicht Audio\n\n\n-----Original Message-----\nSent: 2026-10-08\nSubject: VIENNA AIRPORT - ATL / 208 CTN 5,200 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to ATL:\n208 CTN / 5,200 KGS / 4 CBM, machine parts\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T09:27:04.978246+00:00",
+ "attachments": [],
+ "shipment": "55129",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests a new all-in quote for air freight to Toronto and pickup arrangements.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 48973,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - EZE / 153 CTN 1,247 KGS",
+ "body": "Dear Sir or Madam,\n\nCould you please quote your cheapest air freight option to SGN (Ho Chi Minh City, VN)? The shipment will be ready for pickup on 2026-11-25 at our site in 84789 (Landshut), Germany. Please arrange the truck from our site to the departure airport and include that service in the all-in price in EUR.\n\nThe shipment consists of 4 pieces of sports equipment, with a gross weight of 996.49 lb and a total volume of 73.46 cubic feet.\n\nPlease attach your offer as a PDF to your reply so our purchasing department can file it.\n\nThank you for your assistance.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm\n\n\n-----Original Message-----\nSent: 2026-10-07\nSubject: VIENNA AIRPORT - EZE / 153 CTN 1,247 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to EZE:\n153 CTN / 1,247 KGS / 16 CBM, furniture samples\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T07:19:16.158172+00:00",
+ "attachments": [],
+ "shipment": "48973",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer requests a new all-in air freight quote for a shipment from Landshut to SGN.",
+  "sender_role": "customer"
+ }
+}

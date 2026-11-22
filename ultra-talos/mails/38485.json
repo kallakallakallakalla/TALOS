@@ -1,0 +1,21 @@
+{
+ "id": 38485,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to SGN",
+ "body": "Thank you for asking. We’ll send you the dangerous goods documents (shipper’s declaration and safety data sheet) shortly.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 38475,
+ "references": [
+  38418,
+  38475
+ ],
+ "received_at": "2026-11-22T03:59:00.742064+00:00",
+ "attachments": [],
+ "shipment": "38418",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.98,
+  "reasoning": "The customer replies to our request for missing dangerous goods documents and says they will send them shortly.",
+  "sender_role": "customer"
+ }
+}

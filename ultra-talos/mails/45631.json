@@ -1,0 +1,18 @@
+{
+ "id": 45631,
+ "from": "tracking@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Status of our shipment 60413 to CAI, 553 kg",
+ "body": "Hello,\n\ncould you please tell me the current status of our shipment: Hofmann Textilwerk KG, 60413 to CAI, 553 kg, ready on 2026-11-25? Where is it now?\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:18:14.897627+00:00",
+ "attachments": [],
+ "shipment": "45631",
+ "classification": {
+  "category": "tracking_request",
+  "confidence": 0.99,
+  "reasoning": "The sender asks for the shipment’s current status and location.",
+  "sender_role": "tracking"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": 47647,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote to NRT",
+ "body": "Thank you for your offer, we would like to give this shipment to you. Before I confirm: another forwarder has offered us the same shipment 7% cheaper. Can you match that? Please let me know where your price stands.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 47614,
+ "references": [
+  47162,
+  47614
+ ],
+ "received_at": "2026-11-22T06:51:40.344083+00:00",
+ "attachments": [],
+ "shipment": "47162",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.95,
+  "reasoning": "The customer expresses interest but asks whether TALOS can match a cheaper offer before confirming, so they have not yet accepted.",
+  "sender_role": "customer"
+ }
+}

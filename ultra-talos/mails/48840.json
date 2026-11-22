@@ -1,0 +1,21 @@
+{
+ "id": 48840,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: DFW행 항공운임 견적 요청",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 48815,
+ "references": [
+  48598,
+  48815
+ ],
+ "received_at": "2026-11-22T07:15:15.874310+00:00",
+ "attachments": [],
+ "shipment": "48598",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts the quoted offer and explicitly asks us to book it.",
+  "sender_role": "customer"
+ }
+}

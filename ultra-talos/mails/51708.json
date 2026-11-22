@@ -1,0 +1,18 @@
+{
+ "id": 51708,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote: MUC to SGN",
+ "body": "Hello,\n\nOur buyer in Ho Chi Minh City, VN is importing automotive sensors from us in Germany, and we are arranging the flight for their import. Could you please quote the cheapest air freight option for this import shipment from MUC to SGN?\n\nWe will deliver the goods to Munich Airport (MUC) ourselves. The shipment will be ready on 2026-11-29 and consists of 2 pieces, with a gross weight of 857 kg and a total volume of 4.16 cbm.\n\nPlease send us your all-in price in EUR.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:20:11.609537+00:00",
+ "attachments": [],
+ "shipment": "51708",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price for a new air freight shipment from MUC to SGN.",
+  "sender_role": "customer"
+ }
+}

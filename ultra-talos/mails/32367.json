@@ -1,0 +1,18 @@
+{
+ "id": 32367,
+ "from": "kessler-feinmechanik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: BRUSSELS AIRPORT - KUL / 105 CTN 35 KGS",
+ "body": "Dear Air Freight Team,\n\nOur buyer in Lima is importing machine parts from us in Germany, and we are arranging the flight for their import. Could you please quote the fastest option to LIM (Lima, PE), including truck pickup from our site in 61882 (Bad Homburg), Germany, and transport to the departure airport?\n\nThe shipment will be ready for pickup on 2026-11-27. It consists of 5 pieces with a gross weight of 179 kg and a total volume of 0.76 cbm.\n\nPlease quote an all-in price in EUR and attach your offer as a PDF to your reply so that our purchasing department can file it.\n\nThank you.\n\nMit freundlichen Gruessen / Kind regards\nJonas Kessler\nLogistics Coordinator\nKessler Feinmechanik GmbH, Ulm\n\n\n-----Original Message-----\nSent: 2026-09-23\nSubject: BRUSSELS AIRPORT - KUL / 105 CTN 35 KGS\n\nDear team,\n\npls quote air freight ex BRUSSELS AIRPORT to KUL:\n105 CTN / 35 KGS / 12.8 CBM, precision instruments\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:02:59.321336+00:00",
+ "attachments": [],
+ "shipment": "32367",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer requests a new all-in quote for a shipment to Lima, including pickup and airport transport.",
+  "sender_role": "customer"
+ }
+}

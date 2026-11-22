@@ -1,0 +1,20 @@
+{
+ "id": 42800,
+ "from": "bodenseefracht@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 36241 Fulda to FRA on 2026-11-24",
+ "body": "All-in price: 272.27 EUR\nPickup time: 6 hours\nOffer valid until: 22 Nov 2026 05:39 UTC\nOffer reference: TRK-14136\nNo booking required.\n\nBodenseefracht",
+ "in_reply_to": 42693,
+ "references": [
+  42693
+ ],
+ "received_at": "2026-11-22T05:24:33.566096+00:00",
+ "attachments": [],
+ "shipment": "42693",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and offer validity.",
+  "sender_role": "trucker"
+ }
+}

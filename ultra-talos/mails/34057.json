@@ -1,0 +1,18 @@
+{
+ "id": 34057,
+ "from": "ibisair-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-9D7CBEBA confirmed",
+ "body": "Hello,\n\nyour booking BK-9D7CBEBA is confirmed.\n\nBooking reference: BK-9D7CBEBA\nYour reference: 33836\nAirline: Ibisair Cargo (IB)\nLane: MUC-ICN\nPrice: 4228.40 EUR\nStatus: booked and ready to ship\n\nKind regards,\nIbisair Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:31:08.590809+00:00",
+ "attachments": [],
+ "shipment": "34057",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-9D7CBEBA.",
+  "sender_role": "airline"
+ }
+}

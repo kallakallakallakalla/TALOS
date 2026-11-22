@@ -1,0 +1,21 @@
+{
+ "id": 33767,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request for RUH and DXB",
+ "body": "Thank you for your offer. Both prices work for us. Please go ahead and book the first shipment now; we will confirm the second shipment later.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 33741,
+ "references": [
+  33304,
+  33741
+ ],
+ "received_at": "2026-11-22T02:23:28.658827+00:00",
+ "attachments": [],
+ "shipment": "33304",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 0.99,
+  "reasoning": "The customer accepts both quoted prices and asks us to book the first shipment.",
+  "sender_role": "customer"
+ }
+}

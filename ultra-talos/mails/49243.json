@@ -1,0 +1,20 @@
+{
+ "id": 49243,
+ "from": "isarwelle-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 84789 Landshut to MUC on 2026-11-25",
+ "body": "Hi,\n\nThanks for reaching out! We’d be happy to pick up your freight in Landshut and deliver it to the air export warehouse at Munich Airport.\n\nAll-in price: 60.60 EUR\nPickup time: 29 hours\nQuote valid until: 22 Nov 2026 07:34 UTC\nOffer reference: TRK-16026 — no booking needed.\n\nBest,\nIsarwelle Spedition",
+ "in_reply_to": 49103,
+ "references": [
+  49103
+ ],
+ "received_at": "2026-11-22T07:20:10.341440+00:00",
+ "attachments": [],
+ "shipment": "49103",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

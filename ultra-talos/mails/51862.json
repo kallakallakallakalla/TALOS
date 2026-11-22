@@ -1,0 +1,21 @@
+{
+ "id": 51862,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote: MUC to SGN",
+ "body": "Sorry for the change. The shipment details have changed according to the final packing list: 3 pieces, 1328 kg gross weight, 6.25 cbm.\n\nEverything else stays the same. Could you please update your offer accordingly?\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 51800,
+ "references": [
+  51708,
+  51800
+ ],
+ "received_at": "2026-11-22T08:20:54.789129+00:00",
+ "attachments": [],
+ "shipment": "51708",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.97,
+  "reasoning": "The customer provides updated shipment details and asks us to revise the quote accordingly.",
+  "sender_role": "customer"
+ }
+}

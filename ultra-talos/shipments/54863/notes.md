@@ -1,0 +1,8 @@
+# Shipment 54863: Sonnberg Kaffeeroesterei GmbH, STR -> SGN
+- request: 3 pieces, 497 gross kg, 2.65 cbm, chargeable 497 kg, ready 2026-11-25, customer delivers to STR, goal fastest
+- 2026-11-22 09:21 UTC air options: Borealis Freight Airways 1915.00 EUR, 3 d, billed 500 kg, rate_id R-4x3etgTEFg09OP-i valid 2026-11-22 09:36:19 UTC (portal); Wayzata Air Cargo 1730.00 EUR / 5 d and Danube Wings Cargo 1800.00 EUR / 5 d (tariff). Chosen Borealis for fastest transit; earliest departure 2026-11-25, expected arrival 2026-11-28. No pickup charge: customer delivers to STR.
+- 2026-11-22 09:21 UTC QUOTE SENT mail id 54941: 1915.00 EUR all-in = air 1915.00 + truck 0.00 (customer delivers); fastest Borealis, departure 25 Nov, 3 d transit, expected arrival 28 Nov.
+- 2026-11-22 09:22 UTC acceptance mail 55017: refreshed Borealis rate at billed 500 kg; 1915.00 EUR unchanged, 3 d, rate_id R-JhW5HomgigbbPFH- valid to 09:37:15 UTC.
+- 2026-11-22 09:22 UTC BOOKED BK-ZQPF25SG with Borealis Freight Airways, team_reference 54863, current rate_id R-JhW5HomgigbbPFH-, price 1915.00 EUR, ETA 2026-11-28.
+- 2026-11-22 09:22 UTC booking confirmation sent mail 55034 in reply to acceptance 55017.
+- 2026-11-22T09:32Z tracking request 55507 matched by STR-SGN, 497 kg gross, ready 2026-11-25. Borealis booking BK-ZQPF25SG confirmed in airline mail 55063 (booked and ready to ship); customer delivers to STR. No handover, departure or movement scan is recorded; physical location/in-transit status unconfirmed. 3-day transit implies expected arrival 28 Nov if handover/departure proceed as planned. Replied to tracking@ in mail 55517.

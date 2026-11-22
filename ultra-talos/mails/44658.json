@@ -1,0 +1,18 @@
+{
+ "id": 44658,
+ "from": "hofmann-textilwerk@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quotes for CAI and TLV",
+ "body": "Hi there,\n\nHope your week’s going well! Could you quote the fastest air freight option for each of the two shipments below? Both will be ready for pickup on 2026-11-25 at our site in 60413 Frankfurt am Main, Germany. Please arrange the truck from our site to the airport.\n\n1. CAI (Cairo, EG): sports equipment, 6 pieces, 553 kg gross weight, 3.41 cbm.\n2. TLV (Tel Aviv, IL): spare parts for packaging machines, 1 piece, 951 kg gross weight, 4.67 cbm.\n\nCould you send both quotes in the same reply, with a separate all-in price in EUR for each shipment rather than a combined total?\n\nThanks for your help!\n\nThanks a lot and have a lovely day!\nPetra Hofmann\nExport Desk, Hofmann Textilwerk KG",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:06:10.342597+00:00",
+ "attachments": [],
+ "shipment": "44658",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting quotes for two new air freight shipments.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "id": 39480,
+ "from": "waldrand-transporte@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 55274 Mainz to FRA on 2026-11-24",
+ "body": "All-in price: 133.60 EUR\nPickup time: 31 hours\nPrice valid until: 22 Nov 2026 04:32 UTC\nOffer reference: TRK-13150\n\nNo booking required.\n\nWaldrand Transporte",
+ "in_reply_to": 39352,
+ "references": [
+  39352
+ ],
+ "received_at": "2026-11-22T04:17:45.728163+00:00",
+ "attachments": [],
+ "shipment": "39352",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

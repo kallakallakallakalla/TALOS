@@ -1,0 +1,18 @@
+{
+ "id": 40984,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - LAX / 32 PLT 163 KGS",
+ "body": "Dear Sir or Madam,\n\nCould you please quote the fastest air freight option from MUC to DXB (Dubai, AE)? We will deliver the shipment to MUC ourselves, and it will be ready on 2026-11-29.\n\nThe shipment consists of 5 pieces of precision instruments, with a gross weight of 899.49 lb and a total volume of 75.93 cubic feet.\n\nPlease include the all-in price in EUR, the cargo acceptance cutoff at MUC, and the scheduled arrival at DXB.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH\n\n\n-----Original Message-----\nSent: 2026-09-20\nSubject: VIENNA AIRPORT - LAX / 32 PLT 163 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to LAX:\n32 PLT / 163 KGS / 10.7 CBM, spare parts for packaging machines\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:53:15.442017+00:00",
+ "attachments": [],
+ "shipment": "40984",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer makes a new request for the fastest air freight option and pricing for a shipment from MUC to DXB.",
+  "sender_role": "customer"
+ }
+}

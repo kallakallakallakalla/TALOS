@@ -1,0 +1,20 @@
+{
+ "id": 40611,
+ "from": "spessart-spedition@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 28945 Bremen to HAM on 2026-11-25",
+ "body": "Hi Alex,\n\nOur all-in price for pickup in Bremen and delivery to the air export warehouse at HAM is 99.45 EUR.\n\nPickup time: 17 hours\nOffer valid until: 22 Nov 2026 04:56 UTC\nOffer reference: TRK-13475\n\nNo booking is required for pickup.\n\nBest regards,\nSpessart Spedition",
+ "in_reply_to": 40504,
+ "references": [
+  40504
+ ],
+ "received_at": "2026-11-22T04:42:06.370087+00:00",
+ "attachments": [],
+ "shipment": "40504",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

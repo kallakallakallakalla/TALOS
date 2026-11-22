@@ -1,0 +1,20 @@
+{
+ "id": 39479,
+ "from": "elbkante-logistik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 55274 Mainz to FRA on 2026-11-24",
+ "body": "Dear Alex,\n\nOur all-in price for the pickup from Mainz to Frankfurt Airport is 138.80 EUR.\n\nPickup time: 27 hours\nOffer valid until: 22 Nov 2026 04:32 UTC\nOffer reference: TRK-13153\n\nNo booking is required.\n\nKind regards,\nElbkante Logistik",
+ "in_reply_to": 39353,
+ "references": [
+  39353
+ ],
+ "received_at": "2026-11-22T04:17:45.728607+00:00",
+ "attachments": [],
+ "shipment": "39353",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to our pickup quote request with an all-in price, pickup time, and validity.",
+  "sender_role": "trucker"
+ }
+}

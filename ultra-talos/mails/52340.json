@@ -1,0 +1,18 @@
+{
+ "id": 52340,
+ "from": "auer.maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "New mail address: offer for Toronto (YYZ)",
+ "body": "Hello,\n\nwe are switching mail systems this week and my old mailbox is being closed. Please send your offer for our shipment to Toronto (YYZ) to this address instead, and use it for everything that follows.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T08:26:40.311222+00:00",
+ "attachments": [],
+ "shipment": "52340",
+ "classification": {
+  "category": "customer_question",
+  "confidence": 0.77,
+  "reasoning": "The customer asks that an offer for a shipment be sent to a new email address, which requires a response or action.",
+  "sender_role": "customer"
+ }
+}

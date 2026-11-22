@@ -1,0 +1,18 @@
+{
+ "id": 43264,
+ "from": "gannet-airways@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-GCGNWXPV confirmed",
+ "body": "Hello,\n\nyour booking BK-GCGNWXPV is confirmed.\n\nBooking reference: BK-GCGNWXPV\nYour reference: 42935\nAirline: Gannet Airways (GN)\nLane: DUS-PEK\nPrice: 4374.72 EUR\nStatus: booked and ready to ship\n\nKind regards,\nGannet Airways bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T05:33:17.697279+00:00",
+ "attachments": [],
+ "shipment": "43264",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-GCGNWXPV.",
+  "sender_role": "airline"
+ }
+}

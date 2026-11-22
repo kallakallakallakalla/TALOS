@@ -1,0 +1,20 @@
+{
+ "id": 55389,
+ "from": "domblick-kurierdienst@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Pickup quote 21107 Lueneburg to HAM on 2026-12-05",
+ "body": "Hi there,\n\nThanks for reaching out! Our all-in price for the pickup and delivery to the air export warehouse at HAM is 337.16 EUR.\n\nPickup time: 26 hours\nQuote valid until: 22 Nov 2026 09:42 UTC\nOffer reference: TRK-17629\n\nNo booking is needed for the pickup.\n\nBest regards,\nDomblick Kurierdienst",
+ "in_reply_to": 55247,
+ "references": [
+  55247
+ ],
+ "received_at": "2026-11-22T09:28:01.521144+00:00",
+ "attachments": [],
+ "shipment": "55247",
+ "classification": {
+  "category": "trucker_quote",
+  "confidence": 0.99,
+  "reasoning": "The trucker replies to a pickup quote request with an all-in price and validity.",
+  "sender_role": "trucker"
+ }
+}

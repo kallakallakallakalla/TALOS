@@ -1,0 +1,9 @@
+# Shipment 52886: Nordlicht Audio, CGN -> LIM
+- request: 1 piece printed marketing material, 1745 kg gross, 5.54 cbm, chargeable 1745 kg; ready 2026-11-28; customer delivers to CGN; goal fastest.
+- 2026-11-22 08:38 UTC air options: Xenon Cargo Airlines 4760.00 EUR, 4 d, billed 2000 kg, rate_id R--IJDh5Cj6XLunlGA (portal); Wayzata Air Cargo 6072.60 EUR, 5 d (tariff); Nova Atlas Cargo 6526.30 EUR, 3 d, billed 1745 kg, rate_id R-cemj7exWMfLTf0Hy, valid until 2026-11-22T08:53:40.753110+00:00 (portal). Chosen Nova Atlas Cargo as fastest; no pickup required.
+- 2026-11-22 08:38 UTC QUOTE SENT mail id 52940: 6526.30 EUR all-in = air 6526.30 + truck 0.00; fastest option, 3 transit days. Earliest departure 2026-11-28; estimated arrival 2026-12-01. Rate valid until 2026-11-22T08:53:40.753110+00:00.
+- 2026-11-22 08:39 UTC acceptance mail 53006: asked to match competitor's 7% lower offer but explicitly confirmed our offer works and placed shipment. Rechecked Nova Atlas Cargo at 1745 kg / 5.54 cbm: 6526.30 EUR, 3 d, fresh rate R-1meO4bCv3clXyxOE valid until 08:54:33 UTC; unchanged, so no 7% reduction offered.
+- 2026-11-22 08:39 UTC BOOKED BK-OEDQ2VM7 with Nova Atlas Cargo via portal at 6526.30 EUR, team_reference 52886; ETA 2026-12-01.
+- 2026-11-22 08:39 UTC reply 53028 to acceptance 53006: confirmed booked at agreed price, explained rate unchanged / unable to reduce 7%; provided booking reference and ETA.
+- 2026-11-22 08:40 UTC mail 53037: customer reiterated acceptance and asked to book; already booked under BK-OEDQ2VM7 after acceptance 53006, so no duplicate booking. Reconfirmed existing booking, agreed price 6526.30 EUR, and ETA 1 Dec in reply 53057.
+- 2026-11-22 08:40 UTC airline confirmation mail 53055: Nova Atlas Cargo confirmed BK-OEDQ2VM7, reference 52886, CGN-LIM, 6526.30 EUR; status booked and ready to ship.

@@ -1,0 +1,21 @@
+{
+ "id": 48149,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air import quote: NRT to HAM",
+ "body": "Understood. Thanks for letting me know.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": 48141,
+ "references": [
+  47994,
+  48141
+ ],
+ "received_at": "2026-11-22T07:01:49.378968+00:00",
+ "attachments": [],
+ "shipment": "47994",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only acknowledges the explanation and thanks us, without asking a question or requesting a quote.",
+  "sender_role": "customer"
+ }
+}

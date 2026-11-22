@@ -1,0 +1,18 @@
+{
+ "id": 47689,
+ "from": "nova-atlas-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-VGP8PPAM confirmed",
+ "body": "Hello,\n\nyour booking BK-VGP8PPAM is confirmed.\n\nBooking reference: BK-VGP8PPAM\nYour reference: 47162\nAirline: Nova Atlas Cargo (NV)\nLane: MUC-NRT\nPrice: 3579.91 EUR\nStatus: booked and ready to ship\n\nKind regards,\nNova Atlas Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:54:13.442000+00:00",
+ "attachments": [],
+ "shipment": "47689",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 1.0,
+  "reasoning": "The airline explicitly confirms booking BK-VGP8PPAM.",
+  "sender_role": "airline"
+ }
+}

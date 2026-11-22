@@ -1,0 +1,18 @@
+{
+ "id": 47162,
+ "from": "nordlicht-audio@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote to NRT",
+ "body": "Hi,\n\nCould you quote your cheapest air freight option to NRT (Tokyo, JP), including truck pickup from our site in 85869 (Ingolstadt), Germany, to the departure airport? The shipment is ready for pickup on 2026-11-29: 8 pieces of precision instruments, gross weight 2912.31 lb, volume 198.47 cubic feet.\n\nPlease reply with your all-in price in EUR and attach the quote as a PDF for our purchasing department to file.\n\nMira Petersen\nNordlicht Audio",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T06:48:56.669994+00:00",
+ "attachments": [],
+ "shipment": "47162",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in price to transport a specific shipment to NRT.",
+  "sender_role": "customer"
+ }
+}

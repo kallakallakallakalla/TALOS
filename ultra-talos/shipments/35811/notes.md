@@ -1,0 +1,10 @@
+# Shipment 35811: Sonnberg Kaffeeroesterei GmbH, STR -> PVG
+- request: 12 pieces, 1091 gross kg, 3.27 cbm, chargeable 1091 kg, ready 2026-11-26, pickup 70275 Stuttgart, goal fastest
+- 2026-11-22 03:04 UTC air lookup: local tariff options Helix Air Freight 2847.51 EUR / 4 d and Elbflug Air Freight 2956.61 EUR / 4 d; portal rate API returned 503 for Lumen Air Cargo and Tamarind Airways; checking portal page for fastest option.
+- 2026-11-22 03:05 UTC trucker offers (all matched to own requests): Isarwelle 189.10 EUR, 21 h, TRK-12028; Nordlicht 290.56 EUR, 14 h, TRK-12029; Rheinufer 132.37 EUR, 28 h, TRK-12031; Spessart 312.56 EUR, 9 h, TRK-12030 (valid to 03:19 UTC). Goal fastest: choose Spessart, earliest pickup within 9 h on 26 Nov; departure date 27 Nov.
+- Portal UI blocked by Cloudflare human verification; team notified and monitoring. Requested fastest prices directly from portal carriers Lumen and Tamarind as fallback.
+- 2026-11-22 03:12 UTC customer mail 36258 confirmed ready date 26 Nov and asked for earliest collection/arrival; answered in quote 36278 (collection within 21 h on 27 Nov; ETA PVG 30 Nov).
+- 2026-11-22 03:13 UTC Elbflug email offer 2727.50 EUR, 4 d, ref R-Dv9Ts0mrgjmd1l31, valid to 03:28 UTC. Quote 36278 sent at 03:14:35: 2916.60 EUR all-in = air 2727.50 + Isarwelle pickup 189.10 EUR (21 h, TRK-12028, valid to 03:19 UTC). Note: earlier fastest pickup selection was Spessart at 9 h, but the sent quote used Isarwelle at 21 h.
+- 2026-11-22 03:14 UTC customer rejection mail 36279: Anna had placed shipment elsewhere. No booking was made.
+- 2026-11-22 03:29 UTC confirmed closure to customer in mail 37146; withdrew pending Lumen and Tamarind quote requests in mails 37147 and 37148. No shipment booking or pickup booking exists; nothing to cancel.
+- 2026-11-22 03:30 UTC review of customer question 36258: timing answer was included in quote 36278; customer subsequently placed elsewhere (36279). Closure 37146 and airline request withdrawals 37147/37148 confirmed; no booking/cancellation or further reply outstanding.

@@ -1,0 +1,18 @@
+{
+ "id": 35811,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Air freight quote request – PVG",
+ "body": "Dear Sir or Madam,\n\nCould you please quote the fastest air freight option to PVG (Shanghai, CN), including truck collection from our site in postcode 70275 (Stuttgart), Germany, and transport to the departure airport?\n\nThe machine parts will be ready for pickup on 2026-11-26. The shipment consists of 12 pieces, with a gross weight of 1091 kg and a total volume of 3.27 cbm.\n\nPlease provide your all-in price in EUR, along with the earliest pickup and arrival times you can offer.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T03:03:47.694957+00:00",
+ "attachments": [],
+ "shipment": "35811",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.99,
+  "reasoning": "The customer is requesting an all-in quote for a new air freight shipment to Shanghai.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "id": 49646,
+ "from": "rheintal-elektronik@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: MUC to MEX",
+ "body": "Good morning Alex,\n\nThank you for arranging the booking. I have noted the booking reference and the expected arrival on 28 November.\n\nViele Gruesse / Many greetings\nDeniz Yilmaz\nRheintal Elektronik GmbH",
+ "in_reply_to": 49638,
+ "references": [
+  49454,
+  49586,
+  49617,
+  49638
+ ],
+ "received_at": "2026-11-22T07:27:05.645926+00:00",
+ "attachments": [],
+ "shipment": "49454",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only acknowledges the booking details and expected arrival without asking a question or requesting action.",
+  "sender_role": "customer"
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "id": 35362,
+ "from": "fjordline-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-1L4HE5QG confirmed",
+ "body": "Hello,\n\nyour booking BK-1L4HE5QG is confirmed.\n\nBooking reference: BK-1L4HE5QG\nYour reference: 35112\nAirline: Fjordline Air Cargo (FQ)\nLane: STR-EZE\nPrice: 6217.88 EUR\nStatus: booked and ready to ship\n\nKind regards,\nFjordline Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T02:54:44.009862+00:00",
+ "attachments": [],
+ "shipment": "35362",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-1L4HE5QG.",
+  "sender_role": "airline"
+ }
+}

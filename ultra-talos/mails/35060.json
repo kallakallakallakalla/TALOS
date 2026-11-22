@@ -1,0 +1,23 @@
+{
+ "id": 35060,
+ "from": "sonnberg-roesterei@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request – JFK",
+ "body": "Dear Alex,\n\nThank you for confirming the air freight booking to JFK. I understand that the pickup has not yet been booked.\n\nKind regards\nAnna Sonnberg\nHead of Purchasing and Logistics\nSonnberg Kaffeeroesterei GmbH",
+ "in_reply_to": 35059,
+ "references": [
+  34769,
+  35032,
+  35048,
+  35059
+ ],
+ "received_at": "2026-11-22T02:48:52.095481+00:00",
+ "attachments": [],
+ "shipment": "34769",
+ "classification": {
+  "category": "other",
+  "confidence": 0.99,
+  "reasoning": "The customer only thanks us and acknowledges the booking and that pickup is unbooked, without accepting, rejecting, or asking a question.",
+  "sender_role": "customer"
+ }
+}

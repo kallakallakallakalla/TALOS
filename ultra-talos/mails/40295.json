@@ -1,0 +1,21 @@
+{
+ "id": 40295,
+ "from": "weidner-spielwaren@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: Air freight quote request: Hamburg North to Toronto",
+ "body": "Thank you for asking. We’ll send you the dangerous goods documents (shipper’s declaration and safety data sheet) shortly.\n\nCheers,\nKlaus Weidner\nWeidner Spielwaren GmbH, Nuremberg",
+ "in_reply_to": 40258,
+ "references": [
+  40163,
+  40258
+ ],
+ "received_at": "2026-11-22T04:35:44.247738+00:00",
+ "attachments": [],
+ "shipment": "40163",
+ "classification": {
+  "category": "customer_info",
+  "confidence": 0.99,
+  "reasoning": "The customer is replying with the missing dangerous-goods documents we requested for the shipment.",
+  "sender_role": "customer"
+ }
+}

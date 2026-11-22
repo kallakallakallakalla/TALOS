@@ -1,0 +1,21 @@
+{
+ "id": 43755,
+ "from": "lindqvist-medtech@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Re: MUC to LAX import quote",
+ "body": "Thank you for your offer. That works for us, please go ahead and book it.\n\nSara\nLindqvist Medtech",
+ "in_reply_to": 43697,
+ "references": [
+  43646,
+  43697
+ ],
+ "received_at": "2026-11-22T05:42:38.059953+00:00",
+ "attachments": [],
+ "shipment": "43646",
+ "classification": {
+  "category": "customer_accept",
+  "confidence": 1.0,
+  "reasoning": "The customer accepts the quoted option and asks us to book it.",
+  "sender_role": "customer"
+ }
+}

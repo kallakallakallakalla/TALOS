@@ -1,0 +1,18 @@
+{
+ "id": 41157,
+ "from": "lumen-air-cargo@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "Booking BK-5NVFGRA6 confirmed",
+ "body": "Hello,\n\nyour booking BK-5NVFGRA6 is confirmed.\n\nBooking reference: BK-5NVFGRA6\nYour reference: 40984\nAirline: Lumen Air Cargo (LM)\nLane: MUC-DXB\nPrice: 1395.36 EUR\nStatus: booked and ready to ship\n\nKind regards,\nLumen Air Cargo bookings\n",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:56:05.052530+00:00",
+ "attachments": [],
+ "shipment": "41157",
+ "classification": {
+  "category": "booking_confirmation",
+  "confidence": 0.99,
+  "reasoning": "The airline explicitly confirms booking BK-5NVFGRA6.",
+  "sender_role": "airline"
+ }
+}

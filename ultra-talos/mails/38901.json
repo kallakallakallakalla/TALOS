@@ -1,0 +1,18 @@
+{
+ "id": 38901,
+ "from": "auer-maschinenbau@hackloop.mail",
+ "to": "talos@hackloop.mail",
+ "subject": "RE: FW: VIENNA AIRPORT - TNR / 123 CRATES 433 KGS",
+ "body": "Merhaba,\n\nBKK (Bangkok, TH) varışlı bir hava kargo gönderimiz için teklif rica ederim. Yükün depomuzdan alınması ve kalkış havalimanına kamyonla taşınması tarafınızca organize edilmeli. Yük 2026-12-04 tarihinde alıma hazır olacak.\n\nGönderi 12 parça makine parçasından oluşuyor. Toplam brüt ağırlığı 1885 kg, hacmi ise 11.96 cbm.\n\nEn ucuz seçeneği istiyoruz. Depomuzdan alım dahil, tüm masrafları kapsayan fiyatınızı EUR cinsinden iletebilir misiniz?\n\nTeşekkürler.\n\nBest greetings from Regensburg\nTobias Auer\nVersand / Shipping\nAuer Maschinenbau GmbH\n\n\n-----Original Message-----\nSent: 2026-10-31\nSubject: VIENNA AIRPORT - TNR / 123 CRATES 433 KGS\n\nDear team,\n\npls quote air freight ex VIENNA AIRPORT to TNR:\n123 CRATES / 433 KGS / 14.1 CBM, printed marketing material\nFCA, cargo ready next week.\n\nThanks",
+ "in_reply_to": null,
+ "references": [],
+ "received_at": "2026-11-22T04:10:42.544656+00:00",
+ "attachments": [],
+ "shipment": "38901",
+ "classification": {
+  "category": "rfq",
+  "confidence": 0.98,
+  "reasoning": "The customer is requesting a new all-in quote for a shipment to Bangkok, including pickup and trucking.",
+  "sender_role": "customer"
+ }
+}
