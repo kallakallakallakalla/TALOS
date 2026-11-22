@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "openai/gpt-6-luna",
+  "provider": {
+    "openai": {
+      "options": {
+        "apiKey": "{env:TALOS_LLM_KEY}",
+        "baseURL": "{env:TALOS_LLM_BASE_URL}"
+      },
+      "models": {
+        "gpt-6-luna": {}
+      }
+    }
+  }
+}
