@@ -421,7 +421,8 @@ def test_the_version_poll_carries_the_status_bar(client: TestClient) -> None:
     assert live["version"] != shown["version"]
     health = shown["health"]
     assert (health["state"], health["label"], health["mode"]) == ("viewer", "Read-only view", "dry_run")  # this process reads no mailbox
-    assert health["uptime_s"] >= 0 and health["started_at"].endswith("+00:00")
+    assert health["uptime_s"] >= 0 and health["started_at"].endswith("+00:00") and health["build"] not in ("", "unknown")
+    assert client.get("/crm/assets/app.js").headers["cache-control"] == "no-cache"  # an updated copy is never run with a cached script
     strips = {strip["key"]: strip for strip in health["strips"]}
     assert list(strips) == ["requests", "bookings", "mail"]  # no mailbox strip where the mailbox is not read
     assert strips["requests"]["text"] == "14/16" and [t["tone"] for t in strips["requests"]["ticks"]][-3:] == ["ok", "warn", "warn"]

@@ -96,7 +96,7 @@ function paintHealth() {
       h('span', { class: `hmode${x?.mode === 'sending' ? ' hot' : ''}` }, !x ? '' : x.mode === 'sending' ? 'Sending on' : x.mode === 'test' ? 'Test mode' : 'Drafts only'),
       h('b', { id: 'clock', class: 'hclock' }, `${fmt.clock(new Date())} UTC`));
   }
-  if (x) $('uptime').textContent = `up ${uptime(x.uptime_s)}`;
+  if (x) { $('uptime').textContent = `up ${uptime(x.uptime_s)}`; $('build').textContent = `Build ${x.build}`; }
 }
 
 function status() {

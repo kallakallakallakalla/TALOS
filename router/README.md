@@ -114,6 +114,10 @@ actions of its open case are on the page; request, offer and correspondence fold
 - No build step, and the page itself loads nothing from another host: plain HTML, CSS and
   JavaScript in `app/crm_ui/`. Every table can be downloaded as CSV. `/` jumps to the search box.
 
+The navigation shows the build (commit and date) the page runs on. If `crm.sh` finds its port
+already in use, it says which process holds it and from which folder, and stops: otherwise the
+browser would silently show that other program, usually an older copy.
+
 To look at it without touching the mailbox (no polling, so no LLM calls), `./crm.sh` (or
 `crm.bat` on Windows) installs on the first run, starts the app on port 8010 and opens the
 page. To follow a running router, give it that router's database file:

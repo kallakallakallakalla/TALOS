@@ -8,6 +8,7 @@ which carries out an operator action (`app/actions.py`) and is guarded below.
 
 import asyncio
 import json
+import subprocess
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from pathlib import Path
@@ -26,6 +27,21 @@ from app.tariffs import Tariffs
 
 UI_DIR = Path(__file__).parent / "crm_ui"
 _STARTED_AT = datetime.now(UTC)  # when this process loaded the app: the start of its uptime
+
+
+def _build() -> str:
+    """Which version of the code this process runs: the BUILD file of a packed copy, else the git commit."""
+    root = Path(__file__).parent.parent
+    try:
+        if (root / "BUILD").exists():
+            return (root / "BUILD").read_text().strip()[:40]
+        done = subprocess.run(["git", "log", "-1", "--format=%h %cs"], cwd=root, capture_output=True, text=True, timeout=3, check=True)
+        return done.stdout.strip()[:40] or "unknown"
+    except Exception:  # noqa: BLE001 - no git, no file: the build is simply not known
+        return "unknown"
+
+
+_BUILD = _build()
 router = APIRouter(prefix="/crm", include_in_schema=False)
 Source = Literal["live", "replay"]
 
@@ -97,6 +113,7 @@ def _health(request: Request, settings: Settings, source: Source) -> dict[str, A
     """The status bar: this process (uptime, mailbox polling) and the data set shown (requests, bookings, mail)."""
     poller, state = getattr(request.app.state, "poller", None), _poller_state(request, settings)
     base = {
+        "build": _BUILD,
         "started_at": _STARTED_AT.isoformat(),
         "uptime_s": round((datetime.now(UTC) - _STARTED_AT).total_seconds()),
         "mode": "test" if settings.test_mode else "sending" if settings.send_enabled else "dry_run",
