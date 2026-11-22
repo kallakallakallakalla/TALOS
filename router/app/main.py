@@ -154,7 +154,8 @@ class _FreshFiles(StaticFiles):
         return response
 
 
-app.mount("/crm/assets", _FreshFiles(directory=crm_api.UI_DIR), name="crm-assets")
+app.mount(crm_api.ASSETS, _FreshFiles(directory=crm_api.UI_DIR), name="crm-build-assets")  # what the page loads
+app.mount("/crm/assets", _FreshFiles(directory=crm_api.UI_DIR), name="crm-assets")  # the same files under their plain address
 
 
 @app.get("/", include_in_schema=False)

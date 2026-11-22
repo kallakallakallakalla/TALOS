@@ -8,6 +8,7 @@ which carries out an operator action (`app/actions.py`) and is guarded below.
 
 import asyncio
 import json
+import re
 import subprocess
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
@@ -16,7 +17,7 @@ from typing import Any, Literal
 from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 
 from app import actions, board, insights, prompts
 from app.config import Settings, get_settings
@@ -42,6 +43,14 @@ def _build() -> str:
 
 
 _BUILD = _build()
+# The page's scripts and styles are served under a path that carries the build. A browser that
+# still holds another build's files in its cache has them under another address, so a new
+# page can never run on old scripts (which is how an update once showed an empty old page).
+ASSETS = f"/crm/b/{re.sub(r'[^A-Za-z0-9]', '', _BUILD.split()[0]) or 'dev'}"
+
+
+def _page_html() -> str:
+    return (UI_DIR / "index.html").read_text().replace("/crm/assets/", f"{ASSETS}/")
 router = APIRouter(prefix="/crm", include_in_schema=False)
 Source = Literal["live", "replay"]
 
@@ -73,16 +82,16 @@ def _tariffs(settings: Settings, source: Source = "live") -> Tariffs:
 
 
 @router.get("")
-async def page() -> FileResponse:
-    return FileResponse(UI_DIR / "index.html", headers={"Cache-Control": "no-cache"})
+async def page() -> HTMLResponse:
+    return HTMLResponse(_page_html(), headers={"Cache-Control": "no-cache"})
 
 
 @router.get("/slop")
 async def slop_page() -> HTMLResponse:
     """A joke, on request: the same real data in the worst possible taste (slop.css, slop.js)."""
-    html = (UI_DIR / "index.html").read_text(encoding="utf-8")
-    html = html.replace("</head>", '  <link rel="stylesheet" href="/crm/assets/slop.css">\n</head>')
-    html = html.replace("</body>", '  <script type="module" src="/crm/assets/slop.js"></script>\n</body>')
+    html = _page_html()
+    html = html.replace("</head>", f'  <link rel="stylesheet" href="{ASSETS}/slop.css">\n</head>')
+    html = html.replace("</body>", f'  <script type="module" src="{ASSETS}/slop.js"></script>\n</body>')
     return HTMLResponse(html, headers={"Cache-Control": "no-cache"})
 
 

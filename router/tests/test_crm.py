@@ -155,7 +155,7 @@ def client(tmp_path: Path):
 
 def test_crm_endpoints(client: TestClient) -> None:
     page = client.get("/crm")
-    assert page.status_code == 200 and "/crm/assets/app.js" in page.text
+    assert page.status_code == 200 and "/app.js" in page.text  # under the build's own address (tests/test_console.py)
     for asset in ("app.js", "views.js", "lib.js", "globe.js", "land.js", "crm.css"):
         assert client.get(f"/crm/assets/{asset}").status_code == 200
 
