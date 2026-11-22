@@ -63,7 +63,6 @@ def build_workflow(
 ) -> Workflow:
     """Wire the quote workflow. All its LLM calls share one client and one prompt loader."""
     llm = StructuredLLM(settings)
-    llm.on_usage = store.record_llm_call
     return Workflow(
         settings=settings,
         store=store,
@@ -91,9 +90,6 @@ async def lifespan(app: FastAPI):
     classifier: DecisionClassifier = _resolve_override(
         app, get_classifier, lambda: DecisionClassifier(settings)
     )
-    classifier_llm = getattr(classifier, "_llm", None)
-    if isinstance(classifier_llm, StructuredLLM):  # the classifier has its own client
-        classifier_llm.on_usage = store.record_llm_call
     poller = MailboxPoller(
         settings=settings,
         mailbox_client=mailbox_client,

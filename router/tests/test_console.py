@@ -1,19 +1,16 @@
-"""The supervisor console: the action queue and its actions, the round ledger, the tuning
-verdicts, the decision trace, the record of LLM use, and the guard on the action endpoint."""
+"""The supervisor console: the action queue and its actions, the round ledger, the carriers
+used, the decision trace, the status bar and the guard on the action endpoint."""
 
 import shutil
 import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 
 from app import actions, board, insights
 from app.config import Settings, get_settings
-from app.llm import StructuredLLM, current_mail
 from app.main import app
 from app.reference import Reference
 from app.replay_data import RECORDED, REPLAY_DIR, ensure_replay_db
@@ -25,7 +22,7 @@ S = ShipmentState
 SETTINGS = Settings(langfuse_enabled=False)
 REFERENCE = Reference(SETTINGS.start_kit_dir)
 INCOMPLETE = 3940  # "truck pickup from our warehouse": no postal code, no airport
-OTHER_MAIL, REQUEST_MAIL = 3561, 947  # a mail that needed no answer, and a quote request
+REQUEST_MAIL = 947  # a quote request
 
 
 @pytest.fixture(scope="module")
@@ -50,10 +47,6 @@ def sql(store: MessageStore, statement: str, *args) -> list[sqlite3.Row]:
 def queue(store: MessageStore, source: str = "replay", settings: Settings = SETTINGS, now: datetime | None = None, poller: dict | None = None) -> list[dict]:
     now = now or datetime(2026, 11, 21, 18, 0, tzinfo=UTC)
     return insights.snapshot(store, REFERENCE, settings, source=source, labels=None, now=now, poller=poller)["attention"]
-
-
-def lever(store: MessageStore, key: str, source: str = "replay", settings: Settings = SETTINGS) -> dict:
-    return next(x for x in insights.levers(store, REFERENCE, settings, source=source) if x["key"] == key)
 
 
 # --- the queue ------------------------------------------------------------------------------
@@ -166,112 +159,19 @@ def test_each_style_rule_fires_on_its_breach_and_only_then(change: tuple[str, st
     assert insights.mail_checks(GOOD_MAIL.replace(*change)) == [flag]
 
 
-# --- tuning ---------------------------------------------------------------------------------
-
-
-def test_levers_put_the_suggested_change_first_and_say_when_data_is_thin(replay: MessageStore) -> None:
-    levers = insights.levers(replay, REFERENCE, SETTINGS, source="replay")
-    assert [(x["key"], x["verdict"]["tone"]) for x in levers] == [
-        ("llm_usage", "change"), ("trucker_wait", "open"), ("silent_truckers", "open"), ("fallback_trucking", "open")]  # fmt: skip
-    mails = levers[0]  # no token is recorded in this data, but the stored mails already say this much
-    assert mails["figure"] == "73 of 151" and mails["verdict"]["text"].startswith("48% of all mails needed no answer.")
-    assert "68 of them arrived on a shipment that was already booked or closed." in mails["text"]
-    estimate = levers[-1]  # two cases: shown, not acted on
-    assert estimate["n"] == 2 and estimate["figure"] == "+78%" and "Too few to change the rate" in estimate["verdict"]["text"]
-    assert lever(replay, "trucker_wait")["figure"] == "3 of 8"  # the three estimates waited the full time
-
-
-def test_the_estimate_verdict_follows_the_offers_that_arrived_later(replay: MessageStore) -> None:
-    deals = insights.snapshot(replay, REFERENCE, SETTINGS, source="replay")["deals"]
-    estimates = {d["id"]: d["truck_eur"] for d in deals if d["truck_mode"] == "estimate"}
-    assert sorted(estimates) == [275, 431, 1977]
-
-    def later_offers(factor: float) -> dict:
-        for shipment_id, estimate in estimates.items():
-            sql(replay, "UPDATE trucker_requests SET answered = 1, price_eur = ? WHERE shipment_id = ?", round(estimate * factor, 2), shipment_id)
-        return lever(replay, "fallback_trucking")
-
-    assert later_offers(1.0)["verdict"]["tone"] == "keep"  # three later offers, all as estimated
-    half = later_offers(0.5)
-    assert half["verdict"]["tone"] == "change" and half["figure"] == "+100%"
-    assert half["suggest"] == {"name": "FALLBACK_TRUCK_EUR_PER_KG", "now": "0.28", "to": "0.14"}
-    sql(replay, "UPDATE trucker_requests SET answered = 0, price_eur = NULL WHERE shipment_id IN (275, 431, 1977)")
-    assert lever(replay, "fallback_trucking")["verdict"]["tone"] == "open"
-
-
-def test_the_trucker_wait_is_judged_from_live_offer_timings(replay: MessageStore) -> None:
-    arrives_after = lambda seconds: sql(  # noqa: E731
-        replay,
-        """UPDATE trucker_requests SET sent_at = (SELECT strftime('%Y-%m-%dT%H:%M:%S+00:00', datetime(m.received_at, ?))
-           FROM processed_messages m WHERE m.message_id = reply_message_id) WHERE price_eur IS NOT NULL""",
-        f"-{seconds} seconds",
-    )
-    arrives_after(20)
-    wait = lever(replay, "trucker_wait", "live")
-    assert wait["verdict"]["tone"] == "change" and "25 s would have caught all" in wait["verdict"]["text"]
-    assert wait["suggest"] == {"name": "TRUCKER_WAIT_SECONDS", "now": "60", "to": "25"}
-    assert lever(replay, "trucker_wait", "live", Settings(langfuse_enabled=False, trucker_wait_seconds=25))["verdict"]["tone"] == "keep"
-    arrives_after(90)  # every offer later than the 60 s wait: nothing to recommend
-    assert lever(replay, "trucker_wait", "live")["verdict"]["tone"] == "open"
-    assert lever(replay, "trucker_wait", "replay")["verdict"]["tone"] == "open"  # a dry run has no timings
-
-
-def test_a_trucker_is_only_judged_after_enough_requests(replay: MessageStore) -> None:
-    assert lever(replay, "silent_truckers")["verdict"]["tone"] == "open"  # asked twice each so far
-    sql(replay, "UPDATE trucker_requests SET answered = 0, price_eur = NULL WHERE trucker = 'westfalenroute@hackloop.mail'")
-    quiet = lever(replay, "silent_truckers")
-    assert quiet["verdict"]["tone"] == "change" and {"name": "Westfalenroute", "asked": 5, "answered": 0} in quiet["rows"]
-    sql(replay, "UPDATE trucker_requests SET answered = 1, price_eur = 100")
-    assert lever(replay, "silent_truckers")["verdict"]["tone"] == "keep"
-
-
-def test_time_to_quote_is_a_live_lever_only(replay: MessageStore) -> None:
-    assert "time_to_quote" not in [x["key"] for x in insights.levers(replay, REFERENCE, SETTINGS, source="replay")]
-    late = lever(replay, "time_to_quote", "live")  # the recording's clocks are mixed: every quote looks late
-    assert late["verdict"]["tone"] == "change" and late["n"] == 14
-
-
-def call(prompt: str, mail: int | None, tokens: int) -> dict:
-    return {"prompt": prompt, "model": "gpt-6-luna", "message_id": mail, "input_tokens": tokens, "cached_tokens": 0,
-            "output_tokens": 0, "reasoning_tokens": 0, "seconds": 0.4}  # fmt: skip
-
-
-def test_llm_use_is_summed_by_step_and_flags_tokens_spent_on_mails_without_answer(replay: MessageStore) -> None:
-    assert "Token counts are recorded from the router's next start on." in lever(replay, "llm_usage")["text"]
-    replay.record_llm_call(call("router-classification", OTHER_MAIL, 0))
-    assert "reported no token counts" in lever(replay, "llm_usage")["text"]  # a call, but no usage: no division
-
-    replay.record_llm_call(call("router-classification", OTHER_MAIL, 100))
-    replay.record_llm_call(call("talos-compose-mail", REQUEST_MAIL, 900))
-    usage = replay.llm_usage()
-    assert [(row["prompt"], row["calls"]) for row in usage["by_prompt"]] == [("talos-compose-mail", 1), ("router-classification", 2)]
-    assert {row["category"]: row["tokens"] for row in usage["by_category"]} == {"rfq": 900, "other": 100}
-    kept = lever(replay, "llm_usage")
-    assert kept["verdict"]["tone"] == "keep" and kept["figure"] == "125" and kept["rows"][0]["name"] == "writing mail"  # 1000 tokens / 8 accepted
-
-    replay.record_llm_call(call("router-classification", OTHER_MAIL, 400))
-    assert lever(replay, "llm_usage")["verdict"]["tone"] == "change"  # 500 of 1400 tokens on mails that needed no answer
-
-
 # --- performance ------------------------------------------------------------------------------
 
 
-def test_the_scorecard_counts_coverage_carriers_and_what_customers_asked_for(replay: MessageStore) -> None:
+def test_the_scorecard_counts_the_carriers_used_and_what_customers_asked_for(replay: MessageStore) -> None:
     card = insights.scorecard(replay, REFERENCE, SETTINGS, source="replay")
-    assert (card["requests"], card["quoted"], card["asked_back"], card["mails_read"], card["mails_written"]) == (16, 14, 2, 151, 59)
-    assert (card["airlines_per_quote"], card["airlines_priced"], card["truckers_per_pickup"], card["truckers_asked"]) == (3, 20, 4.5, 16)
-    assert (card["spread_pct"], card["spread_max_pct"], card["top_airline_share_pct"]) == (23.8, 75.9, 28.6)
+    assert (card["requests"], card["quoted"], card["pickups"], card["top_airline_share_pct"]) == (16, 14, 8, 28.6)
+    assert (len(card["airlines"]), len(card["truckers"])) == (20, 16)  # every airline priced, every trucker asked
     assert card["airlines"][0] == {"name": "Fjordline Air Cargo", "quoted": 4, "accepted": 4, "priced": 4}
     assert sum(a["quoted"] for a in card["airlines"]) == 14 and sum(a["accepted"] for a in card["airlines"]) == 8
     assert sum(t["selected"] for t in card["truckers"]) == 5  # 8 pickups, 3 of them quoted with an estimate
     asks = {a["name"]: a["count"] for a in card["asks"]}
     assert asks["Pickup at the customer's site"] == 8 and asks["Fastest option"] + asks["Cheapest option"] == 16
-    assert card["explained"] == {"assumptions": 3, "weight_break": 4, "estimated": 3}
-    assert (card["after_hours"], card["after_hours_quoted"]) == (16, 14)  # the recorded requests arrived on a Saturday
-    assert (card["booked"], card["booked_simulated"], card["tracking_questions"], card["tracking_answers"]) == (1, 7, 3, 0)
-    assert insights._office_hours("2026-11-23T09:30:00+00:00") is True and insights._office_hours("2026-11-23T01:00:00+00:00") is False  # noqa: SLF001
-    assert card["speed"] is None  # a replay mixes two clocks
-    assert insights.scorecard(replay, REFERENCE, SETTINGS, source="live")["speed"]["n"] == 14
+    assert asks["Dangerous goods"] == 0
 
 
 def test_insurance_is_found_by_a_word_search_in_the_request_mail(replay: MessageStore) -> None:
@@ -411,51 +311,6 @@ async def test_a_given_up_mail_is_processed_again_and_never_lost(tmp_path: Path)
         await act(h, "retry_mail", mail_id=mail.id)
 
 
-# --- the record of LLM use ------------------------------------------------------------------
-
-
-def completion(**usage) -> SimpleNamespace:
-    return SimpleNamespace(usage=SimpleNamespace(**usage) if usage else None)
-
-
-def test_every_call_reports_its_tokens_and_bookkeeping_never_breaks_a_call() -> None:
-    llm, seen = StructuredLLM(SETTINGS, openai_client=object()), []
-    llm._record("p", "m", completion(prompt_tokens=10, completion_tokens=5), 0.1)  # noqa: SLF001 - no listener: nothing happens
-    llm.on_usage = seen.append
-    details = {"prompt_tokens_details": SimpleNamespace(cached_tokens=4), "completion_tokens_details": SimpleNamespace(reasoning_tokens=2)}
-    for answer in (completion(prompt_tokens=10, completion_tokens=5, **details), completion(), MagicMock()):
-        llm._record("talos-compose-mail", "gpt-6-luna", answer, 1.23456)  # noqa: SLF001
-    assert seen[0] == {"prompt": "talos-compose-mail", "model": "gpt-6-luna", "message_id": None, "input_tokens": 10,
-                       "cached_tokens": 4, "output_tokens": 5, "reasoning_tokens": 2, "seconds": 1.235}  # fmt: skip
-    assert [(c["input_tokens"], c["output_tokens"]) for c in seen[1:]] == [(0, 0), (0, 0)]  # no usage, or not a number
-
-    def broken(_: dict) -> None:
-        raise sqlite3.OperationalError("database is locked")
-
-    llm.on_usage = broken
-    llm._record("p", "m", completion(prompt_tokens=1, completion_tokens=1), 0.1)  # noqa: SLF001 - must not raise
-
-
-@pytest.mark.anyio
-async def test_calls_made_for_a_mail_carry_its_id_and_the_timer_carries_none(tmp_path: Path) -> None:
-    h = Harness(tmp_path)
-    h.poller._classifier._llm.on_usage = h.store.record_llm_call  # noqa: SLF001 - the one client of this harness
-    await h.receive(ROUND_4_RFQ)
-    assert current_mail.get() is None  # reset after the mail
-    calls = sql(h.store, "SELECT prompt, message_id FROM llm_calls ORDER BY id")
-    assert [tuple(c) for c in calls] == [("router-classification", 947), ("talos-extract-rfq", 947)]
-    await h.wait(61)  # the trucker deadline passes: the quote is written by the timer
-    assert sql(h.store, "SELECT message_id FROM llm_calls ORDER BY id DESC LIMIT 1")[0]["message_id"] is None
-
-    async def fails(_):
-        raise RuntimeError("boom")
-
-    h.poller._process = fails  # noqa: SLF001
-    with pytest.raises(RuntimeError):
-        await h.poller.process_message(MAILS[ROUND_4_RFQ])
-    assert current_mail.get() is None  # reset even when the mail fails
-
-
 # --- the board ------------------------------------------------------------------------------
 
 
@@ -490,17 +345,31 @@ def client(tmp_path: Path, replay: MessageStore, monkeypatch: pytest.MonkeyPatch
     app.state.store, app.state.poller = previous
 
 
-def test_ledger_and_levers_are_served_for_both_sources(client: TestClient) -> None:
+def test_ledger_and_carriers_are_served_for_both_sources(client: TestClient) -> None:
     assert client.get("/crm/api/rounds", params={"source": "replay"}).json()["total"] == 16
-    assert [x["key"] for x in client.get("/crm/api/levers", params={"source": "replay"}).json()][0] == "llm_usage"
+    assert client.get("/crm/api/levers").status_code == 404  # the tuning page and its figures are gone
     assert client.get("/crm/api/rounds").json()["total"] == 0  # the live database of this test is empty
     assert client.get("/crm/api/scorecard", params={"source": "replay"}).json()["airlines"][0]["name"] == "Fjordline Air Cargo"
     empty = client.get("/crm/api/scorecard").json()
-    assert (empty["requests"], empty["airlines"], empty["speed"], empty["spread_pct"]) == (0, [], None, None)
-    assert {x["verdict"] and x["verdict"]["tone"] for x in client.get("/crm/api/levers").json()} <= {"open", "keep", None}
+    assert (empty["requests"], empty["airlines"], empty["truckers"], empty["top_airline_share_pct"]) == (0, [], [], None)
     snap = client.get("/crm/api/snapshot", params={"source": "replay"}).json()
     assert snap["can_act"] is False and snap["sending"] is False and snap["poller"] is None and snap["dismissed"] == 0
     assert client.get("/crm/api/snapshot").json()["poller"] == {"enabled": False, "running": False, "last_poll_at": None, "last_error": None}
+
+
+def test_the_version_poll_carries_the_health_of_the_process(client: TestClient) -> None:
+    live = client.get("/crm/api/version").json()
+    replay_view = client.get("/crm/api/version", params={"source": "replay"}).json()
+    assert live["version"] != replay_view["version"]
+    health = replay_view["health"]  # always about the running process, whichever data set is shown
+    assert health["mode"] == "dry_run" and health["uptime_s"] >= 0 and health["started_at"].endswith("+00:00")
+    assert health["poller"] == {"enabled": False, "running": False, "last_poll_at": None, "last_error": None}
+    assert health["database"] == {"ok": True, "mails": 0, "shipments": 0, "last_mail_at": None}
+    app.state.store.dismiss("x")  # the database is read on every poll
+    app.state.store = None
+    broken = Settings(langfuse_enabled=False, mailbox_poll_enabled=False, sqlite_db_path="/proc/nope/live.db")
+    app.dependency_overrides[get_settings] = lambda: broken
+    assert client.get("/crm/api/version", params={"source": "replay"}).json()["health"]["database"]["ok"] is False
 
 
 def test_dismissing_applies_to_the_data_set_that_is_shown(client: TestClient, replay: MessageStore) -> None:

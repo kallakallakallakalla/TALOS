@@ -7,8 +7,7 @@ import { fmt, h, icon } from './lib.js';
 import * as views from './views.js';
 
 const POLL_MS = 3000;
-const NAV = [['now', 'Now'], ['performance', 'Performance'], ['rounds', 'Rounds'], ['lookup', 'Lookup'], ['tuning', 'Tuning'], ['system', 'System']];
-const SETUP = new Set(['tuning', 'system']);  // the router's own setup: below a rule in the navigation
+const NAV = [['now', 'Now'], ['performance', 'Performance'], ['rounds', 'Rounds'], ['lookup', 'Lookup'], ['system', 'System']];
 const PARENT = { shipment: 'rounds', account: 'lookup' };
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
@@ -65,18 +64,38 @@ function frame(active) {
   const counts = { now: urgent || '' };
   document.title = `${urgent ? `(${urgent}) ` : ''}${document.title.replace(/^\(\d+\) /, '')}`;
   $('nav').replaceChildren(...NAV.map(([key, label]) => h('a', {
-    href: `#/${key}`, class: `${(PARENT[active] || active) === key ? 'on' : ''}${key === 'tuning' ? ' rule' : ''}${SETUP.has(key) ? ' setup' : ''}`, 'aria-current': (PARENT[active] || active) === key ? 'page' : null,
+    href: `#/${key}`, class: `${(PARENT[active] || active) === key ? 'on' : ''}${key === 'system' ? ' rule setup' : ''}`, 'aria-current': (PARENT[active] || active) === key ? 'page' : null,
   }, icon(key), label, counts[key] !== undefined && h('span', { class: 'count', title: 'cases that need a decision' }, counts[key]))));
   $('source').replaceChildren(
     h('button', { class: state.source === 'live' ? 'on' : '', onclick: () => pick('live') }, 'Live'),
     h('button', { class: state.source === 'replay' ? 'on' : '', disabled: !state.sources.replay.available || null, onclick: () => pick('replay'),
       title: state.sources.replay.available ? 'The recorded mailbox, replayed through the pipeline' : 'No dry run recorded' }, 'Dry run'));
   status();
-  $('mode-line').textContent = snap.sending ? 'Sending ON: actions are real' : 'Sending off: drafts only';
-  $('mode-line').className = snap.sending ? 'hot' : '';
+}
+
+// The status bar: this process and what it depends on. One glance says whether the system is up.
+const uptime = s => (s < 90 ? `${s} s` : s < 5400 ? `${Math.round(s / 60)} min` : s < 172800 ? `${Math.floor(s / 3600)} h ${Math.round((s % 3600) / 60)} min` : `${Math.floor(s / 86400)} d ${Math.floor((s % 86400) / 3600)} h`);
+
+function paintHealth() {
+  const x = state.health, items = [];
+  const item = (tone, label, text, title) => items.push(h('span', { class: 'hitem', title: title || null }, h('span', { class: `dot ${tone}` }), h('b', null, label), text));
+  if (!state.online || !x) item('critical', 'Router', 'not reachable');
+  else {
+    const p = x.poller, d = x.database;
+    item('good', 'Router', `up ${uptime(x.uptime_s)}`, `Started ${fmt.when(x.started_at)} UTC`);
+    if (!p.enabled) item('', 'Mailbox', 'not read by this process');
+    else if (!p.running) item('critical', 'Mailbox', 'poller stopped', p.last_error);
+    else if (p.last_error) item('warning', 'Mailbox', 'last poll failed', p.last_error);
+    else item('good', 'Mailbox', p.last_poll_at ? `last poll ${fmt.time(p.last_poll_at)}` : 'first poll pending');
+    if (d.ok) item('good', 'Live database', `${fmt.int(d.mails)} mails · ${fmt.int(d.shipments)} requests${d.last_mail_at ? ` · last mail ${fmt.when(d.last_mail_at)}` : ''}`);
+    else item('critical', 'Live database', 'not readable', d.error);
+    item(x.mode === 'sending' ? 'accent' : '', 'Sending', x.mode === 'sending' ? 'on: quotes and bookings are real' : x.mode === 'test' ? 'off: test mode' : 'off: drafts only');
+  }
+  $('health').replaceChildren(...items, h('b', { id: 'clock', class: 'hclock' }, `${fmt.clock(new Date())} UTC`));
 }
 
 function status() {
+  paintHealth();
   const live = state.source === 'live';
   $('live').hidden = state.online && !live;  // the switch beside it already says "Dry run"
   $('live').replaceChildren(
@@ -91,7 +110,7 @@ function status() {
 }
 
 async function load() {
-  const [snap, health] = await Promise.all([api('/crm/api/snapshot'), fetch('/health').then(r => r.json()).catch(() => null)]);
+  const [snap, health] = await Promise.all([api('/crm/api/snapshot'), api('/crm/api/version').then(v => v.health).catch(() => null)]);
   announce(snap);
   Object.assign(state, { snap, version: snap.version, health, updatedAt: new Date(), online: true });
   await render();
@@ -136,7 +155,8 @@ async function pick(source) {
 async function poll() {
   if (document.hidden || !state.snap) return;
   try {
-    const { version } = await api('/crm/api/version');
+    const { version, health } = await api('/crm/api/version');
+    state.health = health; paintHealth();
     if (!state.online) { state.online = true; status(); }
     if (version !== state.version) await load();
   } catch { state.online = false; status(); }
@@ -167,8 +187,7 @@ async function start() {
     if (e.key === '/' && !typingElsewhere) { e.preventDefault(); $('search').focus(); }
     else if (e.key === 'Escape' && document.activeElement === $('search')) { $('search').value = state.q = ''; $('search').blur(); render(); }
   });
-  setInterval(() => { $('clock').textContent = `${fmt.clock(new Date())} UTC`; }, 1000);
-  $('clock').textContent = `${fmt.clock(new Date())} UTC`;
+  setInterval(() => { const clock = $('clock'); if (clock) clock.textContent = `${fmt.clock(new Date())} UTC`; }, 1000);
 
   try {
     state.sources = await api('/crm/api/sources', false);

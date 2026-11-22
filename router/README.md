@@ -75,9 +75,8 @@ router works on its own; the console is for the three things a person still does
 | Page | Question it answers | What you do there |
 |---|---|---|
 | Now | Does anything need a person? | One line on whether the router is reading the mailbox, then the queue of cases it could not finish: retry a booking, send a reminder, close a shipment, process a failed mail again, or dismiss. Only cases a person can act on are counted; in live data a question or booking is listed once it has waited 2 minutes. A stopped poller is the first case. The route globe sits beside it. |
-| Performance | What did the router do, and with whom? | Requests, how many arrived outside office hours and were quoted all the same, time to quote (live data), airlines compared per quote and truckers asked per pickup, the price range between the cheapest and the dearest airline per request. Which airlines were quoted and accepted most, which truckers were asked, answered and used, and what customers asked for (pickup, priority, deadlines, dangerous goods, named carriers, insurance). |
+| Performance | Which carriers were used, and what do customers ask for? | Which airlines were quoted and accepted most, which truckers were asked, answered and used, and what the requests contained (pickup, priority, deadlines, dangerous goods, named carriers, insurance). |
 | Rounds | How did each request end, and why was it lost? | One row per request: airline, quote, time to answer, outcome, the platform board's verdict and points where it can be read, and the reason of a loss in the customer's own words. Filter by outcome; a click on a route of the globe filters by lane. The "Quote mails" tab shows the quotes as the jury reads them and marks the rules of the compose prompt each one breaks. |
-| Tuning (setup) | Should something in the setup change? | The headline names the change. One card per setting the data can judge (change or keep); settings with too little data are listed in one line each. Covers time to quote, the trucker wait, truckers who rarely answer, the trucking estimate and LLM use. |
 | Lookup | Where is that account, carrier, tariff, mail? | Tabs for accounts, airlines, truckers, tariffs and the mail stream; the search box filters the open tab. |
 | System (setup) | How is this process set up? | Mode and poller, classifier accuracy (dry run); configuration without credentials, data inventory and prompts fold out. |
 
@@ -95,9 +94,9 @@ actions of its open case are on the page; request, offer and correspondence fold
   Anyone who can open the page can act, so keep the port on localhost or behind your own access control.
 - **Notifications:** the bell asks the browser for permission; after that a new case in the
   queue is announced, so nobody has to watch the page. The tab title carries the count.
-- **LLM use** is counted from the router's next start on: every call writes its token use to
-  the table `llm_calls` (step, model, tokens, the mail it served). The Tuning page shows
-  tokens per accepted quote, by step, and the share spent on mails that needed no answer.
+- **Status bar:** under the header on every page: how long the router has been up, whether
+  the mailbox is being read and when it was last polled, how much the database holds and when
+  the last mail arrived, and whether sending is on. It rides on the 3-second version poll.
 - **Live** reads the router's database and follows it: the page asks for a change token every
   3 s and reloads the figures when it moves. **Dry run** reads the last replay; on a fresh
   checkout that database is rebuilt from `data/replay/recorded-run.json` and the recorded mails.

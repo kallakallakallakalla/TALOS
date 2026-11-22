@@ -7,14 +7,12 @@ snapshot says why: in a dry-run replay the clocks are mixed and the recorded cus
 verdicts answered the old process's quotes, so timings and win rates are not judged there.
 """
 
-import math
 import re
 import statistics
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
-from zoneinfo import ZoneInfo
 
 from app.airports import AIRPORTS, distance_km
 from app.config import Settings
@@ -1065,85 +1063,42 @@ def mails(
 
 
 
-# --- scorecard: what the router did, as the figures a comparison with a forwarder's desk needs ---
+# --- performance: which carriers were used, and what the requests contained ----------------------
 
 _INSURANCE = re.compile(r"insur|versicher", re.IGNORECASE)  # insurance, insured, Transportversicherung, versichert
-OFFICE = ZoneInfo("Europe/Berlin")  # a forwarder's desk here is staffed Monday to Friday, 08:00 to 18:00
-
-
-def _office_hours(moment: str | None) -> bool | None:
-    """Whether a mail arrived while a desk would be staffed; None if the time is unknown."""
-    at = _parse_time(moment)
-    if at is None:
-        return None
-    local = at.astimezone(OFFICE)
-    return local.weekday() < 5 and 8 <= local.hour < 18
 
 
 def scorecard(store: MessageStore, reference: Reference, settings: Settings, *, source: str, tariff_airlines: set[str] | None = None) -> dict[str, Any]:
-    """The case for the router in its own numbers: how fast, how much of the market, how few people.
+    """Which airlines and truckers the quotes used, and what customers asked for.
 
-    Only what is stored is counted. The speed is live data only (a replay mixes two clocks).
-    Which carriers were used is counted per quote that went out; what customers asked for is
-    read from the extracted request, except insurance, which the router does not extract and
-    which is therefore a word search in the request mail.
+    A carrier is counted per quote that went out with it, next to how often it was priced
+    or asked. What a request contained is read from the extracted request, except
+    insurance, which the router does not extract: that row is a word search in the request
+    mail.
     """
     live = source == "live"
     data = Dataset.load(store)
     received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
     deals = [deal(s, data, live=live, received=received) for s in data.shipments if not is_legacy(s)]
-    quoted = [d for d in deals if d["all_in_eur"] is not None]
-    compared = [d["air"] for d in quoted if d["air"]]
-    seconds = [d["minutes_to_quote"] * 60 for d in quoted if d["minutes_to_quote"] is not None]
+    quoted = sum(d["all_in_eur"] is not None for d in deals)
     ids = {d["id"] for d in deals}
-    pickups = [reqs for sid, reqs in data.truckers.items() if sid in ids]
     air = [row for row in airlines(deals, data, reference, tariff_airlines or set()) if row["compared"] or row["chosen"]]
     trucks = [row for row in truckers(deals, data, reference, live=live, received=received) if row["asked"]]
-    spreads = [a["spread_pct"] for a in compared if a["spread_pct"] is not None]
     bodies = {d["id"]: (message.body if (message := store.get_message(d["id"])) else "") for d in deals}
 
     def asked(label: str, count: int) -> dict[str, Any]:
         return {"name": label, "count": count}
 
-    outbound = [m for group in data.outbound.values() for m in group]
-    top = max((row["chosen"] for row in air), default=0)
-    after_hours = [d for d in deals if _office_hours(d["received_at"]) is False]
     return {
         "source": source,
         "requests": len(deals),
-        "quoted": len(quoted),
-        "asked_back": sum(d["state"] == S.AWAITING_INFO or d["clarifications"] > 0 for d in deals),
-        # requests that arrived while a desk would be closed, and how many of those were quoted all the same
-        "after_hours": len(after_hours),
-        "after_hours_quoted": sum(d["all_in_eur"] is not None for d in after_hours),
-        "booked": sum(d["state"] in (S.BOOKED, S.CONFIRMED) and not d["dry_run_booking"] for d in deals),
-        "booked_simulated": sum(bool(d["dry_run_booking"]) for d in deals),
-        "tracking_questions": sum(m["category"] == "tracking_request" for m in data.mails),
-        "tracking_answers": sum(m.kind == "tracking_answer" for m in outbound),
-        "accepted": sum(d["state"] in ACCEPTED for d in deals),
-        "declined": sum(d["state"] == S.REJECTED for d in deals),
-        "mails_read": len(data.mails),
-        "mails_written": len(outbound),
-        "template_fallbacks": sum(m.used_template for m in outbound),
-        "languages": [{"language": language, "count": count} for language, count in Counter(d["language"] or "not stated" for d in deals).most_common()],
-        "speed": {
-            "n": len(seconds), "median_s": round(_median(seconds)), "slowest_s": round(max(seconds)),
-            "within_minute": sum(sec <= 60 for sec in seconds), "within_window": sum(sec <= ROUND_WINDOW_MINUTES * 60 for sec in seconds),
-        } if seconds else None,  # fmt: skip
-        "trucker_wait_s": settings.trucker_wait_seconds,
-        "airlines_per_quote": _median([a["n"] for a in compared]),
-        "airlines_priced": sum(bool(row["compared"]) for row in air),
-        "truckers_per_pickup": _median([len(reqs) for reqs in pickups]),
-        "truckers_asked": len(trucks),
-        "pickups": len(pickups),
-        "spread_pct": _median(spreads),
-        "spread_max_pct": max(spreads, default=None),
-        "spread_eur": _median([a["dearest_eur"] - a["cheapest_eur"] for a in compared if a["n"] > 1]),
+        "quoted": quoted,
+        "pickups": sum(sid in ids for sid in data.truckers),
         "airlines": [{"name": row["name"], "quoted": row["chosen"], "accepted": row["accepted"], "priced": row["compared"]}
                      for row in sorted(air, key=lambda row: (-row["chosen"], -row["accepted"], -row["compared"], row["name"]))],  # fmt: skip
         "truckers": [{"name": row["name"], "selected": row["chosen"], "asked": row["asked"], "answered": row["answered"]}
                      for row in sorted(trucks, key=lambda row: (-row["chosen"], -row["answered"], -row["asked"], row["name"]))],  # fmt: skip
-        "top_airline_share_pct": _pct(top, len(quoted)) if quoted else None,
+        "top_airline_share_pct": _pct(max((row["chosen"] for row in air), default=0), quoted) if quoted else None,
         "asks": [
             asked("Pickup at the customer's site", sum(bool(d["pickup"]) for d in deals)),
             asked("Fastest option", sum(d["goal"] == "fastest" for d in deals)),
@@ -1155,11 +1110,6 @@ def scorecard(store: MessageStore, reference: Reference, settings: Settings, *, 
             asked("Named or excluded carrier", sum(bool(d["preferred_airline"] or d["preferred_trucker"] or d["excluded_carriers"]) for d in deals)),
             asked("Insurance", sum(bool(_INSURANCE.search(bodies[d["id"]])) for d in deals)),
         ],
-        "explained": {
-            "assumptions": sum(bool(d["assumptions"]) for d in deals),
-            "weight_break": sum(bool(d["weight_break"]) for d in quoted),
-            "estimated": sum(d["truck_mode"] == "estimate" for d in quoted),
-        },
     }
 
 
@@ -1322,199 +1272,3 @@ def rounds(store: MessageStore, reference: Reference, settings: Settings, *, sou
         "mail_checks": [{"check": check, "count": flags[check]} for check in MAIL_CHECKS if flags[check]],
         "rounds": rows,
     }
-
-
-# --- tuning: settings and the evidence for or against their value -------------------------------
-
-_STEPS = {
-    "router-classification": "classifying mail",
-    "talos-extract-rfq": "reading requests",
-    "talos-extract-trucker-quotes": "reading trucker offers",
-    "talos-extract-booking": "reading booking replies",
-    "talos-extract-tracking": "reading tracking questions",
-    "talos-extract-airline-rates": "reading airline rates",
-    "talos-extract-data-update": "reading data changes",
-    "talos-flag-data-update": "checking data changes",
-    "talos-read-attachment": "reading attachments",
-    "talos-compose-mail": "writing mail",
-}
-MIN_OFFERS_FOR_WAIT = 5  # fewer offer timings than this say nothing about the wait
-MIN_ASKS_TO_JUDGE = 4  # a trucker asked fewer times is not judged yet
-ESTIMATE_TOLERANCE = 0.15  # an estimate this close to the later offer is good enough
-NO_ANSWER_SHARE = 0.15  # tokens (or mails) that need no answer, from here on worth a look
-MIN_LATER_OFFERS = 3  # an estimate is judged from this many later offers on
-
-
-def _verdict(tone: str, text: str) -> dict[str, str]:
-    """`change`: the data supports another value. `keep`: it supports this one. `open`: too little data."""
-    return {"tone": tone, "text": text}
-
-
-def _llm_lever(store: MessageStore, settings: Settings, deals: list[dict], data: Dataset) -> dict[str, Any]:
-    """What the models cost: tokens by step once calls are recorded; before that, the one
-    thing the stored mails already show, namely how many of them needed no answer."""
-    usage = store.llm_usage()
-    models = sorted({settings.decision_model, settings.extract_model, settings.compose_model})
-    lever = {"key": "llm_usage", "title": "LLM use", "setting": "DECISION_MODEL, EXTRACT_MODEL, COMPOSE_MODEL", "value": " / ".join(models), "rows": [], "suggest": None}
-    calls = sum(row["calls"] for row in usage["by_prompt"])
-    tokens = sum(row["input_tokens"] + row["output_tokens"] for row in usage["by_prompt"])
-    # Every stored mail except an awaited trucker reply went through the classifier (poller).
-    classified = [m for m in data.mails if not (m["reasoning"] or "").startswith(GAVE_UP)]
-    idle_mails = [m for m in classified if m["category"] == "other"]
-    linked, states = data.mail_shipments(), {s.id: s.state for s in data.shipments}
-    after_the_deal = sum(states.get(linked.get(m["id"])) in (S.BOOKED, S.CONFIRMED, S.REJECTED, S.FAILED) for m in idle_mails)
-    mails = (
-        f"{len(idle_mails)} of {_n(len(classified), 'mail')} needed no answer (category Other), and each went through the classifier."
-        + (f" {after_the_deal} of them arrived on a shipment that was already booked or closed." if after_the_deal else "")
-    ) if classified else ""
-    if not tokens:  # nothing recorded, or a gateway that reports no usage
-        counted = (f"{_n(calls, 'call')} recorded, but the model endpoint reported no token counts." if calls
-                   else "Token counts are recorded from the router's next start on.")  # fmt: skip
-        share = len(idle_mails) / len(classified) if classified else 0.0
-        verdict = (_verdict("change", f"{share:.0%} of all mails needed no answer. Recognising them without a model call saves one call each.") if share >= NO_ANSWER_SHARE and len(classified) >= 20
-                   else _verdict("open", "Not measured yet."))  # fmt: skip
-        return lever | {"n": len(classified), "figure": f"{len(idle_mails)} of {len(classified)}" if classified else "–", "figure_label": "mails that needed no answer",
-                        "text": f"{mails} {counted}".strip(), "verdict": verdict}  # fmt: skip
-    reasoning = sum(row["reasoning_tokens"] for row in usage["by_prompt"])
-    cached = sum(row["cached_tokens"] for row in usage["by_prompt"])
-    accepted = sum(d["state"] in ACCEPTED for d in deals)
-    rows = [{"name": _STEPS.get(row["prompt"], row["prompt"]), "calls": row["calls"], "tokens": row["input_tokens"] + row["output_tokens"],
-             "share": _pct(row["input_tokens"] + row["output_tokens"], tokens)} for row in usage["by_prompt"]]  # fmt: skip
-    idle = sum(row["tokens"] for row in usage["by_category"] if row["category"] == "other")
-    since = _parse_time(usage["since"])
-    text = (
-        f"{_n(calls, 'call')} since {since:%-d %b %H:%M} UTC used {tokens:,} tokens"
-        + (f" ({reasoning:,} of them for reasoning, {cached:,} input tokens from the cache)" if reasoning or cached else "")
-        + ". By step: " + "; ".join(f"{row['name']} {row['share']:.0f}% ({_n(row['calls'], 'call')})" for row in rows[:4]) + ". " + mails
-    ).strip()  # fmt: skip
-    if idle / tokens >= NO_ANSWER_SHARE:
-        verdict = _verdict("change", f"{idle / tokens:.0%} of all tokens went to mails that needed no answer (category Other). Recognising them without a model call saves that share.")
-    else:
-        verdict = _verdict("keep", f"Mails that need no answer take {idle / tokens:.0%} of the tokens. The largest step is {rows[0]['name']}.")
-    per = tokens / accepted if accepted else tokens / max(len(deals), 1)
-    return lever | {"n": calls, "figure": f"{per:,.0f}", "figure_label": "tokens per accepted quote" if accepted else "tokens per request",
-                    "text": text, "verdict": verdict, "rows": rows}  # fmt: skip
-
-
-def levers(store: MessageStore, reference: Reference, settings: Settings, *, source: str) -> list[dict[str, Any]]:
-    """Settings an operator can change, each with what the data says about its current value.
-
-    Every lever carries a `verdict`: `change` when the data supports another value, `keep`
-    when it supports the current one, `open` when there is too little data to say. Levers
-    that suggest a change come first.
-    """
-    live = source == "live"
-    data = Dataset.load(store)
-    received = {m["id"]: m["received_at"] or m["processed_at"] for m in data.mails}
-    deals = [deal(s, data, live=live, received=received) for s in data.shipments if not is_legacy(s)]
-    by_id = {d["id"]: d for d in deals}
-    out: list[dict[str, Any]] = []
-
-    def priced(requests: list[TruckerRequest]) -> list[TruckerRequest]:
-        return [r for r in requests if r.answered and r.price_eur is not None]
-
-    def name(email: str) -> str:
-        carrier = reference.carrier_for_email(email)
-        return carrier.name if carrier else _pretty(email)
-
-    # 1. Time to quote against the round window (live only: a replay mixes two clocks)
-    wait = settings.trucker_wait_seconds
-    minutes = [d["minutes_to_quote"] for d in deals if d["minutes_to_quote"] is not None]
-    if minutes:
-        late = sum(m > ROUND_WINDOW_MINUTES for m in minutes)
-        out.append({"key": "time_to_quote", "suggest": None, "title": "Time to quote", "setting": "TRUCKER_WAIT_SECONDS, AIRLINE_WAIT_SECONDS", "value": f"{wait:.0f} s / {settings.airline_wait_seconds:.0f} s",
-                    "text": f"{len(minutes) - late} of {_n(len(minutes), 'quote')} went out within the {ROUND_WINDOW_MINUTES:.0f}-minute window; median {_median(minutes):.1f} min, slowest {max(minutes):.1f} min.",
-                    "n": len(minutes), "figure": f"{_median(minutes):.1f} min", "figure_label": "median from request to quote",
-                    "verdict": _verdict("change", f"{_n(late, 'quote')} went out after the round had closed.") if late
-                    else _verdict("keep", "Every quote went out inside the window.")})  # fmt: skip
-
-    # 2. How long we wait for truckers
-    pickups = {sid: reqs for sid, reqs in data.truckers.items() if sid in by_id}
-    silent_runs = {sid: [r.trucker for r in reqs if r not in priced(reqs)] for sid, reqs in pickups.items() if len(priced(reqs)) < len(reqs)}
-    wait_suggest = None
-    seconds = [
-        took * 60
-        for reqs in pickups.values()
-        for r in priced(reqs)
-        if live and (took := _minutes(r.sent_at, received.get(r.reply_message_id))) is not None
-    ]
-    estimated = [d for d in deals if d["truck_mode"] == "estimate" and d["truck_eur"] and d["gross_kg"]]
-    waited = set(silent_runs) | {d["id"] for d in estimated}  # an estimate means the wait ran out
-    text = (
-        f"{len(waited)} of {_n(len(pickups), 'pickup')} waited the full {wait:.0f} s before the quote went out, "
-        f"because at least one trucker had not answered by then; {_n(len(estimated), 'quote')} went out with an estimated trucking price."
-    )
-    if len(seconds) >= MIN_OFFERS_FOR_WAIT:
-        in_time = sum(sec <= wait for sec in seconds)
-        slowest = max(sec for sec in seconds if sec <= wait) if in_time else None
-        text += f" {in_time} of {_n(len(seconds), 'offer')} arrived within the wait (median {_median(seconds):.0f} s)."
-        enough = math.ceil(((slowest or wait) + 5) / 5) * 5  # the slowest offer in time, plus a margin
-        if in_time < len(seconds):
-            verdict = _verdict("open", f"{len(seconds) - in_time} of {len(seconds)} offers arrived after the wait. Waiting longer makes more quotes exact and every waiting quote slower.")
-        elif enough < wait:
-            verdict = _verdict("change", f"The slowest offer took {slowest:.0f} s. {enough} s would have caught all {len(seconds)} and sent each waiting quote {wait - enough:.0f} s earlier.")
-            wait_suggest = {"name": "TRUCKER_WAIT_SECONDS", "now": f"{wait:.0f}", "to": str(enough)}
-        else:
-            verdict = _verdict("keep", f"Offers arrive up to {slowest:.0f} s after the request, so the wait is needed.")
-    else:
-        text += " Offer arrival times are not measured in a dry run." if not live else ""
-        verdict = _verdict("open", f"Needs the arrival times of at least {MIN_OFFERS_FOR_WAIT} offers from a live run.")
-    out.append({"key": "trucker_wait", "title": "Trucker wait", "setting": "TRUCKER_WAIT_SECONDS", "value": f"{wait:.0f} s", "text": text, "verdict": verdict, "suggest": wait_suggest,
-                "n": len(pickups), "figure": f"{len(waited)} of {len(pickups)}", "figure_label": "pickups waited the full time"})  # fmt: skip
-
-    # 3. Truckers who rarely answer: they are what makes a quote wait
-    asked: Counter[str] = Counter()
-    answered: Counter[str] = Counter()
-    for reqs in pickups.values():
-        for r in reqs:
-            asked[r.trucker] += 1
-            answered[r.trucker] += r in priced(reqs)
-    quiet = sorted((t for t in asked if asked[t] >= 2 and answered[t] / asked[t] <= 0.5), key=lambda t: (answered[t] / asked[t], -asked[t]))
-    rows = [{"name": name(t), "asked": asked[t], "answered": answered[t]} for t in quiet]
-    freed = sum(all(t in quiet for t in silent) for silent in silent_runs.values())
-    if not quiet:
-        text, verdict = "No trucker asked at least twice answered half of the requests or fewer.", _verdict("keep", "Nobody on the list holds quotes up regularly.")
-    else:
-        text = ("These truckers answered at most half of our requests, and a quote waits for the timeout while one of them is asked: "
-                + "; ".join(f"{row['name']} {row['answered']} of {row['asked']}" for row in rows) + ".")  # fmt: skip
-        if max(asked[t] for t in quiet) < MIN_ASKS_TO_JUDGE:
-            verdict = _verdict("open", f"Each was asked fewer than {MIN_ASKS_TO_JUDGE} times so far: too few to drop anyone.")
-        else:
-            verdict = _verdict("change", f"Without them, {freed} of {_n(len(silent_runs), 'quote')} that waited for a silent trucker would have gone out as soon as the others had answered.")
-    out.append({"key": "silent_truckers", "suggest": None, "title": "Truckers who rarely answer", "setting": "active flag in the carrier list", "value": f"{len(asked)} asked",
-                "text": text, "verdict": verdict, "n": sum(asked.values()), "figure": str(len(quiet)), "figure_label": "of " + _n(len(asked), "trucker"), "rows": rows})  # fmt: skip
-
-    # 4. The price used when no trucker answers, against the offer that arrived afterwards
-    fallback, suggest = settings.fallback_truck_eur_per_kg, None
-    later = [(d, min(r.price_eur for r in priced(pickups[d["id"]]))) for d in estimated if priced(pickups.get(d["id"], []))]
-    per_kg = [min(r.price_eur for r in priced(reqs)) / by_id[sid]["gross_kg"] for sid, reqs in pickups.items() if by_id[sid]["gross_kg"] and priced(reqs)]
-    text = f"When no trucker has answered in time the quote uses earlier offers for the zone, or {fallback:.2f} EUR per kg where there are none."
-    if estimated:
-        text += f" {_n(len(estimated), 'quote')} went out with an estimate, at a median {_median([d['truck_eur'] / d['gross_kg'] for d in estimated]):.2f} EUR per kg."
-    if per_kg:
-        text += f" The lowest real offer per pickup is a median {_median(per_kg):.2f} EUR per kg over {_n(len(per_kg), 'pickup')}."
-    if later:
-        off = _median([(d["truck_eur"] - real) / real for d, real in later])
-        gap = _median([d["truck_eur"] - real for d, real in later])
-        match = _median([real / d["gross_kg"] for d, real in later])
-        figure, label = f"{off:+.0%}", "estimate against the offer that came later"
-        said = f"For {_n(len(later), 'estimated quote')} an offer arrived afterwards: the estimate was a median {abs(off):.0%} ({_eur(abs(gap))}) {'above' if off > 0 else 'below'} it."
-        if len(later) < MIN_LATER_OFFERS:
-            verdict = _verdict("open", said + f" Too few to change the rate: it is judged from {MIN_LATER_OFFERS} such quotes on.")
-        elif abs(off) > ESTIMATE_TOLERANCE:
-            verdict = _verdict("change", said + f" {match:.2f} EUR per kg would have matched those offers.")
-            suggest = f"{match:.2f}"
-        else:
-            verdict = _verdict("keep", said)
-    else:
-        figure, label = (f"{_median(per_kg):.2f}", "EUR/kg, median lowest offer") if per_kg else ("–", "no offers yet")
-        verdict = _verdict("open", "No estimated quote has a later offer to compare with.")
-    out.append({"key": "fallback_trucking", "title": "Trucking estimate when nobody answers", "setting": "FALLBACK_TRUCK_EUR_PER_KG", "value": f"{fallback:.2f} EUR/kg",
-                "text": text, "verdict": verdict, "n": len(later) or len(per_kg), "figure": figure, "figure_label": label,
-                "suggest": suggest and {"name": "FALLBACK_TRUCK_EUR_PER_KG", "now": f"{fallback:.2f}", "to": suggest}})  # fmt: skip
-
-    # 5. What the models cost
-    out.append(_llm_lever(store, settings, deals, data))
-
-    order = {"change": 0, "keep": 1, "open": 2}
-    return sorted(out, key=lambda lever: order[lever["verdict"]["tone"]])

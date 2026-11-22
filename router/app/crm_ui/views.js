@@ -96,10 +96,8 @@ export async function now(ctx) {
   const cases = snap.attention.filter(a => a.needs_person), notes = snap.attention.filter(a => !a.needs_person), n = cases.length;
   const decided = k.accepted + k.rejected;
   // one line on whether the router itself is alive, so an empty queue can be trusted
-  const router = !live ? 'Recorded dry run: timings and acceptance rates are not reported, bookings are simulated, and only Dismiss works here.'
-    : !p?.enabled ? 'Read-only view: this process does not read the mailbox, so only Dismiss works here.'
-    : !p.running ? 'The router is not reading the mailbox.'
-    : `Router running · last poll ${p.last_poll_at ? `${fmt.time(p.last_poll_at)} UTC` : 'pending'} · ${snap.sending ? 'sending on: actions are real' : 'sending off: drafts only'}`;
+  const limited = !live ? 'Recorded dry run: timings and acceptance rates are not reported, bookings are simulated, and only Dismiss works here.'
+    : !p?.enabled ? 'Read-only view: this process does not read the mailbox, so only Dismiss works here.' : null;
   const noLive = live && !snap.deals.length ? h('div', { class: 'notice glass c12' }, icon('info'), h('div', null,
     `The live database contains no priced shipments${snap.legacy.length ? ` (${snap.legacy.length} requests predate this router)` : ''}. `,
     ctx.sources.replay.available ? [`The recorded dry run contains ${ctx.sources.replay.shipments}. `, h('button', { class: 'linkbtn', onclick: () => ctx.pick('replay') }, 'Show dry run')] : null)) : null;
@@ -108,7 +106,7 @@ export async function now(ctx) {
     noLive,
     h('section', { class: 'card glass c12 status' },
       h('h2', null, n ? `${n} ${n === 1 ? 'case needs' : 'cases need'} a decision` : 'Nothing needs you'),
-      h('p', null, router),
+      limited && h('p', null, limited),
       h('p', { class: 'next' },
         h('a', { href: '#/rounds' }, decided ? `${k.rejected} of ${decided} decided quotes declined` : `${k.requests} ${k.requests === 1 ? 'request' : 'requests'}, none decided yet`),
         h('a', { href: '#/performance' }, `${k.quoted} of ${k.requests} requests quoted`))),
@@ -124,7 +122,6 @@ export async function now(ctx) {
 
 export async function performance(ctx) {
   const c = await ctx.api('/crm/api/scorecard');
-  const stat = (label, value, note) => h('div', { class: 'stat' }, h('span', null, label), h('b', null, value), h('small', null, note));
   const share = (part, whole) => (whole ? fmt.pct(100 * part / whole) : '–');
   const used = c.airlines.filter(a => a.quoted), unused = c.airlines.length - used.length;
   const chosen = c.truckers.filter(t => t.selected);
@@ -146,39 +143,20 @@ export async function performance(ctx) {
     { key: 'name', label: 'In the request' }, { key: 'count', label: 'Requests', right: true, render: a => meter(c.requests ? 100 * a.count / c.requests : 0, fmt.int(a.count)) },
     { key: 'share', label: 'Share', right: true, get: a => a.count, render: a => share(a.count, c.requests), csv: a => (c.requests ? Math.round(100 * a.count / c.requests) : '') },
   ];
-  const s = c.speed, e = c.explained;
   const node = h('div', { class: 'grid' },
-    h('section', { class: 'card glass c12 statstrip' },
-      stat('Requests', fmt.int(c.requests), `${c.quoted} quoted · ${c.asked_back} asked for missing details`),
-      stat('Outside office hours', `${fmt.int(c.after_hours)} of ${fmt.int(c.requests)}`, `${c.after_hours_quoted} of them quoted · office hours: Mon to Fri, 08 to 18, Berlin`),
-      stat('Time to quote', s ? fmt.duration(s.median_s) : '–', s ? `median of ${s.n} · ${s.within_window} within 6 min · slowest ${fmt.duration(s.slowest_s)}` : 'not measured in a recorded run'),
-      stat('Airlines compared', c.airlines_per_quote == null ? '–' : fmt.one(c.airlines_per_quote), `per quote, median · ${c.airlines_priced} airlines priced in all`),
-      stat('Truckers asked', c.truckers_per_pickup == null ? '–' : fmt.one(c.truckers_per_pickup), `per pickup, median · ${c.truckers_asked} truckers in all`),
-      stat('Price range', c.spread_pct == null ? '–' : fmt.pct(c.spread_pct), c.spread_pct == null ? 'no request with two priced airlines' : `cheapest to dearest airline per request, median ${fmt.eur(c.spread_eur)} · up to ${fmt.pct(c.spread_max_pct)}`)),
-    h('section', { class: 'card glass c7 flush' },
-      head('Airlines used', used.length ? `${used.length} airlines in ${c.quoted} quotes · most used ${fmt.pct(c.top_airline_share_pct)}` : 'no quote yet', exportButton('talos-airlines-used.csv', c.airlines, airlineCols)),
-      table(used, airlineCols, { state: sortState(ctx, 'used', 'quoted'), empty: 'No quote has gone out.' }),
-      unused ? h('div', { class: 'subhead' }, `${unused} more were priced and not chosen · `, h('a', { href: '#/lookup/airlines' }, 'all airlines')) : null),
+    h('div', { class: 'stack c7' },
+      h('section', { class: 'card glass flush' },
+        head('Airlines used', used.length ? `${used.length} airlines in ${c.quoted} quotes · most used ${fmt.pct(c.top_airline_share_pct)}` : 'no quote yet', exportButton('talos-airlines-used.csv', c.airlines, airlineCols)),
+        table(used, airlineCols, { state: sortState(ctx, 'used', 'quoted'), empty: 'No quote has gone out.' }),
+        unused ? h('div', { class: 'subhead' }, `${unused} more were priced and not chosen · `, h('a', { href: '#/lookup/airlines' }, 'all airlines')) : null),
+      h('section', { class: 'card glass flush' },
+        head('Truckers used', c.pickups ? `${chosen.length} used in a quote · ${c.truckers.length} asked for ${c.pickups} pickups` : 'no pickup yet', exportButton('talos-truckers-used.csv', c.truckers, truckerCols)),
+        table(c.truckers.slice(0, 8), truckerCols, { state: sortState(ctx, 'trucks', 'selected'), empty: 'No trucker has been asked.' }),
+        c.truckers.length > 8 ? h('div', { class: 'subhead' }, `${c.truckers.length - 8} more asked · `, h('a', { href: '#/lookup/truckers' }, 'all truckers')) : null)),
     h('section', { class: 'card glass c5 flush' },
       head('In the requests', `${c.requests} requests`, exportButton('talos-requests-content.csv', c.asks, askCols)),
       table(c.asks, askCols, { empty: 'No request yet.' }),
-      h('div', { class: 'subhead' }, 'Insurance is counted by a word search in the request mail; the other rows come from the extracted request.')),
-    h('section', { class: 'card glass c7 flush' },
-      head('Truckers used', c.pickups ? `${chosen.length} used in a quote · ${c.truckers.length} asked for ${c.pickups} pickups` : 'no pickup yet', exportButton('talos-truckers-used.csv', c.truckers, truckerCols)),
-      table(c.truckers.slice(0, 8), truckerCols, { state: sortState(ctx, 'trucks', 'selected'), empty: 'No trucker has been asked.' }),
-      c.truckers.length > 8 ? h('div', { class: 'subhead' }, `${c.truckers.length - 8} more asked · `, h('a', { href: '#/lookup/truckers' }, 'all truckers')) : null),
-    h('section', { class: 'card glass c5 flush' }, head('Quote, book, track', `${c.requests} requests`),
-      h('div', { class: 'tablewrap' }, h('table', null, h('tbody', null, [
-        ['Quotes sent', c.quoted],
-        ['· billed at the next weight break because the total is lower', e.weight_break],
-        ['· trucking estimated because no offer arrived in time', e.estimated],
-        ['· assumption made and stated (weight or volume computed)', e.assumptions],
-        ['Accepted by the customer', c.accepted], ['Declined by the customer', c.declined],
-        [c.source === 'live' ? 'Booked' : 'Booked (simulated in a dry run)', c.source === 'live' ? c.booked : c.booked_simulated],
-        ['Tracking questions answered', `${fmt.int(c.tracking_answers)} of ${fmt.int(c.tracking_questions)}`],
-        ['Mails read', c.mails_read], ['Mails written', c.mails_written],
-      ].map(([label, count]) => h('tr', null, h('td', { class: 'free' }, label), h('td', { class: 'r' }, typeof count === 'number' ? fmt.int(count) : count)))))),
-      h('div', { class: 'subhead' }, c.languages.map(l => `${l.language}: ${l.count}`).join(' · '), ' · language of the request')));
+      h('div', { class: 'subhead' }, 'Insurance is counted by a word search in the request mail; the other rows come from the extracted request.')));
   return { title: 'Performance', sub: '', node };
 }
 
@@ -253,45 +231,6 @@ export async function rounds(ctx, tab = 'ledger') {
     h('section', { class: 'card glass c12 flush' }, head('Ledger', `${rows.length} of ${data.total} rounds`, exportButton('talos-rounds.csv', rows, cols)),
       table(rows, cols.filter(c => !c.hidden), { state: sortState(ctx, 'rounds', 'id'), onRow: r => go(`#/shipment/${r.id}`), empty: 'No round matches.' })));
   return { title: 'Rounds', sub: '', node };
-}
-
-// --- tuning: settings and the evidence for their value ------------------------------------------
-
-const VERDICT = { change: ['warning', 'alert', 'Change suggested'], keep: ['good', 'check', 'Holds'], open: ['neutral', 'dot', 'Too little data'] };
-
-export async function tuning(ctx) {
-  const { snap } = ctx, list = await ctx.api('/crm/api/levers');
-  const metrics = [
-    { key: 'title', label: 'Metric', render: f => h('b', { style: { fontWeight: 600 } }, f.title) },
-    { key: 'value', label: 'Value', right: true, sort: false, render: f => fmt.figure(f.value, f.unit, f.n), csv: f => f.value },
-    { key: 'n', label: 'Cases', right: true }, { key: 'text', label: 'Definition', sort: false, cls: 'desc' },
-  ];
-  const judged = list.filter(l => l.verdict.tone !== 'open'), open = list.filter(l => l.verdict.tone === 'open');
-  const changes = judged.filter(l => l.verdict.tone === 'change'), named = changes.filter(l => l.suggest);
-  const lever = l => {
-    const [tone, glyph, label] = VERDICT[l.verdict.tone];
-    return h('section', { class: `card glass ${judged.length === 1 ? 'c12' : 'c6'} lever` },
-      head(l.title, `n = ${l.n}`, h('span', { class: `state ${tone}` }, icon(glyph), label)),
-      h('div', { class: 'hero' }, l.figure, h('small', null, l.figure_label)),
-      h('p', { class: 'verdict' }, l.verdict.text),
-      h('p', null, l.text),
-      l.rows?.length && l.key === 'llm_usage' ? barList(l.rows.map(r => ({ name: words(r.name), value: r.tokens, note: `${r.calls} calls` })), { label: 190, solid: true }) : null,
-      h('p', { class: 'setting' }, h('code', null, l.suggest ? `${l.suggest.name}: ${l.suggest.now} → ${l.suggest.to}` : `${l.setting} = ${l.value}`)));
-  };
-  const node = h('div', { class: 'grid' },
-    h('section', { class: 'card glass c12 status' },
-      h('h2', null, changes.length === 1 && named.length === 1 ? `Set ${named[0].suggest.name} to ${named[0].suggest.to} (now ${named[0].suggest.now})`
-        : changes.length ? `${changes.length} ${changes.length === 1 ? 'thing' : 'things'} should change` : 'No setting needs to change'),
-      changes.length > 1 || (changes.length && !named.length) ? changes.map(l => h('p', null, h('b', null, `${l.title}: `), l.suggest ? `${l.suggest.name} ${l.suggest.now} → ${l.suggest.to}` : l.verdict.text)) : null,
-      h('p', { class: 'muted' }, 'Settings live in router/.env and take effect after a restart of the router. This page does not change them.')),
-    judged.map(lever),
-    open.length ? h('section', { class: 'card glass c12' }, head('Not judged yet', 'too little data'),
-      h('div', { class: 'reasons' }, open.map(l => h('div', null, h('b', null, l.title), h('span', null, `${l.verdict.text} `, h('span', { class: 'muted' }, l.text)))))) : null,
-    h('section', { class: 'card glass c12 flush' },
-      h('details', { class: 'prompt fold' }, h('summary', null, `Reference figures (${snap.findings.length})`),
-        h('div', { class: 'foldbar' }, exportButton('talos-metrics.csv', snap.findings, metrics)),
-        table(snap.findings, metrics, { empty: 'No priced shipments to analyse.' }))));
-  return { title: 'Tuning', sub: '', node };
 }
 
 // --- lookup: everything else, behind tabs and the search box -------------------------------------

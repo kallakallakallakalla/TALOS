@@ -8,7 +8,6 @@ from langfuse import get_client, observe, propagate_attributes
 
 from app.classifier import DecisionClassifier
 from app.config import Settings
-from app.llm import current_mail
 from app.mailbox_client import MailboxClient, mailbox_message_to_payload
 from app.schemas import ClassificationDecision, EmailCategory, MailboxMessage, PollSummary
 from app.storage import MessageStore
@@ -65,13 +64,6 @@ class MailboxPoller:
     @observe(name="mail")
     async def process_message(self, msg: MailboxMessage) -> ClassificationDecision:
         """One trace per mail: context lookup -> classify -> store -> workflow."""
-        token = current_mail.set(msg.id)  # LLM calls made while it is handled count for this mail
-        try:
-            return await self._process(msg)
-        finally:
-            current_mail.reset(token)
-
-    async def _process(self, msg: MailboxMessage) -> ClassificationDecision:
         context = await self._workflow.context(msg) if self._workflow else None
         shipment = context.shipment if context else None
         # A new request starts its own shipment, so its trace opens that shipment's session.

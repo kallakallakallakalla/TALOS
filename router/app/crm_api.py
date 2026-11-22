@@ -7,6 +7,7 @@ which carries out an operator action (`app/actions.py`) and is guarded below.
 """
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlsplit
@@ -22,6 +23,7 @@ from app.storage import MessageStore
 from app.tariffs import Tariffs
 
 UI_DIR = Path(__file__).parent / "crm_ui"
+_STARTED_AT = datetime.now(UTC)  # when this process loaded the app: the start of its uptime
 router = APIRouter(prefix="/crm", include_in_schema=False)
 Source = Literal["live", "replay"]
 
@@ -79,22 +81,43 @@ async def sources(request: Request, settings: Settings = Depends(get_settings)) 
     }
 
 
-@router.get("/api/version")
-async def version(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, str]:
-    """A token that changes whenever the data does; the page polls it to stay live."""
-    return {"version": _store(request, settings, source).change_token()}
-
-
-@router.get("/api/snapshot")
-async def snapshot(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
-    store = _store(request, settings, source)
+def _poller_state(request: Request, settings: Settings) -> dict[str, Any]:
     poller = getattr(request.app.state, "poller", None)
-    running = {
+    return {
         "enabled": settings.mailbox_poll_enabled and bool(settings.hackloop_api_key),
         "running": bool(poller and poller.running),
         "last_poll_at": poller.last_poll_at if poller else None,
         "last_error": poller.last_error if poller else None,
     }
+
+
+def _health(request: Request, settings: Settings) -> dict[str, Any]:
+    """The state of this process and what it depends on, for the status bar. Always the live system."""
+    try:
+        database = {"ok": True, **_live_store(request, settings).totals()}
+    except Exception as error:  # noqa: BLE001 - a broken database is exactly what the bar has to show
+        database = {"ok": False, "error": f"{type(error).__name__}: {error}"}
+    return {
+        "started_at": _STARTED_AT.isoformat(),
+        "uptime_s": round((datetime.now(UTC) - _STARTED_AT).total_seconds()),
+        "mode": "test" if settings.test_mode else "sending" if settings.send_enabled else "dry_run",
+        "poller": _poller_state(request, settings),
+        "database": database,
+    }
+
+
+@router.get("/api/version")
+async def version(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    """A token that changes whenever the data does; the page polls it to stay live.
+
+    The same answer carries the health of this process, so the status bar costs no request of its own.
+    """
+    return {"version": _store(request, settings, source).change_token(), "health": _health(request, settings)}
+
+
+@router.get("/api/snapshot")
+async def snapshot(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> dict[str, Any]:
+    store = _store(request, settings, source)
     return {
         "version": store.change_token(),
         # buttons that change something are only offered where they are allowed (app/actions.py)
@@ -107,7 +130,7 @@ async def snapshot(request: Request, source: Source = "live", settings: Settings
             source=source,
             tariff_airlines=_tariffs(settings, source).airlines,
             labels=replay_labels() if source == "replay" else None,
-            poller=running,
+            poller=_poller_state(request, settings),
         ),
     }
 
@@ -131,11 +154,6 @@ async def scorecard(request: Request, source: Source = "live", settings: Setting
         _store(request, settings, source), _reference(settings, source), settings,
         source=source, tariff_airlines=_tariffs(settings, source).airlines,
     )  # fmt: skip
-
-
-@router.get("/api/levers")
-async def levers(request: Request, source: Source = "live", settings: Settings = Depends(get_settings)) -> list[dict[str, Any]]:
-    return insights.levers(_store(request, settings, source), _reference(settings, source), settings, source=source)
 
 
 _LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}

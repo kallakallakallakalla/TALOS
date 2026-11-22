@@ -112,15 +112,6 @@ class MessageStore:
                     key TEXT PRIMARY KEY, dismissed_at TEXT NOT NULL
                 );
 
-                -- One row per LLM call (app/llm.py): what it used and which mail it served.
-                CREATE TABLE IF NOT EXISTS llm_calls (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL,
-                    prompt TEXT NOT NULL, model TEXT NOT NULL, message_id INTEGER,
-                    input_tokens INTEGER NOT NULL, cached_tokens INTEGER NOT NULL,
-                    output_tokens INTEGER NOT NULL, reasoning_tokens INTEGER NOT NULL,
-                    seconds REAL NOT NULL
-                );
-
                 CREATE TABLE IF NOT EXISTS message_failures (
                     message_id INTEGER PRIMARY KEY,
                     attempts INTEGER NOT NULL,
@@ -714,40 +705,17 @@ class MessageStore:
         with self._connect() as conn:
             return conn.execute("DELETE FROM crm_dismissed").rowcount
 
-    def record_llm_call(self, call: dict[str, Any]) -> None:
-        """Store the token use of one LLM call (the listener of StructuredLLM.on_usage)."""
+    def totals(self) -> dict[str, Any]:
+        """How much is stored and when the last mail arrived (the CRM's status bar)."""
         with self._connect() as conn:
-            conn.execute(
+            row = conn.execute(
                 """
-                INSERT INTO llm_calls (at, prompt, model, message_id, input_tokens, cached_tokens,
-                                       output_tokens, reasoning_tokens, seconds)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (_utc_now_iso(), call["prompt"], call["model"], call.get("message_id"), call["input_tokens"],
-                 call["cached_tokens"], call["output_tokens"], call["reasoning_tokens"], call["seconds"]),
-            )  # fmt: skip
-
-    def llm_usage(self) -> dict[str, Any]:
-        """Recorded LLM calls, summed by prompt and by the category of the mail they served."""
-        with self._connect() as conn:
-            by_prompt = conn.execute(
+                SELECT (SELECT COUNT(*) FROM processed_messages) AS mails,
+                       (SELECT COUNT(*) FROM shipments) AS shipments,
+                       (SELECT MAX(COALESCE(received_at, processed_at)) FROM processed_messages) AS last_mail_at
                 """
-                SELECT prompt, COUNT(*) AS calls, SUM(input_tokens) AS input_tokens,
-                       SUM(cached_tokens) AS cached_tokens, SUM(output_tokens) AS output_tokens,
-                       SUM(reasoning_tokens) AS reasoning_tokens, SUM(seconds) AS seconds
-                FROM llm_calls GROUP BY prompt ORDER BY SUM(input_tokens + output_tokens) DESC
-                """
-            ).fetchall()
-            by_category = conn.execute(
-                """
-                SELECT COALESCE(m.category, '') AS category, COUNT(*) AS calls,
-                       SUM(c.input_tokens + c.output_tokens) AS tokens
-                FROM llm_calls c LEFT JOIN processed_messages m ON m.message_id = c.message_id
-                GROUP BY 1 ORDER BY 3 DESC
-                """
-            ).fetchall()
-            since = conn.execute("SELECT MIN(at) FROM llm_calls").fetchone()[0]
-        return {"since": since, "by_prompt": [dict(row) for row in by_prompt], "by_category": [dict(row) for row in by_category]}
+            ).fetchone()
+        return dict(row)
 
     def forget_message(self, message_id: int) -> None:
         """Remove a stored mail, so that processing it again stores the new reading."""
