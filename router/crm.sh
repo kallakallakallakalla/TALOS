@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 # Start the CRM on this machine and open it in the browser.
-# Read-only: the mailbox poller stays off, so nothing is fetched, sent or booked and no LLM
-# is called. The first run creates .venv and installs the dependencies.
+# Read-only: it shows what the ultra-talos desk has done, from the desk's own files, and changes
+# nothing. The mailbox poller stays off, so nothing is fetched, sent or booked and no LLM is
+# called. The first run creates .venv and installs the dependencies.
 #
-#   ./crm.sh [port] [database]
+#   ./crm.sh [port] [ultra-talos folder]
 #     port      default 8010
-#     database  the SQLite file of a router, to follow its live data. Without it the router's
-#               usual database is used (~/.talos/router.db): on the machine where the router
-#               runs, "Live" therefore follows it by itself; elsewhere "Live" is empty and the
-#               recorded dry run is shown.
+#     folder    the ultra-talos folder to show (default: ../ultra-talos next to this router)
 set -euo pipefail
 PORT="${1:-8010}"
 if [ -n "${2:-}" ]; then
-  if [ ! -f "$2" ]; then echo "Database file not found: $2"; exit 1; fi
-  SQLITE_DB_PATH="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
-  export SQLITE_DB_PATH
-  echo "Live data from $SQLITE_DB_PATH"
+  if [ ! -d "$2" ]; then echo "Folder not found: $2"; exit 1; fi
+  ULTRA_TALOS_DIR="$(cd "$2" && pwd)"
+  export ULTRA_TALOS_DIR
+  echo "Showing $ULTRA_TALOS_DIR"
 fi
 cd "$(dirname "$0")"
 

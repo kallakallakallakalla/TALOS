@@ -527,3 +527,15 @@ The RFQ extractor sets `wants_pdf` when the customer asks for the offer as a PDF
 - **Review:** an independent read of the console as its operator found the first version only half coherent (cases counted that nobody could act on, a loss column that restated the outcome, nine cards per shipment, no action on the page a case opens). The points above marked as removed or changed come from it. The actions and their edges are covered by `tests/test_console.py`.
 - **Notifications:** with the browser's permission a new case in the queue is announced, and the tab title carries the count. Nobody has to watch a page that is empty when things work.
 - **Honest limits:** in a dry run the action buttons are off and timings and win rates stay hidden (ADR 52).
+
+### ADR 58: The CRM shows ultra-talos, read-only, organised like a forwarder's CRM
+
+- **Context:** a UX review of the CRM (`docs/crm-ux-plan.md`) found two data worlds (five of six pages showed the stopped router database under a "Live" label), one request shown four ways with two status vocabularies, carriers and mail in several places, hackathon words (Rounds, Ledger, Lookup) instead of freight words, and action buttons that were greyed out.
+- **Decision (user):**
+  - The CRM reads **only ultra-talos, from the files it already writes** (`mails/`, `state/board.db`, `logs/`, `shipments/*/notes.md`, `data/*.csv`, `state/NEEDS_HUMAN`). Ultra-talos itself is not changed. The router database is no longer shown.
+  - **No buttons that trigger anything**: the console is read-only. This withdraws the operator actions of ADR 57.
+  - **English** interface.
+  - Navigation: **Today, Shipments, Customers, Carriers, Rates, Reports**, Settings apart. One shipment page with a live timeline. One status vocabulary: New, Needs info, Quoted, Booked, Lost, Cancelled, plus a "Needs you" marker.
+  - Shipments open as a **table**, the board is a switch.
+- **Follow-up (user, same day):** the globe stays (Today, and a small route globe on each shipment page): it shows where the business goes. Requests the desk handled while it only wrote drafts (until the newest file in `outbox/`, 22 Nov 00:24 UTC) are left out: nothing it did then reached anyone. Today opens with the colour strips (one tick per recent request, booking and mail, coloured by outcome, each opening its shipment). Mails read as mails (paragraphs, greeting and signature quieter, a short preview when folded; the same request to several carriers once, with the recipients) and the desk notes as a timed list with their keyword and amounts set off.
+- **Consequence:** statuses that need flight dates (in transit, delivered) are left out. The quoted price comes from the desk's `notes.md` and is labelled so; booking data comes from the platform's own answers in the runner logs.

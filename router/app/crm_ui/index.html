@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TALOS · Freight desk</title>
+  <title>TALOS · Air freight desk</title>
   <link rel="stylesheet" href="/crm/assets/crm.css">
   <script>
     // before first paint, so a stored theme does not flash
@@ -25,13 +25,13 @@
     <div class="stage">
       <header class="bar glass">
         <div class="grow"><h1 id="title">TALOS</h1><div class="sub" id="sub"></div></div>
-        <label class="search"><span class="icon" id="search-icon"></span><input id="search" type="search" placeholder="Search this page  ( / )" aria-label="Search this page"></label>
-        <div class="seg" id="source" role="group" aria-label="Data shown"></div>
-        <span class="chip" id="live"></span>
-        <button class="iconbtn" id="bell" aria-label="Notifications for new cases"></button>
+        <div class="gsearch" id="gsearch">
+          <label class="search"><span class="icon" id="search-icon"></span><input id="search" type="search" autocomplete="off" placeholder="Search shipments, customers, BK numbers, mails  ( / )" aria-label="Search everything"></label>
+          <div class="results glass" id="results" hidden></div>
+        </div>
+        <a class="chip deskstate" id="deskstate" href="#/settings" title="Desk status: open Settings for the sources"></a>
         <button class="iconbtn" id="theme" title="Light or dark" aria-label="Switch between light and dark"></button>
       </header>
-      <div class="health glass" id="health" role="status" aria-label="System status"></div>
       <main class="view" id="view" tabindex="-1"></main>
     </div>
   </div>

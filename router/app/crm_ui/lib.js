@@ -58,6 +58,17 @@ export const words = text => (text ?? '').replaceAll('_', ' ').replace(/^./, c =
 // --- icons (fixed markup, 16 px, stroked) -------------------------------------------------
 
 const ICONS = {
+  today: '<circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/>',
+  shipments: '<path d="M2.500 5 8 2.500 13.500 5v6L8 13.500 2.500 11z"/><path d="M2.500 5 8 7.500 13.500 5M8 7.500v6"/>',
+  customers: '<circle cx="6" cy="5.500" r="2.300"/><path d="M2 13.500c.6-2.600 2.200-3.800 4-3.800s3.400 1.200 4 3.800"/><path d="M10.500 3.400a2.200 2.200 0 0 1 0 4.300M12 9.900c1 .5 1.700 1.600 2 3.600"/>',
+  carriers: '<path d="M14 2 9.200 14l-2-5.200L2 6.800z"/>',
+  rates: '<path d="M2.500 3h11v10h-11zM2.500 6.500h11M6.500 6.500V13"/>',
+  reports: '<path d="M2.500 13.500h11M4.500 11V7.500M8 11V3.500M11.500 11V6"/>',
+  settings: '<circle cx="8" cy="8" r="2.200"/><path d="M8 1.800v1.800M8 12.400v1.800M1.800 8h1.800M12.400 8h1.800M3.600 3.600l1.300 1.300M11.100 11.100l1.300 1.300M3.600 12.400l1.300-1.300M11.100 4.900l1.300-1.300"/>',
+  mail: '<rect x="2" y="3.500" width="12" height="9" rx="1"/><path d="m2.500 4.500 5.500 4 5.500-4"/>',
+  note: '<path d="M3.500 2.500h6l3 3v8h-9z"/><path d="M9.500 2.500v3h3M5.500 8.500h5M5.500 11h3.500"/>',
+  board: '<rect x="2" y="2.500" width="3.500" height="11"/><rect x="6.300" y="2.500" width="3.500" height="7"/><rect x="10.600" y="2.500" width="3.500" height="9"/>',
+  table: '<path d="M2.500 3.500h11M2.500 8h11M2.500 12.500h11"/>',
   now: '<circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.4"/>',
   rounds: '<path d="M2.5 4h11M2.5 8h11M2.5 12h7"/>',
   performance: '<path d="M2.5 13.5h11M4.5 11V7.5M8 11V3.5M11.5 11V6"/>',
@@ -92,23 +103,24 @@ export function icon(name) {
 
 // --- shipment states ----------------------------------------------------------------------
 
-export const STATES = {
-  NEW: ['New', 'neutral', 'dot'],
-  AWAITING_INFO: ['Awaiting information', 'warning', 'clock'],
-  PRICING: ['Pricing', 'accent', 'spin'],
-  QUOTED: ['Quoted', 'accent', 'dot'],
-  BOOKING: ['Booking in progress', 'warning', 'spin'],
-  BOOKED: ['Booked', 'good', 'check'],
-  CONFIRMED: ['Confirmed', 'good', 'check'],
-  REJECTED: ['Declined', 'neutral', 'cross'],
-  FAILED: ['Failed', 'critical', 'alert'],
+// One status vocabulary everywhere (ADR 58). [label, tone, icon, what it means]
+export const STATUS = {
+  new: ['New', 'neutral', 'dot', 'The desk is working on it'],
+  needs_info: ['Needs info', 'warning', 'clock', 'We asked the customer for something and wait for it'],
+  quoted: ['Quoted', 'accent', 'dot', 'The all-in price is with the customer'],
+  booked: ['Booked', 'good', 'check', 'Booked with the airline'],
+  lost: ['Lost', 'neutral', 'cross', 'The customer declined'],
+  cancelled: ['Cancelled', 'neutral', 'cross', 'The booking was cancelled'],
 };
+export const PIPELINE = ['new', 'needs_info', 'quoted', 'booked', 'closed'];
 
-export function stateBadge(deal) {
-  const [label, tone, glyph] = STATES[deal.state] || [deal.state, 'neutral', 'dot'];
-  const text = deal.dry_run_booking && deal.state === 'BOOKED' ? 'Booked (dry run)' : label;
-  return h('span', { class: `state ${tone}` }, icon(glyph), text);
+export function statusBadge(s) {
+  if (s.running) return h('span', { class: 'state accent', title: 'The desk is working on this shipment right now' }, icon('spin'), 'Desk working');
+  const [label, tone, glyph, meaning] = STATUS[s.status] || [s.status, 'neutral', 'dot', ''];
+  return h('span', { class: `state ${tone}`, title: meaning }, icon(glyph), label);
 }
+
+export const needsYou = s => (s.needs_you?.length ? h('span', { class: 'flag critical', title: s.needs_you.join('\n') }, icon('alert'), 'Needs you') : null);
 
 export const CATEGORIES = {
   rfq: 'Quote request', customer_info: 'Customer information', customer_accept: 'Acceptance',
