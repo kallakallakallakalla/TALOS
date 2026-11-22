@@ -120,9 +120,10 @@ browser would silently show that other program, usually an older copy.
 
 To look at it without touching the mailbox (no polling, so no LLM calls), `./crm.sh` (or
 `crm.bat` on Windows) installs on the first run, starts the app on port 8010 and opens the
-page. To follow a running router, give it that router's database file:
-`./crm.sh 8010 /path/to/router/data/router.db`. SQLite lets this second process read while the
-router writes, so the router itself is not touched. By hand:
+page. It reads the router's usual database (`~/.talos/router.db`), so on the machine where the
+router runs, "Live" follows the running router by itself: SQLite lets this second process read
+while the router writes. For a database somewhere else, give its file:
+`./crm.sh 8010 /path/to/router.db`. By hand:
 
 ```bash
 MAILBOX_POLL_ENABLED=false .venv/bin/uvicorn app.main:app --port 8000

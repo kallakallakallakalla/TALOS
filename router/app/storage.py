@@ -137,7 +137,7 @@ class MessageStore:
                     trucker TEXT NOT NULL, sent_at TEXT NOT NULL,
                     answered INTEGER NOT NULL DEFAULT 0,
                     price_eur REAL, pickup_hours REAL, valid_until TEXT, ref TEXT,
-                    reply_message_id INTEGER
+                    reply_message_id INTEGER, conditions_json TEXT
                 );
                 -- Rate requests to email-only airlines (ADR 47), same shape as trucker_requests.
                 CREATE TABLE IF NOT EXISTS airline_requests (
@@ -162,6 +162,9 @@ class MessageStore:
                 );
                 """
             )
+            columns = {r[1] for r in conn.execute("PRAGMA table_info(trucker_requests)")}
+            if "conditions_json" not in columns:  # databases from before ADR 55
+                conn.execute("ALTER TABLE trucker_requests ADD COLUMN conditions_json TEXT")
 
     def _read_since_id(self, conn: sqlite3.Connection) -> int:
         row = conn.execute(
@@ -415,7 +418,7 @@ class MessageStore:
     def save_trucker_request(self, request: TruckerRequest, table: str = "trucker_requests") -> None:
         """Insert a pickup request we sent, or update it with the trucker's answer.
         `table="airline_requests"` does the same for a rate request to an airline."""
-        transit = ", transit_days" if table == _AIRLINE else ""
+        transit = ", transit_days" if table == _AIRLINE else ", conditions_json"
         with self._connect() as conn:
             conn.execute(
                 f"""
@@ -435,7 +438,7 @@ class MessageStore:
                     request.valid_until,
                     request.ref,
                     request.reply_message_id,
-                    *([request.transit_days] if transit else []),
+                    request.transit_days if table == _AIRLINE else json.dumps(request.conditions),
                 ),
             )
 
@@ -445,7 +448,12 @@ class MessageStore:
                 f"SELECT * FROM {_table(table)} WHERE shipment_id = ? ORDER BY out_message_id",
                 (shipment_id,),
             ).fetchall()
-        return [TruckerRequest(**dict(row)) for row in rows]
+        out = []
+        for row in rows:
+            data = dict(row)
+            data["conditions"] = json.loads(data.pop("conditions_json", None) or "[]")
+            out.append(TruckerRequest(**data))
+        return out
 
     def data_updates(self) -> list[DataUpdateRecord]:
         """Every update mail, newest first, with its changes; also `tariff_update` mails that

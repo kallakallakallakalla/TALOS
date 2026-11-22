@@ -5,9 +5,10 @@
 #
 #   ./crm.sh [port] [database]
 #     port      default 8010
-#     database  the SQLite file of a running router, to follow its live data, e.g.
-#               ./crm.sh 8010 /path/to/TALOS/router/data/router.db
-#               Without it the copy in this folder is shown (a snapshot plus the dry run).
+#     database  the SQLite file of a router, to follow its live data. Without it the router's
+#               usual database is used (~/.talos/router.db): on the machine where the router
+#               runs, "Live" therefore follows it by itself; elsewhere "Live" is empty and the
+#               recorded dry run is shown.
 set -euo pipefail
 PORT="${1:-8010}"
 if [ -n "${2:-}" ]; then

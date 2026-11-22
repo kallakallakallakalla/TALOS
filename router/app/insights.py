@@ -1069,7 +1069,7 @@ _INBOUND_TITLE = {
     "rfq": "Request from {who}", "customer_info": "{who} sent the missing details", "customer_accept": "{who} accepted the quote",
     "customer_reject": "{who} declined the quote", "customer_question": "{who} asked a question", "trucker_quote": "Offer from {who}",
     "trucker_decline": "{who} declined the pickup", "booking_confirmation": "{who} confirmed the booking",
-    "tracking_request": "Tracking question for this shipment", "rate_offer": "Rate offer from {who}", "data_update": "Data change from {who}",
+    "tracking_request": "Tracking question for this shipment", "rate_offer": "Rate offer from {who}", "tariff_update": "Tariff update from {who}",
 }  # fmt: skip
 _OUTBOUND_TITLE = {
     "quote": "Quote written to {who}", "clarification": "Asked {who} for the missing details", "booking_note": "Booking confirmed to {who}",

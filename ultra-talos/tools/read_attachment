@@ -1,0 +1,8 @@
+#!/bin/sh
+# Plain text of a pdf, xlsx, docx, pptx, txt or csv file:  tools/read_attachment FILE
+# Reuses the live router's reader. Empty output = no text layer (scan, image): look at the
+# file with the read tool (vision) or run `tesseract FILE -`. New format? Extend this script.
+here="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$here/../router" && exec .venv/bin/python -c '
+import sys; from pathlib import Path; from app.attachments import to_text
+p = Path(sys.argv[1]); print(to_text(p.name, p.read_bytes()))' "$(cd "$here" && realpath "$1")"

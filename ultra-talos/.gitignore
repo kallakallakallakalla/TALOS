@@ -1,0 +1,7 @@
+.env
+mails/
+shipments/
+outbox/
+logs/
+state/
+__pycache__/

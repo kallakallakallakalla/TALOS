@@ -1,0 +1,19 @@
+OFFER TRK-6235
+========================================================================
+Rheinufer Spedition  |  rheinufer-spedition@hackloop.mail
+
+Offer valid until   21 Nov 2026 21:56 UTC
+Offer date          21 Nov 2026 21:41 UTC
+Lead time           28 hours from order to collection
+Route               40527 (zone 40) to DUS Duesseldorf
+
+Pos  Description           Quantity  Unit price (EUR)  Amount (EUR)
+-------------------------------------------------------------------
+1    Base charge, zone 40         1             61.00         61.00
+2    Weight charge          1728 kg              0.07        120.96
+-------------------------------------------------------------------
+     Total                                                   181.96
+
+Not part of this offer: waiting time at the pickup address after the
+first 30 minutes, 45.00 EUR for each hour.
+No booking is necessary. Give the offer number when you use this price.

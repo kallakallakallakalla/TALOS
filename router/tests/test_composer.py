@@ -33,6 +33,10 @@ FACTS = {
         "estimated_arrival": "2026-12-03", "ready_date": "2026-11-28",
         "must_appear": ["BK-ERC5OOW3"],
     },
+    "price_update": {
+        "route": "CGN -> ORD", "airline": "Xenon Cargo Airlines", "old_all_in_price": "1599.41 EUR",
+        "all_in_price": "1699.41 EUR", "price_went": "up", "must_appear": ["1699.41 EUR"],
+    },
     "booking_request": {
         **SHIPMENT, "lane": "FRA-ORD", "chargeable_weight": "699.73 kg",
         "tariff_total": "1700.00 EUR", "our_reference": "947",
@@ -118,3 +122,20 @@ def test_the_prompt_mirrors_the_customer_and_plants_nothing() -> None:
     assert "Mirror them" in text and "Start with the answer" in text
     for gone in ("typing slip", "kindly note", "footer is added", "Wording for this mail"):
         assert gone not in text
+
+
+@pytest.mark.anyio
+async def test_english_reply_to_a_german_customer_is_retried_in_german() -> None:
+    drafts = iter([
+        ComposedMail(subject="s", body="Hi Tobias, we can offer you the cheapest option at 1599.41 EUR all-in for your shipment to ORD. Is that ok for you? Alex"),
+        ComposedMail(subject="s", body="Hallo Tobias, für Ihre Sendung nach ORD bieten wir 1599.41 EUR all-in an. Passt das für Sie? Viele Grüße, Alex"),
+    ])  # fmt: skip
+    composer, fake = _composer(lambda *_: next(drafts))
+    mail, used_template = await composer.compose(
+        "quote", FACTS["quote"], recipient_role="customer", language="de",
+        thread="Subject: Luftfrachtanfrage\n\nHallo, bitte um ein Angebot.",
+    )
+    assert not used_template and len(fake.calls) == 2
+    assert mail.body.startswith("Hallo Tobias")
+    assert "German" in fake.calls[0][1]  # the prompt names the language, not "de"
+    assert "write the whole mail in German" in fake.calls[1][2]

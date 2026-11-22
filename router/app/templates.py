@@ -81,6 +81,16 @@ def _booking_note(f: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _price_update(f: dict[str, Any]) -> tuple[str, str]:
+    return (
+        f"Updated price {f['route']}",
+        "thank you for your go-ahead. Before booking we checked the airline price again: "
+        f"it has gone {f['price_went']} since our quote. The new all-in price with {f['airline']} "
+        f"is {f['all_in_price']} (quoted: {f['old_all_in_price']}).\n\n"
+        "Please simply reply to this email to confirm, and we will book it.",
+    )
+
+
 def _booking_request(f: dict[str, Any]) -> tuple[str, str]:
     return (
         f"Booking request {f['lane']}, our reference {f['our_reference']}",
@@ -146,6 +156,7 @@ _TEMPLATES = {
     "no_price": _no_price,
     "clarification": _clarification,
     "booking_note": _booking_note,
+    "price_update": _price_update,
     "booking_request": _booking_request,
     "answer": _answer,
     "tracking_answer": _tracking_answer,

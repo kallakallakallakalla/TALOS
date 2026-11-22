@@ -369,6 +369,8 @@ def test_the_board_is_read_tolerantly() -> None:
     both = {"bookings": [{"id": 1, "booking_reference": "BK-1"}],
             "requests": [{"message_id": 947, "verdict": "accepted", "points": {"accuracy": 45.0, "time": 12.5, "note": "x"}, "total": 57.5}]}  # fmt: skip
     assert board.normalise(both) == {947: {"verdict": "accepted", "reason": None, "booked": None, "points": 57.5, "kinds": {"accuracy": 45.0, "time": 12.5}}}
+    flat = {"requests": [{"request_id": 947, "verdict": "accepted", "accuracy": 35.6, "time": 15, "cost_pending": True, "total": 50.6}]}
+    assert board.normalise(flat)[947] == {"verdict": "accepted", "reason": None, "booked": None, "points": 50.6, "kinds": {"accuracy": 35.6, "time": 15}}
     for garbage in (None, "down", 3, {}, {"requests": []}, [1, "x"], [{"verdict": "accepted"}]):
         assert board.normalise(garbage) == {}
     assert board.seen == {"entries": 1, "usable": 0, "fields": ["verdict"]}  # what to look at when nothing matches

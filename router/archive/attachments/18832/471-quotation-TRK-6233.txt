@@ -1,0 +1,22 @@
+PICKUP QUOTATION
+========================================================================
+Hansekogge Trucking
+
+Quotation no.       TRK-6233
+Date                21 Nov 2026 21:41 UTC
+
+Pickup              postcode 40527
+Delivery            Duesseldorf airport (DUS)
+Chargeable weight   1728 kg
+
+Charge                                  Amount
+----------------------------------------------
+Pickup and delivery to DUS airport  220.24 EUR
+----------------------------------------------
+Total, all-in                       220.24 EUR
+
+In words            two hundred twenty euros and twenty-four cents
+Collection          in 24 hours
+Valid until         21 Nov 2026 21:56 UTC
+
+hansekogge-trucking@hackloop.mail

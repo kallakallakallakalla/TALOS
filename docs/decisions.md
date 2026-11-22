@@ -394,6 +394,16 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Booking by email when the portal refuses:** since 2026-11-21 ~20:05 UTC `POST /v1/portal/bookings` can answer `503 "Booking is not available for <airline>. Please book by email"`. The router then books by mail with the rate_id (same path as tariff and email airlines) instead of retrying the portal.
 
 
+### ADR 52: The trucker is the cheapest one, unless the dates need a faster one
+
+**Decided 2026-11-21.** Replaces ADR 49 (fixed 14 h cut-off) and the trucker part of ADR 08.
+
+- **Rule:** counted in days, not hours, with the same model as `eta()` (a pickup of up to 24 h flies the next day, up to 48 h the day after). Take the cheapest trucker. A faster one only when the dates need it:
+  - **fastest goal:** the fastest airline, and the cheapest trucker among those that reach the earliest flight (fewest pickup days).
+  - **deliver_by:** per airline, the cheapest trucker that still arrives by then; only airlines with such a trucker count, then the goal decides. If none arrives in time: the fastest airline with the fastest trucker.
+- **Why:** a cut-off in hours is a number fitted to scores, not derived from anything (no API gives departure times). Days follow from the dates we already quote, so the choice is deterministic and matches the dates in the mail.
+- **Round 68 (shipment 18954, cheapest):** the 14 h cut-off chose 120.36 EUR at 14 h and the customer rejected the quote as too high; this rule chooses 41.80 EUR at 29 h.
+
 ### ADR 50: One updatable store for reference data, changed by update mails
 
 **Decided and built 2026-11-21.** Plan and what was built: [data-updates.md](data-updates.md). Changes ADR 06 (`replace_airline()` hook) and ADR 19 (`tariff_update` had no handler and sent no mail).
@@ -461,7 +471,32 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Not measured:** no evaluation key was available in the session, so no mail was generated with the new prompt. Read `scripts/compose_samples.py --label staging` before promoting it. Whether the jury rewards this is a judgment; there is no data on which mails it picked.
 - **To go live:** the running router needs this code, and the prompt has to be pushed to Langfuse and promoted (`scripts/push_prompts.py`, then `--promote talos-compose-mail`).
 
-### ADR 54: The CRM is a supervisor console: it shows what needs a person, and it may act
+
+### ADR 54: Recheck the portal price before booking
+
+**Decided and built 2026-11-21.**
+
+- **Context:** a portal price can change between the quote and the customer's yes. We booked the stored `rate_id` and only refetched it when the portal answered 410.
+- **Decision (user):** before every portal booking, fetch the rate again. Same price: book the fresh `rate_id`. Changed, up **or** down: mail the customer the new all-in price (`price_update`) and go back to QUOTED to wait for a new yes. Email airline and trucker prices stand as given by mail and are not asked twice; tariff prices stand too.
+- **How:** `_price_still_holds()` at the start of `_book_on_portal`, so it also covers the `tick()` retries. The new all-in is the old one minus the old air price plus the new air price (trucking and margin are unchanged). At most 3 price updates per shipment, then FAILED. If the recheck fails (portal down), the shipment stays BOOKING and `tick()` tries again.
+- **Why:** the customer only ever books a price they agreed to.
+
+
+### ADR 55: An LLM can choose the trucker; off until it beats the rule
+
+**Decided and built 2026-11-21.** Plan: [trucker-choice.md](trucker-choice.md). Default and fallback is the 14 h cut-off rule (ADR 49); the days rule tried in between is reverted.
+
+- **Built:** trucker extraction keeps every other stated fact in `conditions` (`trucker_requests.conditions_json`). `talos-choose-trucker` gets compact facts (dates, now, flights, all offers with conditions) and returns an offer number with a reason. Code checks it (offer exists, still valid, deliver_by still reachable); one retry, then the rule. The all-in price is always computed in code. `quote_json.trucker_choice` records `llm` or `rule` and the reason. Setting `TRUCKER_CHOOSER=llm|rule`.
+- **Eval (`scripts/eval_trucker_choice.py`: offline, EVALUATION_KEY straight at OpenAI, local prompts, no platform call), 18 scored rounds:** rule 11/18 truckers as expected, 736.0 accuracy points; LLM 6/18, 673.6. No check failed; re-reading changed no price.
+- **Why the LLM loses:** truckers state their lead time "from order to collection"; we order days before the ready date, so the LLM correctly finds that every trucker makes the flight and takes the cheapest. The scorer expects a faster, dearer trucker in many rounds (31, 47, 57, 66). That preference is in none of the facts we get, so no prompt over these facts follows it.
+- **Hence:** `TRUCKER_CHOOSER=rule` by default. Switch to `llm` only after the eval shows it at least as good as the rule.
+
+
+### ADR 56: Offer as PDF only on request
+
+The RFQ extractor sets `wants_pdf` when the customer asks for the offer as a PDF. Only then does the quote mail carry `offer-<id>.pdf` (the composed quote text, built with the stdlib in `app/offer_pdf.py`) as a mailbox attachment, and the mail says so in one sentence. Without the request, no PDF is created or sent.
+
+### ADR 57: The CRM is a supervisor console: it shows what needs a person, and it may act
 
 - **Context:** the CRM of ADR 52 showed everything the router stores, on eight pages, and nothing followed from reading it. The user's judgment: "a ton of info, but nothing actionable or insightful. If everything runs smoothly, why would you need it?" A system that works on its own needs a person in three situations only: a case it could not finish, a result that has to be checked, and a setting that is wrong.
 - **Decision (user):** rebuild it around those three. It serves both the hackathon and a product demo, and it may act on the live system. The globe stays as it is. Simplify further.
@@ -492,4 +527,3 @@ Decisions 01–24 were taken in the planning session of 2026-11-21 (16:00–17:2
 - **Review:** an independent read of the console as its operator found the first version only half coherent (cases counted that nobody could act on, a loss column that restated the outcome, nine cards per shipment, no action on the page a case opens). The points above marked as removed or changed come from it. The actions and their edges are covered by `tests/test_console.py`.
 - **Notifications:** with the browser's permission a new case in the queue is announced, and the tab title carries the count. Nobody has to watch a page that is empty when things work.
 - **Honest limits:** in a dry run the action buttons are off and timings and win rates stay hidden (ADR 52).
-

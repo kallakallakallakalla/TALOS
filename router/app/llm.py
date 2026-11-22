@@ -36,9 +36,12 @@ class StructuredLLM:
             api_key=settings.decision_api_key or "missing-api-key",
             base_url=settings.decision_api_base_url,
         )
+        # Gateway 404s on audio; transcription uses OpenAI directly (injected client in tests).
+        self._audio = openai_client or AsyncOpenAI(api_key=settings.openai_api_key or "missing-api-key")
+
     async def transcribe(self, filename: str, data: bytes) -> str:
         """Speech to text for a voice-message attachment."""
-        result = await self._openai.audio.transcriptions.create(
+        result = await self._audio.audio.transcriptions.create(
             model=self._settings.transcribe_model,
             file=(filename, data),
             prompt="Freight price offer. Write all amounts, weights and times as digits, e.g. 340.60 EUR, 1410 kg, 12 hours.",

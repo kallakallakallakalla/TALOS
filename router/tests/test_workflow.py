@@ -34,6 +34,7 @@ from app.schemas import (
     ShipmentState,
     TariffLane,
     TrackingQuery,
+    TruckerChoice,
     TruckerQuote,
     TruckerQuotes,
 )
@@ -130,6 +131,9 @@ def recorded_llm(overrides: dict | None = None) -> ScriptedLLM:
                 TruckerQuote(reply=n, **LABELS[mail_id_in(body)].get("trucker_quote", {}))
                 for n, body in enumerate(bodies, start=1)
             ])  # fmt: skip
+        if schema is TruckerChoice:  # ADR 55; not scripted -> the cut-off rule chooses
+            choose = overrides.get("choice")
+            return choose(json.loads(user)) if choose else RuntimeError("chooser not scripted")
         if schema is TrackingQuery:
             return overrides.get("tracking") or TrackingQuery(
                 company="Rheintal Elektronik GmbH", contact_name="Deniz", origin="51896",
@@ -228,7 +232,9 @@ async def test_round_4_replay_quotes_1671_40_and_books_with_reference_947(tmp_pa
     assert quote["in_reply_to"] == ROUND_4_RFQ and quote["subject"] == "Re: Air freight quote to ORD"
 
     await h.receive(ROUND_4_ACCEPT, in_reply_to=quote["id"], references=[ROUND_4_RFQ, quote["id"]])
-    assert h.platform.bookings == [{"rate_id": shipment.chosen_option.rate_id, "team_reference": "947"}]
+    # The price is checked on the portal again before booking; it held, so the fresh rate is booked.
+    assert h.platform.bookings == [{"rate_id": h.shipment().chosen_option.rate_id, "team_reference": "947"}]
+    assert h.shipment().chosen_option.rate_id != shipment.chosen_option.rate_id
     assert h.shipment().state == ShipmentState.BOOKED
     assert h.shipment().booking_ref == "BK-ERC5OOW3"
     note = h.platform.sent[-1]
@@ -364,7 +370,7 @@ async def test_unknown_pickup_zone_asks_the_customer_for_an_airport(tmp_path: Pa
 
 
 @pytest.mark.anyio
-async def test_expired_rate_is_refetched_before_booking(tmp_path: Path) -> None:
+async def test_quoted_rate_is_refetched_before_booking(tmp_path: Path) -> None:
     h = Harness(tmp_path, send_enabled=True)
     await h.receive(ROUND_4_RFQ)
     await h.truckers_reply()
@@ -373,9 +379,32 @@ async def test_expired_rate_is_refetched_before_booking(tmp_path: Path) -> None:
 
     await h.receive(ROUND_4_ACCEPT)
     shipment = h.shipment()
-    assert shipment.state == ShipmentState.BOOKED and shipment.booking_attempts == 2
-    assert h.platform.bookings[0]["rate_id"] != old_rate_id
+    assert shipment.state == ShipmentState.BOOKED and shipment.booking_attempts == 1
+    assert h.platform.bookings[0]["rate_id"] not in (old_rate_id, None)
     assert h.platform.bookings[0]["team_reference"] == "947"
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(("new_air", "went"), [("1583.43", "up"), ("1383.43", "down")])
+async def test_changed_portal_price_asks_the_customer_again_before_booking(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, new_air: str, went: str
+) -> None:
+    h = Harness(tmp_path, send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    monkeypatch.setitem(CGN_ORD_TOTALS, "XC", new_air)  # the airline price moved since the quote
+
+    await h.receive(ROUND_4_ACCEPT)
+    shipment = h.shipment()
+    assert shipment.state == ShipmentState.QUOTED and h.platform.bookings == []
+    new_all_in = round(1671.40 - 1483.43 + float(new_air), 2)
+    assert shipment.quote["all_in_eur"] == new_all_in
+    (update,) = h.outbound("price_update")
+    assert f"{new_all_in:.2f} EUR" in h.platform.sent[-1]["body"]
+    assert h.platform.sent[-1]["to"] == shipment.customer
+
+    await h.receive(ROUND_4_ACCEPT, id=5001)  # the customer confirms the new price
+    assert h.shipment().state == ShipmentState.BOOKED and len(h.platform.bookings) == 1
 
 
 @pytest.mark.anyio
@@ -383,11 +412,11 @@ async def test_portal_booking_closed_books_by_email_with_the_rate_id(tmp_path: P
     h = Harness(tmp_path, send_enabled=True)
     await h.receive(ROUND_4_RFQ)
     await h.truckers_reply()
-    rate_id = h.shipment().chosen_option.rate_id
     h.platform.booking_closed = True
 
     await h.receive(ROUND_4_ACCEPT)
     shipment = h.shipment()
+    rate_id = shipment.chosen_option.rate_id  # the fresh rate from the price recheck
     assert shipment.state == ShipmentState.BOOKING and h.platform.bookings == []
     request = h.platform.sent[-1]
     assert request["to"] == "xenon-cargo-airlines@hackloop.mail"
@@ -773,3 +802,51 @@ async def test_a_429_on_the_poll_waits_its_retry_after_and_the_timers_still_run(
     await h.poller._cycle()  # noqa: SLF001
     assert h.poller._backoff == 5.0 and "429" in h.poller.last_error  # noqa: SLF001
     assert h.shipment().state == ShipmentState.QUOTED  # the quote went out despite the 429
+
+
+def _offer_priced(price: float):
+    """A scripted chooser that picks the offer with this price."""
+    return lambda facts: TruckerChoice(
+        offer=next(o["offer"] for o in facts["offers"] if o["price_eur"] == price), reason="scripted"
+    )
+
+
+@pytest.mark.anyio
+async def test_the_llm_chooses_the_trucker_and_its_choice_is_quoted(tmp_path: Path) -> None:
+    """ADR 55: Elbkante (115.98, 29 h) instead of the cut-off rule's Westfalenroute (187.97)."""
+    h = Harness(tmp_path, llm=recorded_llm({"choice": _offer_priced(115.98)}), send_enabled=True, trucker_chooser="llm")
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    shipment = h.shipment()
+    assert shipment.quote["truck_eur"] == 115.98 and shipment.quote["all_in_eur"] == 1599.41
+    assert shipment.quote["trucker_choice"] == {"source": "llm", "reason": "scripted", "concerns": []}
+    facts = json.loads(next(user for schema, _, user in h.llm.calls if schema == "TruckerChoice"))
+    assert {o["price_eur"] for o in facts["offers"]} >= {115.98, 187.97} and facts["flights"]
+
+
+@pytest.mark.anyio
+async def test_a_chosen_offer_that_does_not_exist_falls_back_to_the_rule(tmp_path: Path) -> None:
+    h = Harness(tmp_path, llm=recorded_llm({"choice": lambda facts: TruckerChoice(offer=99, reason="x")}), send_enabled=True, trucker_chooser="llm")
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    shipment = h.shipment()
+    assert [s for s, _, _ in h.llm.calls].count("TruckerChoice") == 2  # one retry
+    assert shipment.quote["truck_eur"] == 187.97 and shipment.quote["trucker_choice"]["source"] == "rule"
+
+
+@pytest.mark.anyio
+async def test_trucker_chooser_rule_setting_makes_no_llm_call(tmp_path: Path) -> None:
+    h = Harness(tmp_path, llm=recorded_llm({"choice": _offer_priced(115.98)}), trucker_chooser="rule", send_enabled=True)
+    await h.receive(ROUND_4_RFQ)
+    await h.truckers_reply()
+    assert "TruckerChoice" not in [s for s, _, _ in h.llm.calls] and h.shipment().quote["truck_eur"] == 187.97
+
+
+def test_offer_pdf_is_a_valid_pdf() -> None:
+    from app.offer_pdf import offer_pdf
+
+    pdf = offer_pdf("Angebot CGN -> ORD", "Grüße (all-in) 1.234,00 EUR\n" + "Zeile\n" * 130)
+    assert pdf.startswith(b"%PDF-1.4") and pdf.rstrip().endswith(b"%%EOF")
+    assert b"/Count 3" in pdf  # 132 body lines + title -> 3 pages of 60
+    start = int(pdf.rsplit(b"startxref\n", 1)[1].split()[0])
+    assert pdf[start:].startswith(b"xref")

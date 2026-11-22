@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 _CACHE_SECONDS = 30.0
 _cache: dict[str, tuple[float, dict[int, dict[str, Any]] | None]] = {}
 _VERDICT_KEYS = ("verdict", "status", "result", "outcome")
+_KINDS = ("accuracy", "cost", "time", "human", "tracking", "other")  # the kinds of points the platform's description names
 # What the last answer looked like: how many entries, how many had a usable request id, and
 # the field names of the first one. Shown in the CRM when nothing could be matched.
 seen: dict[str, Any] = {"entries": 0, "usable": 0, "fields": []}
@@ -48,13 +49,14 @@ def normalise(payload: Any) -> dict[int, dict[str, Any]]:
         except (TypeError, ValueError, IndexError):
             continue
         points = _first(entry, "points", "points_per_kind", "scores", "breakdown")
+        flat = {kind: entry[kind] for kind in _KINDS if isinstance(entry.get(kind), int | float) and not isinstance(entry.get(kind), bool)}
         board[request_id] = {
             "verdict": _first(entry, *_VERDICT_KEYS),
             "reason": _first(entry, "reason", "reason_code", "reject_reason", "detail"),
             "booked": _first(entry, "booked", "is_booked"),
             # the request's total, and the points per kind where the board gives them
-            "points": _first(entry, "total", "request_total", "score") if isinstance(points, dict) else points,
-            "kinds": {str(kind): value for kind, value in points.items() if isinstance(value, int | float)} if isinstance(points, dict) else None,
+            "points": points if isinstance(points, int | float) and not isinstance(points, bool) else _first(entry, "total", "request_total", "score"),
+            "kinds": {str(kind): value for kind, value in points.items() if isinstance(value, int | float)} if isinstance(points, dict) else flat or None,
         }
     seen["usable"] = len(board)
     return board

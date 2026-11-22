@@ -1,0 +1,22 @@
+PICKUP QUOTATION
+========================================================================
+Hansekogge Trucking
+
+Quotation no.       TRK-5918
+Date                21 Nov 2026 21:23 UTC
+
+Pickup              postcode 20103
+Delivery            Hamburg airport (HAM)
+Chargeable weight   827 kg
+
+Charge                                  Amount
+----------------------------------------------
+Pickup and delivery to HAM airport  122.89 EUR
+----------------------------------------------
+Total, all-in                       122.89 EUR
+
+In words            one hundred twenty-two euros and eighty-nine cents
+Collection          in 31 hours
+Valid until         21 Nov 2026 21:38 UTC
+
+hansekogge-trucking@hackloop.mail

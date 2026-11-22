@@ -51,6 +51,8 @@ Fields
         null if the customer states neither.
 - extra_questions: every question the customer asks besides the price, as short phrases
   (e.g. "earliest arrival at JFK", "latest drop-off time at STR").
+- wants_pdf: true only if the customer asks to receive the offer/quote as a PDF
+  (attachment); false otherwise. Keep a true from the previous request.
 - contact_name: the sender's first name as signed. company: the company name.
 - language: ISO 639-1 code of the language the customer wrote in.
 

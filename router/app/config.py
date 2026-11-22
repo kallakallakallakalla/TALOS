@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
     langfuse_host: str = "http://localhost:3000"
     langfuse_base_url: str = ""
     langfuse_prompt_name: str = "router-classification"
-    # Langfuse prompt label the running router reads ("staging" for evals).
+    # Unused since prompts come from prompts/*.md only; kept for the push/eval scripts.
     prompt_label: str = "production"
     prompts_dir: str = "prompts"
 
@@ -29,6 +30,8 @@ class Settings(BaseSettings):
     decision_model: str = "gpt-6-luna"
     extract_model: str = "gpt-6-luna"
     transcribe_model: str = "gpt-4o-mini-transcribe"
+    # The gateway has no /audio endpoint (404), so speech to text goes straight to OpenAI.
+    openai_api_key: str = ""
     compose_model: str = "gpt-6-luna"
     decision_temperature: float | None = None
     # Reasoning tokens are billed and slow; "none" | "low" | "medium" | "high" | "" (model default).
@@ -46,7 +49,8 @@ class Settings(BaseSettings):
     # use EVALUATION_KEY directly, shipments go to their own database, and portal reads are
     # throttled so the live process keeps most of the shared limit.
     test_mode: bool = False
-    test_sqlite_db_path: str = "data/test.db"
+    # Outside the repo, so no git checkout or merge can overwrite or delete it.
+    test_sqlite_db_path: str = str(Path.home() / ".talos" / "test.db")
     test_portal_rate_limit_per_minute: int = 3
 
     # Input API (empty = use built-in placeholder)
@@ -64,7 +68,7 @@ class Settings(BaseSettings):
     mailbox_timeout_seconds: float = 10.0
 
     # SQLite persistence for since_id cursor, deduplication, and results
-    sqlite_db_path: str = "data/router.db"
+    sqlite_db_path: str = str(Path.home() / ".talos" / "router.db")
 
     # Quote workflow (docs/workflow.md section 9)
     send_enabled: bool = False  # dry run: compose and log, never send or book
@@ -73,9 +77,13 @@ class Settings(BaseSettings):
     # Quote when every asked trucker has answered, or after this many seconds with whatever
     # came back (nothing came back: fallback trucker price).
     trucker_wait_seconds: float = 60.0
-    # A trucker that picks up within this many hours counts as in time for the flight; the
-    # cheapest of those is used (ADR 49). Fitted to the board's accuracy points, not documented.
+    # Fallback rule when the LLM chooser fails or is off (ADR 55): a trucker within this many hours counts
+    # as in time, the cheapest of those is used (ADR 49). Fitted to the board, not documented.
     trucker_pickup_cutoff_hours: float = 14.0
+    # "llm": talos-choose-trucker picks the trucker, checked in code; "rule": ADR 49 only.
+    # "rule" until the LLM beats it in scripts/eval_trucker_choice.py (ADR 55).
+    trucker_chooser: str = "rule"
+    choose_trucker_reasoning_effort: str = "low"
     fallback_truck_eur_per_kg: float = 0.28
     booking_reminder_seconds: float = 600.0  # email-booked airlines: remind after 10 min
     max_clarifications: int = 3
@@ -112,6 +120,7 @@ def as_test_settings(settings: Settings) -> Settings:
     return settings.model_copy(
         update={
             "decision_api_key": settings.evaluation_key,
+            "openai_api_key": settings.evaluation_key,
             "decision_api_base_url": settings.evaluation_api_base_url,
             "send_enabled": False,
             "sqlite_db_path": settings.test_sqlite_db_path,

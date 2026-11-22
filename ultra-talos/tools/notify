@@ -1,0 +1,11 @@
+#!/bin/sh
+# Call a human:  tools/notify "CAPTCHA on the portal page, please solve it in the Chrome window"
+# Shows a macOS notification with sound, writes the request on the black board and into
+# state/NEEDS_HUMAN. Use it only when a person must act (a captcha, a login); then keep working
+# or wait briefly and check again.
+here="$(cd "$(dirname "$0")/.." && pwd)"
+msg="$1"
+osascript -e "display notification \"$(printf '%s' "$msg" | tr -d '"\\')\" with title \"TALOS needs you\" sound name \"Glass\"" 2>/dev/null
+printf '%s %s\n' "$(date -u +%FT%TZ)" "$msg" >> "$here/state/NEEDS_HUMAN"
+python3 "$here/tools/board.py" note "${TALOS_SHIPMENT:--}" needs_human "$msg" >/dev/null
+echo "human notified"
