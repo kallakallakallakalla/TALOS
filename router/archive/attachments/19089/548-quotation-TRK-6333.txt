@@ -1,0 +1,22 @@
+PICKUP QUOTATION
+========================================================================
+Flinkwagen Logistik
+
+Quotation no.       TRK-6333
+Date                21 Nov 2026 21:48 UTC
+
+Pickup              postcode 84455
+Delivery            Munich airport (MUC)
+Chargeable weight   76 kg
+
+Charge                                  Amount
+----------------------------------------------
+Pickup and delivery to MUC airport  120.36 EUR
+----------------------------------------------
+Total, all-in                       120.36 EUR
+
+In words            one hundred twenty euros and thirty-six cents
+Collection          in 14 hours
+Valid until         21 Nov 2026 22:03 UTC
+
+flinkwagen-logistik@hackloop.mail

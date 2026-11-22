@@ -1,0 +1,19 @@
+OFFER TRK-5912
+========================================================================
+Rheinufer Spedition  |  rheinufer-spedition@hackloop.mail
+
+Offer valid until   21 Nov 2026 21:38 UTC
+Offer date          21 Nov 2026 21:23 UTC
+Lead time           28 hours from order to collection
+Route               20103 (zone 20) to HAM Hamburg
+
+Pos  Description           Quantity  Unit price (EUR)  Amount (EUR)
+-------------------------------------------------------------------
+1    Base charge, zone 20         1             55.00         55.00
+2    Weight charge           827 kg              0.06         49.62
+-------------------------------------------------------------------
+     Total                                                   104.62
+
+Not part of this offer: waiting time at the pickup address after the
+first 30 minutes, 45.00 EUR for each hour.
+No booking is necessary. Give the offer number when you use this price.
